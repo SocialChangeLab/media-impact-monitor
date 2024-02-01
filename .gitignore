@@ -247,7 +247,7 @@ pyrightconfig.json
 .Rapp.history
 
 # Session Data files
-.RData
+.Rdata
 .RDataTmp
 
 # User-specific files
@@ -263,7 +263,7 @@ pyrightconfig.json
 /*.Rcheck/
 
 # RStudio files
-.Rproj.user/
+.Rproj.user
 
 # produced vignettes
 vignettes/*.html
@@ -297,3 +297,5 @@ rsconnect/
 /*_files/
 
 # End of https://www.toptal.com/developers/gitignore/api/r
+
+.quarto

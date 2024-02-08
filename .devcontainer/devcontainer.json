@@ -4,7 +4,7 @@
 {
 	"name": "Media Impact Monitor - Devcontainer",
 	"build": {
-		"dockerfile": "../dev.Dockerfile"
+		"dockerfile": "Dockerfile"
 	},
 	// https://containers.dev/features
 	"features": {

@@ -1,10 +1,12 @@
 FROM --platform=linux/amd64 ubuntu:22.04
+
 RUN apt-get update && export DEBIAN_FRONTEND=noninteractive && apt-get -y install \
     git \
     curl \
     python3 \
     python3-pip \
     && rm -rf /var/lib/apt/lists/*
+
 WORKDIR /workspace
 
 # Install and setup poetry

@@ -1,48 +1,42 @@
 // https://aka.ms/devcontainer.json
 // https://containers.dev/guide/dockerfile
 // https://github.com/rocker-org/devcontainer-templates/
-
 {
-	"name": "Media Impact Monitor - R Devcontainer",
-	"image": "ghcr.io/rocker-org/devcontainer/tidyverse:4.3",
-
+	"name": "Media Impact Monitor - Devcontainer",
+	"build": {
+		"dockerfile": "../dev.Dockerfile"
+	},
 	// https://containers.dev/features
 	"features": {
 		"ghcr.io/rocker-org/devcontainer-features/apt-packages:1": {
 			"packages": "jq,cmake,libxt6"
 		},
-
 		// https://github.com/rocker-org/devcontainer-features/tree/main/src/rstudio-server
-		"ghcr.io/rocker-org/devcontainer-features/rstudio-server": { },
-
+		"ghcr.io/rocker-org/devcontainer-features/rstudio-server": {},
 		// https://github.com/rocker-org/devcontainer-features/tree/main/src/quarto-cli
 		"ghcr.io/rocker-org/devcontainer-features/quarto-cli:1": {
 			"installChromium": true,
 			"installTinyTex": false
 		},
-
 		// Chromium dependencies
 		"ghcr.io/rocker-org/devcontainer-features/apt-packages:1": {
 			"packages": "libgtk-3-dev,libnotify-dev,libgconf-2-4,libnss3,libxss1,libasound2"
 		},
-
 		// https://github.com/rocker-org/devcontainer-features/tree/main/src/r-packages
 		"ghcr.io/rocker-org/devcontainer-features/r-packages:1": {
-		  "packages": "easystats",
-		  "installSystemRequirements": true
+			"packages": "easystats",
+			"installSystemRequirements": true
 		}
-
 	},
-
 	// Ports & Server ----------------------------------------------------------------------------
-
 	// start RStudio Server process in container
-	// "postAttachCommand": {
-	// 	"rstudio-start": "rserver"
-	// },
-
+	"postAttachCommand": {
+		"rstudio-start": "rserver"
+	},
 	// https://containers.dev/implementors/json_reference/#port-attributes
-	"forwardPorts": [ 8787 ],
+	"forwardPorts": [
+		8787
+	],
 	"portsAttributes": {
 		"8787": {
 			"label": "RStudio IDE",
@@ -50,34 +44,57 @@
 			"onAutoForward": "ignore" // defaults to notify
 		}
 	},
-
 	// Lifecycle Scripts ----------------------------------------------------------------------------
 	// https://containers.dev/implementors/json_reference/#lifecycle-scripts
-
-	// "onCreateCommand": "",
-
 	// run after the container is created.
 	"postCreateCommand": "sh ./.devcontainer/postCreateCommand.sh",
-
 	// run every time the container starts
 	"postStartCommand": "sh ./.devcontainer/postStartCommand.sh",
-
 	// Configure tool-specific properties
+	"workspaceFolder": "/workspaces/${localWorkspaceFolderBasename}/",
 	"customizations": {
 		"vscode": {
 			"extensions": [
+				// General
+				"eamodio.gitlens",
+				"mhutchie.git-graph",
+				"ms-vscode-remote.vscode-remote-extensionpack",
+				"ms-vsliveshare.vsliveshare",
+				"github.copilot",
+				"github.copilot-chat",
+				"visualstudioexptteam.vscodeintellicode",
+				// R
 				"quarto.quarto",
 				"REditorSupport.r",
-				// User customs:
-				"GitHub.copilot-chat",
-				"GitHub.copilot",
-				"eamodio.gitlens"
-			]
+				// Python
+				"ms-python.python",
+				"ms-toolsai.jupyter",
+				"charliermarsh.ruff",
+				"tamasfe.even-better-toml",
+			],
+			"settings": {
+				"editor.codeActionsOnSave": {
+					"source.fixAll": "always",
+					"source.organizeImports": "always"
+				},
+				"editor.formatOnSave": true,
+				"[python]": {
+					"editor.defaultFormatter": "charliermarsh.ruff"
+				},
+				"[toml]": {
+					"editor.formatOnSave": false
+				},
+				"editor.rulers": [
+					100
+				],
+				"files.autoSave": "onFocusChange",
+				"mypy-type-checker.importStrategy": "fromEnvironment",
+				"python.defaultInterpreterPath": "/opt/greenwashing-env/bin/python",
+				"python.terminal.activateEnvironment": false,
+				"python.testing.pytestEnabled": true,
+				"ruff.importStrategy": "fromEnvironment",
+				"terminal.integrated.defaultProfile.linux": "zsh",
+			}
 		}
 	}
-
-	// Uncomment to connect as root instead.
-	// https://aka.ms/dev-containers-non-root.
-	// https://containers.dev/implementors/json_reference/#remoteUser
-	// "remoteUser": "root"
 }

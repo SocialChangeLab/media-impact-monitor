@@ -5,6 +5,7 @@ RUN apt-get update && export DEBIAN_FRONTEND=noninteractive && apt-get -y instal
     curl \
     python3 \
     python3-pip \
+    python-is-python3 \
     && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /workspace

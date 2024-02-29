@@ -1,32 +1,47 @@
-// https://aka.ms/devcontainer.json
-// https://containers.dev/guide/dockerfile
-// https://github.com/rocker-org/devcontainer-templates/
+// For format details, see https://aka.ms/devcontainer.json. For config options, see the
+// README at: https://github.com/devcontainers/templates/tree/main/src/ubuntu
 {
-	"name": "Media Impact Monitor - Devcontainer",
+	"name": "Ubuntu",
+	// Or use a Dockerfile or Docker Compose file. More info: https://containers.dev/guide/dockerfile
 	"build": {
-		"dockerfile": "Dockerfile"
+		"dockerfile": "./Dockerfile"
 	},
-	// https://containers.dev/features
 	"features": {
-		"ghcr.io/rocker-org/devcontainer-features/apt-packages:1": {
-			"packages": "jq,cmake,libxt6"
+		"ghcr.io/devcontainers/features/azure-cli:1": {},
+		"ghcr.io/devcontainers/features/node:1": {},
+		"ghcr.io/devcontainers/features/python:1": {
+			"installTools": true,
+			"version": "3.10"
 		},
-		// https://github.com/rocker-org/devcontainer-features/tree/main/src/rstudio-server
-		"ghcr.io/rocker-org/devcontainer-features/rstudio-server": {},
-		// https://github.com/rocker-org/devcontainer-features/tree/main/src/quarto-cli
 		"ghcr.io/rocker-org/devcontainer-features/quarto-cli:1": {
-			"installChromium": true,
-			"installTinyTex": false
+			"installTinyTex": false, // not supported, must be installed manually
+			"installChromium": true
 		},
-		// Chromium dependencies
-		"ghcr.io/rocker-org/devcontainer-features/apt-packages:1": {
-			"packages": "libgtk-3-dev,libnotify-dev,libgconf-2-4,libnss3,libxss1,libasound2"
+		"ghcr.io/rocker-org/devcontainer-features/r-apt:0": {
+			"installDevTools": true,
+			"installVscDebugger": true,
+			"useTesting": true,
+			"vscodeRSupport": "minimal"
 		},
-		// https://github.com/rocker-org/devcontainer-features/tree/main/src/r-packages
 		"ghcr.io/rocker-org/devcontainer-features/r-packages:1": {
-			"packages": "easystats",
+			"packages": [
+				// "easystats"
+			],
 			"installSystemRequirements": true
-		}
+		},
+		"ghcr.io/rocker-org/devcontainer-features/rstudio-server:0": {
+			"singleUser": true,
+			"version": "stable"
+		},
+		"ghcr.io/devcontainers-contrib/features/poetry:2": {},
+		"ghcr.io/devcontainers-contrib/features/ruff:1": {},
+		"ghcr.io/devcontainers-contrib/features/starship:1": {},
+		"ghcr.io/dhoeric/features/google-cloud-cli:1": {},
+		"ghcr.io/stuartleeks/dev-container-features/azure-cli-persistence:0": {},
+		"ghcr.io/joshuanianji/devcontainer-features/gcloud-cli-persistence:1": {},
+		"ghcr.io/nikobockerman/devcontainer-features/poetry-persistent-cache:1": {},
+		"ghcr.io/rocker-org/devcontainer-features/r-history:0": {},
+		"ghcr.io/stuartleeks/dev-container-features/shell-history:0": {}
 	},
 	// Ports & Server ----------------------------------------------------------------------------
 	// start RStudio Server process in container
@@ -92,9 +107,10 @@
 				"python.defaultInterpreterPath": "/opt/greenwashing-env/bin/python",
 				"python.terminal.activateEnvironment": false,
 				"python.testing.pytestEnabled": true,
-				"ruff.importStrategy": "fromEnvironment",
-				"terminal.integrated.defaultProfile.linux": "zsh",
+				"ruff.importStrategy": "fromEnvironment"
 			}
 		}
 	}
+	// Uncomment to connect as root instead. More info: https://aka.ms/dev-containers-non-root.
+	// "remoteUser": "root"
 }

@@ -25,8 +25,8 @@ Platform = Literal["onlinenews-mediacloud", "onlinenews-waybackmachine"]
 @beartype
 def get_counts(
     query: str,
-    start_date: date = start,
-    end_date: date = end,
+    start_date: pd.Timestamp = start,
+    end_date: pd.Timestamp = end,
     countries: list | None = None,
 ):
     collection_ids: list[str] = []
@@ -40,8 +40,8 @@ def get_counts(
             collection_ids.append(results[0]["id"])
     data = search.story_count_over_time(
         query=query,
-        start_date=start_date,
-        end_date=end_date,
+        start_date=start_date.to_pydatetime(),
+        end_date=end_date.to_pydatetime(),
         collection_ids=collection_ids,
         platform="wayback",
     )

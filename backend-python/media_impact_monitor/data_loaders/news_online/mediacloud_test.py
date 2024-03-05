@@ -1,12 +1,12 @@
 from media_impact_monitor.data_loaders.news_online.mediacloud_ import get_counts
-from datetime import date
+import pandas as pd
 
 
-def test_get_counts():
+def test_get_counts_mediacloud():
     df = get_counts(
         "Fridays for Future",
-        date(2023, 6, 1),
-        date(2023, 12, 1),
+        pd.Timestamp("2023-06-01"),
+        pd.Timestamp("2023-12-01"),
         ["Germany", "United Kingdom"],
     )
     assert not df.empty, "The dataframe returned is unexpectedly empty."

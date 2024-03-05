@@ -40,8 +40,8 @@ def get_counts(
             collection_ids.append(results[0]["id"])
     data = search.story_count_over_time(
         query=query,
-        start_date=start_date.to_pydatetime(),
-        end_date=end_date.to_pydatetime(),
+        start_date=start_date.to_pydatetime().date(),
+        end_date=end_date.to_pydatetime().date(),
         collection_ids=collection_ids,
         platform="wayback",
     )

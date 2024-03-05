@@ -1,6 +1,6 @@
 import os
 import pytest
-from media_impact_monitor.data_loaders.protest.acled import get_protests
+from media_impact_monitor.data_loaders.protest.acled import get_events
 
 
 def test_get_protests_with_keyword():
@@ -9,7 +9,7 @@ def test_get_protests_with_keyword():
     assert (
         "ACLED_EMAIL" in os.environ and "ACLED_KEY" in os.environ
     ), "Environment variables for ACLED API access are not set."
-    df = get_protests(countries=test_countries, keyword=test_keyword)
+    df = get_events(countries=test_countries, keyword=test_keyword)
     assert not df.empty, "The dataframe returned is unexpectedly empty."
     assert (
         df["notes"].str.lower().str.contains(test_keyword.lower()).all()
@@ -30,4 +30,4 @@ def test_get_protests_with_keyword():
 def test_get_protests_fail_with_both_countries_and_regions():
     """Test that the function raises an assertion error when both countries and regions are specified."""
     with pytest.raises(AssertionError):
-        get_protests(countries=["United States"], regions=["Western Africa"])
+        get_events(countries=["United States"], regions=["Western Africa"])

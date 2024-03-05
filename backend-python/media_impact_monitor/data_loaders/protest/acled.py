@@ -31,7 +31,7 @@ acled_region_keys = {
 
 @cloudcache
 @beartype
-def get_protests(
+def get_events(
     countries: list[str] = [], regions: list[str] = [], keyword: str | None = None
 ) -> pd.DataFrame:
     """Fetch protests from the ACLED API.

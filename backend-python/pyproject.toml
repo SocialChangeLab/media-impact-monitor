@@ -25,9 +25,13 @@ cloudpathlib = {extras = ["gs"], version = "^0.17.0"}
 openpyxl = "^3.1.2"
 perscache = "^0.6.1"
 gcsfs = "^2024.2.0"
+beartype = "^0.17.2"
 
 [tool.poetry.group.dev.dependencies]
 pytest = "^8.0.2"
+
+[tool.pytest.ini_options]
+filterwarnings = "ignore::beartype.roar.BeartypeClawDecorWarning"
 
 [build-system]
 requires = ["poetry-core"]

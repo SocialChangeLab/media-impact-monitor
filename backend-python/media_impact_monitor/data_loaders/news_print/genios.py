@@ -3,7 +3,7 @@ from media_impact_monitor.util.cache import cloudcache, get
 
 
 @cloudcache
-def get_counts(query: str, start_date: pd.Timestamp, end_date: pd.Timestamp):
+def get_genios_counts(query: str, start_date: pd.Timestamp, end_date: pd.Timestamp):
     response = get(
         "https://www.genios.de/api/searchResult/Alle/Presse",
         params={

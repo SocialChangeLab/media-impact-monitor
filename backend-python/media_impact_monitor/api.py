@@ -12,14 +12,10 @@ from fastapi.responses import PlainTextResponse
 from typing_extensions import Literal
 
 from media_impact_monitor.data_loaders.news_online.mediacloud_ import (
-    get_counts as get_counts_news_online,
+    get_mediacloud_counts,
 )
-from media_impact_monitor.data_loaders.news_print.genios import (
-    get_counts as get_counts_news_print,
-)
-from media_impact_monitor.data_loaders.protest.acled import (
-    get_events as get_protests,
-)
+from media_impact_monitor.data_loaders.news_print.genios import get_genios_counts
+from media_impact_monitor.data_loaders.protest.acled import get_acled_events
 from media_impact_monitor.types_ import CountJson, CountType, EventJson
 
 app = FastAPI()
@@ -43,7 +39,7 @@ def get_events(
     end_date: str,
 ) -> list[EventJson]:
     """Fetch events from the Media Impact Monitor database."""
-    events = get_protests()
+    events = get_acled_events(keyword=keywords[0])
     start_date = parse_date(start_date)
     end_date = parse_date(end_date)
     # ... TODO
@@ -62,8 +58,16 @@ def get_counts(
     end_date = parse_date(end_date)
     results = {}
     if "news_online" in types:
-        results["news_online"] = get_counts_news_online().to_dict(orient="records")[:50]
+        results["news_online"] = get_mediacloud_counts(
+            query=keywords[0],
+            start_date=start_date,
+            end_date=end_date,
+        ).to_dict(orient="records")[:50]
     if "news_print" in types:
-        results["news_print"] = get_counts_news_print().to_dict(orient="records")[:50]
+        results["news_print"] = get_genios_counts(
+            query=keywords[0],
+            start_date=start_date,
+            end_date=end_date,
+        ).to_dict(orient="records")[:50]
     # ... TODO
     return results

@@ -20,7 +20,7 @@ Platform = Literal["onlinenews-mediacloud", "onlinenews-waybackmachine"]
 
 
 @cloudcache
-def get_counts(
+def get_mediacloud_counts(
     query: str,
     start_date: pd.Timestamp = start,
     end_date: pd.Timestamp = end,
@@ -40,7 +40,6 @@ def get_counts(
         start_date=start_date.to_pydatetime().date(),
         end_date=end_date.to_pydatetime().date(),
         collection_ids=collection_ids,
-        platform="wayback",
     )
     df = pd.DataFrame(data)
     df["date"] = pd.to_datetime(df["date"])

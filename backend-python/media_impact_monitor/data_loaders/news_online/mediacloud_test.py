@@ -1,9 +1,11 @@
 import pandas as pd
-from media_impact_monitor.data_loaders.news_online.mediacloud_ import get_counts
+from media_impact_monitor.data_loaders.news_online.mediacloud_ import (
+    get_mediacloud_counts,
+)
 
 
 def test_get_counts_mediacloud():
-    df = get_counts(
+    df = get_mediacloud_counts(
         "Fridays for Future",
         pd.Timestamp("2023-06-01"),
         pd.Timestamp("2023-12-01"),

@@ -5,9 +5,7 @@ from typing import Literal
 import mediacloud.api
 import pandas as pd
 from dotenv import load_dotenv
-from beartype import beartype
-
-from media_impact_monitor.util.cache import cloudcache, get
+from media_impact_monitor.util.cache import cloudcache
 
 load_dotenv()
 
@@ -22,7 +20,6 @@ Platform = Literal["onlinenews-mediacloud", "onlinenews-waybackmachine"]
 
 
 @cloudcache
-@beartype
 def get_counts(
     query: str,
     start_date: pd.Timestamp = start,

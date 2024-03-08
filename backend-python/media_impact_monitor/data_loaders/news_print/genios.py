@@ -1,10 +1,8 @@
-from media_impact_monitor.util.cache import cloudcache, get
 import pandas as pd
-from beartype import beartype
+from media_impact_monitor.util.cache import cloudcache, get
 
 
 @cloudcache
-@beartype
 def get_counts(query: str, start_date: pd.Timestamp, end_date: pd.Timestamp):
     response = get(
         "https://www.genios.de/api/searchResult/Alle/Presse",

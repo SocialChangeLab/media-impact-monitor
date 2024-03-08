@@ -2,9 +2,7 @@ import os
 
 import pandas as pd
 from dotenv import load_dotenv
-
 from media_impact_monitor.util.cache import cloudcache, get
-from beartype import beartype
 
 load_dotenv()
 
@@ -30,7 +28,6 @@ acled_region_keys = {
 
 
 @cloudcache
-@beartype
 def get_events(
     countries: list[str] = [], regions: list[str] = [], keyword: str | None = None
 ) -> pd.DataFrame:

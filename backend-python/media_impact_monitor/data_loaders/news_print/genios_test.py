@@ -1,5 +1,5 @@
-from media_impact_monitor.data_loaders.news_print.genios import get_counts
 import pandas as pd
+from media_impact_monitor.data_loaders.news_print.genios import get_counts
 
 
 def test_get_counts_genios():

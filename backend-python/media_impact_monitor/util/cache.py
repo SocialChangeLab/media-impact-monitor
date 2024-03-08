@@ -10,8 +10,6 @@ from requests import get as _get
 from requests import post as _post
 from zenrows import ZenRowsClient
 
-from media_impact_monitor.util.paths import src, data
-
 load_dotenv()
 
 storage = GoogleCloudStorage("/media-impact-monitor/cache")

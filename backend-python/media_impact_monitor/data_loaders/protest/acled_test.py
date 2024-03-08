@@ -1,4 +1,5 @@
 import os
+
 import pytest
 from media_impact_monitor.data_loaders.protest.acled import get_events
 

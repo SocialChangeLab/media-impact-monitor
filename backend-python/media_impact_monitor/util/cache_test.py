@@ -1,4 +1,4 @@
-from media_impact_monitor.util.cache import get, post, get_proxied
+from media_impact_monitor.util.cache import get, get_proxied, post
 
 # URLs for the stable testing endpoints (preferably dedicated for testing purposes)
 GET_URL = "https://httpbin.org/get"

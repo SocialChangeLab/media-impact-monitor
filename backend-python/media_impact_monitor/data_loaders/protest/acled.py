@@ -64,5 +64,11 @@ def get_events(
             df["assoc_actor_1"].str.lower().str.contains(keyword.lower())
             | df["notes"].str.lower().str.contains(keyword.lower())
         ]
-    df = df.rename(columns={"event_date": "date"})
+    df = df.rename(
+        columns={
+            "event_date": "date",
+            "assoc_actor_1": "organization",
+            "notes": "description",
+        }
+    )
     return df

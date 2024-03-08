@@ -7,30 +7,11 @@
 	"features": {
 		"ghcr.io/devcontainers/features/azure-cli:1": {},
 		"ghcr.io/devcontainers/features/node:1": {},
-		"ghcr.io/devcontainers/features/python:1": {
-			"installTools": true,
-			"version": "3.10"
-		},
-		"ghcr.io/rocker-org/devcontainer-features/quarto-cli:1": {
-			"installTinyTex": false, // not supported, must be installed manually
-			"installChromium": true
-		},
-		"ghcr.io/rocker-org/devcontainer-features/r-apt:0": {
-			"installDevTools": true,
-			"installVscDebugger": true,
-			"useTesting": true,
-			"vscodeRSupport": "minimal"
-		},
-		"ghcr.io/rocker-org/devcontainer-features/r-packages:1": {
-			"packages": [
-				// "easystats"
-			],
-			"installSystemRequirements": true
-		},
-		"ghcr.io/rocker-org/devcontainer-features/rstudio-server:0": {
-			"singleUser": true,
-			"version": "stable"
-		},
+		"ghcr.io/devcontainers/features/python:1": {},
+		"ghcr.io/rocker-org/devcontainer-features/quarto-cli:1": {},
+		"ghcr.io/rocker-org/devcontainer-features/r-apt:0": {},
+		"ghcr.io/rocker-org/devcontainer-features/r-packages:1": {},
+		"ghcr.io/rocker-org/devcontainer-features/rstudio-server:0": {},
 		"ghcr.io/devcontainers-contrib/features/poetry:2": {},
 		"ghcr.io/devcontainers-contrib/features/ruff:1": {},
 		"ghcr.io/devcontainers-contrib/features/starship:1": {},
@@ -39,7 +20,8 @@
 		"ghcr.io/joshuanianji/devcontainer-features/gcloud-cli-persistence:1": {},
 		"ghcr.io/nikobockerman/devcontainer-features/poetry-persistent-cache:1": {},
 		"ghcr.io/rocker-org/devcontainer-features/r-history:0": {},
-		"ghcr.io/stuartleeks/dev-container-features/shell-history:0": {}
+		"ghcr.io/stuartleeks/dev-container-features/shell-history:0": {},
+		"ghcr.io/devcontainers/features/docker-in-docker:2": {}
 	},
 	// Ports & Server ----------------------------------------------------------------------------
 	// start RStudio Server process in container
@@ -71,6 +53,7 @@
 				// General
 				"eamodio.gitlens",
 				"mhutchie.git-graph",
+				"knisterpeter.vscode-commitizen",
 				"ms-vscode-remote.vscode-remote-extensionpack",
 				"ms-vsliveshare.vsliveshare",
 				"github.copilot",

@@ -21,7 +21,8 @@
 		"ghcr.io/nikobockerman/devcontainer-features/poetry-persistent-cache:1": {},
 		"ghcr.io/rocker-org/devcontainer-features/r-history:0": {},
 		"ghcr.io/stuartleeks/dev-container-features/shell-history:0": {},
-		"ghcr.io/devcontainers/features/docker-in-docker:2": {}
+		"ghcr.io/devcontainers/features/docker-in-docker:2": {},
+		"ghcr.io/devcontainers-contrib/features/act:1": {}
 	},
 	// Ports & Server ----------------------------------------------------------------------------
 	// start RStudio Server process in container
@@ -54,6 +55,7 @@
 				"eamodio.gitlens",
 				"mhutchie.git-graph",
 				"knisterpeter.vscode-commitizen",
+				"github.vscode-github-actions",
 				"ms-vscode-remote.vscode-remote-extensionpack",
 				"ms-vsliveshare.vsliveshare",
 				"github.copilot",

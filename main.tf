@@ -1,3 +1,12 @@
+terraform {
+  backend "azurerm" {
+    resource_group_name  = "rg-terraform"
+    storage_account_name = "terraformstatestoragedfx"
+    container_name       = "tfstate"
+    key                  = "terraform.tfstate"
+  }
+}
+
 provider "azurerm" {
   features {}
 }
@@ -7,23 +16,28 @@ resource "azurerm_resource_group" "rg" {
   location = "Germany West Central"
 }
 
+variable "DOCKER_IMAGE" {
+  type        = string
+  description = "The docker image to deploy"
+}
+
 variable "MEDIACLOUD_API_TOKEN" {
-  type = string
+  type        = string
   description = "The API token for the Media Cloud API"
 }
 
 variable "ACLED_EMAIL" {
-  type = string
+  type        = string
   description = "The email for the ACLED API"
 }
 
 variable "ACLED_KEY" {
-  type = string
+  type        = string
   description = "The API token for the ACLED API"
 }
 
 variable "ZENROWS_API_KEY" {
-  type = string
+  type        = string
   description = "The API token for the Zenrows API"
 }
 
@@ -35,7 +49,7 @@ resource "azurerm_container_group" "media_impact_monitor" {
 
   container {
     name   = "media-impact-monitor"
-    image  = "socialchangelab/media-impact-monitor:latest"
+    image  = var.DOCKER_IMAGE
     cpu    = "0.5"
     memory = "1.5"
 
@@ -46,9 +60,9 @@ resource "azurerm_container_group" "media_impact_monitor" {
 
     environment_variables = {
       MEDIACLOUD_API_TOKEN = var.MEDIACLOUD_API_TOKEN
-      ACLED_EMAIL = var.ACLED_EMAIL
-      ACLED_KEY = var.ACLED_KEY
-      ZENROWS_API_KEY = var.ZENROWS_API_KEY
+      ACLED_EMAIL          = var.ACLED_EMAIL
+      ACLED_KEY            = var.ACLED_KEY
+      ZENROWS_API_KEY      = var.ZENROWS_API_KEY
     }
   }
 

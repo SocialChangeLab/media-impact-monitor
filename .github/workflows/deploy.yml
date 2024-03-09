@@ -40,7 +40,7 @@ jobs:
   #       ZENROWS_API_KEY: ${{ secrets.ZENROWS_API_KEY }}
 
   build-and-push:
-    needs: test
+    # needs: test
     runs-on: ubuntu-22.04
     steps:
 
@@ -66,7 +66,7 @@ jobs:
   deploy:
     # this pipeline does not work locally with act
     # due to some issues with Azure CLI login
-    # needs: build-and-push
+    needs: build-and-push
     runs-on: ubuntu-22.04
     steps:
 

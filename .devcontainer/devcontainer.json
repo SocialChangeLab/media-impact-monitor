@@ -22,7 +22,8 @@
 		"ghcr.io/rocker-org/devcontainer-features/r-history:0": {},
 		"ghcr.io/stuartleeks/dev-container-features/shell-history:0": {},
 		"ghcr.io/devcontainers/features/docker-in-docker:2": {},
-		"ghcr.io/devcontainers-contrib/features/act:1": {}
+		"ghcr.io/devcontainers-contrib/features/act:1": {},
+		"ghcr.io/devcontainers/features/terraform:1": {}
 	},
 	// Ports & Server ----------------------------------------------------------------------------
 	// start RStudio Server process in container
@@ -61,6 +62,7 @@
 				"github.copilot",
 				"github.copilot-chat",
 				"visualstudioexptteam.vscodeintellicode",
+				"hashicorp.terraform",
 				// R
 				"quarto.quarto",
 				"REditorSupport.r",

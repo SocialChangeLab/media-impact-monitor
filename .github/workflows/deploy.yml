@@ -33,6 +33,11 @@ jobs:
       run: |
         cd backend-python
         poetry run pytest -k "not mediacloud and not proxied" # TODO: un-skip tests
+      env:
+        MEDIACLOUD_API_TOKEN: ${{ secrets.MEDIACLOUD_API_TOKEN }}
+        ACLED_EMAIL: ${{ secrets.ACLED_EMAIL }}
+        ACLED_KEY: ${{ secrets.ACLED_KEY }}
+        ZENROWS_API_KEY: ${{ secrets.ZENROWS_API_KEY }}
 
   build-and-push:
     needs: test

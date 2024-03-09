@@ -15,3 +15,11 @@ COPY . /app/
 WORKDIR /app/backend-python
 # run the application
 CMD ["uvicorn", "media_impact_monitor.api:app", "--host", "0.0.0.0", "--port", "80"]
+# OCI Labels as per https://github.com/opencontainers/image-spec/blob/main/annotations.md
+LABEL org.opencontainers.image.title="media-impact-monitor"
+LABEL org.opencontainers.image.description="Media Impact Monitor"
+LABEL org.opencontainers.image.authors="Social Change Lab"
+LABEL org.opencontainers.image.url="https://hub.docker.com/repository/docker/socialchangelab/media-impact-monitor"
+LABEL org.opencontainers.image.source="https://github.com/SocialChangeLab/media-impact-monitor"
+LABEL org.opencontainers.image.created=${BUILD_DATE}
+LABEL org.opencontainers.image.revision=${VCS_REF}

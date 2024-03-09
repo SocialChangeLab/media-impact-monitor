@@ -48,9 +48,32 @@ jobs:
         password: ${{ secrets.DOCKER_PASSWORD }}
 
     - name: Build Docker image
-      run: docker build -t socialchangelab/media-impact-monitor:${{ github.sha }} .
+      run: |
+        docker build \
+          -t socialchangelab/media-impact-monitor:${{ github.sha }} \
+          -t socialchangelab/media-impact-monitor:latest \
+          .
 
     - name: Push Docker image
-      run: docker push socialchangelab/media-impact-monitor:${{ github.sha }}
+      run: docker push --all-tags socialchangelab/media-impact-monitor
 
+  deploy:
+    needs: build-and-push
+    runs-on: ubuntu-22.04
+    steps:
+
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup Azure CLI
+      uses: azure/login@v2
+      with:
+        creds: ${{ secrets.AZURE_CREDENTIALS }}
+    
+    - name: Azure CLI script
+      uses: azure/CLI@v1
+      with:
+        azcliversion: latest
+        inlineScript: |
+          az account show
 

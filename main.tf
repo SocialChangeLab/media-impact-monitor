@@ -22,6 +22,11 @@ variable "ACLED_KEY" {
   description = "The API token for the ACLED API"
 }
 
+variable "ZENROWS_API_KEY" {
+  type = string
+  description = "The API token for the Zenrows API"
+}
+
 resource "azurerm_container_group" "media_impact_monitor" {
   name                = "media-impact-monitor"
   location            = azurerm_resource_group.rg.location
@@ -40,7 +45,10 @@ resource "azurerm_container_group" "media_impact_monitor" {
     }
 
     environment_variables = {
-      "MEDIACLOUD_API_TOKEN" = "your-api"
+      MEDIACLOUD_API_TOKEN = var.MEDIACLOUD_API_TOKEN
+      ACLED_EMAIL = var.ACLED_EMAIL
+      ACLED_KEY = var.ACLED_KEY
+      ZENROWS_API_KEY = var.ZENROWS_API_KEY
     }
   }
 

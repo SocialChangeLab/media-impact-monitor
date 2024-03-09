@@ -73,11 +73,6 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v4
 
-    - name: Setup Azure CLI
-      uses: azure/login@v2
-      with:
-        creds: ${{ secrets.AZURE_CREDENTIALS }}
-
     - name: Setup Terraform
       uses: hashicorp/setup-terraform@v3
       with:

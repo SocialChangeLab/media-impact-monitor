@@ -1,3 +1,15 @@
+variable "ARM_SUBSCRIPTION_ID" {}
+variable "ARM_CLIENT_ID" {}
+variable "ARM_CLIENT_SECRET" {}
+variable "ARM_TENANT_ID" {}
+
+variable "DOCKER_IMAGE" {}
+
+variable "MEDIACLOUD_API_TOKEN" {}
+variable "ACLED_EMAIL" {}
+variable "ACLED_KEY" {}
+variable "ZENROWS_API_KEY" {}
+
 terraform {
   backend "azurerm" {
     resource_group_name  = "rg-terraform"
@@ -8,37 +20,16 @@ terraform {
 }
 
 provider "azurerm" {
+  subscription_id = var.ARM_SUBSCRIPTION_ID
+  client_id       = var.ARM_CLIENT_ID
+  client_secret   = var.ARM_CLIENT_SECRET
+  tenant_id       = var.ARM_TENANT_ID
   features {}
 }
 
 resource "azurerm_resource_group" "rg" {
   name     = "rg-terraform"
   location = "Germany West Central"
-}
-
-variable "DOCKER_IMAGE" {
-  type        = string
-  description = "The docker image to deploy"
-}
-
-variable "MEDIACLOUD_API_TOKEN" {
-  type        = string
-  description = "The API token for the Media Cloud API"
-}
-
-variable "ACLED_EMAIL" {
-  type        = string
-  description = "The email for the ACLED API"
-}
-
-variable "ACLED_KEY" {
-  type        = string
-  description = "The API token for the ACLED API"
-}
-
-variable "ZENROWS_API_KEY" {
-  type        = string
-  description = "The API token for the Zenrows API"
 }
 
 resource "azurerm_container_group" "media_impact_monitor" {

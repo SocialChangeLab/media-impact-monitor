@@ -1,10 +1,15 @@
 # library(renv)
 
+# ?renv::settings
+
 renv::settings$snapshot.type("all")
-# renv::config$
+options(renv.config.auto.snapshot = TRUE)
+
+# ?renv::config
+
+# renv::config$auto.snapshot()
 
 # custom cache location
-# renv::paths$cache("/path/to/your/cache")
-
+# renv::paths$cache()
 
 source("renv/activate.R")

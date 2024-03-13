@@ -7,7 +7,6 @@
 # Icon must end with two \r
 Icon
 
-
 # Thumbnails
 ._*
 
@@ -32,7 +31,6 @@ Temporary Items
 *.icloud
 
 # End of https://www.toptal.com/developers/gitignore/api/macos
-
 
 ### Windows ------------------------------------------------------------------------
 
@@ -62,7 +60,6 @@ $RECYCLE.BIN/
 *.lnk
 
 # End of https://www.toptal.com/developers/gitignore/api/windows
-
 
 ### Python ------------------------------------------------------------------------
 
@@ -239,7 +236,6 @@ pyrightconfig.json
 
 # End of https://www.toptal.com/developers/gitignore/api/python
 
-
 ### R ------------------------------------------------------------------------
 
 # History files
@@ -281,7 +277,7 @@ vignettes/*.pdf
 *.knit.md
 
 # R Environment Variables
-.Renviron
+# .Renviron
 
 # pkgdown site
 docs/

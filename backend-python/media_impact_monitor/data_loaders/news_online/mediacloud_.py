@@ -5,7 +5,6 @@ from typing import Literal
 import mediacloud.api
 import pandas as pd
 from dotenv import load_dotenv
-from media_impact_monitor.util.cache import cloudcache
 
 load_dotenv()
 
@@ -19,13 +18,13 @@ end = date(2024, 1, 1)
 Platform = Literal["onlinenews-mediacloud", "onlinenews-waybackmachine"]
 
 
-@cloudcache
 def get_mediacloud_counts(
     query: str,
     start_date: pd.Timestamp = start,
     end_date: pd.Timestamp = end,
     countries: list | None = None,
 ):
+    assert len(countries) == 1, "Currently only supports one country at a time."
     collection_ids: list[str] = []
     if countries:
         collection_ids = []
@@ -39,6 +38,7 @@ def get_mediacloud_counts(
         query=query,
         start_date=start_date.to_pydatetime().date(),
         end_date=end_date.to_pydatetime().date(),
+        # There seems to be a bug in the library relating to `collection_ids`:
         collection_ids=collection_ids,
     )
     df = pd.DataFrame(data)

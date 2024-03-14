@@ -14,7 +14,7 @@ WORKDIR /app/
 COPY . /app/
 WORKDIR /app/backend-python
 # run the application
-CMD ["uvicorn", "media_impact_monitor.api:app", "--host", "0.0.0.0", "--port", "80"]
+CMD ["uvicorn", "media_impact_monitor.api:app", "--host", "0.0.0.0", "--port", "8000"]
 # OCI Labels as per https://github.com/opencontainers/image-spec/blob/main/annotations.md
 LABEL org.opencontainers.image.title="media-impact-monitor"
 LABEL org.opencontainers.image.description="Media Impact Monitor"

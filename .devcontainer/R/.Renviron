@@ -1,0 +1,3 @@
+## Global .Renviron
+
+RENV_PATHS_CACHE="/renv/cache"

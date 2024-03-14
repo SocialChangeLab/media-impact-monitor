@@ -23,7 +23,7 @@ app = FastAPI()
 
 @app.get("/", response_class=PlainTextResponse)
 def welcome() -> str:
-    version = "0.1.1"
+    version = "0.1.2"
     return f"Media Impact Monitor API, v{version}\nDocumentation: /docs"
 
 

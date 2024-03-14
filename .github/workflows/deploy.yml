@@ -17,60 +17,60 @@ on:
       - feature/deployment
 
 jobs:
-  # test:
-  #   runs-on: ubuntu-22.04
-  #   steps:
+  test:
+    runs-on: ubuntu-22.04
+    steps:
 
-  #   - name: Checkout code
-  #     uses: actions/checkout@v4
+    - name: Checkout code
+      uses: actions/checkout@v4
 
-  #   - name: Set up Python
-  #     uses: actions/setup-python@v2
-  #     with:
-  #       python-version: '3.10'
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: '3.10'
 
-  #   - name: Install Poetry
-  #     run: |
-  #       pip install poetry
+    - name: Install Poetry
+      run: |
+        pip install poetry
 
-  #   - name: Install dependencies
-  #     run: |
-  #       cd backend-python
-  #       poetry install
+    - name: Install dependencies
+      run: |
+        cd backend-python
+        poetry install
 
-  #   - name: Run pytest
-  #     run: |
-  #       cd backend-python
-  #       poetry run pytest
-  #     env:
-  #       MEDIACLOUD_API_TOKEN: ${{ secrets.MEDIACLOUD_API_TOKEN }}
-  #       ACLED_EMAIL: ${{ secrets.ACLED_EMAIL }}
-  #       ACLED_KEY: ${{ secrets.ACLED_KEY }}
-  #       ZENROWS_API_KEY: ${{ secrets.ZENROWS_API_KEY }}
+    - name: Run pytest
+      run: |
+        cd backend-python
+        poetry run pytest
+      env:
+        MEDIACLOUD_API_TOKEN: ${{ secrets.MEDIACLOUD_API_TOKEN }}
+        ACLED_EMAIL: ${{ secrets.ACLED_EMAIL }}
+        ACLED_KEY: ${{ secrets.ACLED_KEY }}
+        ZENROWS_API_KEY: ${{ secrets.ZENROWS_API_KEY }}
 
-  # build-and-push:
-  #   needs: test
-  #   runs-on: ubuntu-22.04
-  #   steps:
+  build-and-push:
+    needs: test
+    runs-on: ubuntu-22.04
+    steps:
 
-  #   - name: Checkout code
-  #     uses: actions/checkout@v4
+    - name: Checkout code
+      uses: actions/checkout@v4
 
-  #   - name: Login to Docker Registry
-  #     uses: docker/login-action@v3
-  #     with:
-  #       username: ${{ secrets.DOCKER_USERNAME }}
-  #       password: ${{ secrets.DOCKER_PASSWORD }}
+    - name: Login to Docker Registry
+      uses: docker/login-action@v3
+      with:
+        username: ${{ secrets.DOCKER_USERNAME }}
+        password: ${{ secrets.DOCKER_PASSWORD }}
 
-  #   - name: Build Docker image
-  #     run: |
-  #       docker build \
-  #         -t socialchangelab/media-impact-monitor:${{ github.sha }} \
-  #         -t socialchangelab/media-impact-monitor:latest \
-  #         .
+    - name: Build Docker image
+      run: |
+        docker build \
+          -t socialchangelab/media-impact-monitor:${{ github.sha }} \
+          -t socialchangelab/media-impact-monitor:latest \
+          .
 
-  #   - name: Push Docker image
-  #     run: docker push --all-tags socialchangelab/media-impact-monitor
+    - name: Push Docker image
+      run: docker push --all-tags socialchangelab/media-impact-monitor
 
   deploy:
     # needs: build-and-push

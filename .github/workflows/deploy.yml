@@ -32,7 +32,7 @@ jobs:
     - name: Run pytest
       run: |
         cd backend-python
-        poetry run pytest -k "not mediacloud and not proxied" # TODO: un-skip tests
+        poetry run pytest
       env:
         MEDIACLOUD_API_TOKEN: ${{ secrets.MEDIACLOUD_API_TOKEN }}
         ACLED_EMAIL: ${{ secrets.ACLED_EMAIL }}

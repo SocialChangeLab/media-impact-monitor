@@ -2,9 +2,7 @@ import os
 
 import pandas as pd
 from dotenv import load_dotenv
-
 from media_impact_monitor.util.cache import cloudcache, get
-from beartype import beartype
 
 load_dotenv()
 
@@ -30,8 +28,7 @@ acled_region_keys = {
 
 
 @cloudcache
-@beartype
-def get_events(
+def get_acled_events(
     countries: list[str] = [], regions: list[str] = [], keyword: str | None = None
 ) -> pd.DataFrame:
     """Fetch protests from the ACLED API.
@@ -67,5 +64,11 @@ def get_events(
             df["assoc_actor_1"].str.lower().str.contains(keyword.lower())
             | df["notes"].str.lower().str.contains(keyword.lower())
         ]
-    df = df.rename(columns={"event_date": "date"})
+    df = df.rename(
+        columns={
+            "event_date": "date",
+            "assoc_actor_1": "organization",
+            "notes": "description",
+        }
+    )
     return df

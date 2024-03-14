@@ -1,9 +1,9 @@
-from media_impact_monitor.data_loaders.news_print.genios import get_counts
 import pandas as pd
+from media_impact_monitor.data_loaders.news_print.genios import get_genios_counts
 
 
 def test_get_counts_genios():
-    df = get_counts(
+    df = get_genios_counts(
         "Fridays for Future",
         pd.Timestamp("2023-06-01"),
         pd.Timestamp("2023-12-01"),

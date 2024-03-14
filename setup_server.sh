@@ -33,3 +33,6 @@ curl -fsSL https://get.docker.com -o get-docker.sh
 
 # pull the Docker image
 sudo docker pull socialchangelab/media-impact-monitor:latest
+
+# run the Docker image
+sudo docker run -d -p 80:8000 --name media-impact-monitor socialchangelab/media-impact-monitor:latest

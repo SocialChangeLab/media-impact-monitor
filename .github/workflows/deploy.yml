@@ -8,39 +8,39 @@ on:
       - feature/deployment
 
 jobs:
-  # test:
-  #   runs-on: ubuntu-22.04
-  #   steps:
+  test:
+    runs-on: ubuntu-22.04
+    steps:
 
-  #   - name: Checkout code
-  #     uses: actions/checkout@v4
+    - name: Checkout code
+      uses: actions/checkout@v4
 
-  #   - name: Set up Python
-  #     uses: actions/setup-python@v2
-  #     with:
-  #       python-version: '3.10'
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: '3.10'
 
-  #   - name: Install Poetry
-  #     run: |
-  #       pip install poetry
+    - name: Install Poetry
+      run: |
+        pip install poetry
 
-  #   - name: Install dependencies
-  #     run: |
-  #       cd backend-python
-  #       poetry install
+    - name: Install dependencies
+      run: |
+        cd backend-python
+        poetry install
 
-  #   - name: Run pytest
-  #     run: |
-  #       cd backend-python
-  #       poetry run pytest -k "not mediacloud and not proxied" # TODO: un-skip tests
-  #     env:
-  #       MEDIACLOUD_API_TOKEN: ${{ secrets.MEDIACLOUD_API_TOKEN }}
-  #       ACLED_EMAIL: ${{ secrets.ACLED_EMAIL }}
-  #       ACLED_KEY: ${{ secrets.ACLED_KEY }}
-  #       ZENROWS_API_KEY: ${{ secrets.ZENROWS_API_KEY }}
+    - name: Run pytest
+      run: |
+        cd backend-python
+        poetry run pytest -k "not mediacloud and not proxied" # TODO: un-skip tests
+      env:
+        MEDIACLOUD_API_TOKEN: ${{ secrets.MEDIACLOUD_API_TOKEN }}
+        ACLED_EMAIL: ${{ secrets.ACLED_EMAIL }}
+        ACLED_KEY: ${{ secrets.ACLED_KEY }}
+        ZENROWS_API_KEY: ${{ secrets.ZENROWS_API_KEY }}
 
   build-and-push:
-    # needs: test
+    needs: test
     runs-on: ubuntu-22.04
     steps:
 
@@ -62,48 +62,3 @@ jobs:
 
     - name: Push Docker image
       run: docker push --all-tags socialchangelab/media-impact-monitor
-
-  deploy:
-    # this pipeline does not work locally with act
-    # due to some issues with Azure CLI login
-    needs: build-and-push
-    runs-on: ubuntu-22.04
-    steps:
-
-    - name: Checkout code
-      uses: actions/checkout@v4
-
-    - name: Setup Azure CLI
-      uses: azure/login@v2
-      with:
-        creds: ${{ secrets.AZURE_CREDENTIALS }}
-
-    - name: Setup Terraform
-      uses: hashicorp/setup-terraform@v3
-      with:
-        terraform_version: 1.7.4
-
-    - name: Terraform Init
-      run: terraform init
-      env:
-        ARM_CLIENT_ID: ${{ secrets.ARM_CLIENT_ID }}
-        ARM_CLIENT_SECRET: ${{ secrets.ARM_CLIENT_SECRET }}
-        ARM_SUBSCRIPTION_ID: ${{ secrets.ARM_SUBSCRIPTION_ID }}
-        ARM_TENANT_ID: ${{ secrets.ARM_TENANT_ID }}
-
-    - name: Terraform Apply
-      run: terraform apply -auto-approve
-      env:
-        ARM_CLIENT_ID: ${{ secrets.ARM_CLIENT_ID }}
-        ARM_CLIENT_SECRET: ${{ secrets.ARM_CLIENT_SECRET }}
-        ARM_SUBSCRIPTION_ID: ${{ secrets.ARM_SUBSCRIPTION_ID }}
-        ARM_TENANT_ID: ${{ secrets.ARM_TENANT_ID }}
-        TF_VAR_ARM_CLIENT_ID: ${{ secrets.ARM_CLIENT_ID }}
-        TF_VAR_ARM_CLIENT_SECRET: ${{ secrets.ARM_CLIENT_SECRET }}
-        TF_VAR_ARM_SUBSCRIPTION_ID: ${{ secrets.ARM_SUBSCRIPTION_ID }}
-        TF_VAR_ARM_TENANT_ID: ${{ secrets.ARM_TENANT_ID }}
-        TF_VAR_DOCKER_IMAGE: socialchangelab/media-impact-monitor:${{ github.sha }}
-        TF_VAR_MEDIACLOUD_API_TOKEN: ${{ secrets.MEDIACLOUD_API_TOKEN }}
-        TF_VAR_ACLED_EMAIL: ${{ secrets.ACLED_EMAIL }}
-        TF_VAR_ACLED_KEY: ${{ secrets.ACLED_KEY }}
-        TF_VAR_ZENROWS_API_KEY: ${{ secrets.ZENROWS_API_KEY }}

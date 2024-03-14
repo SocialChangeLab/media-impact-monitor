@@ -73,7 +73,7 @@ jobs:
       run: docker push --all-tags socialchangelab/media-impact-monitor
 
   deploy:
-    # needs: build-and-push
+    needs: build-and-push
     runs-on: ubuntu-22.04
     steps:
     - name: Deploy to server

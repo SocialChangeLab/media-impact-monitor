@@ -5,7 +5,9 @@
 # Media Impact Monitor
 
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
+
 [![All Contributors](https://img.shields.io/badge/all_contributors-3-orange.svg?style=flat-square)](#contributors-)
+
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 
 The _Media Impact Monitor_ is a novel tool for protest groups and NGOs to measure and visualize their impact on public discourse. The tool shows how activist events affect the discourse across various media sources, such as local and national newspapers, social media, parliamentary debates, and more. Protest groups can use it to quantitatively and qualitatively evaluate their actions and adapt them in a targeted manner to draw attention to their issues.
@@ -67,6 +69,6 @@ Please [send us an email](mailto:david@socialchangelab.org) or [book a short mee
 
 ## Partners
 
-| Hosted by                                                                                                                                                                    | Funded by                                                                                                                         |                                                                                                                                                       |
-| ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------- |
-| [![Logo of the Social Change Lab](https://mediaimpactmonitor.app/assets/logos/socialchangelab-hybrid.svg)](https://socialchangelab.org/)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; | [![Logo of the Prototype Fund](https://mediaimpactmonitor.app/assets/logos/prototypefund-hybrid.svg)](https://prototypefund.org/) | [![Logo of the Bundesministerium für Bildung und Forschung](https://mediaimpactmonitor.app/assets/logos/bmbf-hybrid.svg)](https://prototypefund.org/) |
+| Hosted by                                                                                                                                                                    | Funded by                                                                                                                         |                                                                                                                                                       |                                                                                                                           |
+| ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------- |
+| [![Logo of the Social Change Lab](https://mediaimpactmonitor.app/assets/logos/socialchangelab-hybrid.svg)](https://socialchangelab.org/)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; | [![Logo of the Prototype Fund](https://mediaimpactmonitor.app/assets/logos/prototypefund-hybrid.svg)](https://prototypefund.org/) | [![Logo of the Bundesministerium für Bildung und Forschung](https://mediaimpactmonitor.app/assets/logos/bmbf-hybrid.svg)](https://prototypefund.org/) | [![Logo of the Open Knowledge Founfation](https://mediaimpactmonitor.app/assets/logos/okf-hybrid.svg)](https://okfn.org/) |

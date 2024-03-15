@@ -24,9 +24,9 @@ echo "$NGINX_TEMPLATE" | sudo tee /etc/nginx/sites-available/default
 sudo nginx -t && sudo systemctl reload nginx
 
 # setup SSL with certbot
-# sudo certbot --nginx --non-interactive --agree-tos \
-#     -d api.mediaimpactmonitor.app \
-#     --email david@socialchangelab.org
+sudo certbot --nginx --non-interactive --agree-tos \
+    -d api.mediaimpactmonitor.app \
+    --email david@socialchangelab.org
 
 # install Docker
 curl -fsSL https://get.docker.com -o get-docker.sh

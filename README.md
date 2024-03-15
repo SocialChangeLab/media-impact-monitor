@@ -10,19 +10,19 @@
 
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 
-The _Media Impact Monitor_ is be a novel tool for protest groups and NGOs to measure and visualize their impact on public discourse. The tool will show how activist events affect the discourse across various media sources, such as local and national newspapers, social media, parliamentary debates, and more. Protest groups can use it to quantitatively and qualitatively evaluate their actions and adapt them in a targeted manner to draw attention to their issues.
+The _Media Impact Monitor_ is a novel tool for protest groups and NGOs to measure and visualize their impact on public discourse. The tool shows how activist events affect the discourse across various media sources, such as local and national newspapers, social media, parliamentary debates, and more. Protest groups can use it to quantitatively and qualitatively evaluate their actions and adapt them in a targeted manner to draw attention to their issues.
 
 The _Media Impact Monitor_ project is hosted by [Social Change Lab](http://socialchangelab.org/) and funded by [Prototype Fund](https://prototypefund.de/en/) ([BMBF](https://www.bmbf.de/bmbf/de/home/home_node.html)). Development is primarily taking place from March–August 2024.
 
-## Motivation
+## Background
 
 NGOs and protest groups often want to draw more public attention to important issues in order to initiate social change. To do this, they organise panel discussions, publish articles on social media, send out press releases, organize demonstrations, practice civil disobedience, implement art actions, and so on. To evaluate their work, organizations often use "press hits" as a metric - but this is a poor substitute for the broader impact on agenda setting within public discourse, which the organizations are interested in but cannot easily analyze.
 
 This impact on agenda setting is difficult to capture statistically because of the complex causal relationship between discourse, action events, and external events. A correlational and even a simple regression analysis would therefore lead to statistically biased results.
 
-This is where we will start with the Media Impact Monitor: It aims to use innovative causal inference methods to quantify and visualize how action events affect agenda setting in public discourse.
+This is where the _Media Impact Monitor_ comes in: It uses innovative causal inference methods to quantify and visualize how action events affect agenda setting in public discourse.
 
-**Examples:** The "Last Generation" can use it to see, for example, whether their actions distract from actual climate policy discussion or contribute to it constructively; and NGOs such as Greenpeace can evaluate which of their formats are most effective in media terms, and can use their media impact as an argument for donating to them.
+**Examples:** Protest groups such as "Last Generation" can use it to see whether their actions distract from actual climate policy discussion or contribute to it constructively; and NGOs such as Greenpeace can evaluate which of their formats are most effective in media terms, and can use their media impact as an argument for donating to them.
 
 ## Team
 

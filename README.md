@@ -5,9 +5,7 @@
 # Media Impact Monitor
 
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-
 [![All Contributors](https://img.shields.io/badge/all_contributors-3-orange.svg?style=flat-square)](#contributors-)
-
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 
 The _Media Impact Monitor_ is be a novel tool for protest groups and NGOs to measure and visualize their impact on public discourse. The tool will show how activist events affect the discourse across various media sources, such as local and national newspapers, social media, parliamentary debates, and more. Protest groups can use it to quantitatively and qualitatively evaluate their actions and adapt them in a targeted manner to draw attention to their issues.
@@ -48,7 +46,7 @@ Please [send us an email](mailto:david@socialchangelab.org) or [book a short mee
     <tr>
       <td align="center" valign="top" width="10%"><a href="https://github.com/vogelino"><img src="https://avatars.githubusercontent.com/u/2759340?v=4?s=64" width="64px;" alt="Lucas Vogel"/><br /><sub><b>Lucas Vogel</b></sub></a><br /><a href="https://github.com/SocialChangeLab/media-impact-monitor-website/commits?author=vogelino" title="Code">💻</a> <a href="#design-vogelino" title="Design">🎨</a> <a href="https://github.com/SocialChangeLab/media-impact-monitor-website/commits?author=vogelino" title="Documentation">📖</a> <a href="#projectManagement-vogelino" title="Project Management">📆</a></td>
       <td align="center" valign="top" width="10%"><a href="https://github.com/davidpomerenke"><img src="https://avatars.githubusercontent.com/u/46022183?v=4?s=64" width="64px;" alt="David Pomerenke"/><br /><sub><b>David Pomerenke</b></sub></a><br /><a href="https://github.com/SocialChangeLab/media-impact-monitor-website/commits?author=davidpomerenke" title="Code">💻</a> <a href="#content-davidpomerenke" title="Content">🖋</a> <a href="#data-davidpomerenke" title="Data">🔣</a> <a href="https://github.com/SocialChangeLab/media-impact-monitor-website/commits?author=davidpomerenke" title="Documentation">📖</a> <a href="#projectManagement-davidpomerenke" title="Project Management">📆</a> <a href="#research-davidpomerenke" title="Research">🔬</a></td>
-      <td align="center" valign="top" width="10%"><a href="https://github.com/Lennartklein"><img src="https://avatars.githubusercontent.com/u/132817556?v=4?s=64" width="64px;" alt="lennartklein"/><br /><sub><b>lennartklein</b></sub></a><br /><a href="https://github.com/SocialChangeLab/media-impact-monitor-website/commits?author=Lennartklein" title="Code">💻</a> <a href="#data-Lennartklein" title="Data">🔣</a> <a href="https://github.com/SocialChangeLab/media-impact-monitor-website/commits?author=Lennartklein" title="Documentation">📖</a> <a href="#projectManagement-Lennartklein" title="Project Management">📆</a> <a href="#research-Lennartklein" title="Research">🔬</a></td>
+      <td align="center" valign="top" width="10%"><a href="https://www.kleinbutsignificant.com/"><img src="https://avatars.githubusercontent.com/u/31488915?v=4?s=64" width="64px;" alt="Lennart Klein"/><br /><sub><b>Lennart Klein</b></sub></a><br /><a href="https://github.com/SocialChangeLab/media-impact-monitor-website/commits?author=kleinlennart" title="Code">💻</a> <a href="#data-kleinlennart" title="Data">🔣</a> <a href="https://github.com/SocialChangeLab/media-impact-monitor-website/commits?author=kleinlennart" title="Documentation">📖</a> <a href="#projectManagement-kleinlennart" title="Project Management">📆</a> <a href="#research-kleinlennart" title="Research">🔬</a></td>
     </tr>
   </tbody>
   <tfoot>

@@ -28,7 +28,6 @@
 		"ghcr.io/devcontainers-contrib/features/ruff:1": { },
 		"ghcr.io/devcontainers-contrib/features/starship:1": { },
 
-
 		// R Stack –--------------------------------------------------------
 
 		// System dependencies 
@@ -64,7 +63,10 @@
 
 		// Misc –-----------------------------------------------------------------------------------
 
-		"ghcr.io/stuartleeks/dev-container-features/shell-history:0": { }
+		"ghcr.io/stuartleeks/dev-container-features/shell-history:0": { },
+		"ghcr.io/devcontainers/features/docker-in-docker:2": {},
+		"ghcr.io/devcontainers-contrib/features/act:1": {},
+		"ghcr.io/devcontainers/features/terraform:1": {}
 	},
 	// Ports & Server ----------------------------------------------------------------------------
 	// start RStudio Server process in container, not needed automatically
@@ -96,11 +98,14 @@
 				// General
 				"eamodio.gitlens",
 				"mhutchie.git-graph",
+				"knisterpeter.vscode-commitizen",
+				"github.vscode-github-actions",
 				"ms-vscode-remote.vscode-remote-extensionpack",
 				"ms-vsliveshare.vsliveshare",
 				"github.copilot",
 				"github.copilot-chat",
 				"visualstudioexptteam.vscodeintellicode",
+				"hashicorp.terraform",
 				// R
 				"quarto.quarto",
 				"REditorSupport.r",

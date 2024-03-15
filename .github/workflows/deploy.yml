@@ -1,0 +1,95 @@
+name: CI/CD Pipeline
+# run it locally: 
+# act \
+#   --secret DOCKER_USERNAME=$DOCKER_USERNAME \
+#   --secret DOCKER_PASSWORD=$DOCKER_PASSWORD \
+#   --secret SERVER_IP=$SERVER_IP \
+#   --secret SERVER_USERNAME=$SERVER_USERNAME \
+#   --secret SERVER_SSH_KEY="$SERVER_SSH_KEY" \
+#   --env MEDIACLOUD_API_TOKEN=$MEDIACLOUD_API_TOKEN \
+#   --env ACLED_EMAIL=$ACLED_EMAIL \
+#   --env ACLED_KEY=$ACLED_KEY
+
+on:
+  push:
+    branches:
+      - main
+      - feature/deployment
+
+jobs:
+  test:
+    runs-on: ubuntu-22.04
+    steps:
+
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: '3.10'
+
+    - name: Install Poetry
+      run: |
+        pip install poetry
+
+    - name: Install dependencies
+      run: |
+        cd backend-python
+        poetry install
+
+    - name: Run pytest
+      run: |
+        cd backend-python
+        poetry run pytest
+      env:
+        MEDIACLOUD_API_TOKEN: ${{ secrets.MEDIACLOUD_API_TOKEN }}
+        ACLED_EMAIL: ${{ secrets.ACLED_EMAIL }}
+        ACLED_KEY: ${{ secrets.ACLED_KEY }}
+        ZENROWS_API_KEY: ${{ secrets.ZENROWS_API_KEY }}
+
+  build-and-push:
+    needs: test
+    runs-on: ubuntu-22.04
+    steps:
+
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Login to Docker Registry
+      uses: docker/login-action@v3
+      with:
+        username: ${{ secrets.DOCKER_USERNAME }}
+        password: ${{ secrets.DOCKER_PASSWORD }}
+
+    - name: Build Docker image
+      run: |
+        docker build \
+          -t socialchangelab/media-impact-monitor:${{ github.sha }} \
+          -t socialchangelab/media-impact-monitor:latest \
+          .
+
+    - name: Push Docker image
+      run: docker push --all-tags socialchangelab/media-impact-monitor
+
+  deploy:
+    needs: build-and-push
+    runs-on: ubuntu-22.04
+    steps:
+    - name: Deploy to server
+      uses: appleboy/ssh-action@master
+      with:
+        host: ${{ secrets.SERVER_IP }}
+        username: ${{ secrets.SERVER_USERNAME }}
+        key: ${{ secrets.SERVER_SSH_KEY }}
+        script: |
+          sudo docker pull socialchangelab/media-impact-monitor:latest
+          sudo docker stop media-impact-monitor || true
+          sudo docker rm media-impact-monitor || true
+          sudo docker run -d \
+            -p 8000:8000 \
+            -e MEDIACLOUD_API_TOKEN=${{ secrets.MEDIACLOUD_API_TOKEN }} \
+            -e ACLED_EMAIL=${{ secrets.ACLED_EMAIL }} \
+            -e ACLED_KEY=${{ secrets.ACLED_KEY }} \
+            --name media-impact-monitor \
+            socialchangelab/media-impact-monitor:latest

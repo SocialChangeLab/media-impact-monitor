@@ -1,0 +1,55 @@
+{
+  "projectName": "media-impact-monitor-website",
+  "projectOwner": "SocialChangeLab",
+  "repoType": "github",
+  "repoHost": "https://github.com",
+  "files": [
+    "README.md"
+  ],
+  "imageSize": 64,
+  "commit": false,
+  "commitConvention": "angular",
+  "contributors": [
+    {
+      "login": "vogelino",
+      "name": "Lucas Vogel",
+      "avatar_url": "https://avatars.githubusercontent.com/u/2759340?v=4",
+      "profile": "https://github.com/vogelino",
+      "contributions": [
+        "code",
+        "design",
+        "doc",
+        "projectManagement"
+      ]
+    },
+    {
+      "login": "davidpomerenke",
+      "name": "David Pomerenke",
+      "avatar_url": "https://avatars.githubusercontent.com/u/46022183?v=4",
+      "profile": "https://github.com/davidpomerenke",
+      "contributions": [
+        "code",
+        "content",
+        "data",
+        "doc",
+        "projectManagement",
+        "research"
+      ]
+    },
+    {
+      "login": "kleinlennart",
+      "name": "Lennart Klein",
+      "avatar_url": "https://avatars.githubusercontent.com/u/31488915?v=4",
+      "profile": "https://www.kleinbutsignificant.com/",
+      "contributions": [
+        "code",
+        "data",
+        "doc",
+        "projectManagement",
+        "research"
+      ]
+    }
+  ],
+  "contributorsPerLine": 10,
+  "linkToUsage": true
+}

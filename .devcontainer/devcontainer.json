@@ -5,31 +5,74 @@
 	// Or use a Dockerfile or Docker Compose file. More info: https://containers.dev/guide/dockerfile
 	"image": "mcr.microsoft.com/devcontainers/base:jammy",
 	"features": {
-		"ghcr.io/devcontainers/features/azure-cli:1": {},
-		"ghcr.io/devcontainers/features/node:1": {},
-		"ghcr.io/devcontainers/features/python:1": {},
-		"ghcr.io/rocker-org/devcontainer-features/quarto-cli:1": {},
-		"ghcr.io/rocker-org/devcontainer-features/r-apt:0": {},
-		"ghcr.io/rocker-org/devcontainer-features/r-packages:1": {},
-		"ghcr.io/rocker-org/devcontainer-features/rstudio-server:0": {},
-		"ghcr.io/devcontainers-contrib/features/poetry:2": {},
-		"ghcr.io/devcontainers-contrib/features/ruff:1": {},
-		"ghcr.io/devcontainers-contrib/features/starship:1": {},
-		"ghcr.io/dhoeric/features/google-cloud-cli:1": {},
-		"ghcr.io/stuartleeks/dev-container-features/azure-cli-persistence:0": {},
-		"ghcr.io/joshuanianji/devcontainer-features/gcloud-cli-persistence:1": {},
-		"ghcr.io/nikobockerman/devcontainer-features/poetry-persistent-cache:1": {},
-		"ghcr.io/rocker-org/devcontainer-features/r-history:0": {},
-		"ghcr.io/stuartleeks/dev-container-features/shell-history:0": {},
+		// Web Dev Stack –--------------------------------------------------------
+
+		// https://github.com/devcontainers/features/tree/main/src/node
+		"ghcr.io/devcontainers/features/node:1": {
+			"version": "lts" // Node.js version
+		},
+
+		"ghcr.io/devcontainers/features/azure-cli:1": { },
+		"ghcr.io/stuartleeks/dev-container-features/azure-cli-persistence:0": { },
+		"ghcr.io/dhoeric/features/google-cloud-cli:1": { },
+		"ghcr.io/joshuanianji/devcontainer-features/gcloud-cli-persistence:1": { },
+
+		// Python Stack –--------------------------------------------------------
+
+		"ghcr.io/devcontainers/features/python:1": {
+			"installTools": true,
+			"version": "3.10"
+		},
+		"ghcr.io/devcontainers-contrib/features/poetry:2": { },
+		"ghcr.io/nikobockerman/devcontainer-features/poetry-persistent-cache:1": { },
+		"ghcr.io/devcontainers-contrib/features/ruff:1": { },
+		"ghcr.io/devcontainers-contrib/features/starship:1": { },
+
+		// R Stack –--------------------------------------------------------
+
+		// System dependencies 
+		// "ghcr.io/devcontainers-contrib/features/apt-get-packages:1": {
+		// 	"packages": "libfribidi-dev,libharfbuzz-dev,cmake"
+		// },
+
+		// https://github.com/rocker-org/devcontainer-features/tree/main/src/r-apt
+		// NOTE: always installs the latest R Version (not fixed!)
+		"ghcr.io/rocker-org/devcontainer-features/r-apt:0": {
+			"vscodeRSupport": "full",
+			"installDevTools": true, // for debugging
+			"installREnv": false, // -> install with renv cache feature
+			"installRMarkdown": false, // needed?
+			"installJupyterlab": false,
+			"installRadian": true, // better R console
+			"installVscDebugger": true,
+			"useTesting": true, // for Debian, default: true
+			"installBspm": false
+		},
+		// https://github.com/rocker-org/devcontainer-features/tree/main/src/rstudio-server
+		"ghcr.io/rocker-org/devcontainer-features/rstudio-server:0": {
+			"singleUser": true,
+			"version": "stable"
+		},
+		// https://github.com/rocker-org/devcontainer-features/tree/main/src/quarto-cli
+		"ghcr.io/rocker-org/devcontainer-features/quarto-cli:1": {
+			"installTinyTex": false,
+			"installChromium": false // https://github.com/rocker-org/devcontainer-features/tree/main/src/quarto-cli#install-chromium
+		},
+		// https://github.com/rocker-org/devcontainer-features/tree/main/src/renv-cache
+		"ghcr.io/rocker-org/devcontainer-features/renv-cache:0": { },
+
+		// Misc –-----------------------------------------------------------------------------------
+
+		"ghcr.io/stuartleeks/dev-container-features/shell-history:0": { },
 		"ghcr.io/devcontainers/features/docker-in-docker:2": {},
 		"ghcr.io/devcontainers-contrib/features/act:1": {},
 		"ghcr.io/devcontainers/features/terraform:1": {}
 	},
 	// Ports & Server ----------------------------------------------------------------------------
-	// start RStudio Server process in container
-	"postAttachCommand": {
-		"rstudio-start": "rserver"
-	},
+	// start RStudio Server process in container, not needed automatically
+	// "postAttachCommand": {
+	// 	"rstudio-start": "rserver"
+	// },
 	// https://containers.dev/implementors/json_reference/#port-attributes
 	"forwardPorts": [
 		8787
@@ -70,8 +113,11 @@
 				"ms-python.python",
 				"ms-toolsai.jupyter",
 				"charliermarsh.ruff",
-				"tamasfe.even-better-toml",
+				"tamasfe.even-better-toml"
 			],
+			// "codespaces": {
+			// 	"openFiles": [ "README.md" ]
+			// },
 			"settings": {
 				"editor.codeActionsOnSave": {
 					"source.fixAll": "always",

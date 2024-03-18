@@ -1,6 +1,6 @@
 "use client";
 
-import { Suspense } from "react";
+import React, { Suspense } from "react";
 
 import { Authenticated } from "@refinedev/core";
 import { NavigateToResource } from "@refinedev/nextjs-router";

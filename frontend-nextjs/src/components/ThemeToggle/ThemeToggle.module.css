@@ -1,0 +1,22 @@
+.toggle {
+	--toggle__within--duration: 500ms;
+}
+.toggleWithin * {
+	transform-origin: center;
+	transition: transform calc(var(--toggle__within--duration))
+		cubic-bezier(0, 0, 0, 1.25);
+}
+.toggle[aria-checked='false'] > .toggleWithin .toggleWithinCircle {
+	transform: scale(1.5);
+}
+.toggle[aria-checked='false'] > .toggleWithin .toggleWithinInner {
+	transform: translate3d(3px, -3px, 0) scale(1.2);
+}
+.toggle[aria-checked='false'] > .toggleWithin g path {
+	transform: scale(0.65);
+}
+@media (prefers-reduced-motion: reduce) {
+	.toggle:not(.toggleForceMotion) * {
+		transition: none !important;
+	}
+}

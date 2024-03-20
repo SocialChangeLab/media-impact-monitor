@@ -62,12 +62,26 @@ TrendType = Literal["keywords", "topics", "sentiments"]
 
 
 class TrendSearch(BaseModel):
-    trend_type: TrendType
-    media_source: MediaSource
-    start_date: date
-    end_date: date
-    topic: Topic | None = None
-    query: Query | None = None
+    trend_type: TrendType = Field(
+        description="What type of trend to obtain: the frequency of a keyword, the value of a sentiment, or the frequencies of multiple sub-topics. Depending on the type, you have further configuration options. Currently only keyword frequencies are supported."
+    )
+    media_source: MediaSource = Field(
+        description="The data source for the media data, i. e. online news, print news, parliamentary speech, etc."
+    )
+    start_date: date = Field(
+        description="The start date of the search, inclusive, in the format YYYY-MM-DD."
+    )
+    end_date: date = Field(
+        description="The end date of the search, inclusive, in the format YYYY-MM-DD."
+    )
+    topic: Topic | None = Field(
+        default=None,
+        description="Filter by topic. Currently only _Climate Change_ is supported. This will automatically set a  filter for the query, which you can further refine with `query` field.",
+    )
+    query: Query | None = Field(
+        default=None,
+        description="Filter by a keyword query that must occur within a media item in order to be counted.",
+    )
 
 
 class Count(BaseModel):

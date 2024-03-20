@@ -11,6 +11,10 @@ from fastapi import FastAPI, HTTPException
 from fastapi.responses import PlainTextResponse
 from joblib import hash as joblib_hash
 
+from media_impact_monitor.data_loaders.news_online.mediacloud_ import (
+    get_mediacloud_counts,
+)
+from media_impact_monitor.data_loaders.news_print.genios import get_genios_counts
 from media_impact_monitor.data_loaders.protest.acled import get_acled_events
 from media_impact_monitor.data_loaders.protest.climate_groups import acled_keys
 from media_impact_monitor.types_ import (
@@ -80,24 +84,31 @@ def get_events(q: EventSearch) -> tuple[EventSearch, list[Event]]:
 @app.post("/trends/")
 def get_trend(q: TrendSearch) -> tuple[TrendSearch, list[Count]]:
     """Fetch media item counts from the Media Impact Monitor database."""
-    pass
-    # start_date = parse_date(start_date)
-    # end_date = parse_date(end_date)
-    # results = {}
-    # if "news_online" in trend_type:
-    #     results["news_online"] = get_mediacloud_counts(
-    #         query=query[0],
-    #         start_date=start_date,
-    #         end_date=end_date,
-    #     ).to_dict(orient="records")[:50]
-    # if "news_print" in trend_type:
-    #     results["news_print"] = get_genios_counts(
-    #         query=query[0],
-    #         start_date=start_date,
-    #         end_date=end_date,
-    #     ).to_dict(orient="records")[:50]
-    # # ... TODO
-    # return results
+    try:
+        assert q.trend_type == "keywords", "Only keywords are supported."
+        assert verify_dates(q.start_date, q.end_date)
+        match q.media_source:
+            case "news_online":
+                df = get_mediacloud_counts(
+                    query=q.query,
+                    start_date=q.start_date,
+                    end_date=q.end_date,
+                )
+                df = df.reset_index()
+                return q, df.to_dict(orient="records")
+            case "news_print":
+                df = get_genios_counts(
+                    query=q.query,
+                    start_date=q.start_date,
+                    end_date=q.end_date,
+                )
+                df = df.reset_index()
+                print(df.to_dict(orient="records"))
+                return q, df.to_dict(orient="records")
+            case _:
+                raise ValueError(f"Unsupported media source: {q.media_source}")
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))
 
 
 @app.post("/fulltexts/")

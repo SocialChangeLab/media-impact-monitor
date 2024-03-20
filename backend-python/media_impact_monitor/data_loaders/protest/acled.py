@@ -70,7 +70,7 @@ def get_acled_events(
     response = get("https://api.acleddata.com/acled/read", params=parameters)
     df = pd.DataFrame(response.json()["data"])
     if df.empty:
-        raise ValueError("No data returned.")
+        return df
     if len(df) == limit:
         raise ValueError(f"Limit of {limit} reached.")
     df["date"] = pd.to_datetime(df["event_date"], format="%Y-%m-%d")

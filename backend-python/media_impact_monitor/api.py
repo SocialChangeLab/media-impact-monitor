@@ -24,7 +24,7 @@ from media_impact_monitor.types_ import (
 )
 from media_impact_monitor.util.date import verify_dates
 
-app = FastAPI(docs_url=None, redoc_url="/docs")
+app = FastAPI(docs_url="/fastapi-docs", redoc_url="/docs")
 
 
 @app.get("/", response_class=PlainTextResponse, include_in_schema=False)
@@ -54,12 +54,17 @@ def get_events(q: EventSearch) -> tuple[EventSearch, list[Event]]:
             end_date=q.end_date,
             organizations=organizations,
         )
+        if df.empty:
+            return q, []
         if q.query:
             assert not any(
                 sym in q.query.lower() for sym in ["or", "and", ",", "'", '"']
             ), "Query must be a single keyword."
             df = df[
-                df["assoc_actor_1"].str.lower().str.contains(q.query.lower())
+                df["organizations"]
+                .astype(str)
+                .str.lower()
+                .str.contains(q.query.lower())
                 | df["notes"].str.lower().str.contains(q.query.lower())
             ]
         df["date"] = df["date"].dt.date

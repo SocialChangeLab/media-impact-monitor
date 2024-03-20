@@ -53,10 +53,7 @@ def get_events(q: EventSearch) -> tuple[EventSearch, list[Event]]:
         else:
             raise ValueError(f"Unsupported topic: {q.topic}")
         df = get_acled_events(
-            countries=["Germany"],
-            start_date=q.start_date,
-            end_date=q.end_date,
-            organizations=organizations,
+            countries=["Germany"], start_date=q.start_date, end_date=q.end_date
         )
         if df.empty:
             return q, []
@@ -112,7 +109,6 @@ def get_trend(q: TrendSearch) -> tuple[TrendSearch, list[Count]]:
                 )
                 df = df.reset_index()
                 df["date"] = df["date"].dt.date
-                print(df.to_dict(orient="records"))
                 return q, df.to_dict(orient="records")
             case _:
                 raise ValueError(f"Unsupported media source: {q.media_source}")

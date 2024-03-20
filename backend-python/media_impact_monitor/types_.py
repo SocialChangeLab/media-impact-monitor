@@ -2,6 +2,8 @@ from dataclasses import dataclass
 from datetime import date
 from typing import Literal
 
+from pydantic import BaseModel
+
 #### General types ####
 
 Topic = Literal["climate_change"]
@@ -16,8 +18,7 @@ EventSource = Literal["acled"]
 EventId = str
 
 
-@dataclass
-class EventSearch:
+class EventSearch(BaseModel):
     event_type: EventType
     source: EventSource
     start_date: date
@@ -29,12 +30,12 @@ class EventSearch:
 
 @dataclass
 class Event:
-    id: EventId
+    event_id: EventId
     event_type: EventType
     source: EventSource
+    topic: Topic
     date: date
     organizations: list[str]
-    topic: Topic
     description: str
 
 
@@ -43,8 +44,7 @@ class Event:
 TrendType = Literal["keywords", "topics", "sentiments"]
 
 
-@dataclass
-class TrendSearch:
+class TrendSearch(BaseModel):
     trend_type: TrendType
     media_source: MediaSource
     start_date: date
@@ -53,8 +53,7 @@ class TrendSearch:
     query: Query | None = None
 
 
-@dataclass
-class Count:
+class Count(BaseModel):
     date: date
     count: int
 
@@ -62,8 +61,7 @@ class Count:
 #### Fulltext types ####
 
 
-@dataclass
-class FulltextSearch:
+class FulltextSearch(BaseModel):
     media_source: MediaSource
     start_date: date
     end_date: date
@@ -72,8 +70,7 @@ class FulltextSearch:
     organizations: list[str] | None = None
 
 
-@dataclass
-class Fulltext:
+class Fulltext(BaseModel):
     date: date
     title: str
     text: str
@@ -85,8 +82,7 @@ class Fulltext:
 Cause = list[EventId]
 
 
-@dataclass
-class Effect:
+class Effect(BaseModel):
     trend_type: TrendType
     media_source: MediaSource
     topic: Topic | None = None
@@ -97,15 +93,13 @@ class Effect:
 method = Literal["synthetic_control", "interrupted_time_series"]
 
 
-@dataclass
-class ImpactSearch:
+class ImpactSearch(BaseModel):
     cause: Cause
     effect: Effect
     method: method
 
 
-@dataclass
-class Impact:
+class Impact(BaseModel):
     method_applicability: Literal["no", "maybe"]
     method_applicability_reason: str | None
     impact_average: dict[

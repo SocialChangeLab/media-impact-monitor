@@ -1,10 +1,10 @@
 from datetime import date
 
 import pandas as pd
-from media_impact_monitor.util.cache import cloudcache, get
+from media_impact_monitor.util.cache import cache, get
 
 
-@cloudcache
+@cache
 def get_genios_counts(query: str, start_date: date, end_date: date) -> pd.DataFrame:
     response = get(
         "https://www.genios.de/api/searchResult/Alle/Presse",
@@ -24,7 +24,7 @@ def get_genios_counts(query: str, start_date: date, end_date: date) -> pd.DataFr
     data = response.json()["aggregations"]["day"]
     data = [{"date": k, "count": v["count"]} for k, v in data.items()]
     df = pd.DataFrame(data)
-    df["date"] = pd.to_datetime(df["date"], format="%d-%m-%Y").dt.date
+    df["date"] = pd.to_datetime(df["date"], format="%d-%m-%Y")
     df = df.set_index("date")
     # there is a bug that sets the count at day -1 to 0
     df = df[df.index >= start_date]

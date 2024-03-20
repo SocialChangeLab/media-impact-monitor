@@ -71,6 +71,13 @@ def get_events(q: EventSearch) -> tuple[EventSearch, list[Event]]:
                 .str.contains(q.query.lower())
                 | df["notes"].str.lower().str.contains(q.query.lower())
             ]
+        if q.organizations:
+            df = df[
+                df["organizations"]
+                .astype(str)
+                .str.lower()
+                .str.contains("|".join(q.organizations).lower())
+            ]
         df["date"] = df["date"].dt.date
         df["event_type"] = q.event_type
         df["source"] = q.source
@@ -95,6 +102,7 @@ def get_trend(q: TrendSearch) -> tuple[TrendSearch, list[Count]]:
                     end_date=q.end_date,
                 )
                 df = df.reset_index()
+                df["date"] = df["date"].dt.date
                 return q, df.to_dict(orient="records")
             case "news_print":
                 df = get_genios_counts(
@@ -103,6 +111,7 @@ def get_trend(q: TrendSearch) -> tuple[TrendSearch, list[Count]]:
                     end_date=q.end_date,
                 )
                 df = df.reset_index()
+                df["date"] = df["date"].dt.date
                 print(df.to_dict(orient="records"))
                 return q, df.to_dict(orient="records")
             case _:

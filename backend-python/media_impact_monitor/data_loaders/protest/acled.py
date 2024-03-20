@@ -3,10 +3,16 @@ from datetime import date
 
 import pandas as pd
 from dotenv import load_dotenv
-from media_impact_monitor.util.cache import cloudcache, get
+from media_impact_monitor.util.cache import cache, get
 from media_impact_monitor.util.date import verify_dates
 
 load_dotenv()
+
+info = """
+ACLED (Armed Conflict Location & Event Data Project) is a project that tracks political violence and protest events around the world. The data is collected from reports by local and international news sources, and is updated on a weekly basis. The ACLED API provides access to the data.
+
+We use the `assoc_actor_1` field for identifying organizations, ignoring the `assoc_actor_2` field because its use is inconsistent.
+"""
 
 acled_region_keys = {
     "Western Africa": 1,
@@ -29,13 +35,12 @@ acled_region_keys = {
 }
 
 
-@cloudcache
+@cache
 def get_acled_events(
     countries: list[str] = [],
     regions: list[str] = [],
     start_date: date | None = None,
     end_date: date | None = None,
-    organizations: list[str] | None = None,
 ) -> pd.DataFrame:
     """Fetch protests from the ACLED API.
 
@@ -51,7 +56,7 @@ def get_acled_events(
         "email": os.environ["ACLED_EMAIL"],
         "key": os.environ["ACLED_KEY"],
         "event_type": "Protests",
-        "event_date": f"{start_date}|{end_date}",
+        "event_date": f"{start_date.strftime('%Y-%m-%d')}|{end_date.strftime('%Y-%m-%d')}",
         "event_date_where": "BETWEEN",
         "fields": "event_date|assoc_actor_1|notes",
         "limit": limit,
@@ -65,8 +70,6 @@ def get_acled_events(
         parameters["region"] = "|".join(
             str(acled_region_keys[region]) for region in regions
         )
-    if organizations:
-        parameters["assoc_actor_1"] = "|".join(organizations)
     response = get("https://api.acleddata.com/acled/read", params=parameters)
     df = pd.DataFrame(response.json()["data"])
     if df.empty:

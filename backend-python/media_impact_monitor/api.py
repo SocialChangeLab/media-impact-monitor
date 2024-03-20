@@ -4,12 +4,9 @@ Run with: `uvicorn media_impact_monitor.api:app --reload`
 Or, if necessary: `poetry run uvicorn media_impact_monitor.api:app --reload`
 """
 
-from functools import partial
-
-import pandas as pd
 from fastapi import FastAPI, HTTPException
-from fastapi.responses import PlainTextResponse
 from joblib import hash as joblib_hash
+from starlette.responses import RedirectResponse
 
 from media_impact_monitor.data_loaders.news_online.mediacloud_ import (
     get_mediacloud_counts,
@@ -28,16 +25,21 @@ from media_impact_monitor.types_ import (
 )
 from media_impact_monitor.util.date import verify_dates
 
-app = FastAPI(docs_url="/fastapi-docs", redoc_url="/docs")
+app = FastAPI(
+    title="Media Impact Monitor API",
+    version="0.1.2",
+    contact=dict(
+        name="Social Change Lab",
+        url="https://github.com/socialchangelab/media-impact-monitor",
+    ),
+    docs_url="/fastapi-docs",
+    redoc_url="/docs",
+)
 
 
-@app.get("/", response_class=PlainTextResponse, include_in_schema=False)
-def welcome() -> str:
-    version = "0.1.2"
-    return f"Media Impact Monitor API, v{version}\nDocumentation: /docs"
-
-
-parse_date = partial(pd.to_datetime, format="%Y-%m-%d")
+@app.get("/", include_in_schema=False)
+def read_root():
+    return RedirectResponse(url="/docs")
 
 
 @app.post("/events/")

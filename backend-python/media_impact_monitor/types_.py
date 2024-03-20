@@ -45,15 +45,20 @@ class EventSearch(BaseModel):
     )
 
 
+date_ = date
+
+
 @dataclass
 class Event:
-    event_id: EventId
-    event_type: EventType
-    source: EventSource
-    topic: Topic
-    date: date
-    organizations: list[str]
-    description: str
+    event_id: EventId = Field(description="Unique identifier for the event.")
+    event_type: EventType = Field(description="The type of event.")
+    source: EventSource = Field(description="The source dataset.")
+    topic: Topic = Field(description="The topic of the event.")
+    date: date_ = Field(description="The date of the event.")
+    organizations: list[str] = Field(
+        description="The organizations involved in the event."
+    )
+    description: str = Field(description="Description of the event.")
 
 
 #### Trend types ####
@@ -121,20 +126,34 @@ class Effect(BaseModel):
     # start_date, end_date can be derived from the EventIds
 
 
-method = Literal["synthetic_control", "interrupted_time_series"]
+Method = Literal["synthetic_control", "interrupted_time_series"]
 
 
 class ImpactSearch(BaseModel):
-    cause: Cause
-    effect: Effect
-    method: method
+    cause: Cause = Field(
+        description="List of `event_id`s for events whose impact should be estimated. The ids can be obtained from the `/events/` endpoint."
+    )
+    effect: Effect = Field(
+        description="The trend on which the impact should be estimated. See the `/trends/` endpoint for details."
+    )
+    method: Method = Field(
+        description="The causal inference method to use for estimating the impact. Currently supports _Synthetic Control_ and _Interrupted Time Series_."
+    )
 
 
 class Impact(BaseModel):
-    method_applicability: Literal["no", "maybe"]
-    method_applicability_reason: str | None
+    method_applicability: Literal["no", "maybe"] = Field(
+        description="Whether the causal inference method is applicable for the given data."
+    )
+    method_applicability_reason: str | None = Field(
+        description="Reason why the causal inference method is (not) applicable."
+    )
     impact_average: dict[int, float] = Field(
         description="Impact estimate for each day around the average protest event."
     )
-    impact_average_upper: dict[int, float] | None
-    impact_average_lower: dict[int, float] | None
+    impact_average_upper: dict[int, float] | None = Field(
+        description="Upper bound of the two-sided 95% confidence interval for the impact estimate, for each day around the average protest event."
+    )
+    impact_average_lower: dict[int, float] | None = Field(
+        description="Lower bound of the two-sided 95% confidence interval for the impact estimate, for each day around the average protest event."
+    )

@@ -1,9 +1,11 @@
+from datetime import date
+
 import pandas as pd
-from media_impact_monitor.util.cache import cloudcache, get
+from media_impact_monitor.util.cache import cache, get
 
 
-@cloudcache
-def get_genios_counts(query: str, start_date: pd.Timestamp, end_date: pd.Timestamp):
+@cache
+def get_genios_counts(query: str, start_date: date, end_date: date) -> pd.DataFrame:
     response = get(
         "https://www.genios.de/api/searchResult/Alle/Presse",
         params={
@@ -25,5 +27,5 @@ def get_genios_counts(query: str, start_date: pd.Timestamp, end_date: pd.Timesta
     df["date"] = pd.to_datetime(df["date"], format="%d-%m-%Y")
     df = df.set_index("date")
     # there is a bug that sets the count at day -1 to 0
-    df = df[df.index >= start_date]
+    df = df[df.index >= pd.Timestamp(start_date)]
     return df

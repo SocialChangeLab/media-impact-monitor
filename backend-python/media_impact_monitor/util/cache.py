@@ -4,19 +4,19 @@ from os import environ
 from time import sleep as _sleep
 
 from dotenv import load_dotenv
-from perscache import Cache
-from perscache.storage import GoogleCloudStorage
+from joblib import Memory
 from requests import get as _get
 from requests import post as _post
 from zenrows import ZenRowsClient
 
 load_dotenv()
 
-storage = GoogleCloudStorage("/media-impact-monitor/cache")
-cloudcache = Cache(storage=storage)
+
+memory = Memory("cache", verbose=0)
+cache = memory.cache
 
 
-@cloudcache(ignore=["sleep"])
+@cache(ignore=["sleep"])
 def get(url, sleep=None, **kwargs):
     r"""Send a GET request, cached in the cloud.
 
@@ -35,7 +35,7 @@ def get(url, sleep=None, **kwargs):
     return response
 
 
-@cloudcache(ignore=["sleep"])
+@cache(ignore=["sleep"])
 def post(url, sleep=None, **kwargs):
     r"""Send a POST request, cached in the cloud.
 
@@ -58,9 +58,12 @@ concurrency = 10
 retries = 5
 
 
-@cloudcache
+@cache
 def get_proxied(url, *args, **kwargs):
     client = ZenRowsClient(
         environ["ZENROWS_API_KEY"], retries=2, concurrency=concurrency
     )
-    return client.get(url, *args, **kwargs)
+    response = client.get(url, *args, **kwargs)
+    if '{"code":' in response.text:
+        raise ValueError(response.text)
+    return response

@@ -2,8 +2,5 @@
 
 from pathlib import Path
 
-from cloudpathlib import CloudPath
-
 src = Path(__file__).parent.parent
 src = src.parent
-data = CloudPath("gs://protest-impact-policy")

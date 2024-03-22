@@ -18,6 +18,20 @@ server {
         proxy_cache_bypass \$http_upgrade;
     }
 }
+
+server {
+    listen 80;
+    server_name api.dev.mediaimpactmonitor.app;
+
+    location / {
+        proxy_pass http://localhost:8001;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade \$http_upgrade;
+        proxy_set_header Connection 'upgrade';
+        proxy_set_header Host \$host;
+        proxy_cache_bypass \$http_upgrade;
+    }
+}
 EOF
 )
 echo "$NGINX_TEMPLATE" | sudo tee /etc/nginx/sites-available/default
@@ -26,6 +40,7 @@ sudo nginx -t && sudo systemctl reload nginx
 # setup SSL with certbot
 sudo certbot --nginx --non-interactive --agree-tos \
     -d api.mediaimpactmonitor.app \
+    -d api.dev.mediaimpactmonitor.app \
     --email david@socialchangelab.org
 
 # install Docker

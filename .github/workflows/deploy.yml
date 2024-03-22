@@ -60,19 +60,22 @@ jobs:
     needs: test
     runs-on: ubuntu-22.04
     outputs:
-      docker_tag: ${{ steps.set_tag.outputs.TAG }}
+      docker_tag: ${{ steps.set_vars.outputs.TAG }}
+      port: ${{ steps.set_vars.outputs.PORT }}
     steps:
 
     - name: Checkout code
       uses: actions/checkout@v4
 
-    - name: Setup tag name based on branch
-      id: set_tag
+    - name: Setup tag name and port based on branch
+      id: set_vars
       run: |
         if [[ "${{ github.ref }}" == "refs/heads/main" ]]; then
           echo "::set-output name=TAG::latest"
+          echo "::set-output name=PORT::8000"
         else
           echo "::set-output name=TAG::dev"
+          echo "::set-output name=PORT::8001"
         fi
 
     - name: Login to Docker Registry
@@ -85,7 +88,7 @@ jobs:
       run: |
         docker build \
           -t socialchangelab/media-impact-monitor:${{ github.sha }} \
-          -t socialchangelab/media-impact-monitor:${{ steps.set_tag.outputs.TAG }} \
+          -t socialchangelab/media-impact-monitor:${{ steps.set_vars.outputs.TAG }} \
           .
 
     - name: Push Docker image
@@ -106,7 +109,7 @@ jobs:
           sudo docker stop media-impact-monitor-${{ needs.build-and-push.outputs.docker_tag }} || true
           sudo docker rm media-impact-monitor-${{ needs.build-and-push.outputs.docker_tag }} || true
           sudo docker run -d \
-            -p 8000:8000 \
+            -p ${{ needs.build-and-push.outputs.port }}:8000 \
             -e MEDIACLOUD_API_TOKEN=${{ secrets.MEDIACLOUD_API_TOKEN }} \
             -e ACLED_EMAIL=${{ secrets.ACLED_EMAIL }} \
             -e ACLED_KEY=${{ secrets.ACLED_KEY }} \

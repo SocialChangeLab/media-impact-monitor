@@ -16,13 +16,17 @@ on:
       - main
       - dev
     paths:
-      - 'backend-*/**' # only run on backend changes
+      # only run on backend or ci-cd changes
+      - 'backend-*/**'
+      - '.github/workflows/**'
   pull_request:
     branches:
       - main
       - dev
     paths:
-      - 'backend-*/**' # only run on backend changes
+      # only run on backend or ci-cd changes
+      - 'backend-*/**'
+      - '.github/workflows/**'
 
 jobs:
   test:

@@ -92,7 +92,7 @@ def get_events(q: EventSearch) -> tuple[EventSearch, list[Event]]:
         df["event_id"] = df.apply(joblib_hash, axis=1, raw=True)
         return q, df.to_dict(orient="records")
     except Exception as e:
-        raise HTTPException(status_code=400, detail=str(e))
+        raise HTTPException(status_code=400, detail=f"{type(e).__name__}: {str(e)}")
 
 
 @app.post("/trend")
@@ -123,16 +123,22 @@ def get_trend(q: TrendSearch) -> tuple[TrendSearch, list[Count]]:
             case _:
                 raise ValueError(f"Unsupported media source: {q.media_source}")
     except Exception as e:
-        raise HTTPException(status_code=400, detail=str(e))
+        raise HTTPException(status_code=400, detail=f"{type(e).__name__}: {str(e)}")
 
 
 @app.post("/fulltexts")
 def get_fulltexts(q: FulltextSearch) -> tuple[FulltextSearch, list[Event]]:
     """Fetch fulltexts from the Media Impact Monitor database."""
-    raise NotImplementedError
+    try:
+        raise NotImplementedError
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=f"{type(e).__name__}: {str(e)}")
 
 
 @app.post("/impact")
 def get_impact(q: ImpactSearch) -> tuple[ImpactSearch, Impact]:
     """Compute the impact of an event on a media trend."""
-    raise NotImplementedError
+    try:
+        raise NotImplementedError
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=f"{type(e).__name__}: {str(e)}")

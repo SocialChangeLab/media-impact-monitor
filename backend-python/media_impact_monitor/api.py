@@ -25,15 +25,19 @@ from media_impact_monitor.types_ import (
 )
 from media_impact_monitor.util.date import verify_dates
 
-app = FastAPI(
+metadata = dict(
     title="Media Impact Monitor API",
     version="0.1.2",
     contact=dict(
         name="Social Change Lab",
         url="https://github.com/socialchangelab/media-impact-monitor",
+        redoc_url="/docs",
+        docs_url=None,
     ),
-    docs_url=None,
-    redoc_url="/docs",
+)
+
+app = FastAPI(
+    **metadata,
 )
 
 
@@ -45,7 +49,7 @@ def read_root():
 @app.get("/info")
 def get_info() -> dict:
     """Get metadata (title, version, etc.)."""
-    return app.__dict__
+    return metadata
 
 
 @app.post("/events")

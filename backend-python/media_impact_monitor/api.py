@@ -6,6 +6,7 @@ Or, if necessary: `poetry run uvicorn media_impact_monitor.api:app --reload`
 
 from fastapi import FastAPI, HTTPException
 from joblib import hash as joblib_hash
+from starlette.middleware.cors import CORSMiddleware
 from starlette.responses import RedirectResponse
 
 from media_impact_monitor.data_loaders.news_online.mediacloud_ import (
@@ -37,6 +38,14 @@ metadata = dict(
 )
 
 app = FastAPI(**metadata)
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 
 @app.get("/", include_in_schema=False)

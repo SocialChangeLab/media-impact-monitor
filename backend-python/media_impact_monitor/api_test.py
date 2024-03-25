@@ -45,7 +45,7 @@ def test_get_events_failure(client):
 @pytest.mark.filterwarnings("ignore::DeprecationWarning")
 def test_get_trend_success(client):
     response = client.post(
-        "/trends/",
+        "/trend/",
         json={
             "trend_type": "keywords",
             "media_source": "news_print",
@@ -62,7 +62,7 @@ def test_get_trend_success(client):
 @pytest.mark.filterwarnings("ignore::DeprecationWarning")
 def test_get_trend_failure(client):
     response = client.post(
-        "/trends/",
+        "/trend/",
         json={
             "trend_type": "keywords",
             "media_source": "unsupported_source",

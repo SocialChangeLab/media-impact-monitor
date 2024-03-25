@@ -32,7 +32,7 @@ app = FastAPI(
         name="Social Change Lab",
         url="https://github.com/socialchangelab/media-impact-monitor",
     ),
-    docs_url="/fastapi-docs",
+    docs_url=None,
     redoc_url="/docs",
 )
 
@@ -42,7 +42,13 @@ def read_root():
     return RedirectResponse(url="/docs")
 
 
-@app.post("/events/")
+@app.get("/info")
+def get_info() -> dict:
+    """Get metadata (title, version, etc.)."""
+    return app.__dict__
+
+
+@app.post("/events")
 def get_events(q: EventSearch) -> tuple[EventSearch, list[Event]]:
     """Fetch events from the Media Impact Monitor database."""
     try:
@@ -87,7 +93,7 @@ def get_events(q: EventSearch) -> tuple[EventSearch, list[Event]]:
         raise HTTPException(status_code=400, detail=str(e))
 
 
-@app.post("/trends/")
+@app.post("/trends")
 def get_trend(q: TrendSearch) -> tuple[TrendSearch, list[Count]]:
     """Fetch media item counts from the Media Impact Monitor database."""
     try:
@@ -118,13 +124,13 @@ def get_trend(q: TrendSearch) -> tuple[TrendSearch, list[Count]]:
         raise HTTPException(status_code=400, detail=str(e))
 
 
-@app.post("/fulltexts/")
+@app.post("/fulltexts")
 def get_fulltexts(q: FulltextSearch) -> tuple[FulltextSearch, list[Event]]:
     """Fetch fulltexts from the Media Impact Monitor database."""
     raise NotImplementedError
 
 
-@app.post("/impact/")
+@app.post("/impact")
 def get_impact(q: ImpactSearch) -> tuple[ImpactSearch, Impact]:
     """Compute the impact of an event on a media trend."""
     raise NotImplementedError

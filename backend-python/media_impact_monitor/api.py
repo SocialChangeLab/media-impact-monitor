@@ -31,14 +31,12 @@ metadata = dict(
     contact=dict(
         name="Social Change Lab",
         url="https://github.com/socialchangelab/media-impact-monitor",
-        redoc_url="/docs",
-        docs_url=None,
     ),
+    redoc_url="/docs",
+    docs_url=None,
 )
 
-app = FastAPI(
-    **metadata,
-)
+app = FastAPI(**metadata)
 
 
 @app.get("/", include_in_schema=False)

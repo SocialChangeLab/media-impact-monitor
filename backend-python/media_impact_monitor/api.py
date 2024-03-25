@@ -95,7 +95,7 @@ def get_events(q: EventSearch) -> tuple[EventSearch, list[Event]]:
         raise HTTPException(status_code=400, detail=str(e))
 
 
-@app.post("/trends")
+@app.post("/trend")
 def get_trend(q: TrendSearch) -> tuple[TrendSearch, list[Count]]:
     """Fetch media item counts from the Media Impact Monitor database."""
     try:

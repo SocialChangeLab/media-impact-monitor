@@ -6,6 +6,7 @@ Or, if necessary: `poetry run uvicorn media_impact_monitor.api:app --reload`
 
 from fastapi import FastAPI, HTTPException
 from joblib import hash as joblib_hash
+from starlette.middleware.cors import CORSMiddleware
 from starlette.responses import RedirectResponse
 
 from media_impact_monitor.data_loaders.news_online.mediacloud_ import (
@@ -25,15 +26,25 @@ from media_impact_monitor.types_ import (
 )
 from media_impact_monitor.util.date import verify_dates
 
-app = FastAPI(
+metadata = dict(
     title="Media Impact Monitor API",
     version="0.1.2",
     contact=dict(
         name="Social Change Lab",
         url="https://github.com/socialchangelab/media-impact-monitor",
     ),
-    docs_url="/fastapi-docs",
     redoc_url="/docs",
+    docs_url=None,
+)
+
+app = FastAPI(**metadata)
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
 
@@ -42,7 +53,13 @@ def read_root():
     return RedirectResponse(url="/docs")
 
 
-@app.post("/events/")
+@app.get("/info")
+def get_info() -> dict:
+    """Get metadata (title, version, etc.)."""
+    return metadata
+
+
+@app.post("/events")
 def get_events(q: EventSearch) -> tuple[EventSearch, list[Event]]:
     """Fetch events from the Media Impact Monitor database."""
     try:
@@ -84,10 +101,10 @@ def get_events(q: EventSearch) -> tuple[EventSearch, list[Event]]:
         df["event_id"] = df.apply(joblib_hash, axis=1, raw=True)
         return q, df.to_dict(orient="records")
     except Exception as e:
-        raise HTTPException(status_code=400, detail=str(e))
+        raise HTTPException(status_code=400, detail=f"{type(e).__name__}: {str(e)}")
 
 
-@app.post("/trends/")
+@app.post("/trend")
 def get_trend(q: TrendSearch) -> tuple[TrendSearch, list[Count]]:
     """Fetch media item counts from the Media Impact Monitor database."""
     try:
@@ -115,16 +132,22 @@ def get_trend(q: TrendSearch) -> tuple[TrendSearch, list[Count]]:
             case _:
                 raise ValueError(f"Unsupported media source: {q.media_source}")
     except Exception as e:
-        raise HTTPException(status_code=400, detail=str(e))
+        raise HTTPException(status_code=400, detail=f"{type(e).__name__}: {str(e)}")
 
 
-@app.post("/fulltexts/")
+@app.post("/fulltexts")
 def get_fulltexts(q: FulltextSearch) -> tuple[FulltextSearch, list[Event]]:
     """Fetch fulltexts from the Media Impact Monitor database."""
-    raise NotImplementedError
+    try:
+        raise NotImplementedError
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=f"{type(e).__name__}: {str(e)}")
 
 
-@app.post("/impact/")
+@app.post("/impact")
 def get_impact(q: ImpactSearch) -> tuple[ImpactSearch, Impact]:
     """Compute the impact of an event on a media trend."""
-    raise NotImplementedError
+    try:
+        raise NotImplementedError
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=f"{type(e).__name__}: {str(e)}")

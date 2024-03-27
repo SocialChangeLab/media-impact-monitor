@@ -79,4 +79,5 @@ def get_acled_events(
     df["date"] = pd.to_datetime(df["event_date"], format="%Y-%m-%d")
     df["organizations"] = df["assoc_actor_1"].str.split("; ")
     df["description"] = df["notes"]
-    return df[["date", "description", "organizations"]]
+    df = df[["date", "description", "organizations"]]
+    return df

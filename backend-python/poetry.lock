@@ -273,15 +273,13 @@ files = [
 ]
 
 [[package]]
-name = "causalpy"
+name = "CausalPy"
 version = "0.2.2"
 description = "Causal inference for quasi-experiments in Python"
 optional = false
 python-versions = ">=3.8"
-files = [
-    {file = "CausalPy-0.2.2-py3-none-any.whl", hash = "sha256:875856322a35ebd55aa0e5a8c6ab84eed0fe471883045e69b39f4986d036ad91"},
-    {file = "CausalPy-0.2.2.tar.gz", hash = "sha256:4655109894a1eda2696420eb0da0ab03648f6f6cf250bdd11bebd7066a6a1229"},
-]
+files = []
+develop = false
 
 [package.dependencies]
 arviz = ">=0.14.0"
@@ -300,9 +298,15 @@ xarray = ">=v2022.11.0"
 
 [package.extras]
 dev = ["interrogate", "pathlib", "pre-commit", "twine"]
-docs = ["ipykernel", "linkify-it-py", "myst-nb", "pathlib", "sphinx", "sphinx-autodoc-defaultargs", "sphinx-autodoc-typehints", "sphinx-design", "sphinx-rtd-theme", "sphinxcontrib-bibtex", "statsmodels"]
+docs = ["ipykernel", "linkify-it-py", "myst-nb", "pathlib", "sphinx", "sphinx-autodoc-typehints", "sphinx-design", "sphinx-rtd-theme", "sphinx_autodoc_defaultargs", "sphinxcontrib-bibtex", "statsmodels"]
 lint = ["interrogate", "nbqa", "pre-commit", "ruff"]
 test = ["pytest", "pytest-cov"]
+
+[package.source]
+type = "git"
+url = "https://github.com/SocialChangeLab/CausalPy.git"
+reference = "davidpomerenke-patch-1"
+resolved_reference = "0f11920edd1a861ce70874c569a278d8d4fce6cd"
 
 [[package]]
 name = "certifi"
@@ -4091,4 +4095,4 @@ requests = "*"
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.10"
-content-hash = "ea40f48ef0b897e46bb07f649e29f7e8f7a12b5974486cdeab533a3816641319"
+content-hash = "46756d9ac02c8cddce31bd1d05663a9834a07218cde208279ce59a7b28cc05a9"

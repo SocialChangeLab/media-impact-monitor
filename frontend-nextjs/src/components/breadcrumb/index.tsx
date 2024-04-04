@@ -27,7 +27,7 @@ export const Breadcrumb = () => {
 							<Link
 								href={breadcrumb.href}
 								className={cn(
-									'rounded-full transition-colors hover:bg-alt',
+									'rounded-full transition-colors hover:bg-grayLight',
 									`px-3 pt-1 pb-0.5 inline-flex -ml-3`,
 								)}
 							>

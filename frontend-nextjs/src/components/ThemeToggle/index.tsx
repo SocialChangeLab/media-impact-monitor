@@ -27,7 +27,7 @@ function ThemeToggle() {
 			className={cn(
 				`theme-toggle inline-flex w-10 h-10 items-center justify-center`,
 				`focus-visible:ring-2 focus-visible:ring-fg outline-none text-grayDark`,
-				`focus-visible:rounded-full hover:bg-alt motion-safe:transition-colors`,
+				`focus-visible:rounded-full hover:bg-grayLight motion-safe:transition-colors`,
 				`hover:bg-grayUltraLight hover:text-fg border border-transparent`,
 				`hover:border-grayLight`,
 				styles.toggle,

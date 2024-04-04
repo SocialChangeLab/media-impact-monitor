@@ -1,6 +1,13 @@
 'use client'
 
-import { flexRender } from '@tanstack/react-table'
+import {
+	ColumnDef,
+	flexRender,
+	getCoreRowModel,
+	getPaginationRowModel,
+	getSortedRowModel,
+	useReactTable,
+} from '@tanstack/react-table'
 
 import {
 	Table,
@@ -10,33 +17,63 @@ import {
 	TableHeader,
 	TableRow,
 } from '@/components/ui/table'
-import { UseTableReturnType, useTable } from '@refinedev/react-table'
+import { Button } from '@components/ui/button'
 import { BaseRecord } from '@refinedev/core'
+import { cn } from '@utility/classNames'
+import { ArrowDown, ArrowUp, ArrowUpDown } from 'lucide-react'
+import TablePagination from './table-pagination'
 
 export function DataTable<RecordType extends BaseRecord>({
-	table,
+	columns,
+	data,
 }: {
-	table: UseTableReturnType<RecordType>
+	columns: ColumnDef<RecordType>[]
+	data: RecordType[]
 }) {
+	const table = useReactTable({
+		columns,
+		data,
+		getCoreRowModel: getCoreRowModel(),
+		getPaginationRowModel: getPaginationRowModel(),
+		getSortedRowModel: getSortedRowModel(),
+	})
+
 	return (
-		<>
+		<div className="flex flex-col gap-6">
 			<Table>
 				<TableHeader>
 					{table.getHeaderGroups().map((headerGroup) => (
 						<TableRow key={headerGroup.id}>
 							{headerGroup.headers.map((header) => {
+								const { column } = header
+								const sort = column.getIsSorted()
+								const iconClass = cn('ml-2 h-4 w-4', sort && 'text-fg')
+								const label = header.isPlaceholder
+									? null
+									: flexRender(
+											header.column.columnDef.header,
+											header.getContext(),
+									  )
 								return (
 									<TableHead
 										key={header.id}
 										colSpan={header.colSpan}
 										style={{ width: `${header.getSize()}px` }}
 									>
-										{header.isPlaceholder
-											? null
-											: flexRender(
-													header.column.columnDef.header,
-													header.getContext(),
-												)}
+										{column.getCanSort() ? (
+											<Button
+												variant="ghost"
+												onClick={column.getToggleSortingHandler()}
+												className={cn('-ml-4 hover:text-fg group')}
+											>
+												{label}
+												{!sort && <ArrowUpDown className={iconClass} />}
+												{sort === 'asc' && <ArrowDown className={iconClass} />}
+												{sort === 'desc' && <ArrowUp className={iconClass} />}
+											</Button>
+										) : (
+											label
+										)}
 									</TableHead>
 								)
 							})}
@@ -72,6 +109,7 @@ export function DataTable<RecordType extends BaseRecord>({
 					)}
 				</TableBody>
 			</Table>
-		</>
+			<TablePagination {...table} />
+		</div>
 	)
 }

@@ -1,4 +1,3 @@
-import React from 'react'
 import {
 	Pagination,
 	PaginationContent,
@@ -10,9 +9,9 @@ import {
 	PaginationNext,
 	PaginationPrevious,
 } from '@/components/ui/pagination'
+import { Combobox } from '@components/ui/combobox'
 import { useTable } from '@refinedev/react-table'
 import { cn } from '@utility/classNames'
-import { Combobox } from '@components/ui/combobox'
 
 type TablePaginationProps = Pick<
 	ReturnType<typeof useTable>,
@@ -67,7 +66,10 @@ function TablePagination({
 						<PaginationItem key={page}>
 							<PaginationLink
 								onClick={() => setPageIndex(page - 1)}
-								className={cn(page === currentPage && 'bg-alt', 'pt-2 pb-1')}
+								className={cn(
+									page === currentPage && 'bg-grayLight',
+									'pt-2 pb-1',
+								)}
 							>
 								{page}
 							</PaginationLink>

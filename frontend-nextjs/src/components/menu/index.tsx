@@ -9,8 +9,6 @@ import HeaderMenuLink from './HeaderMenuLink'
 export const Menu = ({ currentPage }: { currentPage: string }) => {
 	const { menuItems } = useMenu()
 
-	console.log('currentPage', currentPage)
-	console.log('menuItems', menuItems)
 	return (
 		<nav
 			className={cn(

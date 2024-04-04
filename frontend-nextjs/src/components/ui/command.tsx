@@ -1,11 +1,11 @@
 'use client'
 
-import * as React from 'react'
 import { type DialogProps } from '@radix-ui/react-dialog'
 import { Command as CommandPrimitive } from 'cmdk'
+import * as React from 'react'
 
-import { cn } from '@/utility/classNames'
 import { Dialog, DialogContent } from '@/components/ui/dialog'
+import { cn } from '@/utility/classNames'
 import { SearchIcon } from 'lucide-react'
 
 const Command = React.forwardRef<
@@ -140,7 +140,7 @@ const CommandItem = React.forwardRef<
 		className={cn(
 			'relative flex cursor-default select-none',
 			'items-center px-4 py-2',
-			'outline-none aria-selected:bg-alt',
+			'outline-none aria-selected:bg-grayLight',
 			'aria-selected:text-fg aria-selected:cursor-pointer',
 			'data-[disabled]:pointer-events-none',
 			'data-[disabled]:opacity-50',
@@ -173,11 +173,11 @@ CommandShortcut.displayName = 'CommandShortcut'
 export {
 	Command,
 	CommandDialog,
-	CommandInput,
-	CommandList,
 	CommandEmpty,
 	CommandGroup,
+	CommandInput,
 	CommandItem,
-	CommandShortcut,
+	CommandList,
 	CommandSeparator,
+	CommandShortcut,
 }

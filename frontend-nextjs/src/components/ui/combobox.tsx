@@ -1,7 +1,6 @@
 'use client'
 
 import { Check, ChevronsUpDown } from 'lucide-react'
-import * as React from 'react'
 
 import { Button } from '@/components/ui/button'
 import {
@@ -17,8 +16,12 @@ import {
 	PopoverTrigger,
 } from '@/components/ui/popover'
 import { cn } from '@/utility/classNames'
-import { useEffect } from 'react'
+import { ReactNode, useEffect, useState } from 'react'
 
+type OptionType = {
+	label: ReactNode
+	value: string
+}
 export function Combobox({
 	options,
 	onChange = () => undefined,
@@ -26,17 +29,14 @@ export function Combobox({
 	searchable = false,
 	className,
 }: {
-	options: {
-		label: string
-		value: string
-	}[]
+	options: OptionType[]
 	searchable?: boolean
 	onChange?: (value: string) => void
 	value?: string
 	className?: string
 }) {
-	const [open, setOpen] = React.useState(false)
-	const [value, setValue] = React.useState(initialValue || options[0]?.value)
+	const [open, setOpen] = useState(false)
+	const [value, setValue] = useState(initialValue || options[0]?.value)
 
 	useEffect(() => {
 		if (!initialValue) return
@@ -52,7 +52,7 @@ export function Combobox({
 					aria-expanded={open}
 					className={cn(
 						'w-fit justify-between rounded-none h-[38px]',
-						'hover:bg-alt hover:text-fg border-grayLight',
+						'hover:bg-grayLight hover:text-fg border-grayLight',
 						className,
 					)}
 				>
@@ -78,7 +78,7 @@ export function Combobox({
 							<CommandItem
 								key={option.value}
 								value={option.value}
-								onSelect={(currentValue) => {
+								onSelect={(currentValue: OptionType['value']) => {
 									const newValue = currentValue === value ? '' : currentValue
 									setValue(newValue)
 									onChange(newValue)

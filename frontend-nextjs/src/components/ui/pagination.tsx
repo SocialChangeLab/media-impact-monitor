@@ -1,13 +1,13 @@
-import * as React from 'react'
 import Link from 'next/link'
+import * as React from 'react'
 
-import { cn } from '@/utility/classNames'
 import { ButtonProps, buttonVariants } from '@/components/ui/button'
+import { cn } from '@/utility/classNames'
 import {
-	ChevronsLeft,
-	ChevronsRight,
 	ChevronLeft,
 	ChevronRight,
+	ChevronsLeft,
+	ChevronsRight,
 	MoreHorizontal,
 } from 'lucide-react'
 
@@ -74,7 +74,7 @@ const PaginationLink = React.forwardRef<typeof Link, PaginationLinkProps>(
 					variant: isActive ? 'default' : 'ghost',
 					size,
 				}),
-				'px-1.5 py-2 hover:bg-alt rounded-none',
+				'px-1.5 py-2 hover:bg-grayLight rounded-none',
 				`border-none h-9 min-w-9`,
 				className,
 			)}
@@ -142,11 +142,11 @@ PaginationEllipsis.displayName = 'PaginationEllipsis'
 export {
 	Pagination,
 	PaginationContent,
-	PaginationLink,
-	PaginationItem,
-	PaginationPrevious,
-	PaginationNext,
 	PaginationEllipsis,
-	PaginationLast,
 	PaginationFirst,
+	PaginationItem,
+	PaginationLast,
+	PaginationLink,
+	PaginationNext,
+	PaginationPrevious,
 }

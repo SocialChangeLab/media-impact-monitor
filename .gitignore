@@ -1,4 +1,5 @@
-.secrets
+cache/
+mim
 
 ### macOS ------------------------------------------------------------------------
 # General
@@ -282,7 +283,7 @@ vignettes/*.pdf
 # .Renviron
 
 # pkgdown site
-docs/
+# docs/
 
 # translation temp files
 po/*~

@@ -24,6 +24,7 @@ def get_mediacloud_counts(
     end_date: pd.Timestamp = end,
     countries: list | None = None,
 ):
+    raise NotImplementedError("This function does not currently work.")
     assert len(countries) == 1, "Currently only supports one country at a time."
     collection_ids: list[str] = []
     if countries:

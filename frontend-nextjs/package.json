@@ -13,6 +13,7 @@
     "refine": "refine"
   },
   "dependencies": {
+    "@radix-ui/react-popover": "1.0.7",
     "@refinedev/cli": "2.16.28",
     "@refinedev/core": "4.49.0",
     "@refinedev/devtools": "1.1.36",
@@ -21,13 +22,15 @@
     "@refinedev/react-hook-form": "4.8.16",
     "@refinedev/react-table": "5.6.8",
     "@refinedev/simple-rest": "5.0.4",
+    "@tailwindcss/container-queries": "0.1.1",
     "@tanstack/react-table": "^8.2.6",
     "class-variance-authority": "0.7.0",
     "cmdk": "1.0.0",
     "lucide-react": "0.364.0",
     "next": "14.1.0",
     "react": "^18.0.0",
-    "react-dom": "^18.0.0"
+    "react-dom": "^18.0.0",
+    "tailwind-merge": "2.2.2"
   },
   "devDependencies": {
     "@types/node": "^18.0.0",

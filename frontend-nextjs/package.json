@@ -13,6 +13,7 @@
     "refine": "refine"
   },
   "dependencies": {
+    "@custom-react-hooks/use-media-query": "1.4.19",
     "@radix-ui/react-dropdown-menu": "2.0.6",
     "@radix-ui/react-popover": "1.0.7",
     "@refinedev/cli": "2.16.28",

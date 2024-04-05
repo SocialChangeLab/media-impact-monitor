@@ -27,7 +27,7 @@ export function DataTable<RecordType extends BaseRecord>({
 	columns,
 	data,
 }: {
-	columns: ColumnDef<RecordType>[]
+	columns: ColumnDef<RecordType, any>[]
 	data: RecordType[]
 }) {
 	const table = useReactTable({

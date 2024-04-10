@@ -5,6 +5,7 @@ Or, if necessary: `poetry run uvicorn media_impact_monitor.api:app --reload`
 """
 
 import logging
+from contextlib import asynccontextmanager
 
 from fastapi import FastAPI, HTTPException
 from joblib import hash as joblib_hash
@@ -40,6 +41,17 @@ metadata = dict(
     docs_url=None,
 )
 
+
+@asynccontextmanager
+async def app_lifespan(app: FastAPI):
+    logger = logging.getLogger("uvicorn.access")
+    console_formatter = AccessFormatter(
+        "{asctime} {levelprefix} {message}", style="{", use_colors=True
+    )
+    logger.handlers[0].setFormatter(console_formatter)
+    yield
+
+
 app = FastAPI(**metadata)
 
 app.add_middleware(
@@ -51,11 +63,13 @@ app.add_middleware(
 )
 
 
-logger = logging.getLogger("uvicorn.access")
-console_formatter = AccessFormatter(
-    "{asctime} {levelprefix} {message}", style="{", use_colors=True
-)
-logger.handlers[0].setFormatter(console_formatter)
+@app.on_event("startup")
+async def startup_event():
+    logger = logging.getLogger("uvicorn.access")
+    console_formatter = AccessFormatter(
+        "{asctime} {levelprefix} {message}", style="{", use_colors=True
+    )
+    logger.handlers[0].setFormatter(console_formatter)
 
 
 @app.get("/", include_in_schema=False)

@@ -52,7 +52,7 @@ async def app_lifespan(app: FastAPI):
     yield
 
 
-app = FastAPI(**metadata)
+app = FastAPI(**metadata, lifespan=app_lifespan)
 
 app.add_middleware(
     CORSMiddleware,
@@ -61,15 +61,6 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-
-
-@app.on_event("startup")
-async def startup_event():
-    logger = logging.getLogger("uvicorn.access")
-    console_formatter = AccessFormatter(
-        "{asctime} {levelprefix} {message}", style="{", use_colors=True
-    )
-    logger.handlers[0].setFormatter(console_formatter)
 
 
 @app.get("/", include_in_schema=False)

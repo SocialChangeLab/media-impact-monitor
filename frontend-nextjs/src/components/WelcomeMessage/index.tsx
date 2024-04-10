@@ -1,34 +1,110 @@
 'use client'
+import { Button } from '@components/ui/button'
 import headerImage from '@images/header-bg.png'
+import { cn } from '@utility/classNames'
+import { X } from 'lucide-react'
 import Image from 'next/image'
-import { useEffect, useState } from 'react'
+import Link from 'next/link'
+import { useCallback, useEffect, useState } from 'react'
 
 function WelcomeMessage() {
 	const [isShowing, setIsShowing] = useState(false)
 
 	useEffect(() => {
-		if (typeof window !== 'undefined') return
+		if (typeof window === 'undefined') return
 		const preference = localStorage.getItem('showWelcomeMessage')
 		const showWelcomeMessage = preference === 'true'
-		if (showWelcomeMessage) {
+		if (!preference || showWelcomeMessage) {
 			setIsShowing(true)
+		} else {
+			setIsShowing(false)
 		}
 	}, [])
 
+	const onHide = useCallback(() => {
+		if (typeof window === 'undefined') return
+		localStorage.setItem('showWelcomeMessage', 'false')
+		setIsShowing(false)
+	}, [setIsShowing])
+
+	if (!isShowing) return null
 	return (
-		<section className="">
-			<div className="w-full h-[88px] sm:h-[16vw] sm:min-h-40 bg-fg dark:bg-bg bg-blend-screen relative z-0">
+		<section className="p-6 animate-in colours-light">
+			<div className="w-full sm:min-h-40 bg-fg bg-blend-screen relative z-0 shadow-xl">
 				<Image
 					src={headerImage}
 					alt="A decorative header image of a crowd protesting"
-					className="absolute w-screen h-[88px] sm:h-[16vw] sm:min-h-40 inset-0 object-cover mix-blend-screen opacity-40"
+					className="absolute -z-10 w-full h-full sm:min-h-40 inset-0 object-cover mix-blend-screen opacity-10"
+					priority
 				/>
 				<div
-					className="absolute inset-0 w-screen h-[88px] sm:h-[16vw] sm:min-h-40 bg-repeat
-            bg-center mix-blend-screen dark:mix-blend-multipy
-            bg-[url(/images/noisy-dark.png)] dark:bg-[url(/images/noisy-inverted.png)]"
+					className="absolute -z-10 inset-0 w-full h-full sm:min-h-40 bg-repeat
+            bg-center mix-blend-screen
+            bg-[url(/images/noisy-dark.png)]"
 					aria-hidden="true"
 				></div>
+				<div className="px-6 pt-6 pb-8 max-w-prose flex flex-col gap-4">
+					<h1 className="text-3xl font-bold font-headlines antialiased text-bg pr-12 md:pr-0">
+						Welcome to the Media Impact Monitor
+					</h1>
+					<div className="flex flex-col gap-2">
+						<p className="text-bg">
+							Welcome to the Media Impact Monitor, a collaborative project aimed
+							at enabling protest groups and NGOs to evaluate their impact on
+							public discourse.
+						</p>
+						<p className="text-bg">
+							Through the examination of various media sources, from local and
+							national newspapers to social media and parliamentary debates, the
+							tool provides a detailed view of how activism influences public
+							discussion.
+						</p>
+						<p>
+							<Link
+								href="/about"
+								className={cn(
+									'text-bg underline focusable focus-visible:ring-offset-0 focus-visible:ring-bg',
+									'p-2 -ml-2 hover:decoration-fg',
+								)}
+							>{`Learn more about the project`}</Link>
+						</p>
+					</div>
+					<div className="flex gap-4 flex-wrap pt-2 colours-dark">
+						<Button
+							onClick={onHide}
+							className={cn(
+								`text-brandGreen focus-visible:ring-offset-0`,
+								`focus-visible:bg-brandGreen focus-visible:ring-brandWhite`,
+								`focus-visible:text-brandWhite`,
+							)}
+						>
+							{`Take the tour`}
+						</Button>
+						<Button
+							onClick={onHide}
+							variant="outline"
+							className={cn(
+								`text-brandWhite focus-visible:ring-offset-0`,
+								`focus-visible:bg-brandGreen focus-visible:ring-brandWhite`,
+								`focus-visible:text-brandWhite`,
+							)}
+						>
+							{`I'll discover on my own`}
+						</Button>
+					</div>
+					<Button
+						onClick={onHide}
+						className={cn(
+							'absolute top-6 right-6 z-10 text-bg',
+							'focus-visible:ring-offset-0 focus-visible:ring-bg',
+							'focus-visible:bg-fg hover:bg-fg',
+						)}
+						variant="ghost"
+						size="icon"
+					>
+						<X />
+					</Button>
+				</div>
 			</div>
 		</section>
 	)

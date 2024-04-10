@@ -2,6 +2,7 @@
 
 import '@/styles/global.css'
 import Footer from '@components/Footer'
+import WelcomeMessage from '@components/WelcomeMessage'
 import { Breadcrumb } from '@components/breadcrumb'
 import { cn } from '@utility/classNames'
 import { PropsWithChildren, ReactNode } from 'react'
@@ -34,6 +35,7 @@ export const BaseLayout: React.FC<
 						`pointer-events-none`,
 					)}
 				/>
+				<WelcomeMessage />
 				{!modal && <Breadcrumb breadcrumbs={[]} />}
 				<div className="min-h-full">{children}</div>
 			</div>

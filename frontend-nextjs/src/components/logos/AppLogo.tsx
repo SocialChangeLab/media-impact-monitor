@@ -1,4 +1,6 @@
-function Logo({ className = '' }: { className?: string }) {
+import { SVGProps } from 'react'
+
+function Logo(props: SVGProps<SVGSVGElement>) {
 	return (
 		<svg
 			width="344"
@@ -7,7 +9,7 @@ function Logo({ className = '' }: { className?: string }) {
 			fill="none"
 			xmlns="http://www.w3.org/2000/svg"
 			aria-label="Media Impact Monitor Logo"
-			className={className}
+			{...props}
 		>
 			<rect
 				x="0.75"

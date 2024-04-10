@@ -1,4 +1,4 @@
-import { Layout as BaseLayout } from '@components/layout'
+import { BaseLayout } from '@components/BaseLayout'
 export default function NotFound() {
 	return (
 		<BaseLayout currentPage="events">

@@ -7,7 +7,7 @@ import { cn } from '@utility/classNames'
 import { PropsWithChildren, ReactNode } from 'react'
 import { Menu } from '../menu'
 
-export const Layout: React.FC<
+export const BaseLayout: React.FC<
 	PropsWithChildren<{
 		currentPage: string
 		modal?: ReactNode
@@ -15,7 +15,7 @@ export const Layout: React.FC<
 > = ({ children, currentPage, modal }) => {
 	return (
 		<div className="layout min-h-screen grid grid-rows-[auto_1fr_auto]">
-			<Menu currentPage={currentPage} menuItems={[]} />
+			<Menu currentPage={currentPage} />
 			<div className="relative">
 				<div
 					aria-hidden="true"
@@ -35,7 +35,7 @@ export const Layout: React.FC<
 					)}
 				/>
 				{!modal && <Breadcrumb breadcrumbs={[]} />}
-				<div className="px-6 py-4 min-h-full">{children}</div>
+				<div className="min-h-full">{children}</div>
 			</div>
 			<Footer />
 		</div>

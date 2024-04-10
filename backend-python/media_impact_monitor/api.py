@@ -45,10 +45,11 @@ metadata = dict(
 @asynccontextmanager
 async def app_lifespan(app: FastAPI):
     logger = logging.getLogger("uvicorn.access")
-    console_formatter = AccessFormatter(
-        "{asctime} {levelprefix} {message}", style="{", use_colors=True
-    )
-    logger.handlers[0].setFormatter(console_formatter)
+    if logger.handlers:
+        console_formatter = AccessFormatter(
+            "{asctime} {levelprefix} {message}", style="{", use_colors=True
+        )
+        logger.handlers[0].setFormatter(console_formatter)
     yield
 
 

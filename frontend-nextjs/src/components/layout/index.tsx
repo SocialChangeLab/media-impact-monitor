@@ -15,7 +15,7 @@ export const Layout: React.FC<
 > = ({ children, currentPage, modal }) => {
 	return (
 		<div className="layout min-h-screen grid grid-rows-[auto_1fr_auto]">
-			<Menu currentPage={currentPage} />
+			<Menu currentPage={currentPage} menuItems={[]} />
 			<div className="relative">
 				<div
 					aria-hidden="true"
@@ -34,7 +34,7 @@ export const Layout: React.FC<
 						`pointer-events-none`,
 					)}
 				/>
-				{!modal && <Breadcrumb />}
+				{!modal && <Breadcrumb breadcrumbs={[]} />}
 				<div className="px-6 py-4">{children}</div>
 			</div>
 			<Footer />

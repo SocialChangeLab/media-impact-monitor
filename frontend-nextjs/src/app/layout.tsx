@@ -1,23 +1,8 @@
-import { DevtoolsProvider } from '@providers/devtools'
-import { Refine } from '@refinedev/core'
-import { RefineKbar, RefineKbarProvider } from '@refinedev/kbar'
-import routerProvider from '@refinedev/nextjs-router'
 import { inter, neueRegrade } from '@utility/fonts'
-import { Metadata } from 'next'
-import React, { Suspense } from 'react'
+import React from 'react'
 
-import { dataProvider } from '@providers/data-provider'
 import '@styles/global.css'
 import { cn } from '@utility/classNames'
-
-export const metadata: Metadata = {
-	title: 'Media Impact Monitor',
-	description:
-		'A novel tool for protest groups and NGOs to measure and visualize their impact on public discourse',
-	icons: {
-		icon: '/favicon.ico',
-	},
-}
 
 export default function RootLayout({
 	children,
@@ -48,36 +33,7 @@ export default function RootLayout({
 					}}
 				></script>
 			</head>
-			<body className="bg-pattern-soft">
-				<Suspense>
-					<RefineKbarProvider>
-						<DevtoolsProvider>
-							<Refine
-								routerProvider={routerProvider}
-								dataProvider={dataProvider}
-								resources={[
-									{
-										name: 'events',
-										list: '/events',
-										meta: {
-											canDelete: false,
-										},
-									},
-								]}
-								options={{
-									syncWithLocation: true,
-									warnWhenUnsavedChanges: true,
-									useNewQueryKeys: true,
-									projectId: '2VQAyu-W2KFUP-84PmiP',
-								}}
-							>
-								{children}
-								<RefineKbar />
-							</Refine>
-						</DevtoolsProvider>
-					</RefineKbarProvider>
-				</Suspense>
-			</body>
+			<body className="bg-pattern-soft">{children}</body>
 		</html>
 	)
 }

@@ -1,3 +1,10 @@
+import { Layout as BaseLayout } from '@components/layout'
 export default function NotFound() {
-	return <div>404 Not Found</div>
+	return (
+		<BaseLayout currentPage="events">
+			<h1 className="text-3xl font-bold font-headlines antialiased w-full h-full flex place-content-center">
+				Page not found
+			</h1>
+		</BaseLayout>
+	)
 }

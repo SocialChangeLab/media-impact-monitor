@@ -16,8 +16,7 @@
 	}
 
 	:root,
-	:root[data-applied-mode='light'],
-	:root[data-applied-mode='dark'] .colours-light {
+	:root[data-applied-mode='light'] {
 		--fg: var(--brandGreen);
 		--bg: var(--brandWhite);
 		--bgOverlay: rgba(93, 114, 128, 0.5);
@@ -28,8 +27,7 @@
 		--grayUltraLight: #f1faff;
 	}
 
-	:root[data-applied-mode='dark'],
-	:root[data-applied-mode='light'] .colours-dark {
+	:root[data-applied-mode='dark'] {
 		--fg: #fff;
 		--bg: #010d0d;
 		--bgOverlay: rgba(66, 66, 66, 0.5);
@@ -41,8 +39,7 @@
 	}
 
 	@media (prefers-contrast: more) {
-		:root[data-applied-mode='light'],
-		:root[data-applied-mode='dark'] .colours-light {
+		:root[data-applied-mode='light'] {
 			--fg: #042f2e;
 			--bg: #fcfeff;
 			--bgOverlay: rgba(93, 114, 128, 0.5);
@@ -52,8 +49,7 @@
 			--grayLight: #e1ecf2;
 			--grayUltraLight: #f1faff;
 		}
-		:root[data-applied-mode='dark'],
-		:root[data-applied-mode='light'] .colours-dark {
+		:root[data-applied-mode='dark'] {
 			--fg: #fff;
 			--bg: #001111;
 			--bgOverlay: rgba(66, 66, 66, 0.5);

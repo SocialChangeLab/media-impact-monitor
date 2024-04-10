@@ -29,8 +29,8 @@ function WelcomeMessage() {
 
 	if (!isShowing) return null
 	return (
-		<section className="p-6 animate-in colours-light">
-			<div className="w-full sm:min-h-40 bg-fg bg-blend-screen relative z-0 shadow-xl">
+		<section className="p-6 animate-in">
+			<div className="w-full sm:min-h-40 bg-brandGreen bg-blend-screen relative z-0 shadow-xl">
 				<Image
 					src={headerImage}
 					alt="A decorative header image of a crowd protesting"
@@ -44,16 +44,16 @@ function WelcomeMessage() {
 					aria-hidden="true"
 				></div>
 				<div className="px-6 pt-6 pb-8 max-w-prose flex flex-col gap-4">
-					<h1 className="text-3xl font-bold font-headlines antialiased text-bg pr-12 md:pr-0">
+					<h1 className="text-3xl font-bold font-headlines antialiased text-brandWhite pr-12 md:pr-0">
 						Welcome to the Media Impact Monitor
 					</h1>
 					<div className="flex flex-col gap-2">
-						<p className="text-bg">
+						<p className="text-brandWhite">
 							Welcome to the Media Impact Monitor, a collaborative project aimed
 							at enabling protest groups and NGOs to evaluate their impact on
 							public discourse.
 						</p>
-						<p className="text-bg">
+						<p className="text-brandWhite">
 							Through the examination of various media sources, from local and
 							national newspapers to social media and parliamentary debates, the
 							tool provides a detailed view of how activism influences public
@@ -63,17 +63,17 @@ function WelcomeMessage() {
 							<Link
 								href="/about"
 								className={cn(
-									'text-bg underline focusable focus-visible:ring-offset-0 focus-visible:ring-bg',
-									'p-2 -ml-2 hover:decoration-fg',
+									'text-brandWhite underline focusable focus-visible:ring-offset-0 focus-visible:ring-brandWhite',
+									'p-2 -ml-2 hover:decoration-brandGreen',
 								)}
 							>{`Learn more about the project`}</Link>
 						</p>
 					</div>
-					<div className="flex gap-4 flex-wrap pt-2 colours-dark">
+					<div className="flex gap-4 flex-wrap pt-2">
 						<Button
 							onClick={onHide}
 							className={cn(
-								`text-brandGreen focus-visible:ring-offset-0`,
+								`text-brandGreen bg-brandWhite focus-visible:ring-offset-0`,
 								`focus-visible:bg-brandGreen focus-visible:ring-brandWhite`,
 								`focus-visible:text-brandWhite`,
 							)}
@@ -95,9 +95,9 @@ function WelcomeMessage() {
 					<Button
 						onClick={onHide}
 						className={cn(
-							'absolute top-6 right-6 z-10 text-bg',
-							'focus-visible:ring-offset-0 focus-visible:ring-bg',
-							'focus-visible:bg-fg hover:bg-fg',
+							'absolute top-6 right-6 z-10 text-brandWhite',
+							'focus-visible:ring-offset-0 focus-visible:ring-brandWhite',
+							'focus-visible:bg-brandGreen hover:bg-brandGreen',
 						)}
 						variant="ghost"
 						size="icon"

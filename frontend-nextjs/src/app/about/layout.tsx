@@ -33,12 +33,12 @@ export default async function AboutPageLayout({
 					>
 						<div
 							aria-hidden="true"
-							className="absolute w-screen h-screen top-[8vw] right-full pointer-events-none dark:invert dark:saturate-0 bg-right-top bg-no-repeat"
+							className="absolute w-screen h-screen top-[10vw] right-full pointer-events-none dark:invert dark:saturate-0 bg-right-top bg-no-repeat"
 							style={{ backgroundImage: `url(/images/doc-shadow.png)` }}
 						></div>
 						<div
 							aria-hidden="true"
-							className="absolute w-screen h-screen top-[8vw] left-full pointer-events-none dark:invert dark:saturate-0 bg-right-top bg-no-repeat -scale-x-100"
+							className="absolute w-screen h-screen top-[10vw] left-full pointer-events-none dark:invert dark:saturate-0 bg-right-top bg-no-repeat -scale-x-100"
 							style={{ backgroundImage: `url(/images/doc-shadow.png)` }}
 						></div>
 						<div

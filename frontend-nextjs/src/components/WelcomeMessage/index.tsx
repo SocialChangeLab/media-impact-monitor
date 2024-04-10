@@ -76,6 +76,7 @@ function WelcomeMessage() {
 								`text-brandGreen bg-brandWhite focus-visible:ring-offset-0`,
 								`focus-visible:bg-brandGreen focus-visible:ring-brandWhite`,
 								`focus-visible:text-brandWhite`,
+								'hover:bg-brandGreen hover:text-brandWhite',
 							)}
 						>
 							{`Take the tour`}
@@ -87,6 +88,7 @@ function WelcomeMessage() {
 								`text-brandWhite focus-visible:ring-offset-0`,
 								`focus-visible:bg-brandGreen focus-visible:ring-brandWhite`,
 								`focus-visible:text-brandWhite`,
+								'hover:bg-brandGreen hover:text-brandWhite hover:border-brandGreen',
 							)}
 						>
 							{`I'll discover on my own`}
@@ -98,6 +100,7 @@ function WelcomeMessage() {
 							'absolute top-6 right-6 z-10 text-brandWhite',
 							'focus-visible:ring-offset-0 focus-visible:ring-brandWhite',
 							'focus-visible:bg-brandGreen hover:bg-brandGreen',
+							'hover:bg-brandGreen hover:text-brandWhite',
 						)}
 						variant="ghost"
 						size="icon"

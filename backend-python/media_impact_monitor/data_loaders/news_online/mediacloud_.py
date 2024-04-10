@@ -24,9 +24,7 @@ def get_mediacloud_counts(
     end_date: pd.Timestamp = end,
     countries: list | None = None,
 ):
-    raise NotImplementedError("This function does not currently work.")
-    assert len(countries) == 1, "Currently only supports one country at a time."
-    collection_ids: list[str] = []
+    collection_ids: list[int] = []
     if countries:
         collection_ids = []
         for country in countries:
@@ -39,7 +37,6 @@ def get_mediacloud_counts(
         query=query,
         start_date=start_date.to_pydatetime().date(),
         end_date=end_date.to_pydatetime().date(),
-        # There seems to be a bug in the library relating to `collection_ids`:
         collection_ids=collection_ids,
     )
     df = pd.DataFrame(data)

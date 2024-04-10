@@ -1,11 +1,9 @@
 import pandas as pd
-import pytest
 from media_impact_monitor.data_loaders.news_online.mediacloud_ import (
     get_mediacloud_counts,
 )
 
 
-@pytest.mark.skip(reason="There are some bugs with the mediacloud library.")
 def test_get_counts_mediacloud():
     df = get_mediacloud_counts(
         "Fridays for Future",

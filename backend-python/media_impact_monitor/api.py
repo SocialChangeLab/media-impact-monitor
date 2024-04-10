@@ -4,10 +4,14 @@ Run with: `uvicorn media_impact_monitor.api:app --reload`
 Or, if necessary: `poetry run uvicorn media_impact_monitor.api:app --reload`
 """
 
+import logging
+from contextlib import asynccontextmanager
+
 from fastapi import FastAPI, HTTPException
 from joblib import hash as joblib_hash
 from starlette.middleware.cors import CORSMiddleware
 from starlette.responses import RedirectResponse
+from uvicorn.logging import AccessFormatter
 
 from media_impact_monitor.data_loaders.news_online.mediacloud_ import (
     get_mediacloud_counts,
@@ -37,7 +41,19 @@ metadata = dict(
     docs_url=None,
 )
 
-app = FastAPI(**metadata)
+
+@asynccontextmanager
+async def app_lifespan(app: FastAPI):
+    logger = logging.getLogger("uvicorn.access")
+    if logger.handlers:
+        console_formatter = AccessFormatter(
+            "{asctime} {levelprefix} {message}", style="{", use_colors=True
+        )
+        logger.handlers[0].setFormatter(console_formatter)
+    yield
+
+
+app = FastAPI(**metadata, lifespan=app_lifespan)
 
 app.add_middleware(
     CORSMiddleware,

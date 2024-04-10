@@ -35,7 +35,7 @@ export const Layout: React.FC<
 					)}
 				/>
 				{!modal && <Breadcrumb breadcrumbs={[]} />}
-				<div className="px-6 py-4">{children}</div>
+				<div className="px-6 py-4 min-h-full">{children}</div>
 			</div>
 			<Footer />
 		</div>

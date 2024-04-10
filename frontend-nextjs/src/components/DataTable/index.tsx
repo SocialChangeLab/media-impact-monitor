@@ -18,12 +18,11 @@ import {
 	TableRow,
 } from '@/components/ui/table'
 import { Button } from '@components/ui/button'
-import { BaseRecord } from '@refinedev/core'
 import { cn } from '@utility/classNames'
 import { ArrowDown, ArrowUp, ArrowUpDown } from 'lucide-react'
 import TablePagination from './table-pagination'
 
-export function DataTable<RecordType extends BaseRecord>({
+export function DataTable<RecordType>({
 	columns,
 	data,
 }: {
@@ -53,7 +52,7 @@ export function DataTable<RecordType extends BaseRecord>({
 									: flexRender(
 											header.column.columnDef.header,
 											header.getContext(),
-									  )
+										)
 								return (
 									<TableHead
 										key={header.id}

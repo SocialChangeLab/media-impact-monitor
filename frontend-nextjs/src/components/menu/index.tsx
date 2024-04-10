@@ -2,13 +2,21 @@
 
 import ThemeToggle from '@components/ThemeToggle'
 import Logo from '@components/logo'
-import { useMenu } from '@refinedev/core'
 import { cn } from '@utility/classNames'
 import HeaderMenuLink from './HeaderMenuLink'
 
-export const Menu = ({ currentPage }: { currentPage: string }) => {
-	const { menuItems } = useMenu()
-
+type MenuItemType = {
+	name: string
+	label?: string
+	route?: string
+}
+export const Menu = ({
+	currentPage,
+	menuItems,
+}: {
+	currentPage: string
+	menuItems: MenuItemType[]
+}) => {
 	return (
 		<nav
 			className={cn(

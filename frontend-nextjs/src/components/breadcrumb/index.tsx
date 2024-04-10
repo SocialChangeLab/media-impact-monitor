@@ -1,12 +1,19 @@
 'use client'
 
-import { useBreadcrumb } from '@refinedev/core'
 import { cn } from '@utility/classNames'
 import Link from 'next/link'
 
-export const Breadcrumb = () => {
-	const { breadcrumbs } = useBreadcrumb()
+type BreadcrumbsType = {
+	label: string
+	href?: string
+	icon?: React.ReactNode
+}
 
+export const Breadcrumb = ({
+	breadcrumbs,
+}: {
+	breadcrumbs: BreadcrumbsType[]
+}) => {
 	if (breadcrumbs.length < 2) return null
 	return (
 		<ul className={cn('px-10 pb-6 text-lg flex gap-4 items-center')}>

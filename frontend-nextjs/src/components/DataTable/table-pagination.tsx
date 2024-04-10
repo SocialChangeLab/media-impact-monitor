@@ -10,11 +10,11 @@ import {
 	PaginationPrevious,
 } from '@/components/ui/pagination'
 import { Combobox } from '@components/ui/combobox'
-import { useTable } from '@refinedev/react-table'
+import { type Table as ReactTableType } from '@tanstack/react-table'
 import { cn } from '@utility/classNames'
 
-type TablePaginationProps = Pick<
-	ReturnType<typeof useTable>,
+type TablePaginationProps<RecordType> = Pick<
+	ReactTableType<RecordType>,
 	| 'getState'
 	| 'setPageIndex'
 	| 'getCanPreviousPage'
@@ -25,7 +25,7 @@ type TablePaginationProps = Pick<
 	| 'setPageSize'
 >
 
-function TablePagination({
+function TablePagination<RecordType>({
 	getState,
 	setPageIndex,
 	getCanPreviousPage,
@@ -34,7 +34,7 @@ function TablePagination({
 	nextPage,
 	previousPage,
 	setPageSize,
-}: TablePaginationProps) {
+}: TablePaginationProps<RecordType>) {
 	const currentPage = getState().pagination.pageIndex + 1
 	const paginationRange = getPaginationRangeWithEllipsis(
 		currentPage,

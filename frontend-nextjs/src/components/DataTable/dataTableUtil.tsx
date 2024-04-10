@@ -1,21 +1,18 @@
 import { Button } from '@components/ui/button'
-import { BaseRecord } from '@refinedev/core'
 import { ColumnDefTemplate, HeaderContext } from '@tanstack/react-table'
 import { cn } from '@utility/classNames'
 import {
 	ArrowDown01,
 	ArrowDownAZ,
 	ArrowUp01,
-	ArrowUpDown,
 	ArrowUpAZ,
+	ArrowUpDown,
 } from 'lucide-react'
 import { ReactNode } from 'react'
 
-type ColumnHeaderFunction<P extends BaseRecord> = ColumnDefTemplate<
-	HeaderContext<P, unknown>
->
+type ColumnHeaderFunction<P> = ColumnDefTemplate<HeaderContext<P, unknown>>
 
-export function getSortableHeaderTemplate<P extends BaseRecord>(
+export function getSortableHeaderTemplate<P>(
 	label: ReactNode,
 	numeric = false,
 ) {

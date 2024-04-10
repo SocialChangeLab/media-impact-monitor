@@ -8,7 +8,7 @@ const buttonVariants = cva(
 	cn(
 		'inline-flex items-center justify-center whitespace-nowrap gap-2',
 		'rounded-full text-lg font-medium transition-colors focusable',
-		'disabled:pointer-events-none disabled:opacity-50 [&>svg]:-mt-1.5',
+		'disabled:pointer-events-none disabled:opacity-50',
 	),
 	{
 		variants: {

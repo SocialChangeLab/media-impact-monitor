@@ -30,6 +30,8 @@ module.exports = {
 				mono: ['monospace'],
 			},
 			colors: {
+				brandGreen: 'var(--brandGreen)',
+				brandWhite: 'var(--brandWhite)',
 				fg: 'var(--fg)',
 				bg: 'var(--bg)',
 				bgOverlay: 'var(--bgOverlay)',

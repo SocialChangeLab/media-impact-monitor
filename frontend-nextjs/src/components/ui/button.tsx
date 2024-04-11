@@ -7,25 +7,26 @@ import { cn } from '@/utility/classNames'
 const buttonVariants = cva(
 	cn(
 		'inline-flex items-center justify-center whitespace-nowrap gap-2',
-		'rounded-full text-lg font-medium transition-colors focusable',
+		'text-lg transition-colors focusable text-f',
 		'disabled:pointer-events-none disabled:opacity-50',
+		'border border-transparent w-fit',
 	),
 	{
 		variants: {
 			variant: {
-				default: 'bg-grayLight text-fg hover:bg-fg hover:text-bg',
+				default: 'bg-fg text-bg hover:bg-grayDark',
 				destructive: 'bg-fg text-bg hover:bg-bg hover:text-fg',
 				outline:
-					'border border-grayMed bg-bg hover:bg-fg hover:text-bg hover:border-fg',
+					' border-grayMed bg-transparent hover:bg-grayDark hover:text-bg hover:border-grayDark',
 				secondary: 'bg-grayLight text-fg hover:bg-fg hover:bg-bg',
-				ghost: 'hover:bg-accent hover:text-accent-fg',
-				link: 'text-primary underline-offset-4 hover:underline',
+				ghost: 'hover:bg-grayDark',
+				link: 'text-fg underline-offset-4 hover:underline-fg',
 			},
 			size: {
-				default: 'h-9 px-4 pt-3 pb-2',
-				sm: 'h-8 rounded-md px-3 text-xs',
-				lg: 'h-10 rounded-md px-8',
-				icon: 'h-9 w-9',
+				default: 'h-9 px-3.5 py-5',
+				sm: 'h-8 px-3 py-4 text-xs',
+				lg: 'h-10 px-4 py-6 text-lg',
+				icon: 'p-2',
 			},
 		},
 		defaultVariants: {

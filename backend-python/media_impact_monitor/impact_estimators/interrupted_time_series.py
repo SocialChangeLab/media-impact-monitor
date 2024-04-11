@@ -1,13 +1,73 @@
 import warnings
 from datetime import date
 
+import lightgbm as lgb
 import pandas as pd
+from mlforecast import MLForecast
+from mlforecast.lag_transforms import ExpandingMean, RollingMean
+from mlforecast.target_transforms import Differences
+from sklearn.ensemble import GradientBoostingRegressor
 
 from media_impact_monitor.util.cache import cache
 
 warnings.simplefilter(action="ignore", category=FutureWarning)
+
 from statsforecast import StatsForecast
 from statsforecast.models import ARIMA
+
+
+def predict_with_arima(train: pd.DataFrame, horizon: int):
+    train = train.copy().reset_index()
+    train["unique_id"] = 0
+    fcst = StatsForecast(
+        models=[
+            ARIMA(
+                order=(1, 1, 1),
+                season_length=7,
+                seasonal_order=(1, 1, 1),
+            ),
+        ],
+        freq="D",
+        n_jobs=4,
+    )
+    fcst.fit(train, time_col="date", target_col="count")
+    pred = fcst.predict(h=horizon)
+    pred = (
+        pred.rename(columns={"ARIMA": "count"})
+        .drop(columns=["unique_id"])
+        .set_index("date")
+    )
+    return pred
+
+
+def predict_with_boosting(train: pd.DataFrame, horizon: int):
+    train = train.copy().reset_index()
+    train["unique_id"] = 0
+    fcst = MLForecast(
+        models=[
+            # GradientBoostingRegressor(n_estimators=100),
+            lgb.LGBMRegressor(n_estimators=100),
+        ],
+        freq="D",
+        lags=[1, 2, 7],
+        lag_transforms={
+            1: [ExpandingMean()],
+            2: [RollingMean(window_size=2)],
+            7: [RollingMean(window_size=7)],
+        },
+        target_transforms=[Differences([1])],
+    )
+    prep = fcst.preprocess(train, time_col="date", target_col="count")
+    print(prep)
+    fcst.fit(train, time_col="date", target_col="count")
+    pred = fcst.predict(h=horizon)
+    pred = (
+        # pred.rename(columns={"GradientBoostingRegressor": "count"})
+        pred.rename(columns={"LGBMRegressor": "count"})
+        .drop(columns=["unique_id"])
+        .set_index("date")
+    )
+    return pred
 
 
 @cache
@@ -36,26 +96,12 @@ def calculate_impact(
     assert isinstance(df.index, pd.DatetimeIndex)
     # check that all values are numeric
     assert df.dtypes.apply(pd.api.types.is_numeric_dtype).all()
-    df = df.copy().reset_index()
-    df["unique_id"] = 0
+
     event_date = event_date - pd.Timedelta(days=hidden_days_before_protest)
-    train = df[df["date"] < event_date].copy()
-    fcst = StatsForecast(
-        models=[
-            ARIMA(
-                order=(1, 1, 1),
-                season_length=7,
-                seasonal_order=(1, 1, 1),
-            ),
-        ],
-        freq="D",
-        n_jobs=4,
-    )
-    fcst.fit(train, time_col="date", target_col="count")
+    train = df[df.index < event_date].copy()
     actual = df[
-        (df["date"] >= event_date)
-        & (df["date"] < event_date + pd.Timedelta(days=horizon))
-    ].drop(columns="unique_id")
-    counterfactual = fcst.predict(h=horizon).rename(columns={"ARIMA": "count"})
-    impact = actual.set_index("date") - counterfactual.set_index("date")
+        (df.index >= event_date) & (df.index < event_date + pd.Timedelta(days=horizon))
+    ]
+    counterfactual = predict_with_boosting(train, horizon)
+    impact = actual - counterfactual
     return actual, counterfactual, impact

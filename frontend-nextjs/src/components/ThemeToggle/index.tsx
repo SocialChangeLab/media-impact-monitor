@@ -3,7 +3,7 @@ import { cn } from '@utility/classNames'
 import { useCallback, useEffect, useState } from 'react'
 import styles from './ThemeToggle.module.css'
 
-function ThemeToggle() {
+function ThemeToggle({ className }: { className?: string }) {
 	const [theme, setTheme] = useState('light')
 
 	useEffect(() => {
@@ -31,6 +31,7 @@ function ThemeToggle() {
 				`hover:bg-grayUltraLight hover:text-fg border border-transparent`,
 				`hover:border-grayLight`,
 				styles.toggle,
+				className,
 			)}
 			title={theme === 'light' ? 'Switch to dark mode' : 'Switch to light mode'}
 			role="switch"

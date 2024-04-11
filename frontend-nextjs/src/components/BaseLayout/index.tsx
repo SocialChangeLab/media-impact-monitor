@@ -35,7 +35,7 @@ export const BaseLayout: React.FC<
 						`pointer-events-none`,
 					)}
 				/>
-				<WelcomeMessage />
+				<WelcomeMessage currentPage={currentPage} />
 				{!modal && <Breadcrumb breadcrumbs={[]} />}
 				<div className="min-h-full">{children}</div>
 			</div>

@@ -6,19 +6,20 @@ import styles from './ThemeToggle.module.css'
 function ThemeToggle({ className }: { className?: string }) {
 	const [theme, setTheme] = useState('light')
 
+	const onThemeChange = useCallback((newTheme: 'light' | 'dark') => {
+		setTheme(() => newTheme)
+		document.documentElement.dataset.appliedMode = newTheme
+		localStorage.setItem('theme', newTheme)
+	}, [])
+
 	useEffect(() => {
 		const darkModePreference = window.matchMedia('(prefers-color-scheme: dark)')
 		const initialTheme = localStorage.getItem('theme')
 		const systemTheme = darkModePreference.matches ? 'dark' : 'light'
 		const finalTheme = initialTheme || systemTheme
 
-		setTheme(finalTheme)
-	}, [])
-
-	const onThemeChange = useCallback((newTheme: 'light' | 'dark') => {
-		setTheme(() => newTheme)
-		document.documentElement.dataset.appliedMode = newTheme
-		localStorage.setItem('theme', newTheme)
+		onThemeChange(finalTheme as 'light' | 'dark')
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [])
 
 	return (

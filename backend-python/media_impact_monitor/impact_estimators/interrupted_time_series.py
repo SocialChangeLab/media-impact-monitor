@@ -1,50 +1,61 @@
+import warnings
 from datetime import date
 
-import causalpy as cp
 import pandas as pd
-from sklearn.ensemble import (  # noqa: F401
-    GradientBoostingRegressor,
-    RandomForestRegressor,
-)
-from sklearn.linear_model import (  # noqa: F401
-    ElasticNet,
-    Lasso,
-    LinearRegression,
-    Ridge,
-)
+
+from media_impact_monitor.util.cache import cache
+
+warnings.simplefilter(action="ignore", category=FutureWarning)
+from statsforecast import StatsForecast
+from statsforecast.models import ARIMA
 
 
-def calculate_impact(event_date: date, df: pd.DataFrame):
+@cache
+def calculate_impact(
+    event_date: date,
+    df: pd.DataFrame,
+    horizon: int = 14,
+    hidden_days_before_protest: int = 3,
+):
+    """
+    Calculate the impact of a protest event on the media coverage.
+
+    Args:
+        event_date: The date of the protest event.
+        df: A DataFrame with a single column "count" and a DatetimeIndex.
+        horizon: The number of days to forecast.
+        hidden_days_before_protest: The number of days before the protest event to exclude from the training data.
+
+    Returns:
+        actual: The actual media coverage.
+        counterfactual: The counterfactual media coverage.
+        impact: The difference between the actual and counterfactual media coverage.
+    """
     assert df.columns == ["count"]
     assert df.index.name == "date"
     assert isinstance(df.index, pd.DatetimeIndex)
-    # add lags for the past 7 days
-    df = df.sort_index()
-    for i in range(1, 8):
-        df[f"count_lag_{i}"] = df["count"].shift(i)
-    lag_params = [f"count_lag_{i}" for i in range(1, 8)]
-    lag_params = " + ".join(lag_params)
-    # add weekday dummies
-    df["weekday"] = df.index.weekday
-    df = pd.get_dummies(df, columns=["weekday"], drop_first=True, dtype=int)
-    weekday_params = [f"weekday_{i}" for i in range(1, 7)]
-    weekday_params = " + ".join(weekday_params)
-    formula = f"count ~ 1 + {lag_params} + {weekday_params}"
-    # crop the dataframe to 14 days before and after the event
-    df = df.loc[
-        event_date - pd.Timedelta(days=182) : event_date + pd.Timedelta(days=28)
-    ]
-    df = df.dropna()
     # check that all values are numeric
     assert df.dtypes.apply(pd.api.types.is_numeric_dtype).all()
-    result = cp.skl_experiments.InterruptedTimeSeries(
-        df,
-        pd.to_datetime(event_date),
-        formula=formula,
-        # model=LinearRegression(),
-        # model=Ridge(),
-        # model=Lasso(),
-        model=RandomForestRegressor(),
-        # model=GradientBoostingRegressor(),
+    df = df.copy().reset_index()
+    df["unique_id"] = 0
+    event_date = event_date - pd.Timedelta(days=hidden_days_before_protest)
+    train = df[df["date"] < event_date].copy()
+    fcst = StatsForecast(
+        models=[
+            ARIMA(
+                order=(1, 1, 1),
+                season_length=7,
+                seasonal_order=(1, 1, 1),
+            ),
+        ],
+        freq="D",
+        n_jobs=4,
     )
-    return result
+    fcst.fit(train, time_col="date", target_col="count")
+    actual = df[
+        (df["date"] >= event_date)
+        & (df["date"] < event_date + pd.Timedelta(days=horizon))
+    ].drop(columns="unique_id")
+    counterfactual = fcst.predict(h=horizon).rename(columns={"ARIMA": "count"})
+    impact = actual.set_index("date") - counterfactual.set_index("date")
+    return actual, counterfactual, impact

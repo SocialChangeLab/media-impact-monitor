@@ -1,6 +1,7 @@
 import { inter, neueRegrade } from '@utility/fonts'
 import React from 'react'
 
+import { ThemeProvider } from '@providers/ThemeProvider'
 import '@styles/global.css'
 import { cn } from '@utility/classNames'
 
@@ -13,13 +14,14 @@ export default function RootLayout({
 		<html
 			lang="en"
 			className={cn(neueRegrade.variable, inter.variable)}
-			data-applied-mode="light"
+			suppressHydrationWarning
 		>
-			<head>
-				{/* eslint-disable-next-line @next/next/no-sync-scripts */}
-				<script src="/theme.js" type="text/javascript"></script>
-			</head>
-			<body className="bg-pattern-soft">{children}</body>
+			<head></head>
+			<body className="bg-pattern-soft">
+				<ThemeProvider defaultTheme="system" enableSystem>
+					{children}
+				</ThemeProvider>
+			</body>
 		</html>
 	)
 }

@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { getEventsData } from './eventsUtil'
+import { EventDataType, getEventsData } from './eventsUtil'
 
 type Query<T> =
 	| {
@@ -18,18 +18,8 @@ type Query<T> =
 			error: Error
 	  }
 
-export type EventType = {
-	event_id: string
-	event_type: string
-	source: string
-	topic: string
-	date: string
-	organizations: string[]
-	description: string
-}
-
 function useEvents() {
-	const [query, setQuery] = useState<Query<EventType[]>>({
+	const [query, setQuery] = useState<Query<EventDataType>>({
 		data: undefined,
 		isPending: true,
 		error: null,

@@ -1,6 +1,7 @@
 import { inter, neueRegrade } from '@utility/fonts'
 import React from 'react'
 
+import { TooltipProvider } from '@components/ui/tooltip'
 import { ThemeProvider } from '@providers/ThemeProvider'
 import '@styles/global.css'
 import { cn } from '@utility/classNames'
@@ -19,7 +20,7 @@ export default function RootLayout({
 			<head></head>
 			<body className="bg-pattern-soft">
 				<ThemeProvider defaultTheme="system" enableSystem>
-					{children}
+					<TooltipProvider>{children}</TooltipProvider>
 				</ThemeProvider>
 			</body>
 		</html>

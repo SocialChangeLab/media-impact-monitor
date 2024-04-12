@@ -2,11 +2,22 @@ import warnings
 from datetime import date
 
 import lightgbm as lgb
+import numpy as np
 import pandas as pd
 from mlforecast import MLForecast
+from mlforecast.auto import (
+    AutoLightGBM,
+    AutoLinearRegression,
+    AutoMLForecast,
+    AutoModel,
+    AutoRandomForest,
+    AutoRidge,
+)
 from mlforecast.lag_transforms import ExpandingMean, RollingMean
 from mlforecast.target_transforms import Differences
-from sklearn.ensemble import GradientBoostingRegressor
+from sklearn.ensemble import GradientBoostingRegressor, HistGradientBoostingRegressor
+from sklearn.linear_model import BayesianRidge, LassoLarsIC, LinearRegression
+from tqdm import tqdm
 
 from media_impact_monitor.util.cache import cache
 
@@ -17,7 +28,12 @@ from statsforecast.models import ARIMA
 
 
 def predict_with_arima(train: pd.DataFrame, horizon: int):
-    train = train.copy().reset_index()
+    train = (
+        train.copy()
+        .reset_index()
+        .rename(columns={"date": "ds", "count": "y"})
+        .assign(unique_id=0)
+    )
     train["unique_id"] = 0
     fcst = StatsForecast(
         models=[
@@ -30,52 +46,63 @@ def predict_with_arima(train: pd.DataFrame, horizon: int):
         freq="D",
         n_jobs=4,
     )
-    fcst.fit(train, time_col="date", target_col="count")
+    fcst.fit(train)
     pred = fcst.predict(h=horizon)
     pred = (
-        pred.rename(columns={"ARIMA": "count"})
+        pred.rename(columns={"ARIMA": "count", "ds": "date"})
         .drop(columns=["unique_id"])
         .set_index("date")
     )
     return pred
 
 
-def predict_with_boosting(train: pd.DataFrame, horizon: int):
-    train = train.copy().reset_index()
-    train["unique_id"] = 0
-    fcst = MLForecast(
-        models=[
-            # GradientBoostingRegressor(n_estimators=100),
-            lgb.LGBMRegressor(n_estimators=100),
-        ],
-        freq="D",
-        lags=[1, 2, 7],
-        lag_transforms={
-            1: [ExpandingMean()],
-            2: [RollingMean(window_size=2)],
-            7: [RollingMean(window_size=7)],
+def optimize(df, horizon):
+    df = (
+        df.copy()
+        .reset_index()
+        .rename(columns={"date": "ds", "count": "y"})
+        .assign(unique_id=0)
+    )
+    auto_mlf = AutoMLForecast(
+        models={
+            "lgb": AutoLightGBM(),
+            "ridge": AutoRidge(),
         },
-        target_transforms=[Differences([1])],
+        freq="D",
+        season_length=7,
     )
-    prep = fcst.preprocess(train, time_col="date", target_col="count")
-    print(prep)
-    fcst.fit(train, time_col="date", target_col="count")
-    pred = fcst.predict(h=horizon)
+    auto_mlf.fit(
+        df,
+        n_windows=2,
+        h=horizon,
+        num_samples=2,
+    )
+    return auto_mlf
+
+
+def predict_with_ml(train: pd.DataFrame, horizon: int, auto_mlf):
+    train = (
+        train.copy()
+        .reset_index()
+        .rename(columns={"date": "ds", "count": "y"})
+        .assign(unique_id=0)
+    )
+    pred = auto_mlf.predict(h=horizon)
     pred = (
-        # pred.rename(columns={"GradientBoostingRegressor": "count"})
-        pred.rename(columns={"LGBMRegressor": "count"})
+        pred.rename(columns={"lgb": "count", "ds": "date"})
         .drop(columns=["unique_id"])
         .set_index("date")
     )
     return pred
 
 
-@cache
+# @cache
 def calculate_impact(
     event_date: date,
     df: pd.DataFrame,
-    horizon: int = 14,
-    hidden_days_before_protest: int = 3,
+    horizon: int,
+    hidden_days_before_protest: int,
+    auto_mlf,
 ):
     """
     Calculate the impact of a protest event on the media coverage.
@@ -102,6 +129,30 @@ def calculate_impact(
     actual = df[
         (df.index >= event_date) & (df.index < event_date + pd.Timedelta(days=horizon))
     ]
-    counterfactual = predict_with_boosting(train, horizon)
+    counterfactual = predict_with_ml(train, horizon, auto_mlf)
     impact = actual - counterfactual
     return actual, counterfactual, impact
+
+
+def calculate_impacts(events, article_counts, horizon=14):
+    first_event_date = events["date"].min()
+    df_opt = article_counts[
+        article_counts.index < first_event_date - pd.Timedelta(days=28)
+    ]
+    auto_mlf = optimize(df_opt, horizon)
+    print(auto_mlf.results_[0].best_trial)
+    actuals = []
+    counterfactuals = []
+    impacts = []
+    for _, event in tqdm(events.iterrows(), total=events.shape[0]):
+        actual, counterfactual, impact = calculate_impact(
+            event["date"], article_counts, horizon, 0, auto_mlf
+        )
+        actuals.append(actual["count"])
+        counterfactuals.append(counterfactual["count"])
+        impacts.append(impact["count"])
+    print([a.shape for a in actuals])
+    actuals = np.array(actuals)
+    counterfactuals = np.array(counterfactuals)
+    impacts = np.array(impacts)
+    return actuals, counterfactuals, impacts

@@ -10,33 +10,23 @@ from media_impact_monitor.data_loaders.news_online.mediacloud_ import (
 from media_impact_monitor.data_loaders.news_print.genios import get_genios_counts
 from media_impact_monitor.data_loaders.protest.acled import get_acled_events
 from media_impact_monitor.impact_estimators.interrupted_time_series import (
-    calculate_impact,
+    calculate_impacts,
 )
 
 # get events and article counts for "Last Generation (Germany)" in 2023
 events = get_acled_events(
-    countries=["Germany"], start_date=date(2023, 3, 1), end_date=date(2023, 9, 30)
+    countries=["Germany"], start_date=date(2023, 6, 1), end_date=date(2024, 2, 29)
 )
 events = events[
     events["organizations"].apply(lambda x: "Last Generation (Germany)" in x)
 ]
-events = events.sample(100)
+# events = events.sample(100)
 article_counts = get_mediacloud_counts(
-    '"Letzte Generation"', date(2023, 1, 1), date(2023, 12, 31)
+    '"Letzte Generation"', date(2023, 1, 1), date(2024, 3, 31)
 )
 
 # estimate impact for each event
-actuals = []
-counterfactuals = []
-impacts = []
-for i, event in tqdm(events.iterrows(), total=events.shape[0]):
-    actual, counterfactual, impact = calculate_impact(event["date"], article_counts)
-    actuals.append(actual["count"])
-    counterfactuals.append(counterfactual["count"])
-    impacts.append(impact["count"])
-actuals = np.array(actuals)
-counterfactuals = np.array(counterfactuals)
-impacts = np.array(impacts)
+actuals, counterfactuals, impacts = calculate_impacts(events, article_counts)
 
 # plot the mean and the 95% confidence interval
 # a) comparison of actual and counterfactual media coverage

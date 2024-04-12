@@ -34,8 +34,9 @@ numpy = "<1.26.0" # due to causalpy requirements
 pandas = "^2.1" # not higher due to causalpy requirements
 causalpy = {git = "https://github.com/SocialChangeLab/CausalPy.git", branch = "davidpomerenke-patch-1" }
 statsforecast = "^1.7.3"
-mlforecast = "^0.12.0"
+mlforecast = "^0.12.1"
 lightgbm = "^4.3.0"
+optuna = "^3.6.1"
 
 [tool.poetry.group.dev.dependencies]
 pytest = "^8.0.2"

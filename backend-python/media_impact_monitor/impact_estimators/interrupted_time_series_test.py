@@ -20,7 +20,6 @@ events = get_acled_events(
 events = events[
     events["organizations"].apply(lambda x: "Last Generation (Germany)" in x)
 ]
-# events = events.sample(100)
 article_counts = get_mediacloud_counts(
     '"Letzte Generation"', date(2023, 1, 1), date(2024, 3, 31)
 )

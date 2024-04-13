@@ -19,7 +19,7 @@ function EventTooltip({
 	}, [event.organizations, organisations])
 
 	const formattedDate = useMemo(
-		() => format(parse(event.date), 'dd MMM yyyy'),
+		() => format(parse(event.date), 'D MMMM YYYY'),
 		[event.date],
 	)
 

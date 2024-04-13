@@ -1,6 +1,7 @@
 import { inter, neueRegrade } from '@utility/fonts'
 import React from 'react'
 
+import { Toaster } from '@components/ui/sonner'
 import { TooltipProvider } from '@components/ui/tooltip'
 import { ThemeProvider } from '@providers/ThemeProvider'
 import '@styles/global.css'
@@ -22,6 +23,7 @@ export default function RootLayout({
 				<ThemeProvider defaultTheme="system" enableSystem>
 					<TooltipProvider>{children}</TooltipProvider>
 				</ThemeProvider>
+				<Toaster />
 			</body>
 		</html>
 	)

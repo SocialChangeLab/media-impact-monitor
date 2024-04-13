@@ -162,7 +162,6 @@ const logos: LogoType[] = [
 	...prototypeFundLogos,
 	...socialChangeLabLogos,
 ]
-console.log(logos[0])
 export default async function AboutPage() {
 	return (
 		<>

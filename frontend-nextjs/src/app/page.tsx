@@ -18,7 +18,7 @@ export default async function EventPage() {
 						<EventsTimeline {...data} />
 					</div>
 					<div className="flex flex-col gap-4 pt-8">
-						<EventsTable data={data.events} />
+						<EventsTable data={data.data.events} />
 					</div>
 				</div>
 			</div>

@@ -31,6 +31,7 @@
     "nextjs-toploader": "1.6.11",
     "react": "18.0.0",
     "react-dom": "18.0.0",
+    "sonner": "1.4.41",
     "vaul": "0.9.0"
   },
   "devDependencies": {

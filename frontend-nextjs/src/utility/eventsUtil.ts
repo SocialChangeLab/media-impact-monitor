@@ -1,6 +1,18 @@
 import { parse } from '@formkit/tempo'
 import { dateSortCompare, isValidISODateString } from './dateUtil'
 
+export type Query<T> =
+	| {
+			data: T
+			isPending: false
+			error: null | string
+	  }
+	| {
+			data?: T
+			isPending: true
+			error: null
+	  }
+
 export type EventType = {
 	event_id: string
 	event_type: string
@@ -72,7 +84,13 @@ export type EventDataType = {
 	organisations: OrganisationType[]
 }
 
-export async function getEventsData(): Promise<EventDataType> {
+interface GetEventsDataResponseType {
+	data: EventDataType
+	isPending: false
+	error: null | string
+}
+
+export async function getEventsData(): Promise<GetEventsDataResponseType> {
 	const apiUrl = process.env.NEXT_PUBLIC_API_URL
 	if (!apiUrl)
 		throw new Error('NEXT_PUBLIC_API_URL env variable is not defined')
@@ -100,14 +118,22 @@ export async function getEventsData(): Promise<EventDataType> {
 			})) as EventType[]
 		const events = data.sort((a, b) => dateSortCompare(a.date, b.date))
 		return {
-			events,
-			organisations: extractEventOrganisations(events),
+			data: {
+				events,
+				organisations: extractEventOrganisations(events),
+			},
+			isPending: false,
+			error: null,
 		}
 	} catch (error) {
 		console.error(`Error fetching events: ${error}`)
 		return {
-			events: [],
-			organisations: [],
+			data: {
+				events: [],
+				organisations: [],
+			},
+			isPending: false,
+			error: error instanceof Error ? error.message : 'Unknown error',
 		}
 	}
 }

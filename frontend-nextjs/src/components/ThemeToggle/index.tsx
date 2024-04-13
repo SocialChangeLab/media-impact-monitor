@@ -11,37 +11,37 @@ import {
 } from '@components/ui/dropdown-menu'
 import { cn } from '@utility/classNames'
 import { Check, Laptop, MoonIcon, SunIcon, type LucideIcon } from 'lucide-react'
+import { useEffect, useState } from 'react'
 
 type ThemeOptionType = {
 	name: string
 	label: string
 	Icon: LucideIcon
-	predicate: (theme: string | undefined) => boolean
 }
-
 const themeOptions: ThemeOptionType[] = [
 	{
 		name: 'system',
 		label: 'System',
-		predicate: (theme) => theme !== 'light' && theme !== 'dark',
 		Icon: Laptop,
 	},
 	{
 		name: 'light',
 		label: 'Light',
-		predicate: (theme) => theme === 'light',
 		Icon: SunIcon,
 	},
 	{
 		name: 'dark',
 		label: 'Dark',
-		predicate: (theme) => theme === 'dark',
 		Icon: MoonIcon,
 	},
 ]
-
 export default function ThemeToggle() {
-	const { theme, setTheme } = useTheme()
+	const { theme: originalTheme, setTheme: setOriginalTheme } = useTheme()
+	const [theme, setTheme] = useState('system')
+
+	useEffect(() => {
+		setTheme(originalTheme || 'system')
+	}, [originalTheme])
 
 	return (
 		<DropdownMenu>
@@ -53,7 +53,7 @@ export default function ThemeToggle() {
 							className={cn(
 								idx !== 0 && 'absolute',
 								'rotate-90 scale-0 opacity-0 transition-all',
-								option.predicate(theme) && 'rotate-0 scale-100 opacity-100',
+								option.name === theme && 'rotate-0 scale-100 opacity-100',
 							)}
 						/>
 					))}
@@ -64,7 +64,7 @@ export default function ThemeToggle() {
 				{themeOptions.map((option) => (
 					<DropdownMenuItem
 						key={option.name}
-						onClick={() => setTheme(option.name)}
+						onClick={() => setOriginalTheme(option.name.toLowerCase())}
 					>
 						<div className="grid gap-2 items-center grid-cols-[auto_80px_auto]">
 							<option.Icon />
@@ -72,7 +72,7 @@ export default function ThemeToggle() {
 							<Check
 								className={cn(
 									'opacity-0',
-									option.predicate(theme) && 'opacity-50',
+									option.name === theme && 'opacity-50',
 								)}
 							/>
 						</div>

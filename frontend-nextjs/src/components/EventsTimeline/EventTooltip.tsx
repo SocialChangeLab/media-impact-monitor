@@ -40,7 +40,7 @@ function EventTooltip({
 				>
 					<li className="flex gap-4 items-center">{formattedDate}</li>
 					<li className="flex gap-2 items-center">
-						<Target size={16} className="text-black/60" />
+						<Target size={16} className="text-white/60 dark:text-black/60" />
 						<span>{formattedImpact}</span>
 					</li>
 				</ul>

@@ -12,7 +12,7 @@ const skeletons = Array(25)
 			.fill(null)
 			.map((_, j) => ({
 				eventId: j,
-				height: `${Math.ceil(impactScale(Math.random()))}px`,
+				height: `${Math.ceil(impactScale(Math.random() * 100))}px`,
 			})),
 	}))
 
@@ -30,7 +30,7 @@ export default function LoadingEventsTimeline() {
 						{fakeEvents.map(({ eventId, height }) => (
 							<div
 								key={`loading-event-${eventId}`}
-								className="size-3 relative z-10 bg-grayMed rounded-full opacity-10 animate-pulse"
+								className="size-3 relative z-10 bg-grayMed rounded-full animate-pulse"
 								style={{ height, animationDuration: `${1000 + colId * 100}ms` }}
 							/>
 						))}

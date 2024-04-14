@@ -2,8 +2,6 @@ import re
 
 import pandas as pd
 from number_parser import parse_number
-from src.cache import cache
-from src.paths import external_data
 
 
 def get_size_v1(acled_string: str) -> int | None:

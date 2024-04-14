@@ -1808,6 +1808,20 @@ jupyter-server = ">=1.8,<3"
 test = ["pytest", "pytest-console-scripts", "pytest-jupyter", "pytest-tornasync"]
 
 [[package]]
+name = "number-parser"
+version = "0.3.2"
+description = "parse numbers written in natural language"
+optional = false
+python-versions = "*"
+files = [
+    {file = "number-parser-0.3.2.tar.gz", hash = "sha256:7650e91afd46dec2f40396f62c2babc84645679a1ca8ecdb5292bdd252685d6a"},
+    {file = "number_parser-0.3.2-py2.py3-none-any.whl", hash = "sha256:beb20ce4c66d8e8f34dde1512a21f7c2a2aa3b068c60e230c4388d548ef3e3ca"},
+]
+
+[package.dependencies]
+attrs = ">=17.3.0"
+
+[[package]]
 name = "numpy"
 version = "1.26.4"
 description = "Fundamental package for array computing in Python"
@@ -3488,4 +3502,4 @@ requests = "*"
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.10"
-content-hash = "3e71fb34d3c711009165f9fac8ef10cb2a3f2bdf5ad7768f2b6fe46181dfecf4"
+content-hash = "c8842d5af65a3bcd48af680f973f273ae2bd801b55cf8f93b86423abed8d2d19"

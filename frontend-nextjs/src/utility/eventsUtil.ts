@@ -79,18 +79,20 @@ export type OrganisationType = {
 	count: number
 }
 
-export type EventDataType = {
+export type EventsDataType = {
 	events: EventType[]
 	organisations: OrganisationType[]
 }
 
-interface GetEventsDataResponseType {
-	data: EventDataType
+interface DataResponseType<DataType> {
+	data: DataType
 	isPending: false
 	error: null | string
 }
 
-export async function getEventsData(): Promise<GetEventsDataResponseType> {
+export async function getEventsData(): Promise<
+	DataResponseType<EventsDataType>
+> {
 	const apiUrl = process.env.NEXT_PUBLIC_API_URL
 	if (!apiUrl)
 		throw new Error('NEXT_PUBLIC_API_URL env variable is not defined')
@@ -135,6 +137,17 @@ export async function getEventsData(): Promise<GetEventsDataResponseType> {
 			isPending: false,
 			error: error instanceof Error ? error.message : 'Unknown error',
 		}
+	}
+}
+
+export async function getEventData(
+	id: string,
+): Promise<DataResponseType<EventType | undefined>> {
+	const allEvents = await getEventsData()
+	return {
+		data: allEvents.data.events.find((x) => x.event_id === id),
+		isPending: false,
+		error: null,
 	}
 }
 

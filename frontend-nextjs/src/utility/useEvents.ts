@@ -1,10 +1,10 @@
 'use client'
 import { useEffect, useState } from 'react'
 import { toast } from 'sonner'
-import { EventDataType, Query, getEventsData } from './eventsUtil'
+import { EventsDataType, Query, getEventsData } from './eventsUtil'
 
-function useEvents(initialData?: Query<EventDataType>) {
-	const [query, setQuery] = useState<Query<EventDataType>>(
+function useEvents(initialData?: Query<EventsDataType>) {
+	const [query, setQuery] = useState<Query<EventsDataType>>(
 		initialData || {
 			data: undefined,
 			isPending: true,

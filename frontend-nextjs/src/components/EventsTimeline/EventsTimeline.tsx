@@ -1,14 +1,26 @@
 import { addDay, dayStart, format, isBefore, parse } from '@formkit/tempo'
 import { cn } from '@utility/classNames'
 import { dateSortCompare } from '@utility/dateUtil'
-import { type EventDataType, type EventType } from '@utility/eventsUtil'
+import { type EventType, type EventsDataType } from '@utility/eventsUtil'
 import { scaleLinear } from 'd3-scale'
+import { AnimationProps, motion } from 'framer-motion'
 import EventBubbleLink from './EventBubbleLink'
 import EventTooltip from './EventTooltip'
+import EventsTimelineWrapper from './EventsTimelinWrapper'
 
-const impactScale = scaleLinear([0, 1], [12, 64])
+export const impactScale = scaleLinear([0, 1], [12, 64])
 
-function EventsTimeline({ events, organisations }: EventDataType) {
+const eventVariants: AnimationProps['variants'] = {
+	initial: { opacity: 0, scale: 0.5 },
+	enter: { opacity: 1, scale: 1 },
+}
+
+const fadeVariants: AnimationProps['variants'] = {
+	initial: { opacity: 0 },
+	enter: { opacity: 1 },
+}
+
+function EventsTimeline({ events, organisations }: EventsDataType) {
 	const eventsByDay = events.reduce((acc, event) => {
 		const day = dayStart(parse(event.date)).toISOString()
 		const newEvents = [...(acc.get(day) ?? []), event].sort((a, b) =>
@@ -30,35 +42,45 @@ function EventsTimeline({ events, organisations }: EventDataType) {
 	})
 
 	return (
-		<div className="w-full overflow-x-auto">
-			<ul className="flex gap-0.5 items-center py-6 justify-evenly min-w-full bg-grayUltraLight min-h-96">
-				{eventDays.length === 0 && (
-					<p>No events for this filter configuration</p>
-				)}
+		<EventsTimelineWrapper>
+			<motion.ul
+				key="events-timeline-chart-wrapper"
+				className="flex gap-0.5 items-center py-6 justify-evenly min-w-full bg-grayUltraLight min-h-96"
+				variants={fadeVariants}
+				initial="initial"
+				animate="enter"
+				transition={{ staggerChildren: 0.01 }}
+			>
 				{eventDays.map(({ day, events }) => (
-					<li key={day} className="flex flex-col gap-0.5">
+					<motion.li
+						key={day}
+						className="flex flex-col gap-0.5"
+						variants={fadeVariants}
+						transition={{ staggerChildren: 0.01 }}
+					>
 						{events.map((event) => (
 							<EventTooltip
 								key={event.event_id}
 								event={event}
 								organisations={organisations}
 							>
-								<div
+								<motion.div
 									className="size-3 relative z-10 hover:z-20"
 									style={{
 										height: `${Math.ceil(impactScale(event.impact))}px`,
 									}}
+									variants={eventVariants}
 								>
 									<EventBubbleLink
 										event={event}
 										organisations={organisations}
 									/>
-								</div>
+								</motion.div>
 							</EventTooltip>
 						))}
-					</li>
+					</motion.li>
 				))}
-			</ul>
+			</motion.ul>
 			{eventDays.length > 0 && (
 				<>
 					<ul
@@ -110,7 +132,7 @@ function EventsTimeline({ events, organisations }: EventDataType) {
 					</div>
 				</>
 			)}
-		</div>
+		</EventsTimelineWrapper>
 	)
 }
 

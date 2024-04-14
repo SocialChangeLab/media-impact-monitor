@@ -9,15 +9,14 @@ const buttonVariants = cva(
 		'inline-flex items-center justify-center whitespace-nowrap gap-2',
 		'text-lg transition-colors focusable text-f',
 		'disabled:pointer-events-none disabled:opacity-50',
-		'border border-transparent w-fit',
+		'border border-transparent w-fit no-underline',
 	),
 	{
 		variants: {
 			variant: {
 				default: 'bg-fg text-bg hover:bg-grayDark',
 				destructive: 'bg-fg text-bg hover:bg-bg hover:text-fg',
-				outline:
-					' border-grayMed bg-transparent hover:bg-grayDark hover:text-bg hover:border-grayDark',
+				outline: ' border-grayMed bg-transparent hover:bg-grayLight',
 				secondary: 'bg-grayLight text-fg hover:bg-fg hover:bg-bg',
 				ghost: 'hover:bg-grayDark',
 				link: 'text-fg underline-offset-4 hover:underline-fg',

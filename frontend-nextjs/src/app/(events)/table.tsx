@@ -3,11 +3,15 @@
 import { DataTable } from '@components/DataTable'
 import { EventType } from '@utility/eventsUtil'
 import { useMemo } from 'react'
-import { getColumns } from './columns'
+import { getColumns } from '../columns'
 
-function EventsTable({ data }: { data: EventType[] }) {
+function EventsTable(props: {
+	data: EventType[]
+	error?: string
+	reset?: () => void
+}) {
 	const columns = useMemo(getColumns, [])
-	return <DataTable columns={columns} data={data} />
+	return <DataTable {...props} columns={columns} />
 }
 
 export default EventsTable

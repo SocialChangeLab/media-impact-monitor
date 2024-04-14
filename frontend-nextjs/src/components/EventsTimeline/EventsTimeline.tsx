@@ -45,7 +45,7 @@ function EventsTimeline({ events, organisations }: EventsDataType) {
 		<EventsTimelineWrapper>
 			<motion.ul
 				key="events-timeline-chart-wrapper"
-				className="flex gap-0.5 items-center py-6 justify-evenly min-w-full bg-grayUltraLight min-h-96"
+				className="flex gap-0.5 items-center py-6 justify-evenly min-w-full bg-grayUltraLight min-h-96 max-h-[calc(100vh-17rem)] overflow-auto"
 				variants={fadeVariants}
 				initial="initial"
 				animate="enter"

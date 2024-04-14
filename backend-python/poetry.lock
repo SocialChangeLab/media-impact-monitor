@@ -716,6 +716,54 @@ docs = ["ipython", "matplotlib", "numpydoc", "sphinx"]
 tests = ["pytest", "pytest-cov", "pytest-xdist"]
 
 [[package]]
+name = "dask"
+version = "2024.4.1"
+description = "Parallel PyData with Task Scheduling"
+optional = false
+python-versions = ">=3.9"
+files = [
+    {file = "dask-2024.4.1-py3-none-any.whl", hash = "sha256:cac5d28b9de7a7cfde46d6fbd8fa81f5654980d010b44d1dbe04dd13b5b63126"},
+    {file = "dask-2024.4.1.tar.gz", hash = "sha256:6cd8eb03ddc8dc08d6ca5b167b8de559872bc51cc2b6587d0e9dc754ab19cdf0"},
+]
+
+[package.dependencies]
+click = ">=8.1"
+cloudpickle = ">=1.5.0"
+dask-expr = {version = ">=1.0,<1.1", optional = true, markers = "extra == \"dataframe\""}
+fsspec = ">=2021.09.0"
+importlib-metadata = {version = ">=4.13.0", markers = "python_version < \"3.12\""}
+numpy = {version = ">=1.21", optional = true, markers = "extra == \"array\""}
+packaging = ">=20.0"
+pandas = {version = ">=1.3", optional = true, markers = "extra == \"dataframe\""}
+partd = ">=1.2.0"
+pyyaml = ">=5.3.1"
+toolz = ">=0.10.0"
+
+[package.extras]
+array = ["numpy (>=1.21)"]
+complete = ["dask[array,dataframe,diagnostics,distributed]", "lz4 (>=4.3.2)", "pyarrow (>=7.0)", "pyarrow-hotfix"]
+dataframe = ["dask-expr (>=1.0,<1.1)", "dask[array]", "pandas (>=1.3)"]
+diagnostics = ["bokeh (>=2.4.2)", "jinja2 (>=2.10.3)"]
+distributed = ["distributed (==2024.4.1)"]
+test = ["pandas[test]", "pre-commit", "pytest", "pytest-cov", "pytest-rerunfailures", "pytest-timeout", "pytest-xdist"]
+
+[[package]]
+name = "dask-expr"
+version = "1.0.11"
+description = "High Level Expressions for Dask"
+optional = false
+python-versions = ">=3.9"
+files = [
+    {file = "dask-expr-1.0.11.tar.gz", hash = "sha256:556e13dfa081cacb0fd14b026bde18703884c12bc4659531e440507eaaee6822"},
+    {file = "dask_expr-1.0.11-py3-none-any.whl", hash = "sha256:66e1f35252875fe1875ae371bc84ab4f7f6c35692835ed545d41fac61cd0759b"},
+]
+
+[package.dependencies]
+dask = "2024.4.1"
+pandas = ">=2"
+pyarrow = ">=7.0.0"
+
+[[package]]
 name = "debugpy"
 version = "1.8.1"
 description = "An implementation of the Debug Adapter Protocol for Python"
@@ -1340,6 +1388,25 @@ files = [
     {file = "idna-3.6-py3-none-any.whl", hash = "sha256:c05567e9c24a6b9faaa835c4821bad0590fbb9d5779e7caa6e1cc4978e7eb24f"},
     {file = "idna-3.6.tar.gz", hash = "sha256:9ecdbbd083b06798ae1e86adcbfe8ab1479cf864e4ee30fe4e46a003d12491ca"},
 ]
+
+[[package]]
+name = "importlib-metadata"
+version = "7.1.0"
+description = "Read metadata from Python packages"
+optional = false
+python-versions = ">=3.8"
+files = [
+    {file = "importlib_metadata-7.1.0-py3-none-any.whl", hash = "sha256:30962b96c0c223483ed6cc7280e7f0199feb01a0e40cfae4d4450fc6fab1f570"},
+    {file = "importlib_metadata-7.1.0.tar.gz", hash = "sha256:b78938b926ee8d5f020fc4772d487045805a55ddbad2ecf21c6d60938dc7fcd2"},
+]
+
+[package.dependencies]
+zipp = ">=0.5"
+
+[package.extras]
+docs = ["furo", "jaraco.packaging (>=9.3)", "jaraco.tidelift (>=1.4)", "rst.linker (>=1.9)", "sphinx (>=3.5)", "sphinx-lint"]
+perf = ["ipython"]
+testing = ["flufl.flake8", "importlib-resources (>=1.3)", "jaraco.test (>=5.4)", "packaging", "pyfakefs", "pytest (>=6)", "pytest-checkdocs (>=2.4)", "pytest-cov", "pytest-enabler (>=2.2)", "pytest-mypy", "pytest-perf (>=0.9.2)", "pytest-ruff (>=0.2.1)"]
 
 [[package]]
 name = "iniconfig"
@@ -1992,6 +2059,17 @@ files = [
     {file = "llvmlite-0.42.0-cp39-cp39-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:d7599b65c7af7abbc978dbf345712c60fd596aa5670496561cc10e8a71cebfb2"},
     {file = "llvmlite-0.42.0-cp39-cp39-win_amd64.whl", hash = "sha256:43d65cc4e206c2e902c1004dd5418417c4efa6c1d04df05c6c5675a27e8ca90e"},
     {file = "llvmlite-0.42.0.tar.gz", hash = "sha256:f92b09243c0cc3f457da8b983f67bd8e1295d0f5b3746c7a1861d7a99403854a"},
+]
+
+[[package]]
+name = "locket"
+version = "1.0.0"
+description = "File-based locks for Python on Linux and Windows"
+optional = false
+python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*"
+files = [
+    {file = "locket-1.0.0-py2.py3-none-any.whl", hash = "sha256:b6c819a722f7b6bd955b80781788e4a66a55628b858d347536b7e81325a3a5e3"},
+    {file = "locket-1.0.0.tar.gz", hash = "sha256:5c0d4c052a8bbbf750e056a8e65ccd309086f4f0f18a2eac306a8dfa4112a632"},
 ]
 
 [[package]]
@@ -2687,6 +2765,24 @@ files = [
 [package.extras]
 qa = ["flake8 (==3.8.3)", "mypy (==0.782)"]
 testing = ["docopt", "pytest (<6.0.0)"]
+
+[[package]]
+name = "partd"
+version = "1.4.1"
+description = "Appendable key-value storage"
+optional = false
+python-versions = ">=3.7"
+files = [
+    {file = "partd-1.4.1-py3-none-any.whl", hash = "sha256:27e766663d36c161e2827aa3e28541c992f0b9527d3cca047e13fb3acdb989e6"},
+    {file = "partd-1.4.1.tar.gz", hash = "sha256:56c25dd49e6fea5727e731203c466c6e092f308d8f0024e199d02f6aa2167f67"},
+]
+
+[package.dependencies]
+locket = "*"
+toolz = "*"
+
+[package.extras]
+complete = ["blosc", "numpy (>=1.9.0)", "pandas (>=0.19.0)", "pyzmq"]
 
 [[package]]
 name = "patsy"
@@ -4148,6 +4244,26 @@ develop = ["colorama", "cython (>=0.29.33)", "cython (>=0.29.33,<4.0.0)", "flake
 docs = ["ipykernel", "jupyter-client", "matplotlib", "nbconvert", "nbformat", "numpydoc", "pandas-datareader", "sphinx"]
 
 [[package]]
+name = "swifter"
+version = "1.4.0"
+description = "A package which efficiently applies any function to a pandas dataframe or series in the fastest available manner"
+optional = false
+python-versions = "*"
+files = [
+    {file = "swifter-1.4.0.tar.gz", hash = "sha256:e1bb74476a21b3f07a17aa18c97fdcba8599726bd17da732f09dabcc50e26ba0"},
+]
+
+[package.dependencies]
+dask = {version = ">=2.10.0", extras = ["dataframe"]}
+pandas = ">=1.0.0"
+psutil = ">=5.6.6"
+tqdm = ">=4.33.0"
+
+[package.extras]
+groupby = ["ray (>=1.0.0)"]
+notebook = ["ipywidgets (>=7.0.0)"]
+
+[[package]]
 name = "terminado"
 version = "0.18.1"
 description = "Tornado websocket backend for the Xterm.js Javascript terminal emulator library."
@@ -4787,7 +4903,22 @@ files = [
 [package.dependencies]
 requests = "*"
 
+[[package]]
+name = "zipp"
+version = "3.18.1"
+description = "Backport of pathlib-compatible object wrapper for zip files"
+optional = false
+python-versions = ">=3.8"
+files = [
+    {file = "zipp-3.18.1-py3-none-any.whl", hash = "sha256:206f5a15f2af3dbaee80769fb7dc6f249695e940acca08dfb2a4769fe61e538b"},
+    {file = "zipp-3.18.1.tar.gz", hash = "sha256:2884ed22e7d8961de1c9a05142eb69a247f120291bc0206a00a7642f09b5b715"},
+]
+
+[package.extras]
+docs = ["furo", "jaraco.packaging (>=9.3)", "jaraco.tidelift (>=1.4)", "rst.linker (>=1.9)", "sphinx (>=3.5)", "sphinx-lint"]
+testing = ["big-O", "jaraco.functools", "jaraco.itertools", "more-itertools", "pytest (>=6)", "pytest-checkdocs (>=2.4)", "pytest-cov", "pytest-enabler (>=2.2)", "pytest-ignore-flaky", "pytest-mypy", "pytest-ruff (>=0.2.1)"]
+
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.10"
-content-hash = "f649f593ba04a46e89796470d65cc2ac74ebc7919273da786868b44c0d7430ca"
+content-hash = "0c06df39d347abca82dc2550e3870b8e84fc924c28206b1e551e5c6d5474c2f4"

@@ -37,6 +37,7 @@ statsforecast = "^1.7.3"
 mlforecast = "^0.12.1"
 lightgbm = "^4.3.0"
 optuna = "^3.6.1"
+swifter = "^1.4.0"
 
 [tool.poetry.group.dev.dependencies]
 pytest = "^8.0.2"

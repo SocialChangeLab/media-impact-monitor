@@ -73,12 +73,12 @@ def predict_with_ml(train: pd.DataFrame, horizon: int):
     return pred
 
 
-def calculate_impact(
+def estimate_impact(
     event_date: date,
     df: pd.DataFrame,
     horizon: int,
     hidden_days_before_protest: int,
-):
+) -> tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame]:
     """
     Calculate the impact of a protest event on the media coverage.
 
@@ -95,7 +95,6 @@ def calculate_impact(
     """
     assert df.columns == ["count"]
     assert df.index.name == "date"
-    assert isinstance(df.index, pd.DatetimeIndex)
     # check that all values are numeric
     assert df.dtypes.apply(pd.api.types.is_numeric_dtype).all()
 
@@ -109,17 +108,18 @@ def calculate_impact(
     return actual, counterfactual, impact
 
 
-def calculate_impacts(events, article_counts, horizon=10, hidden_days_before_protest=4):
+def estimate_impacts(
+    events: pd.DataFrame,
+    article_counts: pd.DataFrame,
+    horizon: int,
+    hidden_days_before_protest: int,
+) -> tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame]:
     actuals, counterfactuals, impacts = zip(
         *[
-            calculate_impact(
+            estimate_impact(
                 event["date"], article_counts, horizon, hidden_days_before_protest
             )
             for _, event in tqdm(events.iterrows(), total=events.shape[0])
         ]
     )
-    return (
-        np.array(actuals).squeeze(),
-        np.array(counterfactuals).squeeze(),
-        np.array(impacts).squeeze(),
-    )
+    return actuals, counterfactuals, impacts

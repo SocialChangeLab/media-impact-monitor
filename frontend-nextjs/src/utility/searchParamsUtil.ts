@@ -4,11 +4,6 @@ export type AllowedParamsInputType = {
 	to?: Date | undefined
 }
 
-export const allowedParamKeys: (keyof AllowedParamsInputType)[] = [
-	'from',
-	'to',
-] as const
-
 export function parseSearchParams(
 	originalSearchParams: URLSearchParams,
 ): AllowedParamsInputType {

@@ -3,7 +3,7 @@
 import { DataTable } from '@components/DataTable'
 import { EventType } from '@utility/eventsUtil'
 import { useMemo } from 'react'
-import { getColumns } from '../columns'
+import { getColumns } from '../../columns'
 
 function EventsTable(props: {
 	data: EventType[]

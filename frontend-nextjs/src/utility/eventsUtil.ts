@@ -1,4 +1,4 @@
-import { parse } from '@formkit/tempo'
+import { parse } from 'date-fns'
 import { dateSortCompare, isValidISODateString } from './dateUtil'
 
 export type Query<T> =
@@ -116,7 +116,7 @@ export async function getEventsData(): Promise<
 			.map((x) => ({
 				...x,
 				impact: Math.random(),
-				date: parse(x.date).toISOString(),
+				date: parse(x.date, 'yyyy-MM-dd', new Date()).toISOString(),
 			})) as EventType[]
 		const events = data.sort((a, b) => dateSortCompare(a.date, b.date))
 		return {

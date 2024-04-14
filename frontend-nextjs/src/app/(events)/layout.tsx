@@ -1,3 +1,4 @@
+import { DatePickerWithRange } from '@components/ui/date-range-picker'
 import { ReactNode } from 'react'
 
 export default function EventPage({ children }: { children: ReactNode }) {
@@ -7,6 +8,7 @@ export default function EventPage({ children }: { children: ReactNode }) {
 				<h1 className="text-3xl font-bold font-headlines antialiased">
 					{'Events'}
 				</h1>
+				<DatePickerWithRange />
 			</div>
 			<div className="flex flex-col gap-8">{children}</div>
 		</div>

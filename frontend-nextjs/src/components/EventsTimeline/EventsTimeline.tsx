@@ -1,8 +1,8 @@
-import { addDay, dayStart, format, isBefore, parse } from '@formkit/tempo'
 import { cn } from '@utility/classNames'
 import { dateSortCompare } from '@utility/dateUtil'
 import { type EventType, type EventsDataType } from '@utility/eventsUtil'
 import { scaleLinear } from 'd3-scale'
+import { addDays, format, isBefore, startOfDay } from 'date-fns'
 import { AnimationProps, motion } from 'framer-motion'
 import EventBubbleLink from './EventBubbleLink'
 import EventTooltip from './EventTooltip'
@@ -22,7 +22,7 @@ const fadeVariants: AnimationProps['variants'] = {
 
 function EventsTimeline({ events, organisations }: EventsDataType) {
 	const eventsByDay = events.reduce((acc, event) => {
-		const day = dayStart(parse(event.date)).toISOString()
+		const day = startOfDay(new Date(event.date)).toISOString()
 		const newEvents = [...(acc.get(day) ?? []), event].sort((a, b) =>
 			a.organizations[0].localeCompare(b.organizations[0]),
 		)
@@ -36,8 +36,8 @@ function EventsTimeline({ events, organisations }: EventsDataType) {
 
 	const allDays = createAllDays(sortedDays.at(0)?.day, sortedDays.at(-1)?.day)
 	const eventDays = allDays.map((day) => {
-		const dayString = dayStart(day).toISOString()
-		const events = eventsByDay.get(dayString) ?? []
+		const dayString = startOfDay(day)
+		const events = eventsByDay.get(dayString.toISOString()) ?? []
 		return { day: dayString, events }
 	})
 
@@ -53,7 +53,7 @@ function EventsTimeline({ events, organisations }: EventsDataType) {
 			>
 				{eventDays.map(({ day, events }) => (
 					<motion.li
-						key={day}
+						key={day.toISOString()}
 						className="flex flex-col gap-0.5"
 						variants={fadeVariants}
 						transition={{ staggerChildren: 0.01 }}
@@ -89,7 +89,7 @@ function EventsTimeline({ events, organisations }: EventsDataType) {
 					>
 						{eventDays.map(({ day }, idx) => (
 							<li
-								key={day}
+								key={day.toISOString()}
 								className="size-3 relative"
 								aria-hidden={idx % 4 !== 0 ? 'false' : 'true'}
 								aria-label="X Axis Tick"
@@ -100,7 +100,7 @@ function EventsTimeline({ events, organisations }: EventsDataType) {
 								/>
 								{idx % 4 === 0 && (
 									<span className="absolute left-1/2 top-full -translate-x-1/2 text-grayDark text-sm">
-										{format(parse(day), 'DD.MM.YYYY', 'en-GB')}
+										{format(new Date(day), 'dd.MM.yyyy')}
 									</span>
 								)}
 							</li>
@@ -139,12 +139,12 @@ function EventsTimeline({ events, organisations }: EventsDataType) {
 function createAllDays(start?: string, end?: string) {
 	if (!start || !end) return []
 	const days: Date[] = []
-	let currentDate = dayStart(parse(start))
-	const endDate = dayStart(parse(end))
+	let currentDate = startOfDay(new Date(start))
+	const endDate = startOfDay(new Date(end))
 
 	while (isBefore(currentDate, endDate)) {
 		days.push(currentDate)
-		currentDate = addDay(currentDate)
+		currentDate = addDays(currentDate, 1)
 	}
 
 	return days

@@ -14,11 +14,11 @@ const buttonVariants = cva(
 	{
 		variants: {
 			variant: {
-				default: 'bg-fg text-bg hover:bg-grayDark',
+				default: 'bg-fg text-bg hover:bg-grayDark hover:text-bg',
 				destructive: 'bg-fg text-bg hover:bg-bg hover:text-fg',
 				outline: ' border-grayMed bg-transparent hover:bg-grayLight',
 				secondary: 'bg-grayLight text-fg hover:bg-fg hover:bg-bg',
-				ghost: 'hover:bg-grayDark',
+				ghost: 'hover:bg-grayLight hover:text-fg',
 				link: 'text-fg underline-offset-4 hover:underline-fg',
 			},
 			size: {

@@ -1,7 +1,7 @@
 import { Tooltip, TooltipContent, TooltipTrigger } from '@components/ui/tooltip'
-import { format, parse } from '@formkit/tempo'
 import { cn } from '@utility/classNames'
 import { EventType, OrganisationType } from '@utility/eventsUtil'
+import { format } from 'date-fns'
 import { Target } from 'lucide-react'
 import { PropsWithChildren, useMemo } from 'react'
 
@@ -19,7 +19,7 @@ function EventTooltip({
 	}, [event.organizations, organisations])
 
 	const formattedDate = useMemo(
-		() => format(parse(event.date), 'D MMMM YYYY'),
+		() => format(new Date(event.date), 'd MMMM yyyy'),
 		[event.date],
 	)
 

@@ -1,65 +1,44 @@
-import { useEffect, useState } from 'react'
-import { getEventsData } from './eventsUtil'
+'use client'
+import { useQuery } from '@tanstack/react-query'
+import { useEffect } from 'react'
+import { toast } from 'sonner'
+import { EventsDataType, getEventsData } from './eventsUtil'
+import useQueryParams from './useQueryParams'
 
-type Query<T> =
-	| {
-			data: T
-			isPending: false
-			error: null
-	  }
-	| {
-			data?: T
-			isPending: true
-			error: null
-	  }
-	| {
-			data?: undefined
-			isPending: false
-			error: Error
-	  }
-
-export type EventType = {
-	event_id: string
-	event_type: string
-	source: string
-	topic: string
-	date: string
-	organizations: string[]
-	description: string
-}
-
-function useEvents() {
-	const [query, setQuery] = useState<Query<EventType[]>>({
-		data: undefined,
-		isPending: true,
-		error: null,
+function useEvents(initialData?: EventsDataType) {
+	const { searchParams } = useQueryParams()
+	const { data, isPending, error } = useQuery({
+		queryKey: [
+			'events',
+			searchParams.from?.toISOString(),
+			searchParams.to?.toISOString(),
+		],
+		queryFn: async () => {
+			const { data, error } = await getEventsData(searchParams)
+			if (error) throw new Error(error)
+			return data
+		},
+		initialData,
 	})
 
 	useEffect(() => {
-		let ignore = false
+		if (!error) return
+		if (toast.length > 0) return
+		const to = setTimeout(() => {
+			toast.error(`Error fetching events: ${error}`, {
+				important: true,
+				dismissible: false,
+				duration: 1000000,
+			})
+		}, 10)
+		return () => clearTimeout(to)
+	}, [error])
 
-		const fetchData = async () => {
-			try {
-				const data = await getEventsData()
-				if (ignore) return
-				setQuery({ data, isPending: false, error: null })
-			} catch (error) {
-				if (ignore) return
-				setQuery({
-					data: undefined,
-					isPending: false,
-					error: error instanceof Error ? error : new Error('Unknown error'),
-				})
-			}
-		}
-		fetchData()
-
-		return () => {
-			ignore = true
-		}
-	}, [])
-
-	return query
+	return {
+		data,
+		isPending,
+		error,
+	}
 }
 
 export default useEvents

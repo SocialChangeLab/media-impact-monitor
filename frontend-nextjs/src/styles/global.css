@@ -175,6 +175,6 @@
 	}
 
 	.bg-pattern-semi-inverted {
-		@apply bg-[url(/images/noisy-dark.png)] dark:bg-[url(/images/noisy-light.png)] bg-repeat bg-center;
+		@apply bg-fg bg-[url(/images/noisy-dark.png)] dark:bg-[url(/images/noisy-light.png)] bg-repeat bg-center bg-blend-screen dark:bg-blend-multiply;
 	}
 }

@@ -1,5 +1,5 @@
 import { createColumnHelper } from '@tanstack/react-table'
-import { EventType } from '@utility/useEvents'
+import { EventType } from '@utility/eventsUtil'
 
 const columnHelper = createColumnHelper<EventType>()
 

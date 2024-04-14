@@ -1,5 +1,3 @@
-'use client'
-
 import ThemeToggle from '@components/ThemeToggle'
 import AppLogo from '@components/logos/AppLogo'
 import { cn } from '@utility/classNames'

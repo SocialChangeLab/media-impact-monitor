@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 from datetime import date
-from typing import Literal
+from typing import Generic, Literal, TypeVar
 
 from pydantic import BaseModel, Field
 
@@ -9,6 +9,21 @@ from pydantic import BaseModel, Field
 Topic = Literal["climate_change"]
 Query = str  # for now, just a single keyword
 MediaSource = Literal["news_online", "news_print"]
+
+
+CountTimeSeries = dict[date, int]  # time series with integer values
+TimeSeries = dict[date, float]  # time series with float values
+AbstractTimeSeries = dict[int, float]  # time series with float values and without dates
+
+#### API types ####
+
+Q = TypeVar("Q")
+R = TypeVar("R")
+
+
+class Response(BaseModel, Generic[Q, R]):
+    query: Q
+    data: R
 
 
 #### Event types ####
@@ -31,17 +46,17 @@ class EventSearch(BaseModel):
     end_date: date = Field(
         description="The end date of the search, inclusive, in the format YYYY-MM-DD."
     )
+    organizers: list[str] | None = Field(
+        default=None,
+        description="Filter by organizers involved in the events.",
+    )
     topic: Topic | None = Field(
         default=None,
-        description="Filter by topic. This will automatically set filters for query and organizations, which you can further refine with the `query` and `organizations` fields. Currently only _Climate Change_ is supported.",
+        description="Filter by topic. This will automatically set filters for query and organizers, which you can further refine with the `query` field. Currently only _Climate Change_ is supported.",
     )
     query: Query | None = Field(
         default=None,
-        description="Filter by a keyword query that must occur in the event description or the organization names.",
-    )
-    organizations: list[str] | None = Field(
-        default=None,
-        description="Filter by organizations involved in the events.",
+        description="Filter by a keyword query that must occur in the event description.",
     )
 
 
@@ -53,9 +68,8 @@ class Event:
     event_id: EventId = Field(description="Unique identifier for the event.")
     event_type: EventType = Field(description="The type of event.")
     source: EventSource = Field(description="The source dataset.")
-    topic: Topic = Field(description="The topic of the event.")
     date: date_ = Field(description="The date of the event.")
-    organizations: list[str] = Field(
+    organizers: list[str] = Field(
         description="The organizations involved in the event."
     )
     description: str = Field(description="Description of the event.")
@@ -89,11 +103,6 @@ class TrendSearch(BaseModel):
     )
 
 
-class Count(BaseModel):
-    date: date
-    count: int
-
-
 #### Fulltext types ####
 
 
@@ -103,7 +112,7 @@ class FulltextSearch(BaseModel):
     end_date: date
     topic: Topic | None = None
     query: Query | None = None
-    organizations: list[str] | None = None
+    organizers: list[str] | None = None
 
 
 class Fulltext(BaseModel):
@@ -148,12 +157,15 @@ class Impact(BaseModel):
     method_applicability_reason: str | None = Field(
         description="Reason why the causal inference method is (not) applicable."
     )
-    impact_average: dict[int, float] = Field(
-        description="Impact estimate for each day around the average protest event."
+    impact_average: AbstractTimeSeries = Field(
+        description="Impact estimate for each day around the average protest event. Dictionary of days after event (0 = day of event) and impact estimates for the given days."
     )
-    impact_average_upper: dict[int, float] | None = Field(
-        description="Upper bound of the two-sided 95% confidence interval for the impact estimate, for each day around the average protest event."
+    impact_average_upper: AbstractTimeSeries | None = Field(
+        description="Upper bound of the two-sided 95% confidence interval for the impact estimate, for each day around the average protest event. Dictionary of days after event (0 = day of event) and impact estimates for the given days."
     )
-    impact_average_lower: dict[int, float] | None = Field(
-        description="Lower bound of the two-sided 95% confidence interval for the impact estimate, for each day around the average protest event."
+    impact_average_lower: AbstractTimeSeries | None = Field(
+        description="Lower bound of the two-sided 95% confidence interval for the impact estimate, for each day around the average protest event. Dictionary of days after event (0 = day of event) and impact estimates for the given days."
+    )
+    individual_impacts: dict[EventId, TimeSeries] | None = Field(
+        description="Impact estimate for each individual protest event, respectively for each day around the event. Dictionary of event_ids and time series. Each time series in turn is a dictionary of dates and impact estimates for the given dates."
     )

@@ -2,6 +2,7 @@ import os
 from datetime import date
 
 import pytest
+
 from media_impact_monitor.data_loaders.protest.acled import get_acled_events
 
 
@@ -28,6 +29,10 @@ def test_get_protests_with_keyword():
     assert (
         df["organizations"].astype(str).str.contains(movements[1]).sum() > 10
     ), "Extinction Rebellion not found in the organization column."
+    assert (df["organizers"].apply(type) == list).all(), "Organizers should be lists."
+    assert not (
+        df["organizers"] == [""]
+    ).any(), "Empty strings should not be present in the organizers column."
 
 
 def test_get_protests_fail_with_both_countries_and_regions():

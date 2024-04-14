@@ -3,6 +3,7 @@ from datetime import date
 
 import pandas as pd
 from dotenv import load_dotenv
+
 from media_impact_monitor.util.cache import cache, get
 from media_impact_monitor.util.date import verify_dates
 
@@ -77,7 +78,15 @@ def get_acled_events(
     if len(df) == limit:
         raise ValueError(f"Limit of {limit} reached.")
     df["date"] = pd.to_datetime(df["event_date"], format="%Y-%m-%d")
-    df["organizations"] = df["assoc_actor_1"].str.split("; ")
+    df["organizers"] = (
+        df["assoc_actor_1"].str.split("; ").apply(lambda x: [] if x == [""] else x)
+    )
+    group_blocklist = ["Students (Germany)", "Labor Group (Germany)"]
+    df["organizers"] = df["organizers"].apply(
+        lambda x: [org for org in x if org not in group_blocklist]
+    )
     df["description"] = df["notes"]
-    df = df[["date", "description", "organizations"]]
+    df["event_type"] = "protest"
+    df["source"] = "acled"
+    df = df[["date", "description", "organizers", "event_type", "source"]]
     return df

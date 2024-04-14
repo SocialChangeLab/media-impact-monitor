@@ -11,5 +11,5 @@ export default async function EventsTablePage({
 		new URLSearchParams(searchParams),
 	)
 	const { data } = await getEventsData(parsedSearchParams)
-	return <EventsTable data={data.events} />
+	return <EventsTable initialData={data} />
 }

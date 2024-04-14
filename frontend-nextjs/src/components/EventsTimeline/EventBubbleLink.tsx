@@ -8,9 +8,9 @@ type EventBubbleLinkProps = {
 }
 
 function EventBubbleLink({ event, organisations }: EventBubbleLinkProps) {
-	const orgName = event.organizations[0]
-	const eventOrgObj = organisations.find((x) => x.name === orgName)
-	const backgroundColor = eventOrgObj?.color
+	const mappedOrganisations = event.organizations
+		.map((x) => organisations.find((y) => y.name === x))
+		.filter(Boolean) as OrganisationType[]
 	return (
 		<Link
 			href={`/events/${event.event_id}`}
@@ -20,9 +20,25 @@ function EventBubbleLink({ event, organisations }: EventBubbleLinkProps) {
 				'ring-offset-0 ring-offset-bg hover:ring-offset-2',
 				'focus-visible:ring-offset-2 focus-visible:ring-2',
 			)}
-			style={{ backgroundColor }}
+			style={{
+				background: getCSSStyleGradient(
+					mappedOrganisations.map((x) => x.color),
+				),
+			}}
 		/>
 	)
+}
+
+function getCSSStyleGradient(colors: string[]) {
+	if (colors.length === 0) return
+	if (colors.length === 1) return colors[0]
+	const stepPercentage = Math.round(100 / colors.length)
+	return `linear-gradient(0deg, ${colors
+		.map(
+			(color, i) =>
+				`${color} ${i * stepPercentage}%, ${color} ${(i + 1) * stepPercentage}%`,
+		)
+		.join(', ')})`
 }
 
 export default EventBubbleLink

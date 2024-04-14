@@ -157,8 +157,9 @@ export async function getEventsData(
 
 export async function getEventData(
 	id: string,
+	searchParams: AllowedParamsInputType = {},
 ): Promise<DataResponseType<EventType | undefined>> {
-	const allEvents = await getEventsData()
+	const allEvents = await getEventsData(searchParams)
 	return {
 		data: allEvents.data.events.find((x) => x.event_id === id),
 		isPending: false,

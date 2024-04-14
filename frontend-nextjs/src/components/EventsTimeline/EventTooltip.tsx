@@ -10,12 +10,19 @@ function EventTooltip({
 	organisations,
 	children,
 }: PropsWithChildren<{ event: EventType; organisations: OrganisationType[] }>) {
-	const org = useMemo(() => {
-		const eventOrgName = event.organizations[0]
+	const orgs = useMemo(() => {
 		const unknownOrgName = 'Unknown organisation'
-		const eventOrg = organisations.find((x) => x.name === eventOrgName)
-		const unknownOrg = organisations.find((x) => x.name === unknownOrgName)
-		return eventOrg ?? unknownOrg
+		const mappedOrgs = event.organizations
+			.map((orgName) => {
+				const org = organisations.find((x) => x.name === orgName)
+				if (!org) return
+				return {
+					...org,
+					name: org.name.trim() || unknownOrgName,
+				}
+			})
+			.filter(Boolean) as OrganisationType[]
+		return mappedOrgs
 	}, [event.organizations, organisations])
 
 	const formattedDate = useMemo(
@@ -44,12 +51,15 @@ function EventTooltip({
 						<span>{formattedImpact}</span>
 					</li>
 				</ul>
-				<p className="max-w-80 line-clamp-3 text-xs">{event.description}</p>
-				{org && (
+				<p className="max-w-80 line-clamp-3 text-xs mb-3">
+					{event.description}
+				</p>
+				{orgs.map((org) => (
 					<div
+						key={org.name}
 						className={cn(
 							'grid grid-cols-[auto_1fr] gap-x-2 items-center',
-							'border-t border-white/10 dark:border-black/10 py-2 mt-3',
+							'border-t border-white/10 dark:border-black/10 py-2',
 						)}
 					>
 						<span
@@ -61,7 +71,7 @@ function EventTooltip({
 						/>
 						<span className="truncate">{org.name}</span>
 					</div>
-				)}
+				))}
 			</TooltipContent>
 		</Tooltip>
 	)

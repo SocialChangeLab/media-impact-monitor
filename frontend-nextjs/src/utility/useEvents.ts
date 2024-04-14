@@ -1,61 +1,44 @@
 'use client'
-import { useEffect, useState } from 'react'
+import { useQuery } from '@tanstack/react-query'
+import { useEffect } from 'react'
 import { toast } from 'sonner'
-import { EventsDataType, Query, getEventsData } from './eventsUtil'
+import { EventsDataType, getEventsData } from './eventsUtil'
+import useQueryParams from './useQueryParams'
 
-function useEvents(initialData?: Query<EventsDataType>) {
-	const [query, setQuery] = useState<Query<EventsDataType>>(
-		initialData || {
-			data: undefined,
-			isPending: true,
-			error: null,
+function useEvents(initialData?: EventsDataType) {
+	const { searchParams } = useQueryParams()
+	const { data, isPending, error } = useQuery({
+		queryKey: [
+			'events',
+			searchParams.from?.toISOString(),
+			searchParams.to?.toISOString(),
+		],
+		queryFn: async () => {
+			const { data, error } = await getEventsData(searchParams)
+			if (error) throw new Error(error)
+			return data
 		},
-	)
+		initialData,
+	})
 
 	useEffect(() => {
-		if (!initialData?.error) return
+		if (!error) return
 		if (toast.length > 0) return
 		const to = setTimeout(() => {
-			toast.error(`Error fetching events: ${initialData.error}`, {
+			toast.error(`Error fetching events: ${error}`, {
 				important: true,
 				dismissible: false,
 				duration: 1000000,
 			})
 		}, 10)
 		return () => clearTimeout(to)
-	}, [initialData?.error])
+	}, [error])
 
-	useEffect(() => {
-		let ignore = false
-		if (typeof initialData !== 'undefined') return
-
-		const fetchData = async () => {
-			try {
-				const response = await getEventsData()
-				if (ignore) return
-				setQuery({ data: response.data, isPending: false, error: null })
-			} catch (error) {
-				if (ignore) return
-				setQuery({
-					data: {
-						events: [],
-						organisations: [],
-					},
-					isPending: false,
-					error:
-						error instanceof Error ? error.message : `Unknown error: ${error}`,
-				})
-				toast.error(`Error fetching events: ${error}`)
-			}
-		}
-		fetchData()
-
-		return () => {
-			ignore = true
-		}
-	}, [])
-
-	return query
+	return {
+		data,
+		isPending,
+		error,
+	}
 }
 
 export default useEvents

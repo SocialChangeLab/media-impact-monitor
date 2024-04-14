@@ -17,9 +17,11 @@ import { cn } from '@utility/classNames'
 export function DatePickerWithRange({
 	className,
 	defaultDateRange,
+	onChange = () => {},
 }: {
 	className?: string
 	defaultDateRange?: DateRange
+	onChange?: (date: DateRange) => void
 }) {
 	const [date, setDate] = React.useState<DateRange | undefined>(
 		defaultDateRange || {
@@ -61,7 +63,11 @@ export function DatePickerWithRange({
 						mode="range"
 						defaultMonth={date?.from}
 						selected={date}
-						onSelect={setDate}
+						onSelect={(range) => {
+							setDate(range)
+							if (!range) return
+							onChange(range)
+						}}
 						numberOfMonths={2}
 					/>
 				</PopoverContent>

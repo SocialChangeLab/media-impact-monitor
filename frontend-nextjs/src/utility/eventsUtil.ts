@@ -1,5 +1,6 @@
-import { parse } from 'date-fns'
+import { format, parse } from 'date-fns'
 import { dateSortCompare, isValidISODateString } from './dateUtil'
+import { AllowedParamsInputType } from './searchParamsUtil'
 
 export type Query<T> =
 	| {
@@ -71,6 +72,14 @@ const distinctiveTailwindColors = [
 	`#ffed6f`,
 ]
 
+let impacts = [
+	1, 2, 3, 4, 5, 6, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20,
+]
+impacts = [...impacts, ...impacts, 20, 30, 40, 50]
+impacts = [...impacts, 60, 70, 80, 90, 100, 100, 90, 90, 80]
+
+const random = () => Math.floor(Math.random() * impacts.length)
+
 export type ColorType = string
 
 export type OrganisationType = {
@@ -90,9 +99,9 @@ interface DataResponseType<DataType> {
 	error: null | string
 }
 
-export async function getEventsData(): Promise<
-	DataResponseType<EventsDataType>
-> {
+export async function getEventsData(
+	searchParams: AllowedParamsInputType = {},
+): Promise<DataResponseType<EventsDataType>> {
 	const apiUrl = process.env.NEXT_PUBLIC_API_URL
 	if (!apiUrl)
 		throw new Error('NEXT_PUBLIC_API_URL env variable is not defined')
@@ -106,16 +115,22 @@ export async function getEventsData(): Promise<
 				event_type: 'protest',
 				source: 'acled',
 				topic: 'climate_change',
-				start_date: '2021-01-01',
-				end_date: '2021-01-31',
+				start_date: searchParams.from
+					? format(searchParams.from, 'yyyy-MM-dd')
+					: '2021-01-01',
+				end_date: searchParams.to
+					? format(searchParams.to, 'yyyy-MM-dd')
+					: '2021-01-31',
 			}),
 		})
-		const jsonRes = (await response.json()) as EventType[][]
-		const data = jsonRes[1]
+		const json = await response.json()
+		const validatedResponse = validateGetDataResponse(json)
+
+		const data = validatedResponse
 			.filter((x) => isValidISODateString(x.date))
 			.map((x) => ({
 				...x,
-				impact: Math.random(),
+				impact: random(),
 				date: parse(x.date, 'yyyy-MM-dd', new Date()).toISOString(),
 			})) as EventType[]
 		const events = data.sort((a, b) => dateSortCompare(a.date, b.date))
@@ -189,4 +204,25 @@ function extractEventOrganisations(events: EventType[]): OrganisationType[] {
 				color: color,
 			}
 		})
+}
+
+function validateGetDataResponse(response: unknown): EventType[] {
+	if (!response) throw new Error('Invalid response data (falsy value)')
+	if (Array.isArray(response) && response.length < 2)
+		throw new Error('Invalid response data (array too short)')
+	if (
+		isObject(response) &&
+		'detail' in response &&
+		Array.isArray(response.detail)
+	) {
+		if (response?.detail[0]?.msg) throw new Error(response.detail[0]?.msg)
+		throw new Error('Invalid response data (was an object, expected an array)')
+	}
+	if (!Array.isArray(response))
+		throw new Error('Invalid response data (not an array)')
+	return response[1]
+}
+
+function isObject(x: unknown): x is Record<string, unknown> {
+	return typeof x === 'object' && x !== null
 }

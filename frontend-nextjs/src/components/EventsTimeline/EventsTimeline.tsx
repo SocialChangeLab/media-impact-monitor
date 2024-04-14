@@ -1,14 +1,14 @@
 import { cn } from '@utility/classNames'
 import { dateSortCompare } from '@utility/dateUtil'
 import { type EventType, type EventsDataType } from '@utility/eventsUtil'
-import { scaleLinear } from 'd3-scale'
+import { scalePow } from 'd3-scale'
 import { addDays, format, isBefore, startOfDay } from 'date-fns'
 import { AnimationProps, motion } from 'framer-motion'
 import EventBubbleLink from './EventBubbleLink'
 import EventTooltip from './EventTooltip'
 import EventsTimelineWrapper from './EventsTimelinWrapper'
 
-export const impactScale = scaleLinear([0, 1], [12, 64])
+export const impactScale = scalePow([0, 100], [12, 80])
 
 const eventVariants: AnimationProps['variants'] = {
 	initial: { opacity: 0, scale: 0.5 },

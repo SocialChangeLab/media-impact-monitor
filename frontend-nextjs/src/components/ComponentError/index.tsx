@@ -1,6 +1,8 @@
+'use client'
 import { Button } from '@components/ui/button'
 import { AlertTriangle } from 'lucide-react'
 import Link from 'next/link'
+import { usePathname } from 'next/navigation'
 
 function ComponentError({
 	errorMessage,
@@ -11,6 +13,7 @@ function ComponentError({
 	announcement?: string
 	reset?: () => void
 }) {
+	const pathname = usePathname()
 	return (
 		<div className="w-fit max-w-96 flex flex-col items-center">
 			<div className="mb-6 relative min-w-full flex justify-center">
@@ -24,13 +27,13 @@ function ComponentError({
 				</div>
 			</div>
 			{announcement}
-			<pre className="mt-2 min-w-full px-6 py-5 bg-grayDark text-bg mb-6 text-mono">
+			<pre className="mt-2 min-w-full px-6 py-5 bg-grayDark text-bg mb-6 text-mono max-w-full overflow-x-auto">
 				<code>{errorMessage}</code>
 			</pre>
 			<div className="flex gap-4 flex-wrap min-w-full justify-between">
 				{reset && <Button onClick={reset}>Try again</Button>}
 				<Button asChild variant="outline">
-					<Link href="/events">Reset all filters</Link>
+					<Link href={pathname}>Reset all filters</Link>
 				</Button>
 			</div>
 		</div>

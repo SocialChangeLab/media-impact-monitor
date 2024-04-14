@@ -2,6 +2,7 @@ import { inter, neueRegrade } from '@utility/fonts'
 import React from 'react'
 
 import { BaseLayout } from '@components/BaseLayout'
+import QueryClientProvider from '@components/QueryClientProvider'
 import { Toaster } from '@components/ui/sonner'
 import { TooltipProvider } from '@components/ui/tooltip'
 import { ThemeProvider } from '@providers/ThemeProvider'
@@ -21,11 +22,13 @@ export default function RootLayout({
 		>
 			<head></head>
 			<body className="bg-pattern-soft">
-				<ThemeProvider defaultTheme="system" enableSystem>
-					<TooltipProvider>
-						<BaseLayout>{children}</BaseLayout>
-					</TooltipProvider>
-				</ThemeProvider>
+				<QueryClientProvider>
+					<ThemeProvider defaultTheme="system" enableSystem>
+						<TooltipProvider>
+							<BaseLayout>{children}</BaseLayout>
+						</TooltipProvider>
+					</ThemeProvider>
+				</QueryClientProvider>
 				<Toaster />
 			</body>
 		</html>

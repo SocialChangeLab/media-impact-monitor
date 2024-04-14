@@ -24,7 +24,7 @@ function EventTooltip({
 	)
 
 	const formattedImpact = useMemo(
-		() => Math.round(event.impact * 100).toLocaleString('en-GB'),
+		() => Math.round(event.impact).toLocaleString('en-GB'),
 		[event.impact],
 	)
 

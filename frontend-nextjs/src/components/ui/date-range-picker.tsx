@@ -1,6 +1,5 @@
 'use client'
 
-import { CalendarIcon } from '@radix-ui/react-icons'
 import { addDays, format } from 'date-fns'
 import * as React from 'react'
 import { DateRange } from 'react-day-picker'
@@ -13,6 +12,7 @@ import {
 	PopoverTrigger,
 } from '@/components/ui/popover'
 import { cn } from '@utility/classNames'
+import { CalendarDays } from 'lucide-react'
 
 export function DatePickerWithRange({
 	className,
@@ -42,7 +42,7 @@ export function DatePickerWithRange({
 							!date && 'text-grayDark',
 						)}
 					>
-						<CalendarIcon className="mr-2 h-4 w-4" />
+						<CalendarDays className="mr-2" />
 						{date?.from ? (
 							date.to ? (
 								<>

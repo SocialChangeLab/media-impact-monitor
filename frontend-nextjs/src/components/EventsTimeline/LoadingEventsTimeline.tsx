@@ -1,18 +1,20 @@
 'use client'
 import { motion } from 'framer-motion'
+import seed from 'seed-random'
 import EventsTimelineWrapper from './EventsTimelinWrapper'
 import { impactScale } from './EventsTimeline'
 import EventsTimelineChartWrapper from './EventsTimelineChartWrapper'
 
+const random = seed(process.env.NEXT_BUILD_ID ?? 'dev')
 const skeletons = Array(25)
 	.fill(null)
 	.map((_, i) => ({
 		colId: i,
-		fakeEvents: Array(Math.ceil(Math.random() * 11))
+		fakeEvents: Array(Math.ceil(random() * 11))
 			.fill(null)
 			.map((_, j) => ({
 				eventId: j,
-				height: `${Math.ceil(impactScale(Math.random() * 100))}px`,
+				height: `${Math.ceil(impactScale(random() * 100))}px`,
 			})),
 	}))
 

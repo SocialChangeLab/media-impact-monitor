@@ -1,12 +1,10 @@
 'use client'
 import { DatePickerWithRange } from '@components/ui/date-range-picker'
-import useEvents from '@utility/useEvents'
 import useQueryParams from '@utility/useQueryParams'
 import { PropsWithChildren } from 'react'
 
 function EventPageLayout({ children }: PropsWithChildren<{}>) {
 	const { searchParams, setSearchParams } = useQueryParams()
-	const { invalidate } = useEvents()
 
 	return (
 		<div className="px-6 pt-8 pb-16">
@@ -21,7 +19,6 @@ function EventPageLayout({ children }: PropsWithChildren<{}>) {
 					}}
 					onChange={({ from, to }) => {
 						if (!from || !to) return
-						invalidate()
 						setSearchParams({ from, to })
 					}}
 				/>

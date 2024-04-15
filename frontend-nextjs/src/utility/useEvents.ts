@@ -2,7 +2,6 @@
 import { useQuery } from '@tanstack/react-query'
 import { useEffect } from 'react'
 import { toast } from 'sonner'
-import { queryClient } from './../components/QueryClientProvider/index'
 import { EventsDataType, getEventsData } from './eventsUtil'
 import useQueryParams from './useQueryParams'
 
@@ -38,7 +37,6 @@ function useEvents(initialData?: EventsDataType) {
 		data,
 		isPending,
 		error,
-		invalidate: () => queryClient.invalidateQueries({ queryKey }),
 	}
 }
 

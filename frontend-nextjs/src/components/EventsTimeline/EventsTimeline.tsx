@@ -1,6 +1,10 @@
 import { fadeVariants, scaleInVariants } from '@/utility/animationUtil'
 import { cn } from '@/utility/classNames'
-import { type EventsDataType } from '@/utility/eventsUtil'
+import {
+	EventType,
+	OrganisationType,
+	type EventsDataType,
+} from '@/utility/eventsUtil'
 import useEvents from '@/utility/useEvents'
 import { scalePow, scaleUtc } from 'd3-scale'
 import { differenceInDays, format, isSameDay, startOfDay } from 'date-fns'
@@ -33,30 +37,17 @@ function EventsTimeline({ events, organisations }: EventsDataType) {
 		if (!timeScale) return []
 		return (timeScale.ticks(timeDiffInDays) ?? []).map((d) => {
 			const eventsOfTheDay = events.filter((evt) => isSameDay(evt.date, d))
-			const eventFromUnknowOrg = eventsOfTheDay.filter(
-				(evt) =>
-					evt.organizations.length === 1 && !evt.organizations[0]?.trim(),
-			)
-			const half1EventsFromUnknowOrg = eventFromUnknowOrg.slice(
-				0,
-				Math.floor(eventFromUnknowOrg.length / 2),
-			)
-			const half2EventsFromUnknowOrg = eventFromUnknowOrg.slice(
-				-Math.ceil(eventFromUnknowOrg.length / 2),
-			)
-			const otherEvents = eventsOfTheDay
-				.filter((evt) => !eventFromUnknowOrg.includes(evt))
+			const eventsWithPositiveImpact = eventsOfTheDay
+				.filter((evt) => evt.impact >= 0)
 				.sort((a, b) => a.organizations[0].localeCompare(b.organizations[0]))
-
-			const groupedEvents = [
-				...half1EventsFromUnknowOrg,
-				...otherEvents,
-				...half2EventsFromUnknowOrg,
-			]
+			const eventsWithNegativeImpact = eventsOfTheDay
+				.filter((evt) => evt.impact < 0)
+				.sort((a, b) => b.organizations[0].localeCompare(a.organizations[0]))
 
 			return {
 				day: startOfDay(d),
-				events: groupedEvents,
+				eventsWithPositiveImpact,
+				eventsWithNegativeImpact,
 			}
 		})
 	}, [events, timeDiffInDays, timeScale])
@@ -76,41 +67,42 @@ function EventsTimeline({ events, organisations }: EventsDataType) {
 					isPending.toString(),
 				].join('-')}
 			>
-				{eventDays.map(({ day, events }) => (
-					<motion.li
-						key={`event-day-${day.toISOString()}`}
-						className="flex flex-col gap-0.5"
-						variants={fadeVariants}
-						transition={{ staggerChildren: 0.01 }}
-					>
-						{events.map((event) => (
-							<EventTooltip
-								key={event.event_id}
-								event={event}
-								organisations={organisations}
-							>
-								<motion.div
-									className="size-3 relative z-10 hover:z-20"
-									style={{
-										height: `${Math.ceil(impactScale(event.impact))}px`,
-									}}
-									variants={scaleInVariants}
-								>
-									<EventBubbleLink
+				{eventDays.map(
+					({ day, eventsWithNegativeImpact, eventsWithPositiveImpact }) => (
+						<motion.li
+							key={`event-day-${day.toISOString()}`}
+							className="grid grid-rows-subgrid row-span-3"
+							variants={fadeVariants}
+							transition={{ staggerChildren: 0.01 }}
+						>
+							<div className="flex flex-col justify-end items-center gap-0.5">
+								{eventsWithPositiveImpact.map((event) => (
+									<EventTimelineItem
+										key={event.event_id}
 										event={event}
 										organisations={organisations}
 									/>
-								</motion.div>
-							</EventTooltip>
-						))}
-					</motion.li>
-				))}
+								))}
+							</div>
+							<span className="w-full bg-grayMed"></span>
+							<div className="flex flex-col gap-0.5 items-center">
+								{eventsWithNegativeImpact.map((event) => (
+									<EventTimelineItem
+										key={event.event_id}
+										event={event}
+										organisations={organisations}
+									/>
+								))}
+							</div>
+						</motion.li>
+					),
+				)}
 			</EventsTimelineChartWrapper>
 			{eventDays.length > 0 && (
 				<>
 					<ul
 						aria-label="X Axis - Time"
-						className="flex gap-0.5 items-center pb-6 justify-evenly min-w-full border-t border-grayMed px-1.5"
+						className="flex items-center pb-6 justify-evenly min-w-full border-t border-grayMed"
 					>
 						{eventDays.map(({ day }, idx) => (
 							<li
@@ -157,6 +149,30 @@ function EventsTimeline({ events, organisations }: EventsDataType) {
 				</>
 			)}
 		</EventsTimelineWrapper>
+	)
+}
+
+type EventTimelineItemProps = {
+	event: EventType
+	organisations: OrganisationType[]
+}
+function EventTimelineItem({ event, organisations }: EventTimelineItemProps) {
+	return (
+		<EventTooltip
+			key={event.event_id}
+			event={event}
+			organisations={organisations}
+		>
+			<motion.div
+				className="size-3 relative z-10 hover:z-20"
+				style={{
+					height: `${Math.ceil(impactScale(Math.abs(event.impact)))}px`,
+				}}
+				variants={scaleInVariants}
+			>
+				<EventBubbleLink event={event} organisations={organisations} />
+			</motion.div>
+		</EventTooltip>
 	)
 }
 

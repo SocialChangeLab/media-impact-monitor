@@ -76,11 +76,19 @@ const distinctiveTailwindColors = [
 let impacts = [
 	1, 2, 3, 4, 5, 6, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20,
 ]
-impacts = [...impacts, ...impacts, 20, 30, 40, 50]
+impacts = [
+	...impacts,
+	...impacts,
+	20,
+	30,
+	40,
+	50,
+	...impacts.map((x) => x * -1),
+]
 impacts = [...impacts, 60, 70, 80, 90, 100, 100, 90, 90, 80]
 
 const random = (seedString: string) =>
-	Math.floor(seed(seedString)() * impacts.length)
+	impacts[Math.floor(seed(seedString)() * impacts.length)]
 
 export type ColorType = string
 

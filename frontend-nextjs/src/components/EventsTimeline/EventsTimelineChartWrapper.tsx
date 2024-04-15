@@ -21,7 +21,7 @@ function EventsTimelineChartWrapper({
 			>
 				<motion.ul
 					key={animationKey || 'events-timeline-chart-wrapper'}
-					className="flex gap-0.5 items-center justify-evenly w-full h-auto py-6"
+					className="grid grid-flow-col grid-rows-[auto_0.5px_auto] items-center justify-stretch gap-y-2 w-full h-auto py-6"
 					variants={fadeVariants}
 					initial="initial"
 					animate="enter"

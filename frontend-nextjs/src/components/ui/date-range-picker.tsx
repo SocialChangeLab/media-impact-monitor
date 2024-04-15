@@ -1,7 +1,6 @@
 'use client'
 
 import { addDays, format } from 'date-fns'
-import * as React from 'react'
 import { DateRange } from 'react-day-picker'
 
 import { Button } from '@/components/ui/button'
@@ -13,7 +12,7 @@ import {
 } from '@/components/ui/popover'
 import { cn } from '@utility/classNames'
 import { CalendarDays } from 'lucide-react'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 
 export function DatePickerWithRange({
 	className,
@@ -24,8 +23,8 @@ export function DatePickerWithRange({
 	defaultDateRange?: DateRange
 	onChange?: (date: { from: Date; to: Date }) => void
 }) {
-	const [isOpen, setIsOpen] = React.useState(false)
-	const [date, setDate] = React.useState<DateRange | undefined>(
+	const [isOpen, setIsOpen] = useState(false)
+	const [date, setDate] = useState<DateRange | undefined>(
 		defaultDateRange || {
 			from: new Date(2022, 0, 20),
 			to: addDays(new Date(2022, 0, 20), 20),
@@ -43,6 +42,12 @@ export function DatePickerWithRange({
 		defaultDateRange?.to?.toISOString(),
 	])
 
+	useEffect(() => {
+		if (!date?.from || !date?.to || isOpen) return
+		onChange({ from: date.from, to: date.to })
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [isOpen, date?.from?.toISOString(), date?.to?.toISOString()])
+
 	return (
 		<div className={cn(className)}>
 			<Popover open={isOpen}>
@@ -51,7 +56,7 @@ export function DatePickerWithRange({
 						id="date"
 						variant={'outline'}
 						className={cn('font-normal', !date && 'text-grayDark')}
-						onClick={() => setIsOpen(!isOpen)}
+						onClick={() => setIsOpen(true)}
 					>
 						<CalendarDays className="mr-2 w-6 h-6" />
 						{date?.from ? (
@@ -68,31 +73,21 @@ export function DatePickerWithRange({
 						)}
 					</Button>
 				</PopoverTrigger>
-				<PopoverContent className="w-auto p-0" align="end">
-					<Calendar
-						initialFocus
-						mode="range"
-						defaultMonth={date?.from}
-						selected={date}
-						onSelect={setDate}
-						numberOfMonths={2}
-					/>
-					<div className="p-3 flex justify-end">
-						<Button
-							onClick={() => {
-								setIsOpen(false)
-								date?.from &&
-									date?.to &&
-									onChange({
-										from: date.from,
-										to: date.to,
-									})
-							}}
-						>
-							Apply
-						</Button>
-					</div>
-				</PopoverContent>
+				{isOpen && (
+					<PopoverContent className="w-auto p-0" align="end">
+						<Calendar
+							initialFocus
+							mode="range"
+							defaultMonth={date?.from}
+							selected={date}
+							onSelect={setDate}
+							numberOfMonths={2}
+						/>
+						<div className="p-3 flex justify-end">
+							<Button onClick={() => setIsOpen(false)}>Apply</Button>
+						</div>
+					</PopoverContent>
+				)}
 			</Popover>
 		</div>
 	)

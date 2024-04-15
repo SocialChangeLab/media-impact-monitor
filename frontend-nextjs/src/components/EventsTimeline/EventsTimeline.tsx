@@ -1,10 +1,12 @@
 import { fadeVariants, scaleInVariants } from '@utility/animationUtil'
 import { cn } from '@utility/classNames'
-import { dateSortCompare } from '@utility/dateUtil'
-import { type EventType, type EventsDataType } from '@utility/eventsUtil'
-import { scalePow } from 'd3-scale'
-import { addDays, format, isBefore, startOfDay } from 'date-fns'
+import { type EventsDataType } from '@utility/eventsUtil'
+import useEvents from '@utility/useEvents'
+import { scalePow, scaleUtc } from 'd3-scale'
+import { differenceInDays, format, isSameDay, startOfDay } from 'date-fns'
 import { motion } from 'framer-motion'
+import { useMemo } from 'react'
+import { useComponentSize } from 'react-use-size'
 import EmptyEventsTimeline from './EmptyEventsTimeline'
 import EventBubbleLink from './EventBubbleLink'
 import EventTooltip from './EventTooltip'
@@ -14,32 +16,41 @@ import EventsTimelineChartWrapper from './EventsTimelineChartWrapper'
 export const impactScale = scalePow([0, 100], [12, 80])
 
 function EventsTimeline({ events, organisations }: EventsDataType) {
+	const { width, ref } = useComponentSize()
+	const { from, to, isPending } = useEvents()
+
+	const timeScale = useMemo(() => {
+		if (!from || !to) return
+		return scaleUtc().domain([from, to])
+	}, [from, to])
+
+	const timeDiffInDays = useMemo(
+		() => Math.abs(differenceInDays(to, from)),
+		[from, to],
+	)
+
+	const eventDays = useMemo(() => {
+		if (!timeScale) return []
+		return (timeScale.ticks(timeDiffInDays) ?? []).map((d) => ({
+			day: startOfDay(d),
+			events: events.filter((e) => isSameDay(e.date, d)),
+		}))
+	}, [events, timeDiffInDays, timeScale])
+
+	const xAxisTicks = useMemo(() => {
+		if (!timeScale) return []
+		return timeScale.ticks(width / 200)
+	}, [timeScale, width])
+
 	if (events.length === 0) return <EmptyEventsTimeline />
-
-	const eventsByDay = events.reduce((acc, event) => {
-		const day = startOfDay(new Date(event.date)).toISOString()
-		const newEvents = [...(acc.get(day) ?? []), event].sort((a, b) =>
-			a.organizations[0].localeCompare(b.organizations[0]),
-		)
-		acc.set(day, newEvents)
-		return acc
-	}, new Map<string, EventType[]>())
-
-	const sortedDays = [...eventsByDay.entries()]
-		.map(([day, events]) => ({ day, events }))
-		.sort((a, b) => dateSortCompare(a.day, b.day))
-
-	const allDays = createAllDays(sortedDays.at(0)?.day, sortedDays.at(-1)?.day)
-	const eventDays = allDays.map((day) => {
-		const dayString = startOfDay(day)
-		const events = eventsByDay.get(dayString.toISOString()) ?? []
-		return { day: dayString, events }
-	})
-
 	return (
-		<EventsTimelineWrapper>
+		<EventsTimelineWrapper ref={ref}>
 			<EventsTimelineChartWrapper
-				animationKey={events.map((e) => e.event_id).join('-')}
+				animationKey={[
+					from?.toISOString(),
+					to?.toISOString(),
+					isPending.toString(),
+				].join('-')}
 			>
 				{eventDays.map(({ day, events }) => (
 					<motion.li
@@ -75,20 +86,19 @@ function EventsTimeline({ events, organisations }: EventsDataType) {
 				<>
 					<ul
 						aria-label="X Axis - Time"
-						className="flex gap-0.5 items-center pb-6 justify-evenly min-w-full border-t border-grayMed"
+						className="flex gap-0.5 items-center pb-6 justify-evenly min-w-full border-t border-grayMed px-1.5"
 					>
 						{eventDays.map(({ day }, idx) => (
 							<li
 								key={day.toISOString()}
 								className="size-3 relative"
-								aria-hidden={idx % 4 !== 0 ? 'false' : 'true'}
 								aria-label="X Axis Tick"
 							>
 								<span
 									className="w-px h-2 bg-grayMed absolute left-1/2 -translate-x-1/2"
 									aria-hidden="true"
 								/>
-								{idx % 4 === 0 && (
+								{xAxisTicks.find((x) => isSameDay(x, day)) && (
 									<span className="absolute left-1/2 top-full -translate-x-1/2 text-grayDark text-sm">
 										{format(new Date(day), 'dd.MM.yyyy')}
 									</span>
@@ -124,20 +134,6 @@ function EventsTimeline({ events, organisations }: EventsDataType) {
 			)}
 		</EventsTimelineWrapper>
 	)
-}
-
-function createAllDays(start?: string, end?: string) {
-	if (!start || !end) return []
-	const days: Date[] = []
-	let currentDate = startOfDay(new Date(start))
-	const endDate = startOfDay(new Date(end))
-
-	while (isBefore(currentDate, endDate)) {
-		days.push(currentDate)
-		currentDate = addDays(currentDate, 1)
-	}
-
-	return days
 }
 
 export default EventsTimeline

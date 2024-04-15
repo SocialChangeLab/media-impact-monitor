@@ -1,7 +1,15 @@
-import { PropsWithChildren } from 'react'
+import { PropsWithChildren, forwardRef } from 'react'
 
-function EventsTimelineWrapper({ children }: PropsWithChildren<{}>) {
-	return <div className="w-full overflow-clip">{children}</div>
-}
+const EventsTimelineWrapper = forwardRef<HTMLDivElement, PropsWithChildren<{}>>(
+	({ children }, ref) => {
+		return (
+			<div className="w-full overflow-clip" ref={ref}>
+				{children}
+			</div>
+		)
+	},
+)
+
+EventsTimelineWrapper.displayName = 'EventsTimelineWrapper'
 
 export default EventsTimelineWrapper

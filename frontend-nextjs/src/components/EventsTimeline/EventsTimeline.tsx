@@ -31,10 +31,34 @@ function EventsTimeline({ events, organisations }: EventsDataType) {
 
 	const eventDays = useMemo(() => {
 		if (!timeScale) return []
-		return (timeScale.ticks(timeDiffInDays) ?? []).map((d) => ({
-			day: startOfDay(d),
-			events: events.filter((e) => isSameDay(e.date, d)),
-		}))
+		return (timeScale.ticks(timeDiffInDays) ?? []).map((d) => {
+			const eventsOfTheDay = events.filter((evt) => isSameDay(evt.date, d))
+			const eventFromUnknowOrg = eventsOfTheDay.filter(
+				(evt) =>
+					evt.organizations.length === 1 && !evt.organizations[0]?.trim(),
+			)
+			const half1EventsFromUnknowOrg = eventFromUnknowOrg.slice(
+				0,
+				Math.floor(eventFromUnknowOrg.length / 2),
+			)
+			const half2EventsFromUnknowOrg = eventFromUnknowOrg.slice(
+				-Math.ceil(eventFromUnknowOrg.length / 2),
+			)
+			const otherEvents = eventsOfTheDay
+				.filter((evt) => !eventFromUnknowOrg.includes(evt))
+				.sort((a, b) => a.organizations[0].localeCompare(b.organizations[0]))
+
+			const groupedEvents = [
+				...half1EventsFromUnknowOrg,
+				...otherEvents,
+				...half2EventsFromUnknowOrg,
+			]
+
+			return {
+				day: startOfDay(d),
+				events: groupedEvents,
+			}
+		})
 	}, [events, timeDiffInDays, timeScale])
 
 	const xAxisTicks = useMemo(() => {

@@ -2,17 +2,17 @@
 import { useQuery } from '@tanstack/react-query'
 import { useEffect } from 'react'
 import { toast } from 'sonner'
+import { queryClient } from './../components/QueryClientProvider/index'
 import { EventsDataType, getEventsData } from './eventsUtil'
 import useQueryParams from './useQueryParams'
 
 function useEvents(initialData?: EventsDataType) {
 	const { searchParams } = useQueryParams()
+	const fromISO = searchParams.from?.toISOString()
+	const toISO = searchParams.to?.toISOString()
+	const queryKey = ['events', fromISO, toISO]
 	const { data, isPending, error } = useQuery({
-		queryKey: [
-			'events',
-			searchParams.from?.toISOString(),
-			searchParams.to?.toISOString(),
-		],
+		queryKey,
 		queryFn: async () => {
 			const { data, error } = await getEventsData(searchParams)
 			if (error) throw new Error(error)
@@ -38,6 +38,7 @@ function useEvents(initialData?: EventsDataType) {
 		data,
 		isPending,
 		error,
+		invalidate: () => queryClient.invalidateQueries({ queryKey }),
 	}
 }
 

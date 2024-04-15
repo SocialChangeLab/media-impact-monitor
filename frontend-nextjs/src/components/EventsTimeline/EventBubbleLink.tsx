@@ -19,6 +19,7 @@ function EventBubbleLink({ event, organisations }: EventBubbleLinkProps) {
 				'ring-0 ring-fg transition-all hover:ring-2',
 				'ring-offset-0 ring-offset-bg hover:ring-offset-2',
 				'focus-visible:ring-offset-2 focus-visible:ring-2',
+				'cursor-pointer active:cursor-pointer',
 			)}
 			style={{
 				background: getCSSStyleGradient(

@@ -1,3 +1,4 @@
+import { fadeVariants } from '@utility/animationUtil'
 import { cn } from '@utility/classNames'
 import { dateSortCompare } from '@utility/dateUtil'
 import { type EventType, type EventsDataType } from '@utility/eventsUtil'
@@ -7,17 +8,13 @@ import { AnimationProps, motion } from 'framer-motion'
 import EventBubbleLink from './EventBubbleLink'
 import EventTooltip from './EventTooltip'
 import EventsTimelineWrapper from './EventsTimelinWrapper'
+import EventsTimelineChartWrapper from './EventsTimelineChartWrapper'
 
 export const impactScale = scalePow([0, 100], [12, 80])
 
 const eventVariants: AnimationProps['variants'] = {
 	initial: { opacity: 0, scale: 0.5 },
 	enter: { opacity: 1, scale: 1 },
-}
-
-const fadeVariants: AnimationProps['variants'] = {
-	initial: { opacity: 0 },
-	enter: { opacity: 1 },
 }
 
 function EventsTimeline({ events, organisations }: EventsDataType) {
@@ -43,17 +40,10 @@ function EventsTimeline({ events, organisations }: EventsDataType) {
 
 	return (
 		<EventsTimelineWrapper>
-			<motion.ul
-				key="events-timeline-chart-wrapper"
-				className="flex gap-0.5 items-center py-6 justify-evenly min-w-full bg-grayUltraLight min-h-96 max-h-[calc(100vh-17rem)] overflow-auto"
-				variants={fadeVariants}
-				initial="initial"
-				animate="enter"
-				transition={{ staggerChildren: 0.01 }}
-			>
+			<EventsTimelineChartWrapper>
 				{eventDays.map(({ day, events }) => (
 					<motion.li
-						key={day.toISOString()}
+						key={`event-day-${day.toISOString()}`}
 						className="flex flex-col gap-0.5"
 						variants={fadeVariants}
 						transition={{ staggerChildren: 0.01 }}
@@ -80,7 +70,7 @@ function EventsTimeline({ events, organisations }: EventsDataType) {
 						))}
 					</motion.li>
 				))}
-			</motion.ul>
+			</EventsTimelineChartWrapper>
 			{eventDays.length > 0 && (
 				<>
 					<ul

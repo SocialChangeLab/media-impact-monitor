@@ -6,7 +6,7 @@ export default function EventsTablePageError({
 	reset,
 }: {
 	error: Error & { digest?: string }
-	reset: () => void
+	reset?: () => void
 }) {
 	return (
 		<div className="w-full flex justify-center min-h-96 p-8 items-center bg-grayUltraLight">

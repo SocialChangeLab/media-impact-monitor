@@ -23,7 +23,7 @@ function useQueryParams(): UseQueryParamsOutputType {
 				...Object.fromEntries(originalSearchParams.entries()),
 				...params,
 			})
-			router.push(`${pathname}?${combinedParams.toString()}`)
+			router.push(`${pathname}?${combinedParams.toString()}`, { scroll: false })
 		},
 		[originalSearchParams, pathname, router],
 	)

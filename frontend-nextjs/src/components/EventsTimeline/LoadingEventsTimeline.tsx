@@ -8,7 +8,7 @@ const skeletons = Array(25)
 	.fill(null)
 	.map((_, i) => ({
 		colId: i,
-		fakeEvents: Array(Math.ceil(Math.random() * 20))
+		fakeEvents: Array(Math.ceil(Math.random() * 11))
 			.fill(null)
 			.map((_, j) => ({
 				eventId: j,

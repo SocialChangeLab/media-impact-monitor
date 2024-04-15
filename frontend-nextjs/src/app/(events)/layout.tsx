@@ -1,9 +1,9 @@
-'use client'
 import EventPageLayout from '@components/EventPageLayout'
 import { PropsWithChildren, ReactNode, Suspense } from 'react'
+import EventsTablePageLoadng from './@table/loading'
+import EventsTimelinePageLoadng from './@timeline/loading'
 
 export default function EventsPageLayout({
-	children,
 	timeline,
 	table,
 }: PropsWithChildren<{
@@ -13,8 +13,14 @@ export default function EventsPageLayout({
 	return (
 		<Suspense>
 			<EventPageLayout>
-				<div className="flex flex-col gap-4">{timeline}</div>
-				<div className="flex flex-col gap-4 pt-8">{table}</div>
+				<div className="flex flex-col gap-4">
+					<Suspense fallback={<EventsTimelinePageLoadng />}>
+						{timeline}
+					</Suspense>
+				</div>
+				<div className="flex flex-col gap-4 pt-8">
+					<Suspense fallback={<EventsTablePageLoadng />}>{table}</Suspense>
+				</div>
 			</EventPageLayout>
 		</Suspense>
 	)

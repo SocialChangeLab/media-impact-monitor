@@ -1,4 +1,5 @@
 import { format, parse } from 'date-fns'
+import seed from 'seed-random'
 import { dateSortCompare, isValidISODateString } from './dateUtil'
 import { AllowedParamsInputType } from './searchParamsUtil'
 
@@ -78,7 +79,8 @@ let impacts = [
 impacts = [...impacts, ...impacts, 20, 30, 40, 50]
 impacts = [...impacts, 60, 70, 80, 90, 100, 100, 90, 90, 80]
 
-const random = () => Math.floor(Math.random() * impacts.length)
+const random = (seedString: string) =>
+	Math.floor(seed(seedString)() * impacts.length)
 
 export type ColorType = string
 
@@ -130,7 +132,7 @@ export async function getEventsData(
 			.filter((x) => isValidISODateString(x.date))
 			.map((x) => ({
 				...x,
-				impact: random(),
+				impact: random(x.event_id),
 				date: parse(x.date, 'yyyy-MM-dd', new Date()).toISOString(),
 			})) as EventType[]
 		const events = data.sort((a, b) => dateSortCompare(a.date, b.date))

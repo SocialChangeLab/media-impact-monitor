@@ -1,5 +1,5 @@
-import { getEventData } from '@utility/eventsUtil'
-import { parseSearchParams } from '@utility/searchParamsUtil'
+import { getEventData } from '@/utility/eventsUtil'
+import { parseSearchParams } from '@/utility/searchParamsUtil'
 
 export default async function EventPage({
 	params,

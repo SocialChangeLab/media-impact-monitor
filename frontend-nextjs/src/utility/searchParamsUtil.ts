@@ -1,4 +1,4 @@
-import { defaultFrom, defaultTo } from '@app/(events)/config'
+import { defaultFrom, defaultTo } from '@/app/(events)/config'
 import { format, parse } from 'date-fns'
 export type AllowedParamsInputType = {
 	from?: Date | undefined

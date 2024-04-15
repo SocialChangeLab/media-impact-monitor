@@ -1,5 +1,5 @@
 'use client'
-import { fadeVariants, scaleInVariants } from '@utility/animationUtil'
+import { fadeVariants, scaleInVariants } from '@/utility/animationUtil'
 import { motion } from 'framer-motion'
 import seed from 'seed-random'
 import EventsTimelineWrapper from './EventsTimelinWrapper'

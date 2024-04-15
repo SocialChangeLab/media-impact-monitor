@@ -1,4 +1,4 @@
-import ComponentError from '@components/ComponentError'
+import ComponentError from '@/components/ComponentError'
 import EventsTimelineWrapper from './EventsTimelinWrapper'
 import EventsTimelineChartWrapper from './EventsTimelineChartWrapper'
 

@@ -1,6 +1,6 @@
 'use client'
-import { fadeVariants } from '@utility/animationUtil'
-import { cn } from '@utility/classNames'
+import { fadeVariants } from '@/utility/animationUtil'
+import { cn } from '@/utility/classNames'
 import { motion } from 'framer-motion'
 import { PropsWithChildren, useMemo, useRef } from 'react'
 

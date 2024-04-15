@@ -1,5 +1,5 @@
-import { defaultFrom, defaultTo } from '@app/(events)/config'
-import { Button } from '@components/ui/button'
+import { defaultFrom, defaultTo } from '@/app/(events)/config'
+import { Button } from '@/components/ui/button'
 import { format } from 'date-fns'
 import { CalendarDays } from 'lucide-react'
 import { PropsWithChildren, Suspense } from 'react'

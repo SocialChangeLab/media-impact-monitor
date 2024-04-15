@@ -1,4 +1,4 @@
-import headerImage from '@images/header-bg.png'
+import headerImage from '@/images/header-bg.png'
 import Image from 'next/image'
 import { PropsWithChildren } from 'react'
 

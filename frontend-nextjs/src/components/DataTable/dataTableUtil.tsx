@@ -1,6 +1,6 @@
-import { Button } from '@components/ui/button'
+import { Button } from '@/components/ui/button'
+import { cn } from '@/utility/classNames'
 import { ColumnDefTemplate, HeaderContext } from '@tanstack/react-table'
-import { cn } from '@utility/classNames'
 import {
 	ArrowDown01,
 	ArrowDownAZ,

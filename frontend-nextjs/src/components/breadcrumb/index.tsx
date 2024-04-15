@@ -1,6 +1,6 @@
 'use client'
 
-import { cn } from '@utility/classNames'
+import { cn } from '@/utility/classNames'
 import Link from 'next/link'
 
 type BreadcrumbsType = {

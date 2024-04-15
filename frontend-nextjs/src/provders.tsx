@@ -1,5 +1,5 @@
 'use client'
-import { ThemeProvider } from '@providers/ThemeProvider'
+import { ThemeProvider } from '@/providers/ThemeProvider'
 import { TooltipProvider } from '@radix-ui/react-tooltip'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools'

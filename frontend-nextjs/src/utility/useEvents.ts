@@ -1,5 +1,5 @@
 'use client'
-import { defaultFrom, defaultTo } from '@app/(events)/config'
+import { defaultFrom, defaultTo } from '@/app/(events)/config'
 import { useSuspenseQuery } from '@tanstack/react-query'
 import { useCallback, useEffect, useState } from 'react'
 import { toast } from 'sonner'

@@ -1,5 +1,5 @@
 'use client'
-import useEvents from '@utility/useEvents'
+import useEvents from '@/utility/useEvents'
 import EventsTimeline from './EventsTimeline'
 
 function EventsTimelineWithState() {

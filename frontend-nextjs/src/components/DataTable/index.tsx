@@ -9,6 +9,7 @@ import {
 	useReactTable,
 } from '@tanstack/react-table'
 
+import { Button } from '@/components/ui/button'
 import {
 	Table,
 	TableBody,
@@ -17,8 +18,7 @@ import {
 	TableHeader,
 	TableRow,
 } from '@/components/ui/table'
-import { Button } from '@components/ui/button'
-import { cn } from '@utility/classNames'
+import { cn } from '@/utility/classNames'
 import { ArrowDown, ArrowUp, ArrowUpDown } from 'lucide-react'
 import TablePagination from './table-pagination'
 

@@ -1,6 +1,6 @@
 'use client'
-import { DatePickerWithRange } from '@components/ui/date-range-picker'
-import useEvents from '@utility/useEvents'
+import { DatePickerWithRange } from '@/components/ui/date-range-picker'
+import useEvents from '@/utility/useEvents'
 
 function EventTimelineDatePicker() {
 	const { from, to, setDateRange } = useEvents()

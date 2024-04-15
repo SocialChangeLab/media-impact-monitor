@@ -1,5 +1,5 @@
-import { cn } from '@utility/classNames'
-import { EventType, OrganisationType } from '@utility/eventsUtil'
+import { cn } from '@/utility/classNames'
+import { EventType, OrganisationType } from '@/utility/eventsUtil'
 import Link from 'next/link'
 
 type EventBubbleLinkProps = {

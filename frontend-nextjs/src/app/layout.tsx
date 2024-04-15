@@ -1,10 +1,10 @@
-import { inter, neueRegrade } from '@utility/fonts'
+import { inter, neueRegrade } from '@/utility/fonts'
 import React from 'react'
 
-import { BaseLayout } from '@components/BaseLayout'
-import Providers from '@provders'
-import '@styles/global.css'
-import { cn } from '@utility/classNames'
+import { BaseLayout } from '@/components/BaseLayout'
+import Providers from '@/provders'
+import '@/styles/global.css'
+import { cn } from '@/utility/classNames'
 
 export default function RootLayout({
 	children,

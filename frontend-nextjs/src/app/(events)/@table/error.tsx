@@ -1,5 +1,5 @@
 'use client'
-import ComponentError from '@components/ComponentError'
+import ComponentError from '@/components/ComponentError'
 
 export default function EventsTablePageError({
 	error,

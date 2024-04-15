@@ -4,7 +4,7 @@ import * as React from 'react'
 import { DayPicker } from 'react-day-picker'
 
 import { buttonVariants } from '@/components/ui/button'
-import { cn } from '@utility/classNames'
+import { cn } from '@/utility/classNames'
 import { format } from 'date-fns'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
 

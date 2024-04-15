@@ -1,6 +1,6 @@
-import portraitDavid from '@images/portrait-david.jpeg'
-import portraitLennart from '@images/portrait-lennart.png'
-import portraitLucas from '@images/portrait-lucas.png'
+import portraitDavid from '@/images/portrait-david.jpeg'
+import portraitLennart from '@/images/portrait-lennart.png'
+import portraitLucas from '@/images/portrait-lucas.png'
 import Image from 'next/image'
 
 const team = [

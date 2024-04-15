@@ -1,6 +1,6 @@
-import ThemeToggle from '@components/ThemeToggle'
-import AppLogo from '@components/logos/AppLogo'
-import { cn } from '@utility/classNames'
+import ThemeToggle from '@/components/ThemeToggle'
+import AppLogo from '@/components/logos/AppLogo'
+import { cn } from '@/utility/classNames'
 import Link from 'next/link'
 import HeaderMenuLink from './HeaderMenuLink'
 

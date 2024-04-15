@@ -1,7 +1,7 @@
 'use client'
 
-import { DataTable } from '@components/DataTable'
-import useEvents from '@utility/useEvents'
+import { DataTable } from '@/components/DataTable'
+import useEvents from '@/utility/useEvents'
 import { useMemo } from 'react'
 import { getColumns } from '../../columns'
 

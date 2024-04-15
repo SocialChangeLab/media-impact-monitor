@@ -1,5 +1,5 @@
 'use client'
-import ErrorEventsTimeline from '@components/EventsTimeline/ErrorEventsTimeline'
+import ErrorEventsTimeline from '@/components/EventsTimeline/ErrorEventsTimeline'
 
 export default function EventsTimelinePageError({
 	error,

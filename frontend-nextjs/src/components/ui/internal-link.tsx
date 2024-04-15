@@ -1,4 +1,4 @@
-import { cn } from '@utility/classNames'
+import { cn } from '@/utility/classNames'
 import Link, { LinkProps } from 'next/link'
 import React from 'react'
 

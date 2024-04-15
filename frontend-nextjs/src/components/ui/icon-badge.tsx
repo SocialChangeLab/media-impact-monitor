@@ -1,6 +1,6 @@
-import React, { ReactNode } from 'react'
+import { cn } from '@/utility/classNames'
+import { ReactNode } from 'react'
 import { Badge, BadgeProps } from './badge'
-import { cn } from '@utility/classNames'
 
 export function IconBadge({
 	icon,

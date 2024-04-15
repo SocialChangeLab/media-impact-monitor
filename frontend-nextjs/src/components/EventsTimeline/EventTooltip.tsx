@@ -1,6 +1,10 @@
-import { Tooltip, TooltipContent, TooltipTrigger } from '@components/ui/tooltip'
-import { cn } from '@utility/classNames'
-import { EventType, OrganisationType } from '@utility/eventsUtil'
+import {
+	Tooltip,
+	TooltipContent,
+	TooltipTrigger,
+} from '@/components/ui/tooltip'
+import { cn } from '@/utility/classNames'
+import { EventType, OrganisationType } from '@/utility/eventsUtil'
 import { format } from 'date-fns'
 import { Target } from 'lucide-react'
 import { PropsWithChildren, useMemo } from 'react'

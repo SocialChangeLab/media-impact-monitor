@@ -1,4 +1,4 @@
-import { cn } from '@utility/classNames'
+import { cn } from '@/utility/classNames'
 import Link from 'next/link'
 import { ReactNode } from 'react'
 

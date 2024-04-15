@@ -109,6 +109,7 @@ export async function getEventsData(
 		throw new Error('NEXT_PUBLIC_API_URL env variable is not defined')
 	try {
 		const response = await fetch(`${apiUrl}/events`, {
+			cache: 'no-store',
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json',

@@ -11,7 +11,7 @@ export default function ErrorEventsTimeline({
 }) {
 	return (
 		<EventsTimelineWrapper>
-			<EventsTimelineChartWrapper>
+			<EventsTimelineChartWrapper animationKey="error">
 				<ComponentError
 					errorMessage={errorMessage}
 					reset={reset}

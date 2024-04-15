@@ -13,6 +13,7 @@ import {
 } from '@/components/ui/popover'
 import { cn } from '@utility/classNames'
 import { CalendarDays } from 'lucide-react'
+import { useEffect } from 'react'
 
 export function DatePickerWithRange({
 	className,
@@ -21,7 +22,7 @@ export function DatePickerWithRange({
 }: {
 	className?: string
 	defaultDateRange?: DateRange
-	onChange?: (date: DateRange) => void
+	onChange?: (date: { from: Date; to: Date }) => void
 }) {
 	const [isOpen, setIsOpen] = React.useState(false)
 	const [date, setDate] = React.useState<DateRange | undefined>(
@@ -31,14 +32,26 @@ export function DatePickerWithRange({
 		},
 	)
 
+	useEffect(() => {
+		if (!defaultDateRange?.from || !defaultDateRange?.to) return
+		setDate(defaultDateRange)
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+		defaultDateRange?.from?.toISOString(),
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+		defaultDateRange?.to?.toISOString(),
+	])
+
 	return (
 		<div className={cn(className)}>
-			<Popover open={isOpen} onOpenChange={setIsOpen}>
+			<Popover open={isOpen}>
 				<PopoverTrigger asChild>
 					<Button
 						id="date"
 						variant={'outline'}
 						className={cn('font-normal', !date && 'text-grayDark')}
+						onClick={() => setIsOpen(!isOpen)}
 					>
 						<CalendarDays className="mr-2 w-6 h-6" />
 						{date?.from ? (
@@ -68,7 +81,12 @@ export function DatePickerWithRange({
 						<Button
 							onClick={() => {
 								setIsOpen(false)
-								date && onChange(date)
+								date?.from &&
+									date?.to &&
+									onChange({
+										from: date.from,
+										to: date.to,
+									})
 							}}
 						>
 							Apply

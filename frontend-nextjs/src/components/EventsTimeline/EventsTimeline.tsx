@@ -1,10 +1,11 @@
-import { fadeVariants } from '@utility/animationUtil'
+import { fadeVariants, scaleInVariants } from '@utility/animationUtil'
 import { cn } from '@utility/classNames'
 import { dateSortCompare } from '@utility/dateUtil'
 import { type EventType, type EventsDataType } from '@utility/eventsUtil'
 import { scalePow } from 'd3-scale'
 import { addDays, format, isBefore, startOfDay } from 'date-fns'
-import { AnimationProps, motion } from 'framer-motion'
+import { motion } from 'framer-motion'
+import EmptyEventsTimeline from './EmptyEventsTimeline'
 import EventBubbleLink from './EventBubbleLink'
 import EventTooltip from './EventTooltip'
 import EventsTimelineWrapper from './EventsTimelinWrapper'
@@ -12,12 +13,9 @@ import EventsTimelineChartWrapper from './EventsTimelineChartWrapper'
 
 export const impactScale = scalePow([0, 100], [12, 80])
 
-const eventVariants: AnimationProps['variants'] = {
-	initial: { opacity: 0, scale: 0.5 },
-	enter: { opacity: 1, scale: 1 },
-}
-
 function EventsTimeline({ events, organisations }: EventsDataType) {
+	if (events.length === 0) return <EmptyEventsTimeline />
+
 	const eventsByDay = events.reduce((acc, event) => {
 		const day = startOfDay(new Date(event.date)).toISOString()
 		const newEvents = [...(acc.get(day) ?? []), event].sort((a, b) =>
@@ -40,7 +38,9 @@ function EventsTimeline({ events, organisations }: EventsDataType) {
 
 	return (
 		<EventsTimelineWrapper>
-			<EventsTimelineChartWrapper>
+			<EventsTimelineChartWrapper
+				animationKey={events.map((e) => e.event_id).join('-')}
+			>
 				{eventDays.map(({ day, events }) => (
 					<motion.li
 						key={`event-day-${day.toISOString()}`}
@@ -59,7 +59,7 @@ function EventsTimeline({ events, organisations }: EventsDataType) {
 									style={{
 										height: `${Math.ceil(impactScale(event.impact))}px`,
 									}}
-									variants={eventVariants}
+									variants={scaleInVariants}
 								>
 									<EventBubbleLink
 										event={event}

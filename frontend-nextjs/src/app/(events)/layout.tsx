@@ -3,14 +3,17 @@ import LoadingEventsTimeline from '@/components/EventsTimeline/LoadingEventsTime
 import { PropsWithChildren, ReactNode, Suspense } from 'react'
 
 export default function EventsPageLayout({
+	children,
 	timeline,
 	table,
 }: PropsWithChildren<{
+	children: ReactNode
 	timeline: ReactNode
 	table: ReactNode
 }>) {
 	return (
 		<EventPageLayout>
+			{children}
 			<div className="flex flex-col gap-4">
 				<Suspense fallback={<LoadingEventsTimeline />}>{timeline}</Suspense>
 			</div>

@@ -1,4 +1,5 @@
 import headerImage from '@/images/header-bg.png'
+import { cn } from '@/utility/classNames'
 import Image from 'next/image'
 import { PropsWithChildren } from 'react'
 
@@ -8,7 +9,12 @@ export default async function AboutPageLayout({
 	return (
 		<>
 			<div className="w-screen h-[88px] sm:h-[16vw] sm:min-h-40">
-				<div className="w-full h-[88px] sm:h-[16vw] sm:min-h-40 bg-fg dark:bg-bg bg-blend-screen relative z-0">
+				<div
+					className={cn(
+						'w-full h-[88px] sm:h-[16vw] sm:min-h-40 bg-fg dark:bg-bg bg-blend-screen relative z-0',
+						'[view-transition-name:header-image]',
+					)}
+				>
 					<Image
 						src={headerImage}
 						alt="A decorative header image of a crowd protesting"
@@ -23,7 +29,7 @@ export default async function AboutPageLayout({
 					></div>
 				</div>
 			</div>
-			<main className="flex flex-col min-h-[80vh] relative z-10">
+			<main className="flex flex-col min-h-[80vh] relative z-10 [view-transition-name:info-main]">
 				<div className="container max-w-4xl mx-auto flex flex-col items-center justify-center gap-4 -px-0.5 md:gap-10 md:px-6">
 					<div
 						className="flex justify-center w-full max-w-[100vw] p-8 lg:p-10 xl:p-12

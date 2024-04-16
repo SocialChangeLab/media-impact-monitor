@@ -6,7 +6,7 @@ import PrototypeFundLogo from '@/components/logos/PrototypeFundLogo'
 import SocialChangeLabLogo from '@/components/logos/SocialChangeLabLogo'
 import { cn } from '@/utility/classNames'
 import { ArrowUp } from 'lucide-react'
-import Link from 'next/link'
+import { Link } from 'next-view-transitions'
 
 const year = new Date().getFullYear()
 

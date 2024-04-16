@@ -1,7 +1,7 @@
 'use client'
 
 import { cn } from '@/utility/classNames'
-import Link from 'next/link'
+import { Link } from 'next-view-transitions'
 
 type BreadcrumbsType = {
 	label: string

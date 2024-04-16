@@ -7,7 +7,7 @@ import { getEventsData } from './eventsUtil'
 import useQueryParams from './useQueryParams'
 
 function useEvents() {
-	const { searchParams, setSearchParams } = useQueryParams()
+	const { searchParams } = useQueryParams()
 	const [from, setFrom] = useState(new Date(defaultFrom))
 	const [to, setTo] = useState(new Date(defaultTo))
 	const queryKey = ['events', from.toISOString(), to.toISOString()]

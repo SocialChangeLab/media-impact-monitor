@@ -1,6 +1,9 @@
 'use client'
 import { fadeVariants, scaleInVariants } from '@/utility/animationUtil'
+import useQueryParams from '@/utility/useQueryParams'
+import { addDays, differenceInDays } from 'date-fns'
 import { motion } from 'framer-motion'
+import { useMemo } from 'react'
 import seed from 'seed-random'
 import EventsTimelineWrapper from './EventsTimelinWrapper'
 import { impactScale } from './EventsTimeline'
@@ -8,25 +11,33 @@ import EventsTimelineChartWrapper from './EventsTimelineChartWrapper'
 
 const seededRandom = seed('loading-screen')
 const randomUntil = (max: number) => Math.ceil(seededRandom() * max)
-const skeletons = Array(25)
-	.fill(null)
-	.map((_, i) => ({
-		colId: i,
-		eventsWithPositiveImpact: Array(randomUntil(11))
-			.fill(null)
-			.map((_, j) => ({
-				eventId: j,
-				height: `${Math.ceil(impactScale(randomUntil(60)))}px`,
-			})),
-		eventsWithNegativeImpact: Array(randomUntil(4))
-			.fill(null)
-			.map((_, j) => ({
-				eventId: j,
-				height: `${Math.ceil(impactScale(randomUntil(20)))}px`,
-			})),
-	}))
 
 export default function LoadingEventsTimeline() {
+	const { searchParams } = useQueryParams()
+
+	const skeletons = useMemo(() => {
+		const { from, to } = searchParams ?? {}
+		const totalDays = !from || !to ? 25 : differenceInDays(addDays(to, 1), from)
+		return Array(totalDays)
+			.fill(null)
+			.map((_, i) => ({
+				colId: i,
+				eventsWithPositiveImpact: Array(randomUntil(11))
+					.fill(null)
+					.map((_, j) => ({
+						eventId: j,
+						height: `${Math.ceil(impactScale(randomUntil(60)))}px`,
+					})),
+				eventsWithNegativeImpact: Array(randomUntil(4))
+					.fill(null)
+					.map((_, j) => ({
+						eventId: j,
+						height: `${Math.ceil(impactScale(randomUntil(20)))}px`,
+					})),
+			}))
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [searchParams.from?.toISOString(), searchParams.to?.toISOString()])
+
 	return (
 		<EventsTimelineWrapper>
 			<EventsTimelineChartWrapper animationKey="loading">

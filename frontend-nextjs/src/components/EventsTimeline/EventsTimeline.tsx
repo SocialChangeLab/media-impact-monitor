@@ -7,7 +7,13 @@ import {
 } from '@/utility/eventsUtil'
 import useEvents from '@/utility/useEvents'
 import { scalePow, scaleUtc } from 'd3-scale'
-import { differenceInDays, format, isSameDay, startOfDay } from 'date-fns'
+import {
+	addDays,
+	differenceInDays,
+	format,
+	isSameDay,
+	startOfDay,
+} from 'date-fns'
 import { motion } from 'framer-motion'
 import { useMemo } from 'react'
 import { useComponentSize } from 'react-use-size'
@@ -25,11 +31,11 @@ function EventsTimeline({ events, organisations }: EventsDataType) {
 
 	const timeScale = useMemo(() => {
 		if (!from || !to) return
-		return scaleUtc().domain([from, to])
+		return scaleUtc().domain([from, addDays(to, 1)])
 	}, [from, to])
 
 	const timeDiffInDays = useMemo(
-		() => Math.abs(differenceInDays(to, from)),
+		() => Math.abs(differenceInDays(addDays(to, 1), from)),
 		[from, to],
 	)
 
@@ -84,7 +90,7 @@ function EventsTimeline({ events, organisations }: EventsDataType) {
 									/>
 								))}
 							</div>
-							<span className="w-full bg-grayMed"></span>
+							<span className="bg-grayMed"></span>
 							<div className="flex flex-col gap-0.5 items-center">
 								{eventsWithNegativeImpact.map((event) => (
 									<EventTimelineItem
@@ -102,25 +108,40 @@ function EventsTimeline({ events, organisations }: EventsDataType) {
 				<>
 					<ul
 						aria-label="X Axis - Time"
-						className="flex items-center pb-6 justify-evenly min-w-full border-t border-grayMed"
+						className={cn(
+							'flex items-center pb-6 justify-stretch',
+							'min-w-full border-t border-grayMed px-2',
+						)}
 					>
-						{eventDays.map(({ day }, idx) => (
-							<li
-								key={day.toISOString()}
-								className="size-3 relative"
-								aria-label="X Axis Tick"
-							>
-								<span
-									className="w-px h-2 bg-grayMed absolute left-1/2 -translate-x-1/2"
-									aria-hidden="true"
-								/>
-								{xAxisTicks.find((x) => isSameDay(x, day)) && (
-									<span className="absolute left-1/2 top-full -translate-x-1/2 text-grayDark text-sm">
-										{format(new Date(day), 'dd.MM.yyyy')}
-									</span>
-								)}
-							</li>
-						))}
+						<li
+							aria-hidden="true"
+							className="flex w-full min-h-px justify-center"
+						>
+							<span className="absolute left-1/2 -translate-x-1/2 w-px h-2"></span>
+						</li>
+						{eventDays.map(({ day }, idx) => {
+							const shouldShowLabel = xAxisTicks.find((x) => isSameDay(x, day))
+							return (
+								<li
+									key={day.toISOString()}
+									className="flex w-full min-h-px justify-center relative"
+									aria-label="X Axis Tick"
+								>
+									<span
+										className={cn(
+											'w-px h-2 absolute left-1/2 -translate-x-1/2',
+											shouldShowLabel ? 'bg-grayMed' : 'bg-grayLight',
+										)}
+										aria-hidden="true"
+									/>
+									{shouldShowLabel && (
+										<span className="absolute left-1/2 top-4 -translate-x-1/2 text-grayDark text-sm">
+											{format(new Date(day), 'dd.MM.yyyy')}
+										</span>
+									)}
+								</li>
+							)
+						})}
 					</ul>
 					<div className="mt-6 flex flex-col gap-2">
 						<h4 className="text-lg font-bold font-headlines antialiased relative">

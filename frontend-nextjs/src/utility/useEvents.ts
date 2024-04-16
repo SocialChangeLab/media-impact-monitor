@@ -33,21 +33,18 @@ function useEvents() {
 		return () => clearTimeout(to)
 	}, [error])
 
+	const searchParamsFrom = searchParams?.from?.toISOString()
+	const searchParamsTo = searchParams?.to?.toISOString()
 	useEffect(() => {
-		if (!searchParams?.from || !searchParams?.to) return
-		setFrom(searchParams.from)
-		setTo(searchParams.to)
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [searchParams?.from?.toISOString(), searchParams?.to?.toISOString()])
+		if (!searchParamsFrom || !searchParamsTo) return
+		setFrom(new Date(searchParamsFrom))
+		setTo(new Date(searchParamsTo))
+	}, [searchParamsFrom, searchParamsTo])
 
-	const setDateRange = useCallback(
-		({ from, to }: { from: Date; to: Date }) => {
-			setFrom(from)
-			setTo(to)
-			setSearchParams({ from, to })
-		},
-		[setSearchParams],
-	)
+	const setDateRange = useCallback(({ from, to }: { from: Date; to: Date }) => {
+		setFrom(from)
+		setTo(to)
+	}, [])
 
 	return {
 		data,

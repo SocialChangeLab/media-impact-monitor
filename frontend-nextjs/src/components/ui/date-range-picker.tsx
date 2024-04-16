@@ -11,6 +11,7 @@ import {
 	PopoverTrigger,
 } from '@/components/ui/popover'
 import { cn } from '@/utility/classNames'
+import useQueryParams from '@/utility/useQueryParams'
 import { CalendarDays } from 'lucide-react'
 import { useEffect, useRef, useState } from 'react'
 
@@ -23,6 +24,7 @@ export function DatePickerWithRange({
 	defaultDateRange?: DateRange
 	onChange?: (date: { from: Date; to: Date }) => void
 }) {
+	const { setSearchParams } = useQueryParams()
 	const [isOpen, setIsOpen] = useState(false)
 	const lastRange = useRef<DateRange | undefined>()
 	const [date, setDate] = useState<DateRange | undefined>(
@@ -96,7 +98,18 @@ export function DatePickerWithRange({
 							numberOfMonths={2}
 						/>
 						<div className="p-3 flex justify-end">
-							<Button onClick={() => setIsOpen(false)}>Apply</Button>
+							<Button
+								onClick={() => {
+									setIsOpen(false)
+									if (!date?.from || !date?.to) return
+									setSearchParams({
+										from: date?.from,
+										to: date?.to,
+									})
+								}}
+							>
+								Apply
+							</Button>
 						</div>
 					</PopoverContent>
 				)}

@@ -3,7 +3,7 @@ import { fadeVariants, scaleInVariants } from '@/utility/animationUtil'
 import useQueryParams from '@/utility/useQueryParams'
 import { addDays, differenceInDays } from 'date-fns'
 import { motion } from 'framer-motion'
-import { useMemo } from 'react'
+import { Suspense, useMemo } from 'react'
 import seed from 'seed-random'
 import EventsTimelineWrapper from './EventsTimelinWrapper'
 import { impactScale } from './EventsTimeline'
@@ -12,7 +12,7 @@ import EventsTimelineChartWrapper from './EventsTimelineChartWrapper'
 const seededRandom = seed('loading-screen')
 const randomUntil = (max: number) => Math.ceil(seededRandom() * max)
 
-export default function LoadingEventsTimeline() {
+function LoadingEventsTimelineWithoutSuspense() {
 	const { searchParams } = useQueryParams()
 
 	const skeletons = useMemo(() => {
@@ -81,5 +81,13 @@ export default function LoadingEventsTimeline() {
 				)}
 			</EventsTimelineChartWrapper>
 		</EventsTimelineWrapper>
+	)
+}
+
+export default function LoadingEventsTimeline() {
+	return (
+		<Suspense>
+			<LoadingEventsTimelineWithoutSuspense />
+		</Suspense>
 	)
 }

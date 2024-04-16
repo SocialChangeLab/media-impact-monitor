@@ -1,5 +1,6 @@
 import { cn } from '@/utility/classNames'
-import Link, { LinkProps } from 'next-view-transitions'
+import { Link } from 'next-view-transitions'
+import { LinkProps } from 'next/link'
 import React from 'react'
 
 function InternalLink(

@@ -6,15 +6,23 @@ import EventsTimelineWrapper from './EventsTimelinWrapper'
 import { impactScale } from './EventsTimeline'
 import EventsTimelineChartWrapper from './EventsTimelineChartWrapper'
 
+const seededRandom = seed('loading-screen')
+const randomUntil = (max: number) => Math.ceil(seededRandom() * max)
 const skeletons = Array(25)
 	.fill(null)
 	.map((_, i) => ({
 		colId: i,
-		fakeEvents: Array(Math.ceil(seed(`col-${i}`)() * 11))
+		eventsWithPositiveImpact: Array(randomUntil(11))
 			.fill(null)
 			.map((_, j) => ({
 				eventId: j,
-				height: `${Math.ceil(impactScale(seed(`event-${j}`)() * 100))}px`,
+				height: `${Math.ceil(impactScale(randomUntil(60)))}px`,
+			})),
+		eventsWithNegativeImpact: Array(randomUntil(4))
+			.fill(null)
+			.map((_, j) => ({
+				eventId: j,
+				height: `${Math.ceil(impactScale(randomUntil(20)))}px`,
 			})),
 	}))
 
@@ -22,22 +30,44 @@ export default function LoadingEventsTimeline() {
 	return (
 		<EventsTimelineWrapper>
 			<EventsTimelineChartWrapper animationKey="loading">
-				{skeletons.map(({ colId, fakeEvents }) => (
-					<motion.li
-						key={`loading-event-col-${colId}`}
-						className="flex flex-col gap-0.5 items-center justify-center"
-						variants={fadeVariants}
-					>
-						{fakeEvents.map(({ eventId, height }) => (
-							<motion.div
-								key={`loading-event-${eventId}`}
-								className="size-3 relative z-10 bg-grayMed rounded-full animate-pulse"
-								style={{ height, animationDuration: `${1000 + colId * 100}ms` }}
-								variants={scaleInVariants}
-							/>
-						))}
-					</motion.li>
-				))}
+				{skeletons.map(
+					({ colId, eventsWithPositiveImpact, eventsWithNegativeImpact }) => (
+						<motion.li
+							key={`loading-event-col-${colId}`}
+							className="grid grid-rows-subgrid row-span-3"
+							variants={fadeVariants}
+							transition={{ staggerChildren: 0.01 }}
+						>
+							<div className="flex flex-col justify-end items-center gap-0.5">
+								{eventsWithPositiveImpact.map(({ eventId, height }) => (
+									<motion.div
+										key={`loading-event-${eventId}`}
+										className="size-3 relative z-10 bg-grayMed rounded-full animate-pulse"
+										style={{
+											height,
+											animationDuration: `${1000 + colId * 100}ms`,
+										}}
+										variants={scaleInVariants}
+									/>
+								))}
+							</div>
+							<span className="w-full bg-grayMed"></span>
+							<div className="flex flex-col gap-0.5 items-center">
+								{eventsWithNegativeImpact.map(({ eventId, height }) => (
+									<motion.div
+										key={`loading-event-${eventId}`}
+										className="size-3 relative z-10 bg-grayMed rounded-full animate-pulse"
+										style={{
+											height,
+											animationDuration: `${1000 + colId * 100}ms`,
+										}}
+										variants={scaleInVariants}
+									/>
+								))}
+							</div>
+						</motion.li>
+					),
+				)}
 			</EventsTimelineChartWrapper>
 		</EventsTimelineWrapper>
 	)

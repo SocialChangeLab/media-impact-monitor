@@ -3,7 +3,7 @@ import { PropsWithChildren, forwardRef } from 'react'
 const EventsTimelineWrapper = forwardRef<HTMLDivElement, PropsWithChildren<{}>>(
 	({ children }, ref) => {
 		return (
-			<div className="w-full overflow-clip" ref={ref}>
+			<div className="w-full" ref={ref}>
 				{children}
 			</div>
 		)

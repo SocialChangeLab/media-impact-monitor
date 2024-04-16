@@ -1,7 +1,6 @@
-import { Link } from 'next-view-transitions'
 import * as React from 'react'
 
-import { ButtonProps, buttonVariants } from '@/components/ui/button'
+import { Button, ButtonProps } from '@/components/ui/button'
 import { cn } from '@/utility/classNames'
 import {
 	ChevronLeft,
@@ -50,30 +49,20 @@ PaginationItem.displayName = 'PaginationItem'
 
 type PaginationLinkProps = {
 	isActive?: boolean
-} & Pick<ButtonProps, 'size'> &
-	React.ComponentProps<'a'>
+} & ButtonProps
 
-const PaginationLink = React.forwardRef<typeof Link, PaginationLinkProps>(
+const PaginationLink = React.forwardRef<typeof Button, PaginationLinkProps>(
 	(
-		{
-			className,
-			isActive,
-			size = 'icon',
-			href = '',
-			...props
-		}: PaginationLinkProps,
+		{ className, isActive, size = 'icon', ...props }: PaginationLinkProps,
 		ref,
 	) => (
-		<Link
-			href={href}
+		<Button
 			// @ts-ignore
 			ref={ref}
 			aria-current={isActive ? 'page' : undefined}
+			size={size}
+			variant={isActive ? 'default' : 'ghost'}
 			className={cn(
-				buttonVariants({
-					variant: isActive ? 'default' : 'ghost',
-					size,
-				}),
 				'px-1.5 py-2 hover:bg-grayLight rounded-none',
 				`border-none h-9 min-w-9`,
 				className,

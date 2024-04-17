@@ -7,6 +7,7 @@ Access the Bundestag API
 """
 
 import os
+import time
 from datetime import date
 
 import pandas as pd
@@ -15,7 +16,11 @@ from dotenv import load_dotenv
 from media_impact_monitor.util.date import verify_dates
 
 # from media_impact_monitor.util.cache import cache, get
-# FIXME: -> use cached get
+# FIXME: -> use cached get()
+
+# FIXME: add exponential backoff after rate limit exceeded errors
+# FIXME: remove print() statements / add logging?
+# FIXME: split up functions?
 
 # load_dotenv()
 ## for interactive runs:
@@ -31,7 +36,7 @@ def get_bundestag_vorgaenge(
     """Fetch 'Vorgänge' from the Bundestag DPI API.
     API documentation: https://search.dip.bundestag.de/api/v1/swagger-ui
     """
-    start_date = start_date or date(2020, 1, 1)
+    start_date = start_date or date(2024, 1, 1) # rate limit!!
     end_date = end_date or date.today()
     institution = institution or "BT"  # defaults to Bundestag
     cursor = None
@@ -73,6 +78,7 @@ def get_bundestag_vorgaenge(
             len(data.get("documents"))
             cursor = new_cursor
             parameters["cursor"] = cursor  # update params for next request
+            time.sleep(0.5)  # delay for 1/2 second
         else:
             print(
                 "Failed to fetch data. Status code:",
@@ -86,9 +92,13 @@ def get_bundestag_vorgaenge(
     assert (
         len(results) == data.get("numFound")
     ), f"Data retrieval incomplete! Expected {data.get('numFound')} documents but received {len(results)}."
+    # FIXME: define and raise exception 
+    # raise DataRetrievalError(f"Data retrieval incomplete! Expected {data.get('numFound')} documents but received {len(results)}.")
+    
     print(f"Received a total of {len(results)} out of {data.get('numFound')} items.")
 
     # wrangle to DF
+    # FIXME: decompose into transform function #DRY
     df = pd.DataFrame(results)
     df["datum"] = pd.to_datetime(df["datum"])
 
@@ -119,7 +129,7 @@ def get_bundestag_plenarprotokoll_text(
     """Get 'Plenarprotokolle' fulltexts from the Bundestag DPI API.
     API documentation: https://search.dip.bundestag.de/api/v1/swagger-ui
     """
-    start_date = start_date or date(2020, 1, 1)
+    start_date = start_date or date(2024, 1, 1)
     end_date = end_date or date.today()
     institution = institution or "BT"  # defaults to Bundestag
     cursor = None
@@ -160,6 +170,7 @@ def get_bundestag_plenarprotokoll_text(
             )  # only add if there is new data on the next page
             cursor = new_cursor
             parameters["cursor"] = cursor  # update params for next request
+            time.sleep(0.5)  # delay for 1/2 second
         else:
             print("Failed to fetch data. Status code:", response.status_code)
 

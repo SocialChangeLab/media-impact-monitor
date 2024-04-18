@@ -1,2 +1,4 @@
-export const defaultFrom = '2021-01-02T00:00:00.000Z'
-export const defaultTo = '2021-03-01T00:00:00.000Z'
+import { subDays } from 'date-fns'
+
+export const defaultTo = new Date().toISOString()
+export const defaultFrom = subDays(new Date(), 30).toISOString()

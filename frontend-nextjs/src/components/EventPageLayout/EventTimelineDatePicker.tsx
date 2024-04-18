@@ -8,6 +8,8 @@ function EventTimelineDatePicker() {
 		<DatePickerWithRange
 			defaultDateRange={{ from, to }}
 			onChange={setDateRange}
+			toDate={new Date()}
+			fromDate={new Date('01/01/2020')}
 		/>
 	)
 }

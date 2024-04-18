@@ -1,5 +1,5 @@
 'use client'
-import { fadeVariants, scaleInVariants } from '@/utility/animationUtil'
+import { scaleInVariants } from '@/utility/animationUtil'
 import useQueryParams from '@/utility/useQueryParams'
 import { addDays, differenceInDays } from 'date-fns'
 import { motion } from 'framer-motion'
@@ -40,23 +40,28 @@ function LoadingEventsTimelineWithoutSuspense() {
 
 	return (
 		<EventsTimelineWrapper>
-			<EventsTimelineChartWrapper animationKey="loading">
+			<EventsTimelineChartWrapper
+				animationKey="loading"
+				columnsCount={skeletons.length + 1}
+			>
 				{skeletons.map(
 					({ colId, eventsWithPositiveImpact, eventsWithNegativeImpact }) => (
 						<motion.li
 							key={`loading-event-col-${colId}`}
-							className="grid grid-rows-subgrid row-span-3"
-							variants={fadeVariants}
+							className="grid grid-rows-subgrid row-span-3 relative animate-pulse"
 							transition={{ staggerChildren: 0.01 }}
 						>
 							<div className="flex flex-col justify-end items-center gap-0.5">
+								<div
+									className="w-px h-full absolute top-0 left-1/2 -translate-x-1/2 bg-grayLight opacity-50"
+									aria-hidden="true"
+								/>
 								{eventsWithPositiveImpact.map(({ eventId, height }) => (
 									<motion.div
 										key={`loading-event-${eventId}`}
-										className="size-3 relative z-10 bg-grayMed rounded-full animate-pulse"
+										className="size-3 relative z-10 bg-grayMed rounded-full "
 										style={{
 											height,
-											animationDuration: `${1000 + colId * 100}ms`,
 										}}
 										variants={scaleInVariants}
 									/>
@@ -67,10 +72,9 @@ function LoadingEventsTimelineWithoutSuspense() {
 								{eventsWithNegativeImpact.map(({ eventId, height }) => (
 									<motion.div
 										key={`loading-event-${eventId}`}
-										className="size-3 relative z-10 bg-grayMed rounded-full animate-pulse"
+										className="size-3 relative z-10 bg-grayMed rounded-full "
 										style={{
 											height,
-											animationDuration: `${1000 + colId * 100}ms`,
 										}}
 										variants={scaleInVariants}
 									/>

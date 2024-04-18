@@ -4,7 +4,7 @@ import { addDays, format } from 'date-fns'
 import { DateRange } from 'react-day-picker'
 
 import { Button } from '@/components/ui/button'
-import { Calendar } from '@/components/ui/calendar'
+import { Calendar, CalendarProps } from '@/components/ui/calendar'
 import {
 	Popover,
 	PopoverContent,
@@ -19,7 +19,8 @@ export function DatePickerWithRange({
 	className,
 	defaultDateRange,
 	onChange = () => {},
-}: {
+	...calendarProps
+}: CalendarProps & {
 	className?: string
 	defaultDateRange?: DateRange
 	onChange?: (date: { from: Date; to: Date }) => void

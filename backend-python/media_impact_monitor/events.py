@@ -1,7 +1,6 @@
 from datetime import date
 
 import pandas as pd
-import swifter
 from joblib import hash as joblib_hash
 
 from media_impact_monitor.data_loaders.protest.acled import get_acled_events
@@ -13,6 +12,7 @@ from media_impact_monitor.trend import get_trend
 from media_impact_monitor.types_ import Event, EventSearch, TrendSearch
 from media_impact_monitor.util.cache import cache
 from media_impact_monitor.util.date import verify_dates
+from media_impact_monitor.util.parallel import parallel_tqdm
 
 
 @cache
@@ -47,7 +47,11 @@ def get_events(q: EventSearch) -> pd.DataFrame:
     df["event_id"] = df.apply(joblib_hash, axis=1, raw=True)
     df["impact"] = None
     if q.estimate_impact:
-        df["impact"] = df.swifter.apply(get_impact, axis=1)
+        events = df.to_dict(orient="records")
+        impacts = parallel_tqdm(
+            get_impact, events, total=len(events), n_jobs=4, desc="Estimating impacts"
+        )
+        df["impact"] = impacts
     return df.reset_index(drop=True)
 
 
@@ -57,20 +61,20 @@ def get_impact(event):
         TrendSearch(
             trend_type="keywords",
             media_source="news_online",
-            start_date=event["date"] - pd.Timedelta(days=28),
+            start_date=event["date"] - pd.Timedelta(days=180),
             end_date=event["date"] + pd.Timedelta(days=28),
             query="|".join(event["organizers"]),
         )
     )
-    horizon = 11
     hidden_days_before_protest = 4
+    horizon = hidden_days_before_protest + 28
     actuals, counterfactuals, impacts = estimate_impact(
         event_date=event["date"],
         df=trend,
         horizon=horizon,
         hidden_days_before_protest=hidden_days_before_protest,
     )
-    impact = impacts.loc[event["date"] : event["date"] + pd.Timedelta(days=7)].sum()
+    impact = impacts.cumsum().loc[event["date"] + pd.Timedelta(days=14)]
     return impact
 
 

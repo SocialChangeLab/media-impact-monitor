@@ -9,6 +9,7 @@ from sklearn.ensemble import RandomForestRegressor
 from tqdm import tqdm
 
 from media_impact_monitor.util.cache import cache
+from media_impact_monitor.util.parallel import parallel_tqdm
 
 warnings.simplefilter(action="ignore", category=FutureWarning)
 
@@ -73,6 +74,7 @@ def predict_with_ml(train: pd.DataFrame, horizon: int):
     return pred
 
 
+@cache
 def estimate_impact(
     event_date: date,
     df: pd.DataFrame,
@@ -114,12 +116,14 @@ def estimate_impacts(
     horizon: int,
     hidden_days_before_protest: int,
 ) -> tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame]:
-    actuals, counterfactuals, impacts = zip(
-        *[
-            estimate_impact(
-                event["date"], article_counts, horizon, hidden_days_before_protest
-            )
-            for _, event in tqdm(events.iterrows(), total=events.shape[0])
-        ]
+    def _estimate_impact(event_):
+        i, event = event_
+        return estimate_impact(
+            event["date"], article_counts, horizon, hidden_days_before_protest
+        )
+
+    estimates = parallel_tqdm(
+        _estimate_impact, events.iterrows(), total=events.shape[0], n_jobs=4
     )
+    actuals, counterfactuals, impacts = zip(*estimates)
     return actuals, counterfactuals, impacts

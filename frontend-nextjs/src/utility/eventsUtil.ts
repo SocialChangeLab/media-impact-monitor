@@ -230,8 +230,10 @@ function validateGetDataResponse(response: unknown): EventType[] {
 		if (response?.detail[0]?.msg) throw new Error(response.detail[0]?.msg)
 		throw new Error('Invalid response data (was an object, expected an array)')
 	}
-	if (!Array.isArray(response))
+	if (!Array.isArray(response)) {
+		console.log(response)
 		throw new Error('Invalid response data (not an array)')
+	}
 	return response[1]
 }
 

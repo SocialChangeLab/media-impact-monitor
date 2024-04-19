@@ -34,10 +34,12 @@ metadata = dict(
         url="https://github.com/socialchangelab/media-impact-monitor",
     ),
     redoc_url="/docs",
+    # the original Swagger UI does not properly display POST parameters, so we disable it
     docs_url=None,
 )
 
 
+# setup logging to also include datetime
 @asynccontextmanager
 async def app_lifespan(app: FastAPI):
     logger = logging.getLogger("uvicorn.access")
@@ -51,6 +53,9 @@ async def app_lifespan(app: FastAPI):
 
 app = FastAPI(**metadata, lifespan=app_lifespan)
 
+# configure cross-origin resource sharing
+# = which websites are allowed to access the API
+# (enforced by the browsers for "security" reasons)
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],

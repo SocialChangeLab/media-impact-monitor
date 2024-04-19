@@ -1,5 +1,5 @@
 from joblib import Parallel, delayed
-from tqdm import tqdm
+from tqdm.auto import tqdm
 
 
 def parallel_tqdm(

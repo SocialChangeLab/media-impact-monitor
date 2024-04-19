@@ -1,3 +1,5 @@
+from datetime import date
+
 from media_impact_monitor.events import get_events, get_events_by_id
 from media_impact_monitor.types_ import EventSearch
 
@@ -21,3 +23,65 @@ def test_retrieval_by_id():
     assert all(retrieved["event_id"].isin(events["event_id"]))
     assert all(events["event_id"].isin(retrieved["event_id"]))
     assert str(retrieved) == str(events)
+
+
+def test_last_generation():
+    df1 = get_events(
+        EventSearch(
+            event_type="protest",
+            source="acled",
+            start_date=date(2023, 1, 1),
+            end_date=date(2023, 12, 31),
+            organizers=["Last Generation (Germany)"],
+        )
+    )
+    assert len(df1) > 100
+    assert (
+        df1["organizers"].explode().value_counts().index[0]
+        == "Last Generation (Germany)"
+    )
+    df2 = get_events(
+        EventSearch(
+            event_type="protest",
+            source="acled",
+            start_date=date(2023, 1, 1),
+            end_date=date(2023, 12, 31),
+        )
+    )
+    df2 = df2[df2["organizers"].apply(lambda x: "Last Generation (Germany)" in x)]
+    df2 = df2.reset_index(drop=True)
+    assert len(df2) > 100
+    assert (
+        df2["organizers"].explode().value_counts().index[0]
+        == "Last Generation (Germany)"
+    )
+    assert df1.shape == df2.shape
+    assert str(df1) == str(df2)
+
+
+def test_fridays_for_future():
+    df1 = get_events(
+        EventSearch(
+            event_type="protest",
+            source="acled",
+            start_date=date(2023, 1, 1),
+            end_date=date(2023, 12, 31),
+            organizers=["Fridays For Future"],  # wrong case, should work anyway!
+        )
+    )
+    assert len(df1) > 100
+    assert df1["organizers"].explode().value_counts().index[0] == "Fridays for Future"
+    df2 = get_events(
+        EventSearch(
+            event_type="protest",
+            source="acled",
+            start_date=date(2023, 1, 1),
+            end_date=date(2023, 12, 31),
+        )
+    )
+    df2 = df2[df2["organizers"].apply(lambda x: "Fridays for Future" in x)]
+    df2 = df2.reset_index(drop=True)
+    assert len(df2) > 100
+    assert df2["organizers"].explode().value_counts().index[0] == "Fridays for Future"
+    assert df1.shape == df2.shape
+    assert str(df1) == str(df2)

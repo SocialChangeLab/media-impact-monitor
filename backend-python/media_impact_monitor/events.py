@@ -1,21 +1,23 @@
+import re
 from datetime import date
+from itertools import chain
 
 import pandas as pd
 from joblib import hash as joblib_hash
 
 from media_impact_monitor.data_loaders.protest.acled import get_acled_events
-from media_impact_monitor.data_loaders.protest.climate_groups import acled_keys
+from media_impact_monitor.data_loaders.protest.climate_orgs import aliases, orgs
 from media_impact_monitor.impact_estimators.interrupted_time_series import (
     estimate_impact,
 )
 from media_impact_monitor.trend import get_trend
-from media_impact_monitor.types_ import Event, EventSearch, TrendSearch
+from media_impact_monitor.types_ import EventSearch, TrendSearch
 from media_impact_monitor.util.cache import cache
 from media_impact_monitor.util.date import verify_dates
 from media_impact_monitor.util.parallel import parallel_tqdm
 
 
-@cache
+# @cache
 def get_events(q: EventSearch) -> pd.DataFrame:
     assert q.event_type == "protest", "Only protests are supported."
     assert q.source == "acled", "Only ACLED is supported."
@@ -31,7 +33,7 @@ def get_events(q: EventSearch) -> pd.DataFrame:
         case "climate_change":
             df = df[
                 df["description"].str.lower().str.contains("climate")
-                | df["organizers"].isin(acled_keys)
+                | df["organizers"].isin(orgs)
             ]
         case _:
             raise ValueError(f"Unsupported topic: {q.topic}")
@@ -57,13 +59,16 @@ def get_events(q: EventSearch) -> pd.DataFrame:
 
 @cache
 def get_impact(event):
+    orgs = event["organizers"]
+    orgs = orgs + list(chain(*[aliases.get(org, []) for org in orgs]))
+    orgs = [re.sub(r"\s*\(.*\)", "", org) for org in orgs]
     trend = get_trend(
         TrendSearch(
             trend_type="keywords",
             media_source="news_online",
             start_date=event["date"] - pd.Timedelta(days=180),
             end_date=event["date"] + pd.Timedelta(days=28),
-            query="|".join(event["organizers"]),
+            query="|".join([f'"{org}"' for org in orgs]),
         )
     )
     hidden_days_before_protest = 4
@@ -75,6 +80,7 @@ def get_impact(event):
         hidden_days_before_protest=hidden_days_before_protest,
     )
     impact = impacts.cumsum().loc[event["date"] + pd.Timedelta(days=14)]
+    # TODO: divide impact by number of events on that day (by the same org)
     return impact
 
 

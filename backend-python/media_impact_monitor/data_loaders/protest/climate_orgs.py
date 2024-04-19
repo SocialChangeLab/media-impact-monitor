@@ -1,7 +1,7 @@
 # list of movements
 # keys: as in ACLED (with exceptions, see below)
 # values: other names, e. g. in the original language
-aliases = {
+climate_orgs_aliases = {
     "Animal Rebellion": ["AR"],  # was renamed to "Animal Rising"
     "Animal Rising": ["AR"],
     "Alternatiba": [],
@@ -30,9 +30,10 @@ aliases = {
     "Direct Action Everywhere": ["DxE"],
 }
 
-orgs = list(aliases.keys())
+climate_orgs = list(climate_orgs_aliases.keys())
 
 # add the aliases of the group in brackets
-org_strings_for_coding = [
-    f"{k} [{','.join(vs)}]" if len(vs) > 0 else k for k, vs in aliases.items()
+climate_orgs_strings_for_coding = [
+    f"{k} [{','.join(vs)}]" if len(vs) > 0 else k
+    for k, vs in climate_orgs_aliases.items()
 ]

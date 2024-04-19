@@ -6,7 +6,10 @@ import pandas as pd
 from joblib import hash as joblib_hash
 
 from media_impact_monitor.data_loaders.protest.acled import get_acled_events
-from media_impact_monitor.data_loaders.protest.climate_orgs import aliases, orgs
+from media_impact_monitor.data_loaders.protest.climate_orgs import (
+    climate_orgs,
+    climate_orgs_aliases,
+)
 from media_impact_monitor.impact_estimators.interrupted_time_series import (
     estimate_impact,
 )
@@ -60,7 +63,7 @@ def get_events(q: EventSearch) -> pd.DataFrame:
 @cache
 def get_impact(event):
     orgs = event["organizers"]
-    orgs = orgs + list(chain(*[aliases.get(org, []) for org in orgs]))
+    orgs = orgs + list(chain(*[climate_orgs_aliases.get(org, []) for org in orgs]))
     orgs = [re.sub(r"\s*\(.*\)", "", org) for org in orgs]
     orgs_query = " OR ".join([f'"{org}"' for org in orgs])
     trend = get_trend(

@@ -62,13 +62,14 @@ def get_impact(event):
     orgs = event["organizers"]
     orgs = orgs + list(chain(*[aliases.get(org, []) for org in orgs]))
     orgs = [re.sub(r"\s*\(.*\)", "", org) for org in orgs]
+    orgs_query = " OR ".join([f'"{org}"' for org in orgs])
     trend = get_trend(
         TrendSearch(
             trend_type="keywords",
             media_source="news_online",
             start_date=event["date"] - pd.Timedelta(days=180),
             end_date=event["date"] + pd.Timedelta(days=28),
-            query="|".join([f'"{org}"' for org in orgs]),
+            query=orgs_query,
         )
     )
     hidden_days_before_protest = 4

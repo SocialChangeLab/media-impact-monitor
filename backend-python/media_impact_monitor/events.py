@@ -36,7 +36,7 @@ def get_events(q: EventSearch) -> pd.DataFrame:
         case "climate_change":
             df = df[
                 df["description"].str.lower().str.contains("climate")
-                | df["organizers"].isin(orgs)
+                | df["organizers"].isin(climate_orgs)
             ]
         case _:
             raise ValueError(f"Unsupported topic: {q.topic}")
@@ -46,8 +46,15 @@ def get_events(q: EventSearch) -> pd.DataFrame:
         ), "Query must be a single keyword."
         df = df[df["description"].str.lower().str.contains(q.query.lower())]
     if q.organizers:
-        # TODO: verify that they are all spelled correctly
-        df = df[df["organizers"].apply(lambda x: any(org in x for org in q.organizers))]
+        _all_organizers = [org.lower() for org in all_organizers()]
+        for org in q.organizers:
+            assert org.lower() in _all_organizers, f"Unknown organizer: {org}"
+        _organizers = [org.lower() for org in q.organizers]
+        df = df[
+            df["organizers"].apply(
+                lambda x: any(org.lower() in _organizers for org in x)
+            )
+        ]
     df["date"] = df["date"].dt.date
     df["event_id"] = df.apply(joblib_hash, axis=1, raw=True)
     df["impact"] = None
@@ -99,3 +106,21 @@ def get_events_by_id(event_ids: list[str]) -> pd.DataFrame:
     )
     df = df[df["event_id"].isin(event_ids)]
     return df.reset_index(drop=True)
+
+
+@cache
+def all_events():
+    return get_events(
+        EventSearch(
+            event_type="protest",
+            source="acled",
+            start_date=date(2020, 1, 1),
+            end_date=date(2023, 12, 31),
+        )
+    )
+
+
+@cache
+def all_organizers():
+    df = all_events()
+    return df["organizers"].explode().value_counts().index.tolist()

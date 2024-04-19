@@ -46,15 +46,7 @@ def get_events(q: EventSearch) -> pd.DataFrame:
         ), "Query must be a single keyword."
         df = df[df["description"].str.lower().str.contains(q.query.lower())]
     if q.organizers:
-        _all_organizers = [org.lower() for org in all_organizers()]
-        for org in q.organizers:
-            assert org.lower() in _all_organizers, f"Unknown organizer: {org}"
-        _organizers = [org.lower() for org in q.organizers]
-        df = df[
-            df["organizers"].apply(
-                lambda x: any(org.lower() in _organizers for org in x)
-            )
-        ]
+        df = filter_by_organizers(df, q.organizers)
     df["date"] = df["date"].dt.date
     df["event_id"] = df.apply(joblib_hash, axis=1, raw=True)
     df["impact"] = None
@@ -67,10 +59,32 @@ def get_events(q: EventSearch) -> pd.DataFrame:
     return df.reset_index(drop=True)
 
 
+def filter_by_organizers(df: pd.DataFrame, organizers: list[str]) -> pd.DataFrame:
+    for org in organizers:
+        if not overlap_case_insensitive([org], add_aliases(climate_orgs)):
+            raise ValueError(f"Unknown organizer: {org}")
+    df = df[
+        df["organizers"]
+        .apply(add_aliases)
+        .apply(lambda x: overlap_case_insensitive(x, organizers))
+    ]
+    return df
+
+
+def add_aliases(orgs: list[str]) -> list[str]:
+    return orgs + list(chain(*[climate_orgs_aliases.get(org, []) for org in orgs]))
+
+
+def overlap_case_insensitive(s1: list[str], s2: list[str]) -> bool:
+    _s1 = set(s.lower() for s in s1)
+    _s2 = set(s.lower() for s in s2)
+    return bool(_s1 & _s2)
+
+
 @cache
 def get_impact(event):
     orgs = event["organizers"]
-    orgs = orgs + list(chain(*[climate_orgs_aliases.get(org, []) for org in orgs]))
+    orgs = add_aliases(orgs)
     orgs = [re.sub(r"\s*\(.*\)", "", org) for org in orgs]
     orgs_query = " OR ".join([f'"{org}"' for org in orgs])
     trend = get_trend(

@@ -58,10 +58,6 @@ class EventSearch(BaseModel):
         default=None,
         description="Filter by a keyword query that must occur in the event description.",
     )
-    estimate_impact: bool = Field(
-        default=False,
-        description="Whether to estimate the impact on the number of articles published about the organizers of the event. This may be computationally expensive.",
-    )
 
 
 date_ = date
@@ -77,9 +73,6 @@ class Event:
         description="The organizations involved in the event."
     )
     description: str = Field(description="Description of the event.")
-    impact: float | None = Field(
-        description="Estimated impact on the number of articles published about the organizers of the event within 7 days after the event."
-    )
 
 
 #### Trend types ####

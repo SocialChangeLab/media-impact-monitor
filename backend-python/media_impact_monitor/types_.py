@@ -157,13 +157,13 @@ class Impact(BaseModel):
     method_applicability_reason: str | None = Field(
         description="Reason why the causal inference method is (not) applicable."
     )
-    impact_average: AbstractTimeSeries = Field(
+    impact_mean: AbstractTimeSeries = Field(
         description="Impact estimate for each day around the average protest event. Dictionary of days after event (0 = day of event) and impact estimates for the given days."
     )
-    impact_average_upper: AbstractTimeSeries | None = Field(
+    impact_mean_upper: AbstractTimeSeries | None = Field(
         description="Upper bound of the two-sided 95% confidence interval for the impact estimate, for each day around the average protest event. Dictionary of days after event (0 = day of event) and impact estimates for the given days."
     )
-    impact_average_lower: AbstractTimeSeries | None = Field(
+    impact_mean_lower: AbstractTimeSeries | None = Field(
         description="Lower bound of the two-sided 95% confidence interval for the impact estimate, for each day around the average protest event. Dictionary of days after event (0 = day of event) and impact estimates for the given days."
     )
     individual_impacts: dict[EventId, TimeSeries] | None = Field(

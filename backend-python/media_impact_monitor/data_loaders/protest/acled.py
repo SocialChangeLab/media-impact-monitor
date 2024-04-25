@@ -77,7 +77,7 @@ def get_acled_events(
         return df
     if len(df) == limit:
         raise ValueError(f"Limit of {limit} reached.")
-    df["date"] = pd.to_datetime(df["event_date"], format="%Y-%m-%d")
+    df["date"] = pd.to_datetime(df["event_date"]).dt.date
     df = process_orgs(df)
     df["description"] = df["notes"]
     df["event_type"] = "protest"

@@ -42,6 +42,7 @@ def predict_with_arima(train: pd.DataFrame, horizon: int):
         .reset_index(drop=True)
         .set_index("date")
     )
+    pred.index = pred.index.date
     return pred
 
 
@@ -71,6 +72,7 @@ def predict_with_ml(train: pd.DataFrame, horizon: int):
         .drop(columns=["unique_id"])
         .set_index("date")
     )
+    pred.index = pred.index.date
     return pred
 
 

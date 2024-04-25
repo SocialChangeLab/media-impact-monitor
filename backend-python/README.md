@@ -10,3 +10,9 @@
 - `poetry run py-spy record -o profile.svg -- python xyz.py` to do profiling
 
 
+## Conventions
+
+### Date types
+
+- For dates use `datetime.date`, also within Pandas dataframes (where usually one might use `pd.Timestamp`, but for consistency we do not).
+- For datetimes: t.b.d.

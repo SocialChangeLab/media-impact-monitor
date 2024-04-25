@@ -43,14 +43,15 @@ def get_events(q: EventSearch) -> pd.DataFrame:
         df = filter_by_organizers(df, q.organizers)
     df["date"] = df["date"].dt.date
     df["event_id"] = df.apply(joblib_hash, axis=1, raw=True)
-    df["impact"] = None
     return df.reset_index(drop=True)
 
 
 def filter_by_organizers(df: pd.DataFrame, organizers: list[str]) -> pd.DataFrame:
+    # check for correct spelling
     for org in organizers:
         if not overlap_case_insensitive([org], add_aliases(climate_orgs)):
             raise ValueError(f"Unknown organizer: {org}")
+    # filter
     df = df[
         df["organizers"]
         .apply(add_aliases)
@@ -64,6 +65,7 @@ def add_aliases(orgs: list[str]) -> list[str]:
 
 
 def overlap_case_insensitive(s1: list[str], s2: list[str]) -> bool:
+    # do the sets overlap (ignoring case)?
     _s1 = set(s.lower() for s in s1)
     _s2 = set(s.lower() for s in s2)
     return bool(_s1 & _s2)
@@ -89,7 +91,7 @@ def all_events():
             event_type="protest",
             source="acled",
             start_date=date(2020, 1, 1),
-            end_date=date(2023, 12, 31),
+            end_date=date(2024, 3, 31),
         )
     )
 

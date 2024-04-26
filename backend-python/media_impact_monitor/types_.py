@@ -8,7 +8,7 @@ from pydantic import BaseModel, Field
 
 Topic = Literal["climate_change"]
 Query = str  # for now, just a single keyword
-MediaSource = Literal["news_online", "news_print"]
+MediaSource = Literal["news_online", "news_print", "web_google"]
 
 
 CountTimeSeries = dict[date, int]  # time series with integer values

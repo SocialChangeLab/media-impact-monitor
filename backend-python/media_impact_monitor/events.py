@@ -41,7 +41,6 @@ def get_events(q: EventSearch) -> pd.DataFrame:
         df = df[df["description"].str.lower().str.contains(q.query.lower())]
     if q.organizers:
         df = filter_by_organizers(df, q.organizers)
-    df["date"] = df["date"].dt.date
     df["event_id"] = df.apply(joblib_hash, axis=1, raw=True)
     return df.reset_index(drop=True)
 

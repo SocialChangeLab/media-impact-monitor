@@ -1,12 +1,14 @@
 from datetime import date
 
 import pandas as pd
+import pytest
 
 from media_impact_monitor.data_loaders.news_online.mediacloud_ import (
     get_mediacloud_counts,
 )
 
 
+@pytest.mark.skip("Currently unavailable")
 def test_get_counts_mediacloud():
     df = get_mediacloud_counts(
         query='"Fridays for Future"',

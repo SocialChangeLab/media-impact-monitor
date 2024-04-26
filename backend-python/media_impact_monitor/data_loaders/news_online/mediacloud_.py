@@ -26,6 +26,7 @@ def get_mediacloud_counts(
     start_date: date = start,
     end_date: date = end,
     countries: list | None = None,
+    platform: Platform = "onlinenews-waybackmachine",
 ):
     assert start_date.year >= 2023, "MediaCloud currently only goes back to 2023"
     collection_ids: list[int] = []
@@ -42,6 +43,7 @@ def get_mediacloud_counts(
         start_date=start_date,
         end_date=end_date,
         collection_ids=collection_ids,
+        platform=platform,
     )
     df = pd.DataFrame(data)
     df = df[["date", "count"]]  # ignore total_count and ratio

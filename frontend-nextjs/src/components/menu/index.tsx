@@ -1,8 +1,7 @@
-'use client'
-
 import ThemeToggle from '@components/ThemeToggle'
-import Logo from '@components/logo'
+import AppLogo from '@components/logos/AppLogo'
 import { cn } from '@utility/classNames'
+import Link from 'next/link'
 import HeaderMenuLink from './HeaderMenuLink'
 
 type MenuItemType = {
@@ -10,13 +9,20 @@ type MenuItemType = {
 	label?: string
 	route?: string
 }
-export const Menu = ({
-	currentPage,
-	menuItems,
-}: {
-	currentPage: string
-	menuItems: MenuItemType[]
-}) => {
+
+const menuItems: MenuItemType[] = [
+	{
+		name: 'events',
+		label: 'Dashboard',
+		route: '/',
+	},
+	{
+		name: 'about',
+		label: 'About',
+		route: '/about',
+	},
+]
+export const Menu = ({ currentPage }: { currentPage: string }) => {
 	return (
 		<nav
 			className={cn(
@@ -24,13 +30,13 @@ export const Menu = ({
 				'border-b border-grayLight',
 			)}
 		>
-			<a
+			<Link
 				href="/"
 				title="Home"
 				className="opacity-100 motion-safe:transition-opacity hover:opacity-80 focusable"
 			>
-				<Logo />
-			</a>
+				<AppLogo />
+			</Link>
 			<ul
 				className={cn(`flex flex-col md:flex-row md:gap-4 items-center`)}
 				aria-label="Main menu items"

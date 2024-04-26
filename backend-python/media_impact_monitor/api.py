@@ -39,6 +39,20 @@ metadata = dict(
 )
 
 
+@asynccontextmanager
+async def app_lifespan(app: FastAPI):
+    logger = logging.getLogger("uvicorn.access")
+    if logger.handlers:
+        console_formatter = AccessFormatter(
+            "{asctime} {levelprefix} {message}", style="{", use_colors=True
+        )
+        logger.handlers[0].setFormatter(console_formatter)
+    yield
+
+
+app = FastAPI(**metadata, lifespan=app_lifespan)
+
+
 # setup logging to also include datetime
 @asynccontextmanager
 async def app_lifespan(app: FastAPI):

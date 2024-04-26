@@ -42,6 +42,7 @@ def test_get_events_failure(client):
     assert "detail" in response.json()
 
 
+@pytest.mark.skip(reason="The Genios API is currently down.")
 @pytest.mark.filterwarnings("ignore::DeprecationWarning")
 def test_get_trend_success(client):
     response = client.post(

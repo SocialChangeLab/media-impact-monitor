@@ -3372,6 +3372,22 @@ files = [
 ]
 
 [[package]]
+name = "pytrends"
+version = "4.9.2"
+description = "Pseudo API for Google Trends"
+optional = false
+python-versions = ">=3.7"
+files = [
+    {file = "pytrends-4.9.2-py3-none-any.whl", hash = "sha256:d7d0ee956be2f6e3e9fc09376c4615efb9347039d6d1f46e6f4326a5b7a14f67"},
+    {file = "pytrends-4.9.2.tar.gz", hash = "sha256:691c6e36b1aeaa4754f3692bdbad0dff446e528ffb052eee2e7f139aaa2c6989"},
+]
+
+[package.dependencies]
+lxml = "*"
+pandas = ">=0.25"
+requests = ">=2.0"
+
+[[package]]
 name = "pytz"
 version = "2024.1"
 description = "World timezone definitions, modern and historical"

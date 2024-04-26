@@ -19,7 +19,7 @@ const fallbackFonts = [
 
 /** @type {import('tailwindcss').Config} */
 module.exports = {
-	darkMode: ['class', '[data-applied-mode="dark"]'],
+	darkMode: ['class', '[data-theme="dark"]'],
 	content: ['./src/**/*.{js,jsx,md,mdx,ts,tsx}'],
 	theme: {
 		extend: {
@@ -30,6 +30,8 @@ module.exports = {
 				mono: ['monospace'],
 			},
 			colors: {
+				brandGreen: 'var(--brandGreen)',
+				brandWhite: 'var(--brandWhite)',
 				fg: 'var(--fg)',
 				bg: 'var(--bg)',
 				bgOverlay: 'var(--bgOverlay)',
@@ -49,6 +51,7 @@ module.exports = {
 	plugins: [
 		require('@tailwindcss/container-queries'),
 		require('@tailwindcss/forms'),
+		require('@tailwindcss/typography'),
 		require('tailwindcss-animate'),
 		plugin(function ({ addUtilities }) {
 			addUtilities({

@@ -1,7 +1,6 @@
 from datetime import date
 
 import pandas as pd
-from pytest import mark
 
 from media_impact_monitor.data_loaders.news_online.mediacloud_ import (
     get_mediacloud_counts,

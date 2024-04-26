@@ -14,7 +14,7 @@ from media_impact_monitor.util.cache import cache
 from media_impact_monitor.util.date import verify_dates
 
 
-# @cache
+@cache
 def get_events(q: EventSearch) -> pd.DataFrame:
     assert q.event_type == "protest", "Only protests are supported."
     assert q.source == "acled", "Only ACLED is supported."

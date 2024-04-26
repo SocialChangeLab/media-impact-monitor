@@ -4,6 +4,7 @@ import scipy.stats
 
 from media_impact_monitor.events import get_events_by_id
 from media_impact_monitor.impact_estimators.interrupted_time_series import (
+    estimate_impacts,
     estimate_mean_impact,
 )
 from media_impact_monitor.trend import get_trend
@@ -24,24 +25,29 @@ def get_impact(q: ImpactSearch) -> Impact:
     horizon = 28
     match q.method:
         case "interrupted_time_series":
-            actuals, counterfactuals, impacts = estimate_mean_impact(
+            ind_act, ind_count, individual_impacts = estimate_impacts(
                 events=events,
                 article_counts=trend,
                 horizon=horizon,
                 hidden_days_before_protest=hidden_days_before_protest,
             )
-            impacts = [impact.cumsum() for impact in impacts]
+            mean_impact = estimate_mean_impact(
+                events=events,
+                article_counts=trend,
+                horizon=horizon,
+                hidden_days_before_protest=hidden_days_before_protest,
+            )
         case "synthetic_control":
             raise NotImplementedError("Synthetic control is not yet implemented.")
         case _:
             raise ValueError(f"Unsupported method: {q.method}")
-    impacts_dicts = [impact["count"].to_dict() for impact in impacts]
+    impacts_dicts = [impact["count"].to_dict() for impact in individual_impacts]
     return Impact(
         method_applicability="maybe",
         method_applicability_reason="We're not checking this yet 🤡",
-        impact_mean=impacts["mean"].to_dict(),
-        impact_mean_lower=impacts["ci_lower"].to_dict(),
-        impact_mean_upper=impacts["ci_upper"].to_dict(),
+        impact_mean=mean_impact["mean"].to_dict(),
+        impact_mean_lower=mean_impact["ci_lower"].to_dict(),
+        impact_mean_upper=mean_impact["ci_upper"].to_dict(),
         individual_impacts=dict(zip(events["event_id"], impacts_dicts)),
     )
     # TODO: divide impact by number of events on that day (by the same org)

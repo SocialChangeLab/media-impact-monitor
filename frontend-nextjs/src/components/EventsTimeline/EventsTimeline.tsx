@@ -36,10 +36,10 @@ function EventsTimeline() {
 			const eventsOfTheDay = events.filter((evt) => isSameDay(evt.date, d))
 			const eventsWithPositiveImpact = eventsOfTheDay
 				.filter((evt) => evt.impact >= 0)
-				.sort((a, b) => a.organizations[0].localeCompare(b.organizations[0]))
+				.sort((a, b) => a.organizers[0]?.localeCompare(b.organizers[0]))
 			const eventsWithNegativeImpact = eventsOfTheDay
 				.filter((evt) => evt.impact < 0)
-				.sort((a, b) => b.organizations[0].localeCompare(a.organizations[0]))
+				.sort((a, b) => b.organizers[0]?.localeCompare(a.organizers[0]))
 
 			return {
 				day: startOfDay(d),
@@ -116,7 +116,7 @@ function EventTimelineItem({ event, organisations }: EventTimelineItemProps) {
 				className={cn(
 					'size-3 relative z-10 hover:z-20',
 					'event-item transition-opacity',
-					event.organizations.map(
+					event.organizers.map(
 						(org) =>
 							`event-item-org-${slugifyCssClass(org) || 'unknown-organisation'}`,
 					),

@@ -4,8 +4,9 @@ import { slugifyCssClass } from '@/utility/cssSlugify'
 import useEvents from '@/utility/useEvents'
 
 function EventsTimelineLegend() {
-	const organisations = useEvents().data?.organisations ?? []
-	if (organisations.length === 0) return null
+	const legendOrganisations = useEvents().data?.organisations
+
+	if (legendOrganisations.length === 0) return null
 	return (
 		<div className="mt-6 flex flex-col gap-2">
 			<h4 className="text-lg font-bold font-headlines antialiased relative">
@@ -13,7 +14,7 @@ function EventsTimelineLegend() {
 				<span className="h-px w-full bg-grayLight absolute top-1/2 z-10"></span>
 			</h4>
 			<ul className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-8">
-				{organisations.map((org) => (
+				{legendOrganisations.map((org) => (
 					<li
 						key={org.name}
 						className={cn(

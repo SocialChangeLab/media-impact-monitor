@@ -8,7 +8,7 @@ type EventBubbleLinkProps = {
 }
 
 function EventBubbleLink({ event, organisations }: EventBubbleLinkProps) {
-	const mappedOrganisations = event.organizations
+	const mappedOrganisations = event.organizers
 		.map((x) => organisations.find((y) => y.name === x))
 		.filter(Boolean) as OrganisationType[]
 	return (

@@ -29,8 +29,8 @@ export const getColumns = () => [
 			})
 		},
 	}),
-	columnHelper.accessor('organizations', {
-		header: 'Organisations',
+	columnHelper.accessor('organizers', {
+		header: 'Organizers',
 		cell: function render({ getValue }) {
 			return ((getValue() as string[] | null) ?? []).join(', ')
 		},

@@ -1,5 +1,6 @@
 import { format, parse } from 'date-fns'
 import seed from 'seed-random'
+import { z } from 'zod'
 import { dateSortCompare, isValidISODateString } from './dateUtil'
 import { AllowedParamsInputType } from './searchParamsUtil'
 
@@ -15,62 +16,33 @@ export type Query<T> =
 			error: null
 	  }
 
-export type EventType = {
-	event_id: string
-	event_type: string
-	source: string
-	topic: string
-	date: string
-	organizations: string[]
-	description: string
-	impact: number
-}
+const eventZodSchema = z.object({
+	event_id: z.string(),
+	event_type: z.string(),
+	source: z.string(),
+	topic: z.string().optional(),
+	date: z.string(),
+	organizers: z.array(z.string()).default([]),
+	description: z.string(),
+	impact: z.number().default(0),
+})
+export type EventType = z.infer<typeof eventZodSchema>
 
 const distinctiveTailwindColors = [
-	`#a6cee3`,
-	`#1f78b4`,
-	`#b2df8a`,
-	`#33a02c`,
-	`#fb9a99`,
-	`#e31a1c`,
-	`#fdbf6f`,
-	`#ff7f00`,
-	`#cab2d6`,
-	`#6a3d9a`,
-	`#ffff99`,
-	`#b15928`,
-	'#4f8c9d',
-	'#76dd78',
-	'#ff0087',
-	'#34daea',
-	'#752e4f',
-	'#c7c2ec',
-	'#702cb4',
-	'#5e9222',
-	'#c00018',
-	'#34f50e',
-	'#3c4666',
-	'#fe74fe',
-	'#155126',
-	'#ec9fe7',
-	'#3163d8',
-	'#cddb9b',
-	'#893c02',
-	'#f2a966',
-	'#55450a',
-	'#e2d923',
-	`#8dd3c7`,
-	`#ffffb3`,
-	`#bebada`,
-	`#fb8072`,
-	`#80b1d3`,
-	`#fdb462`,
-	`#b3de69`,
-	`#fccde5`,
-	`#d9d9d9`,
-	`#bc80bd`,
-	`#ccebc5`,
-	`#ffed6f`,
+	`var(--categorical-color-1)`,
+	`var(--categorical-color-2)`,
+	`var(--categorical-color-3)`,
+	`var(--categorical-color-4)`,
+	`var(--categorical-color-5)`,
+	`var(--categorical-color-6)`,
+	`var(--categorical-color-7)`,
+	`var(--categorical-color-8)`,
+	`var(--categorical-color-9)`,
+	`var(--categorical-color-10)`,
+	`var(--categorical-color-11)`,
+	`var(--categorical-color-12)`,
+	'var(--categorical-color-13)',
+	'var(--categorical-color-14)',
 ]
 
 let impacts = [
@@ -90,18 +62,27 @@ impacts = [...impacts, 60, 70, 80, 90, 100, 100, 90, 90, 80]
 const random = (seedString: string) =>
 	impacts[Math.floor(seed(seedString)() * impacts.length)]
 
-export type ColorType = string
+const colorTypeZodSchema = z.string()
+export type ColorType = z.infer<typeof colorTypeZodSchema>
 
-export type OrganisationType = {
-	name: string
-	color: ColorType
-	count: number
-}
+const organisationZodSchema = z.object({
+	name: z.string(),
+	count: z.number(),
+	color: colorTypeZodSchema,
+})
+export type OrganisationType = z.infer<typeof organisationZodSchema>
 
-export type EventsDataType = {
-	events: EventType[]
-	organisations: OrganisationType[]
-}
+const eventDataTypeZodSchema = z.object({
+	events: z.array(eventZodSchema),
+	organisations: z.array(organisationZodSchema),
+})
+export type EventsDataType = z.infer<typeof eventDataTypeZodSchema>
+
+const eventDataResponseTypeZodSchema = z.object({
+	data: z.array(eventZodSchema),
+	isPending: z.boolean().optional(),
+	error: z.union([z.string(), z.null()]).optional(),
+})
 
 interface DataResponseType<DataType> {
 	data: DataType
@@ -135,16 +116,8 @@ export async function getEventsData(
 			}),
 		})
 		const json = await response.json()
-		const validatedResponse = validateGetDataResponse(json)
+		const events = validateGetDataResponse(json)
 
-		const data = validatedResponse
-			.filter((x) => isValidISODateString(x.date))
-			.map((x) => ({
-				...x,
-				impact: random(x.event_id),
-				date: parse(x.date, 'yyyy-MM-dd', new Date()).toISOString(),
-			})) as EventType[]
-		const events = data.sort((a, b) => dateSortCompare(a.date, b.date))
 		return {
 			data: {
 				events,
@@ -179,64 +152,43 @@ export async function getEventData(
 }
 
 function extractEventOrganisations(events: EventType[]): OrganisationType[] {
-	let alreadyUsedColors: string[] = []
 	const organisationStrings = [
 		...events
 			.reduce((acc, event) => {
-				event.organizations.forEach((organization) => acc.add(organization))
+				event.organizers?.forEach((organizer) => acc.add(organizer))
 				return acc
 			}, new Set<string>())
 			.values(),
 	]
 	return organisationStrings
-		.map((organization) => ({
-			name: organization,
-			count: events.filter((x) => x.organizations.includes(organization))
-				.length,
+		.map((organizer) => ({
+			name: organizer,
+			count: events.filter((x) => x.organizers?.includes(organizer)).length,
 		}))
 		.sort((a, b) => b.count - a.count)
-		.map((organization) => {
-			if (organization.name.toLocaleLowerCase().trim() === '') {
+		.map((organizer, idx) => {
+			if (organizer.name.toLocaleLowerCase().trim() === '') {
 				return {
 					name: 'Unknown organisation',
 					color: 'var(--grayMed)',
-					count: events.filter((x) => x.organizations.filter((x) => !x)).length,
+					count: events.filter((x) => x.organizers?.filter((x) => !x)).length,
 				}
 			}
-			let color = distinctiveTailwindColors.find(
-				(color) => !alreadyUsedColors.includes(color),
-			)
-			if (!color) {
-				alreadyUsedColors = [distinctiveTailwindColors[0]]
-				color = distinctiveTailwindColors[0]
-			}
-			alreadyUsedColors.push(color)
-			return {
-				...organization,
-				color: color,
-			}
+			let color = distinctiveTailwindColors[idx] ?? `var(--grayDark)`
+			return { ...organizer, color }
 		})
 }
 
 function validateGetDataResponse(response: unknown): EventType[] {
-	if (!response) throw new Error('Invalid response data (falsy value)')
-	if (Array.isArray(response) && response.length < 2)
-		throw new Error('Invalid response data (array too short)')
-	if (
-		isObject(response) &&
-		'detail' in response &&
-		Array.isArray(response.detail)
-	) {
-		if (response?.detail[0]?.msg) throw new Error(response.detail[0]?.msg)
-		throw new Error('Invalid response data (was an object, expected an array)')
-	}
-	if (!Array.isArray(response)) {
-		console.log(response)
-		throw new Error('Invalid response data (not an array)')
-	}
-	return response[1]
-}
-
-function isObject(x: unknown): x is Record<string, unknown> {
-	return typeof x === 'object' && x !== null
+	const parsedResponse = eventDataResponseTypeZodSchema.parse(response)
+	const eventsWithFixedOrgs = parsedResponse.data
+		.filter((x) => isValidISODateString(x.date))
+		.map((x) => ({
+			...x,
+			impact: random(x.event_id),
+			date: parse(x.date, 'yyyy-MM-dd', new Date()).toISOString(),
+			organizers: x.organizers ?? [],
+		}))
+		.sort((a, b) => dateSortCompare(a.date, b.date))
+	return eventsWithFixedOrgs
 }

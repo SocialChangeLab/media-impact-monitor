@@ -16,7 +16,7 @@ function EventTooltip({
 }: PropsWithChildren<{ event: EventType; organisations: OrganisationType[] }>) {
 	const orgs = useMemo(() => {
 		const unknownOrgName = 'Unknown organisation'
-		const mappedOrgs = event.organizations
+		const mappedOrgs = event.organizers
 			.map((orgName) => {
 				const org = organisations.find((x) => x.name === orgName)
 				if (!org) return
@@ -27,7 +27,7 @@ function EventTooltip({
 			})
 			.filter(Boolean) as OrganisationType[]
 		return mappedOrgs
-	}, [event.organizations, organisations])
+	}, [event.organizers, organisations])
 
 	const formattedDate = useMemo(
 		() => format(new Date(event.date), 'EEEE d MMMM yyyy'),

@@ -1,153 +1,135 @@
-import { cn } from '@utility/classNames'
-import { dateSortCompare } from '@utility/dateUtil'
-import { type EventType, type EventsDataType } from '@utility/eventsUtil'
+'use client'
+import { fadeVariants, scaleInVariants } from '@/utility/animationUtil'
+import { cn } from '@/utility/classNames'
+import { slugifyCssClass } from '@/utility/cssSlugify'
+import { EventType, OrganisationType } from '@/utility/eventsUtil'
+import useEvents from '@/utility/useEvents'
+import useTimeScale from '@/utility/useTimeScale'
 import { scalePow } from 'd3-scale'
-import { addDays, format, isBefore, startOfDay } from 'date-fns'
-import { AnimationProps, motion } from 'framer-motion'
+import { addDays, differenceInDays, isSameDay, startOfDay } from 'date-fns'
+import { motion } from 'framer-motion'
+import { useMemo } from 'react'
+import EmptyEventsTimeline from './EmptyEventsTimeline'
 import EventBubbleLink from './EventBubbleLink'
 import EventTooltip from './EventTooltip'
 import EventsTimelineWrapper from './EventsTimelinWrapper'
+import EventsTimelineAxis from './EventsTimelineAxis'
+import EventsTimelineChartWrapper from './EventsTimelineChartWrapper'
+import EventsTimelineLegend from './EventsTimelineLegend'
 
 export const impactScale = scalePow([0, 100], [12, 80])
 
-const eventVariants: AnimationProps['variants'] = {
-	initial: { opacity: 0, scale: 0.5 },
-	enter: { opacity: 1, scale: 1 },
-}
+function EventsTimeline() {
+	const { from, to, isPending, data } = useEvents()
+	const { events, organisations } = data
 
-const fadeVariants: AnimationProps['variants'] = {
-	initial: { opacity: 0 },
-	enter: { opacity: 1 },
-}
+	const timeScale = useTimeScale()
 
-function EventsTimeline({ events, organisations }: EventsDataType) {
-	const eventsByDay = events.reduce((acc, event) => {
-		const day = startOfDay(new Date(event.date)).toISOString()
-		const newEvents = [...(acc.get(day) ?? []), event].sort((a, b) =>
-			a.organizations[0].localeCompare(b.organizations[0]),
-		)
-		acc.set(day, newEvents)
-		return acc
-	}, new Map<string, EventType[]>())
+	const timeDiffInDays = useMemo(
+		() => Math.abs(differenceInDays(addDays(to, 1), from)),
+		[from, to],
+	)
 
-	const sortedDays = [...eventsByDay.entries()]
-		.map(([day, events]) => ({ day, events }))
-		.sort((a, b) => dateSortCompare(a.day, b.day))
+	const eventDays = useMemo(() => {
+		if (!timeScale) return []
+		return (timeScale.ticks(timeDiffInDays) ?? []).map((d) => {
+			const eventsOfTheDay = events.filter((evt) => isSameDay(evt.date, d))
+			const eventsWithPositiveImpact = eventsOfTheDay
+				.filter((evt) => evt.impact >= 0)
+				.sort((a, b) => a.organizers[0]?.localeCompare(b.organizers[0]))
+			const eventsWithNegativeImpact = eventsOfTheDay
+				.filter((evt) => evt.impact < 0)
+				.sort((a, b) => b.organizers[0]?.localeCompare(a.organizers[0]))
 
-	const allDays = createAllDays(sortedDays.at(0)?.day, sortedDays.at(-1)?.day)
-	const eventDays = allDays.map((day) => {
-		const dayString = startOfDay(day)
-		const events = eventsByDay.get(dayString.toISOString()) ?? []
-		return { day: dayString, events }
-	})
+			return {
+				day: startOfDay(d),
+				eventsWithPositiveImpact,
+				eventsWithNegativeImpact,
+			}
+		})
+	}, [events, timeDiffInDays, timeScale])
 
+	if (events.length === 0) return <EmptyEventsTimeline />
 	return (
-		<EventsTimelineWrapper>
-			<motion.ul
-				key="events-timeline-chart-wrapper"
-				className="flex gap-0.5 items-center py-6 justify-evenly min-w-full bg-grayUltraLight min-h-96 max-h-[calc(100vh-17rem)] overflow-auto"
-				variants={fadeVariants}
-				initial="initial"
-				animate="enter"
-				transition={{ staggerChildren: 0.01 }}
+		<EventsTimelineWrapper organisations={organisations}>
+			<EventsTimelineChartWrapper
+				animationKey={[
+					from?.toISOString(),
+					to?.toISOString(),
+					isPending.toString(),
+				].join('-')}
+				columnsCount={timeDiffInDays + 1}
 			>
-				{eventDays.map(({ day, events }) => (
-					<motion.li
-						key={day.toISOString()}
-						className="flex flex-col gap-0.5"
-						variants={fadeVariants}
-						transition={{ staggerChildren: 0.01 }}
-					>
-						{events.map((event) => (
-							<EventTooltip
-								key={event.event_id}
-								event={event}
-								organisations={organisations}
-							>
-								<motion.div
-									className="size-3 relative z-10 hover:z-20"
-									style={{
-										height: `${Math.ceil(impactScale(event.impact))}px`,
-									}}
-									variants={eventVariants}
-								>
-									<EventBubbleLink
+				{eventDays.map(
+					({ day, eventsWithNegativeImpact, eventsWithPositiveImpact }) => (
+						<motion.li
+							key={`event-day-${day.toISOString()}`}
+							className="grid grid-rows-subgrid row-span-3 relative"
+							variants={fadeVariants}
+							transition={{ staggerChildren: 0.01 }}
+						>
+							<div className="flex flex-col justify-end items-center gap-0.5">
+								<div
+									className="w-px h-full absolute top-0 left-1/2 -translate-x-1/2 bg-grayLight opacity-50"
+									aria-hidden="true"
+								/>
+								{eventsWithPositiveImpact.map((event) => (
+									<EventTimelineItem
+										key={event.event_id}
 										event={event}
 										organisations={organisations}
 									/>
-								</motion.div>
-							</EventTooltip>
-						))}
-					</motion.li>
-				))}
-			</motion.ul>
-			{eventDays.length > 0 && (
-				<>
-					<ul
-						aria-label="X Axis - Time"
-						className="flex gap-0.5 items-center pb-6 justify-evenly min-w-full border-t border-grayMed"
-					>
-						{eventDays.map(({ day }, idx) => (
-							<li
-								key={day.toISOString()}
-								className="size-3 relative"
-								aria-hidden={idx % 4 !== 0 ? 'false' : 'true'}
-								aria-label="X Axis Tick"
-							>
-								<span
-									className="w-px h-2 bg-grayMed absolute left-1/2 -translate-x-1/2"
-									aria-hidden="true"
-								/>
-								{idx % 4 === 0 && (
-									<span className="absolute left-1/2 top-full -translate-x-1/2 text-grayDark text-sm">
-										{format(new Date(day), 'dd.MM.yyyy')}
-									</span>
-								)}
-							</li>
-						))}
-					</ul>
-					<div className="mt-6 flex flex-col gap-2">
-						<h4 className="text-lg font-bold font-headlines antialiased relative">
-							<span className="w-fit pr-4 bg-bg relative z-20">Legend</span>
-							<span className="h-px w-full bg-grayLight absolute top-1/2 z-10"></span>
-						</h4>
-						<ul className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-8">
-							{organisations.map((org) => (
-								<li
-									key={org.name}
-									className="grid grid-cols-[auto_1fr_auto] gap-x-2 items-center border-b border-b-grayLight py-2"
-								>
-									<span
-										className={cn(
-											'size-4 rounded-full shadow-[inset_0_0_0_1px_rgba(0,0,0,0.1)] bg-grayDark',
-										)}
-										style={{ backgroundColor: org.color }}
-										aria-hidden="true"
+								))}
+							</div>
+							<span className="bg-grayMed"></span>
+							<div className="flex flex-col gap-0.5 items-center">
+								{eventsWithNegativeImpact.map((event) => (
+									<EventTimelineItem
+										key={event.event_id}
+										event={event}
+										organisations={organisations}
 									/>
-									<span className="truncate">{org.name}</span>
-									<span className="font-mono text-xs">{org.count}</span>
-								</li>
-							))}
-						</ul>
-					</div>
-				</>
-			)}
+								))}
+							</div>
+						</motion.li>
+					),
+				)}
+			</EventsTimelineChartWrapper>
+			<EventsTimelineAxis eventDays={eventDays} />
+			<EventsTimelineLegend />
 		</EventsTimelineWrapper>
 	)
 }
 
-function createAllDays(start?: string, end?: string) {
-	if (!start || !end) return []
-	const days: Date[] = []
-	let currentDate = startOfDay(new Date(start))
-	const endDate = startOfDay(new Date(end))
-
-	while (isBefore(currentDate, endDate)) {
-		days.push(currentDate)
-		currentDate = addDays(currentDate, 1)
-	}
-
-	return days
+type EventTimelineItemProps = {
+	event: EventType
+	organisations: OrganisationType[]
+}
+function EventTimelineItem({ event, organisations }: EventTimelineItemProps) {
+	return (
+		<EventTooltip
+			key={event.event_id}
+			event={event}
+			organisations={organisations}
+		>
+			<motion.div
+				className={cn(
+					'size-3 relative z-10 hover:z-20',
+					'event-item transition-opacity',
+					event.organizers.map(
+						(org) =>
+							`event-item-org-${slugifyCssClass(org) || 'unknown-organisation'}`,
+					),
+				)}
+				style={{
+					height: `${Math.ceil(impactScale(Math.abs(event.impact)))}px`,
+				}}
+				variants={scaleInVariants}
+			>
+				<EventBubbleLink event={event} organisations={organisations} />
+			</motion.div>
+		</EventTooltip>
+	)
 }
 
 export default EventsTimeline

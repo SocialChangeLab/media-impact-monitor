@@ -1,4 +1,4 @@
-import ComponentError from '@components/ComponentError'
+import ComponentError from '@/components/ComponentError'
 import EventsTimelineWrapper from './EventsTimelinWrapper'
 import EventsTimelineChartWrapper from './EventsTimelineChartWrapper'
 
@@ -11,7 +11,7 @@ export default function ErrorEventsTimeline({
 }) {
 	return (
 		<EventsTimelineWrapper>
-			<EventsTimelineChartWrapper>
+			<EventsTimelineChartWrapper animationKey="error">
 				<ComponentError
 					errorMessage={errorMessage}
 					reset={reset}

@@ -1,4 +1,4 @@
-import { cn } from '@utility/classNames'
+import { cn } from '@/utility/classNames'
 import Image from 'next/image'
 
 import bmbfHybridLogo from '../../../../public/images/logos/bmbf-hybrid.svg'

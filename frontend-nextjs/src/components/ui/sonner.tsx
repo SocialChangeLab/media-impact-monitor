@@ -1,6 +1,6 @@
 'use client'
 
-import { cn } from '@utility/classNames'
+import { cn } from '@/utility/classNames'
 import { useTheme } from 'next-themes'
 import { Toaster as Sonner } from 'sonner'
 

@@ -5,15 +5,16 @@ import Footer from '@components/Footer'
 import WelcomeMessage from '@components/WelcomeMessage'
 import { Breadcrumb } from '@components/breadcrumb'
 import { cn } from '@utility/classNames'
+import { usePathname } from 'next/navigation'
 import { PropsWithChildren, ReactNode } from 'react'
 import { Menu } from '../menu'
 
-export const BaseLayout: React.FC<
-	PropsWithChildren<{
-		currentPage: string
-		modal?: ReactNode
-	}>
-> = ({ children, currentPage, modal }) => {
+export const BaseLayout: React.FC<PropsWithChildren<{ modal?: ReactNode }>> = ({
+	children,
+	modal,
+}) => {
+	const pathname = usePathname()
+	const currentPage = pathname.split('/')[1] || 'events'
 	return (
 		<div className="layout min-h-screen grid grid-rows-[auto_1fr_auto]">
 			<Menu currentPage={currentPage} />

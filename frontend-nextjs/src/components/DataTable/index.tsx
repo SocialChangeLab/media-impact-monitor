@@ -97,12 +97,12 @@ export function DataTable<RecordType>({
 							</TableRow>
 						))
 					) : (
-						<TableRow>
+						<TableRow className="h-96 bg-grayUltraLight">
 							<TableCell
 								colSpan={table.getAllColumns().length}
 								className="h-24 text-center"
 							>
-								No results.
+								No results for this filter configuration.
 							</TableCell>
 						</TableRow>
 					)}

@@ -18,6 +18,7 @@ function Footer() {
 					<Link
 						href="/"
 						className="flex flex-col gap-4 justify-between w-fit focusable"
+						scroll={false}
 					>
 						<Logo className="text-grayDark" width={256} height={31} />
 					</Link>
@@ -26,6 +27,7 @@ function Footer() {
 						<Link
 							href="/logos"
 							className="no-underline focusable hover:text-fg transition-colors w-fit"
+							scroll={false}
 						>
 							Logo assets
 						</Link>

@@ -1,4 +1,3 @@
-import { BaseLayout } from '@components/BaseLayout'
 import headerImage from '@images/header-bg.png'
 import Image from 'next/image'
 import { PropsWithChildren } from 'react'
@@ -7,7 +6,7 @@ export default async function AboutPageLayout({
 	children,
 }: PropsWithChildren<{}>) {
 	return (
-		<BaseLayout currentPage="about">
+		<>
 			<div className="w-screen h-[88px] sm:h-[16vw] sm:min-h-40">
 				<div className="w-full h-[88px] sm:h-[16vw] sm:min-h-40 bg-fg dark:bg-bg bg-blend-screen relative z-0">
 					<Image
@@ -57,6 +56,6 @@ export default async function AboutPageLayout({
 					</div>
 				</div>
 			</main>
-		</BaseLayout>
+		</>
 	)
 }

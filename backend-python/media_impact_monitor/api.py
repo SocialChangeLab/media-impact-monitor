@@ -31,7 +31,9 @@ from media_impact_monitor.types_ import (
 )
 from media_impact_monitor.util.date import verify_dates
 
-commit_hash = subprocess.check_output(["git", "rev-parse", "HEAD"]).decode().strip()
+commit_hash = (
+    subprocess.check_output(["git", "rev-parse", "--short", "HEAD"]).decode().strip()
+)
 
 metadata = dict(
     title="Media Impact Monitor API",

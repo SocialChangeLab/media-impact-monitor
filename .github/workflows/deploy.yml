@@ -62,7 +62,7 @@ jobs:
 
   build-and-push:
     if: ${{ github.event_name == 'push' }}
-    # needs: test
+    needs: test
     runs-on: ubuntu-22.04
     outputs:
       docker_tag: ${{ steps.set_vars.outputs.TAG }}

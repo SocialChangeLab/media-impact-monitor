@@ -23,7 +23,7 @@ def test_get_events_success(client):
         },
     )
     assert response.status_code == 200
-    assert isinstance(response.json(), list)
+    assert isinstance(response.json()["data"], list)
 
 
 @pytest.mark.filterwarnings("ignore::DeprecationWarning")
@@ -55,9 +55,8 @@ def test_get_trend_success(client):
             "end_date": "2021-01-31",
         },
     )
-    print(response.text)
     assert response.status_code == 200
-    assert isinstance(response.json(), list)
+    assert isinstance(response.json()["data"], dict)
 
 
 @pytest.mark.filterwarnings("ignore::DeprecationWarning")

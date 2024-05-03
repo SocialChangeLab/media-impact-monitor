@@ -9,27 +9,23 @@ import subprocess
 from contextlib import asynccontextmanager
 
 from fastapi import FastAPI, HTTPException
-from joblib import hash as joblib_hash
 from starlette.middleware.cors import CORSMiddleware
 from starlette.responses import RedirectResponse
 from uvicorn.logging import AccessFormatter
 
-from media_impact_monitor.data_loaders.news_online.mediacloud_ import (
-    get_mediacloud_counts,
-)
-from media_impact_monitor.data_loaders.news_print.genios import get_genios_counts
-from media_impact_monitor.data_loaders.protest.acled import get_acled_events
-from media_impact_monitor.data_loaders.protest.climate_groups import acled_keys
+from media_impact_monitor.events import get_events
+from media_impact_monitor.impact import get_impact
+from media_impact_monitor.trend import get_trend
 from media_impact_monitor.types_ import (
-    Count,
+    CountTimeSeries,
     Event,
     EventSearch,
     FulltextSearch,
     Impact,
     ImpactSearch,
+    Response,
     TrendSearch,
 )
-from media_impact_monitor.util.date import verify_dates
 
 commit_hash = (
     subprocess.check_output(["git", "rev-parse", "--short", "HEAD"]).decode().strip()
@@ -43,6 +39,7 @@ metadata = dict(
         url="https://github.com/socialchangelab/media-impact-monitor",
     ),
     redoc_url="/docs",
+    # the original Swagger UI does not properly display POST parameters, so we disable it
     docs_url=None,
 )
 
@@ -60,6 +57,24 @@ async def app_lifespan(app: FastAPI):
 
 app = FastAPI(**metadata, lifespan=app_lifespan)
 
+
+# setup logging to also include datetime
+@asynccontextmanager
+async def app_lifespan(app: FastAPI):
+    logger = logging.getLogger("uvicorn.access")
+    if logger.handlers:
+        console_formatter = AccessFormatter(
+            "{asctime} {levelprefix} {message}", style="{", use_colors=True
+        )
+        logger.handlers[0].setFormatter(console_formatter)
+    yield
+
+
+app = FastAPI(**metadata, lifespan=app_lifespan)
+
+# configure cross-origin resource sharing
+# = which websites are allowed to access the API
+# (enforced by the browsers for "security" reasons)
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -81,83 +96,27 @@ def get_info() -> dict:
 
 
 @app.post("/events")
-def get_events(q: EventSearch) -> tuple[EventSearch, list[Event]]:
+def _get_events(q: EventSearch) -> Response[EventSearch, list[Event]]:
     """Fetch events from the Media Impact Monitor database."""
     try:
-        assert q.event_type == "protest", "Only protests are supported."
-        assert q.source == "acled", "Only ACLED is supported."
-        assert verify_dates(q.start_date, q.end_date)
-        if q.topic == "climate_change":
-            organizations = q.organizations or acled_keys
-            organizations = [org for org in organizations if org in acled_keys]
-        else:
-            raise ValueError(f"Unsupported topic: {q.topic}")
-        df = get_acled_events(
-            countries=["Germany"], start_date=q.start_date, end_date=q.end_date
-        )
-        if df.empty:
-            return q, []
-        if q.query:
-            assert not any(
-                sym in q.query.lower() for sym in ["or", "and", ",", "'", '"']
-            ), "Query must be a single keyword."
-            df = df[
-                df["organizations"]
-                .astype(str)
-                .str.lower()
-                .str.contains(q.query.lower())
-                | df["notes"].str.lower().str.contains(q.query.lower())
-            ]
-        if q.organizations:
-            df = df[
-                df["organizations"]
-                .astype(str)
-                .str.lower()
-                .str.contains("|".join(q.organizations).lower())
-            ]
-        df["date"] = df["date"].dt.date
-        df["event_type"] = q.event_type
-        df["source"] = q.source
-        df["topic"] = q.topic
-        df["event_id"] = df.apply(joblib_hash, axis=1, raw=True)
-        return q, df.to_dict(orient="records")
+        df = get_events(q)
+        return Response(query=q, data=df.to_dict(orient="records"))
     except Exception as e:
         raise HTTPException(status_code=400, detail=f"{type(e).__name__}: {str(e)}")
 
 
 @app.post("/trend")
-def get_trend(q: TrendSearch) -> tuple[TrendSearch, list[Count]]:
+def _get_trend(q: TrendSearch) -> Response[TrendSearch, CountTimeSeries]:
     """Fetch media item counts from the Media Impact Monitor database."""
     try:
-        assert q.trend_type == "keywords", "Only keywords are supported."
-        assert verify_dates(q.start_date, q.end_date)
-        match q.media_source:
-            case "news_online":
-                df = get_mediacloud_counts(
-                    query=q.query,
-                    start_date=q.start_date,
-                    end_date=q.end_date,
-                )
-                df = df.reset_index()
-                df["date"] = df["date"].dt.date
-                return q, df.to_dict(orient="records")
-            case "news_print":
-                df = get_genios_counts(
-                    query=q.query,
-                    start_date=q.start_date,
-                    end_date=q.end_date,
-                )
-                df = df.reset_index()
-                df["date"] = df["date"].dt.date
-                return q, df.to_dict(orient="records")
-            case _:
-                raise ValueError(f"Unsupported media source: {q.media_source}")
+        df = get_trend(q)
+        return Response(query=q, data=df.to_dict(orient="records"))
     except Exception as e:
         raise HTTPException(status_code=400, detail=f"{type(e).__name__}: {str(e)}")
 
 
 @app.post("/fulltexts")
-def get_fulltexts(q: FulltextSearch) -> tuple[FulltextSearch, list[Event]]:
+def _get_fulltexts(q: FulltextSearch) -> Response[FulltextSearch, list[Event]]:
     """Fetch fulltexts from the Media Impact Monitor database."""
     try:
         raise NotImplementedError
@@ -166,9 +125,10 @@ def get_fulltexts(q: FulltextSearch) -> tuple[FulltextSearch, list[Event]]:
 
 
 @app.post("/impact")
-def get_impact(q: ImpactSearch) -> tuple[ImpactSearch, Impact]:
+def _get_impact(q: ImpactSearch) -> Response[ImpactSearch, Impact]:
     """Compute the impact of an event on a media trend."""
     try:
-        raise NotImplementedError
+        impact = get_impact(q)
+        return Response(query=q, data=impact)
     except Exception as e:
         raise HTTPException(status_code=400, detail=f"{type(e).__name__}: {str(e)}")

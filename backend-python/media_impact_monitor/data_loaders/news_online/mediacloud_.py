@@ -33,7 +33,10 @@ def get_mediacloud_counts(
     if countries:
         collection_ids = []
         for country in countries:
+            # get national newspapers (regional newspapers are also available)
             results = directory.collection_list(name=f"{country} - national")["results"]
+            # ignore research collections
+            results = [r for r in results if "(Research Only)" not in r["name"]]
             assert (
                 len(results) == 1
             ), f"Expected 1 result, got {len(results)} for {country}"

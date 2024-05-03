@@ -1,3 +1,4 @@
+import { defaultFrom, defaultTo } from '@/app/(events)/config'
 import { format, parse } from 'date-fns'
 export type AllowedParamsInputType = {
 	from?: Date | undefined
@@ -9,19 +10,24 @@ export function parseSearchParams(
 ): AllowedParamsInputType {
 	const from = originalSearchParams.get('from')
 	const to = originalSearchParams.get('to')
-	if (typeof from !== 'string' || typeof to !== 'string') return {}
 	return {
-		from: parse(from, 'yyyy-MM-dd', new Date()),
-		to: parse(to, 'yyyy-MM-dd', new Date()),
+		from:
+			typeof from === 'string'
+				? parse(from, 'yyyy-MM-dd', new Date())
+				: new Date(defaultFrom),
+		to:
+			typeof to === 'string'
+				? parse(to, 'yyyy-MM-dd', new Date())
+				: new Date(defaultTo),
 	}
 }
 
 export function formatSearchParams(
 	searchParams: AllowedParamsInputType,
 ): URLSearchParams {
-	if (!searchParams.from || !searchParams.to) return new URLSearchParams()
+	const { from, to } = searchParams
 	return new URLSearchParams({
-		from: format(searchParams.from, 'yyyy-MM-dd'),
-		to: format(searchParams.to, 'yyyy-MM-dd'),
+		from: from ? format(from, 'yyyy-MM-dd') : defaultFrom,
+		to: to ? format(to, 'yyyy-MM-dd') : defaultTo,
 	})
 }

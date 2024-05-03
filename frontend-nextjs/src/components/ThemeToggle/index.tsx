@@ -2,14 +2,14 @@
 
 import { useTheme } from 'next-themes'
 
-import { Button } from '@components/ui/button'
+import { Button } from '@/components/ui/button'
 import {
-    DropdownMenu,
-    DropdownMenuContent,
-    DropdownMenuItem,
-    DropdownMenuTrigger,
-} from '@components/ui/dropdown-menu'
-import { cn } from '@utility/classNames'
+	DropdownMenu,
+	DropdownMenuContent,
+	DropdownMenuItem,
+	DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu'
+import { cn } from '@/utility/classNames'
 import { Check, Laptop, MoonIcon, SunIcon, type LucideIcon } from 'lucide-react'
 import { useEffect, useState } from 'react'
 

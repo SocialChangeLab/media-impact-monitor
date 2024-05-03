@@ -61,7 +61,8 @@ jobs:
         ZENROWS_API_KEY: ${{ secrets.ZENROWS_API_KEY }}
 
   build-and-push:
-    needs: test
+    if: ${{ github.event_name == 'push' }}
+    # needs: test
     runs-on: ubuntu-22.04
     outputs:
       docker_tag: ${{ steps.set_vars.outputs.TAG }}
@@ -99,6 +100,7 @@ jobs:
       run: docker push --all-tags socialchangelab/media-impact-monitor
 
   deploy:
+    if: ${{ github.event_name == 'push' }}
     needs: build-and-push
     runs-on: ubuntu-22.04
     steps:

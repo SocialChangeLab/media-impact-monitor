@@ -4,7 +4,7 @@ import EventsTimelineChartWrapper from './EventsTimelineChartWrapper'
 export default function EmptyEventsTimeline() {
 	return (
 		<EventsTimelineWrapper>
-			<EventsTimelineChartWrapper>
+			<EventsTimelineChartWrapper animationKey="empty">
 				No events for this search configuration
 			</EventsTimelineChartWrapper>
 		</EventsTimelineWrapper>

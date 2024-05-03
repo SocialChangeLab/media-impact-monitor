@@ -5,6 +5,7 @@ Or, if necessary: `poetry run uvicorn media_impact_monitor.api:app --reload`
 """
 
 import logging
+import subprocess
 from contextlib import asynccontextmanager
 
 from fastapi import FastAPI, HTTPException
@@ -26,9 +27,13 @@ from media_impact_monitor.types_ import (
     TrendSearch,
 )
 
+commit_hash = (
+    subprocess.check_output(["git", "rev-parse", "--short", "HEAD"]).decode().strip()
+)
+
 metadata = dict(
     title="Media Impact Monitor API",
-    version="0.1.2",
+    version=f"0.1.0+{commit_hash}",
     contact=dict(
         name="Social Change Lab",
         url="https://github.com/socialchangelab/media-impact-monitor",

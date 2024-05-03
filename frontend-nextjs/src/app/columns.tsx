@@ -1,5 +1,5 @@
+import { EventType } from '@/utility/eventsUtil'
 import { createColumnHelper } from '@tanstack/react-table'
-import { EventType } from '@utility/eventsUtil'
 
 const columnHelper = createColumnHelper<EventType>()
 
@@ -29,8 +29,8 @@ export const getColumns = () => [
 			})
 		},
 	}),
-	columnHelper.accessor('organizations', {
-		header: 'Organisations',
+	columnHelper.accessor('organizers', {
+		header: 'Organizers',
 		cell: function render({ getValue }) {
 			return ((getValue() as string[] | null) ?? []).join(', ')
 		},

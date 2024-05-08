@@ -3,6 +3,7 @@ from datetime import date
 
 import pandas as pd
 from dotenv import load_dotenv
+
 from media_impact_monitor.util.cache import cache, get
 from media_impact_monitor.util.date import verify_dates
 
@@ -58,7 +59,7 @@ def get_acled_events(
         "event_type": "Protests",
         "event_date": f"{start_date.strftime('%Y-%m-%d')}|{end_date.strftime('%Y-%m-%d')}",
         "event_date_where": "BETWEEN",
-        "fields": "event_date|assoc_actor_1|notes",
+        "fields": "event_date|assoc_actor_1|notes|country",
         "limit": limit,
     }
     assert (countries or regions) and not (
@@ -76,7 +77,48 @@ def get_acled_events(
         return df
     if len(df) == limit:
         raise ValueError(f"Limit of {limit} reached.")
-    df["date"] = pd.to_datetime(df["event_date"], format="%Y-%m-%d")
-    df["organizations"] = df["assoc_actor_1"].str.split("; ")
+    df["date"] = pd.to_datetime(df["event_date"]).dt.date
+    df = process_orgs(df)
     df["description"] = df["notes"]
-    return df[["date", "description", "organizations"]]
+    df["event_type"] = "protest"
+    df["source"] = "acled"
+    df = df[["date", "description", "organizers", "event_type", "source"]]
+    return df
+
+
+def process_orgs(df):
+    group_blocklist = ["Students (Germany)", "Labor Group (Germany)"]
+    df = df.rename(columns={"assoc_actor_1": "organizers"})
+    df["organizers"] = (
+        df["organizers"]
+        .str.split("; ")
+        .apply(lambda x: [] if x == [""] else x)
+        # remove descriptors that are not actual organizations:
+        .apply(lambda x: [org for org in x if org not in group_blocklist])
+    )
+    # make names more consistent:
+    df = df.apply(rename_org, axis=1)
+    return df
+
+
+def rename_org(row):
+    """
+    Rationalize ACLED keys to match the more consistent names defined in `climate_orgs.py`.
+    """
+    orgs = [
+        org.replace(
+            "BUND: German Federation for the Environment and Nature Conservation",
+            "BUND",
+        )
+        .replace("FFF: Fridays for Future", "Fridays for Future")
+        .replace("XR: Extinction Rebellion", "Extinction Rebellion")
+        .replace("DxE: Direct Action Everywhere", "Direct Action Everywhere")
+        .replace("NB: Emergency Break", "Emergency Break")
+        for org in row["organizers"]
+    ]
+    if row["country"] == "United Kingdom":
+        orgs = [org.replace("Just Stop Oil", "Just Stop Oil (UK)") for org in orgs]
+    if row["country"] == "Norway":
+        orgs = [org.replace("Just Stop Oil", "Just Stop Oil (Norway)") for org in orgs]
+    row["organizers"] = orgs
+    return row

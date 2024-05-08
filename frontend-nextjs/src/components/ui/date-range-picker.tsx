@@ -1,48 +1,79 @@
 'use client'
 
-import { CalendarIcon } from '@radix-ui/react-icons'
 import { addDays, format } from 'date-fns'
-import * as React from 'react'
 import { DateRange } from 'react-day-picker'
 
 import { Button } from '@/components/ui/button'
-import { Calendar } from '@/components/ui/calendar'
+import { Calendar, CalendarProps } from '@/components/ui/calendar'
 import {
 	Popover,
 	PopoverContent,
 	PopoverTrigger,
 } from '@/components/ui/popover'
-import { cn } from '@utility/classNames'
+import { cn } from '@/utility/classNames'
+import useQueryParams from '@/utility/useQueryParams'
+import { CalendarDays } from 'lucide-react'
+import { useEffect, useRef, useState } from 'react'
 
 export function DatePickerWithRange({
 	className,
 	defaultDateRange,
 	onChange = () => {},
-}: {
+	...calendarProps
+}: CalendarProps & {
 	className?: string
 	defaultDateRange?: DateRange
-	onChange?: (date: DateRange) => void
+	onChange?: (date: { from: Date; to: Date }) => void
 }) {
-	const [date, setDate] = React.useState<DateRange | undefined>(
+	const { setSearchParams } = useQueryParams()
+	const [isOpen, setIsOpen] = useState(false)
+	const lastRange = useRef<DateRange | undefined>()
+	const [date, setDate] = useState<DateRange | undefined>(
 		defaultDateRange || {
 			from: new Date(2022, 0, 20),
 			to: addDays(new Date(2022, 0, 20), 20),
 		},
 	)
 
+	useEffect(() => {
+		if (!defaultDateRange?.from || !defaultDateRange?.to) return
+		const currFrom = lastRange.current?.from?.toISOString()
+		const currTo = lastRange.current?.to?.toISOString()
+		const unchangedFrom = defaultDateRange.from.toISOString() === currFrom
+		const unchangedTo = defaultDateRange.to.toISOString() === currTo
+		if (unchangedFrom && unchangedTo) return
+		setDate(defaultDateRange)
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+		defaultDateRange?.from?.toISOString(),
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+		defaultDateRange?.to?.toISOString(),
+	])
+
+	useEffect(() => {
+		if (!date?.from || !date?.to || isOpen) return
+		const currFrom = lastRange.current?.from
+		const currTo = lastRange.current?.to
+		const unchangedFrom = date.from.toISOString() === currFrom?.toISOString()
+		const unchangedTo = date.to.toISOString() === currTo?.toISOString()
+		if (unchangedFrom && unchangedTo) return
+		onChange({ from: date.from, to: date.to })
+		lastRange.current = date
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [isOpen, date?.from?.toISOString(), date?.to?.toISOString()])
+
 	return (
-		<div className={cn('grid gap-2', className)}>
-			<Popover>
+		<div className={cn(className)}>
+			<Popover open={isOpen}>
 				<PopoverTrigger asChild>
 					<Button
 						id="date"
 						variant={'outline'}
-						className={cn(
-							'w-[300px] justify-start text-left font-normal',
-							!date && 'text-grayDark',
-						)}
+						className={cn('font-normal', !date && 'text-grayDark')}
+						onClick={() => setIsOpen(true)}
 					>
-						<CalendarIcon className="mr-2 h-4 w-4" />
+						<CalendarDays className="mr-2 w-6 h-6" />
 						{date?.from ? (
 							date.to ? (
 								<>
@@ -57,20 +88,32 @@ export function DatePickerWithRange({
 						)}
 					</Button>
 				</PopoverTrigger>
-				<PopoverContent className="w-auto p-0" align="end">
-					<Calendar
-						initialFocus
-						mode="range"
-						defaultMonth={date?.from}
-						selected={date}
-						onSelect={(range) => {
-							setDate(range)
-							if (!range) return
-							onChange(range)
-						}}
-						numberOfMonths={2}
-					/>
-				</PopoverContent>
+				{isOpen && (
+					<PopoverContent className="w-auto p-0" align="end">
+						<Calendar
+							initialFocus
+							mode="range"
+							defaultMonth={date?.from}
+							selected={date}
+							onSelect={setDate}
+							numberOfMonths={2}
+						/>
+						<div className="p-3 flex justify-end">
+							<Button
+								onClick={() => {
+									setIsOpen(false)
+									if (!date?.from || !date?.to) return
+									setSearchParams({
+										from: date?.from,
+										to: date?.to,
+									})
+								}}
+							>
+								Apply
+							</Button>
+						</div>
+					</PopoverContent>
+				)}
 			</Popover>
 		</div>
 	)

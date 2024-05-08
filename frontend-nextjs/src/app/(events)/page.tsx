@@ -1,9 +1,8 @@
-import EventsTimeline from '@components/EventsTimeline'
-import { getEventsData } from '@utility/eventsUtil'
-import { parseSearchParams } from '@utility/searchParamsUtil'
-import EventsTable from './table'
+import { getEventsData } from '@/utility/eventsUtil'
+import { parseSearchParams } from '@/utility/searchParamsUtil'
+import { QueryClient } from '@tanstack/react-query'
 
-export default async function EventsPage({
+export default function EventsPage({
 	searchParams,
 }: {
 	searchParams: Record<string, string>
@@ -11,15 +10,11 @@ export default async function EventsPage({
 	const parsedSearchParams = parseSearchParams(
 		new URLSearchParams(searchParams),
 	)
-	const { data } = await getEventsData(parsedSearchParams)
-	return (
-		<>
-			<div className="flex flex-col gap-4">
-				<EventsTimeline {...data} />
-			</div>
-			<div className="flex flex-col gap-4 pt-8">
-				<EventsTable data={data.events} />
-			</div>
-		</>
-	)
+	const queryClient = new QueryClient()
+	const { from, to } = parsedSearchParams
+	queryClient.prefetchQuery({
+		queryKey: ['events', from?.toISOString(), to?.toISOString()],
+		queryFn: () => getEventsData(parsedSearchParams),
+	})
+	return null
 }

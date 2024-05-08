@@ -1,6 +1,6 @@
 'use client'
 import { usePathname, useRouter, useSearchParams } from 'next/navigation'
-import { useCallback, useMemo } from 'react'
+import { useCallback } from 'react'
 import {
 	AllowedParamsInputType,
 	formatSearchParams,
@@ -23,18 +23,15 @@ function useQueryParams(): UseQueryParamsOutputType {
 				...Object.fromEntries(originalSearchParams.entries()),
 				...params,
 			})
-			router.push(`${pathname}?${combinedParams.toString()}`)
+			router.push(`${pathname}?${combinedParams.toString()}`, {
+				scroll: false,
+			})
 		},
 		[originalSearchParams, pathname, router],
 	)
 
-	const searchParams = useMemo(
-		() => parseSearchParams(originalSearchParams),
-		[originalSearchParams],
-	)
-
 	return {
-		searchParams,
+		searchParams: parseSearchParams(originalSearchParams),
 		setSearchParams,
 	}
 }

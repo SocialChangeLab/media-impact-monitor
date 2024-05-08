@@ -1,3 +1,4 @@
+import { Combobox } from '@/components/ui/combobox'
 import {
 	Pagination,
 	PaginationContent,
@@ -9,9 +10,8 @@ import {
 	PaginationNext,
 	PaginationPrevious,
 } from '@/components/ui/pagination'
-import { Combobox } from '@components/ui/combobox'
+import { cn } from '@/utility/classNames'
 import { type Table as ReactTableType } from '@tanstack/react-table'
-import { cn } from '@utility/classNames'
 
 type TablePaginationProps<RecordType> = Pick<
 	ReactTableType<RecordType>,

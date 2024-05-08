@@ -6,6 +6,8 @@ import mediacloud.api
 import pandas as pd
 from dotenv import load_dotenv
 
+from media_impact_monitor.util.cache import cache
+
 load_dotenv()
 
 token = os.environ["MEDIACLOUD_API_TOKEN"]
@@ -18,12 +20,15 @@ end = date(2024, 1, 1)
 Platform = Literal["onlinenews-mediacloud", "onlinenews-waybackmachine"]
 
 
+@cache
 def get_mediacloud_counts(
     query: str,
-    start_date: pd.Timestamp = start,
-    end_date: pd.Timestamp = end,
+    start_date: date = start,
+    end_date: date = end,
     countries: list | None = None,
+    platform: Platform = "onlinenews-waybackmachine",
 ):
+    assert start_date.year >= 2023, "MediaCloud currently only goes back to 2023"
     collection_ids: list[int] = []
     if countries:
         collection_ids = []
@@ -35,11 +40,13 @@ def get_mediacloud_counts(
             collection_ids.append(results[0]["id"])
     data = search.story_count_over_time(
         query=query,
-        start_date=start_date.to_pydatetime().date(),
-        end_date=end_date.to_pydatetime().date(),
+        start_date=start_date,
+        end_date=end_date,
         collection_ids=collection_ids,
+        platform=platform,
     )
     df = pd.DataFrame(data)
-    df["date"] = pd.to_datetime(df["date"])
+    df = df[["date", "count"]]  # ignore total_count and ratio
+    df["date"] = pd.to_datetime(df["date"]).dt.date
     df = df.set_index("date")
     return df

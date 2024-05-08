@@ -1,13 +1,11 @@
-import { inter, neueRegrade } from '@utility/fonts'
+import { inter, neueRegrade } from '@/utility/fonts'
 import React from 'react'
 
-import { BaseLayout } from '@components/BaseLayout'
-import QueryClientProvider from '@components/QueryClientProvider'
-import { Toaster } from '@components/ui/sonner'
-import { TooltipProvider } from '@components/ui/tooltip'
-import { ThemeProvider } from '@providers/ThemeProvider'
-import '@styles/global.css'
-import { cn } from '@utility/classNames'
+import { BaseLayout } from '@/components/BaseLayout'
+import Providers from '@/provders'
+import '@/styles/global.css'
+import { cn } from '@/utility/classNames'
+import { ViewTransitions } from 'next-view-transitions'
 
 export default function RootLayout({
 	children,
@@ -15,22 +13,19 @@ export default function RootLayout({
 	children: React.ReactNode
 }>) {
 	return (
-		<html
-			lang="en"
-			className={cn(neueRegrade.variable, inter.variable)}
-			suppressHydrationWarning
-		>
-			<head></head>
-			<body className="bg-pattern-soft">
-				<QueryClientProvider>
-					<ThemeProvider defaultTheme="system" enableSystem>
-						<TooltipProvider>
-							<BaseLayout>{children}</BaseLayout>
-						</TooltipProvider>
-					</ThemeProvider>
-				</QueryClientProvider>
-				<Toaster />
-			</body>
-		</html>
+		<ViewTransitions>
+			<html
+				lang="en"
+				className={cn(neueRegrade.variable, inter.variable)}
+				suppressHydrationWarning
+			>
+				<head></head>
+				<body className="bg-pattern-soft">
+					<Providers>
+						<BaseLayout>{children}</BaseLayout>
+					</Providers>
+				</body>
+			</html>
+		</ViewTransitions>
 	)
 }

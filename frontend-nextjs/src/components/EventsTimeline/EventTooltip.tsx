@@ -1,6 +1,10 @@
-import { Tooltip, TooltipContent, TooltipTrigger } from '@components/ui/tooltip'
-import { cn } from '@utility/classNames'
-import { EventType, OrganisationType } from '@utility/eventsUtil'
+import {
+	Tooltip,
+	TooltipContent,
+	TooltipTrigger,
+} from '@/components/ui/tooltip'
+import { cn } from '@/utility/classNames'
+import { EventType, OrganisationType } from '@/utility/eventsUtil'
 import { format } from 'date-fns'
 import { Target } from 'lucide-react'
 import { PropsWithChildren, useMemo } from 'react'
@@ -10,16 +14,23 @@ function EventTooltip({
 	organisations,
 	children,
 }: PropsWithChildren<{ event: EventType; organisations: OrganisationType[] }>) {
-	const org = useMemo(() => {
-		const eventOrgName = event.organizations[0]
+	const orgs = useMemo(() => {
 		const unknownOrgName = 'Unknown organisation'
-		const eventOrg = organisations.find((x) => x.name === eventOrgName)
-		const unknownOrg = organisations.find((x) => x.name === unknownOrgName)
-		return eventOrg ?? unknownOrg
-	}, [event.organizations, organisations])
+		const mappedOrgs = event.organizers
+			.map((orgName) => {
+				const org = organisations.find((x) => x.name === orgName)
+				if (!org) return
+				return {
+					...org,
+					name: org.name.trim() || unknownOrgName,
+				}
+			})
+			.filter(Boolean) as OrganisationType[]
+		return mappedOrgs
+	}, [event.organizers, organisations])
 
 	const formattedDate = useMemo(
-		() => format(new Date(event.date), 'd MMMM yyyy'),
+		() => format(new Date(event.date), 'EEEE d MMMM yyyy'),
 		[event.date],
 	)
 
@@ -35,21 +46,34 @@ function EventTooltip({
 				<ul
 					className={cn(
 						'flex justify-between items-center border-b py-2',
-						'mb-2 border-white/10 dark:border-black/10',
+						'mb-2 border-black/10',
 					)}
 				>
 					<li className="flex gap-4 items-center">{formattedDate}</li>
-					<li className="flex gap-2 items-center">
-						<Target size={16} className="text-white/60 dark:text-black/60" />
+					<li
+						className={cn(
+							'flex gap-2 items-center',
+							event.impact < 0 && 'text-red-600',
+						)}
+					>
+						<Target
+							size={16}
+							className={cn(
+								event.impact < 0 ? 'text-red-600' : 'text-black/60',
+							)}
+						/>
 						<span>{formattedImpact}</span>
 					</li>
 				</ul>
-				<p className="max-w-80 line-clamp-3 text-xs">{event.description}</p>
-				{org && (
+				<p className="max-w-80 line-clamp-3 text-xs mb-3">
+					{event.description}
+				</p>
+				{orgs.map((org) => (
 					<div
+						key={org.name}
 						className={cn(
 							'grid grid-cols-[auto_1fr] gap-x-2 items-center',
-							'border-t border-white/10 dark:border-black/10 py-2 mt-3',
+							'border-t border-white/10 dark:border-black/10 py-2',
 						)}
 					>
 						<span
@@ -61,7 +85,7 @@ function EventTooltip({
 						/>
 						<span className="truncate">{org.name}</span>
 					</div>
-				)}
+				))}
 			</TooltipContent>
 		</Tooltip>
 	)

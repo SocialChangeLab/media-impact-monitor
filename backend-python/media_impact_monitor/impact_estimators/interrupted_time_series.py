@@ -42,40 +42,6 @@ def predict_with_arima(train: pd.DataFrame, horizon: int):
     return pred
 
 
-def predict_with_ml(train: pd.DataFrame, horizon: int):
-    from mlforecast import MLForecast
-    from mlforecast.lag_transforms import RollingMean
-    from sklearn.ensemble import RandomForestRegressor
-
-    train = (  # convert to format for mlforecast
-        train.copy()
-        .reset_index()
-        .rename(columns={"date": "ds", "count": "y"})
-        .assign(unique_id=0)
-    )
-    fcst = MLForecast(
-        models=[
-            # LinearRegression(),
-            # BayesianRidge(),
-            # LassoLarsIC(),
-            RandomForestRegressor(),
-        ],
-        freq="D",
-        lags=[1],
-        lag_transforms={1: [RollingMean(window_size=7)]},
-        date_features=["dayofweek"],
-    )
-    fcst.fit(train)
-    pred = fcst.predict(h=horizon)
-    pred = (  # convert back from format for mlforecast
-        pred.rename(columns={"RandomForestRegressor": "count", "ds": "date"})
-        .drop(columns=["unique_id"])
-        .set_index("date")
-    )
-    pred.index = pred.index.date
-    return pred
-
-
 @cache
 def estimate_impact(
     event_date: date,

@@ -12,7 +12,7 @@ app = Dash(__name__)
 app.layout = html.Div(
     [
         html.H1("Media Impact Monitor"),
-        html.P("Select the organizers you want to compare:"),
+        html.P("Organizers:"),
         dash_treeview_antd.TreeView(
             id="organizer-selector",
             multiple=False,
@@ -35,9 +35,20 @@ app.layout = html.Div(
         ),
         # Optionally, you can pass options to the Vega component.
         # See https://github.com/vega/vega-embed#options for more details.
-        dvc.Vega(id="altair-chart", opt={"renderer": "svg", "actions": False}),
+        dvc.Vega(
+            id="altair-chart",
+            opt={"renderer": "svg", "actions": False},
+            signalsToObserve=["selected"],
+        ),
+        html.Div(id="detail-text", style={"padding": "20px", "margin-top": "20px"}),
     ]
 )
+
+
+def shorten_text(text, length=200):
+    if len(text) > length:
+        return text[:length] + "..."
+    return text
 
 
 @callback(Output("altair-chart", "spec"), Input("organizer-selector", "checked"))
@@ -65,6 +76,8 @@ def display_altair_chart(checked):
     )
     df["y"] = np.random.normal(loc=0, scale=1, size=len(df))
     df["participants"] = np.random.randint(100, 1000, size=len(df))
+    df["description_short"] = df["description"].apply(shorten_text)
+    selection = alt.selection_point(fields=["description"], name="selected")
 
     chart = (
         alt.Chart(df)
@@ -74,11 +87,28 @@ def display_altair_chart(checked):
             y="y:Q",  # Q: quantitative
             color="organizer:N",  # N: nominal
             size="participants:Q",  # Quantitative size encoding
+            tooltip=[
+                alt.Tooltip("date:T", title="Date"),
+                alt.Tooltip("organizer:N", title="Organizer"),
+                alt.Tooltip("participants:Q", title="Participants"),
+                alt.Tooltip("description_short:N", title="Description"),
+            ],
         )
+        .add_selection(selection)
         .properties(width=600, height=300)
     )
 
     return chart.to_dict()
+
+
+@callback(Output("detail-text", "children"), Input("altair-chart", "signalData"))
+def handle_click(signalData):
+    if signalData and "selected" in signalData:
+        description = signalData["selected"].get(
+            "description", "No description available"
+        )
+        return description
+    return "Click on a bubble for more details."
 
 
 if __name__ == "__main__":

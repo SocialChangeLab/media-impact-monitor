@@ -54,7 +54,7 @@ def predict_with_arima(train: pd.DataFrame, horizon: int, aggregation: Aggregati
     return pred
 
 
-@cache
+# @cache
 def estimate_impact(
     event_date: date,
     df: pd.DataFrame,
@@ -140,7 +140,7 @@ def estimate_mean_impact(
             impacts_df.index = range(-hidden_days_before_protest, horizon)
         case "weekly":
             assert hidden_days_before_protest % 7 == 0
-    impacts_df.index = impacts_df.index - hidden_days_before_protest
+
             impacts_df.index = range(-hidden_days_before_protest, horizon, 7)
     if cumulative:
         impacts_df = impacts_df.cumsum()

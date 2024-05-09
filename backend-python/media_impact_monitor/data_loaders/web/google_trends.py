@@ -18,7 +18,7 @@ from media_impact_monitor.util.cache import cache
 @cache
 def get_google_trends_counts(query: str) -> pd.DataFrame:
     PyTrends = TrendReq(hl="de-DE", tz=60)
-    PyTrends.build_payload([query], timeframe="all", geo="DE")
+    PyTrends.build_payload([query], timeframe="today 5-y", geo="DE")
     df = PyTrends.interest_over_time()
     df = (
         df[~df["isPartial"]]

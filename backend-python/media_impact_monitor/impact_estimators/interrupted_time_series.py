@@ -1,5 +1,6 @@
 import warnings
 from datetime import date, timedelta
+from typing import Literal
 
 import pandas as pd
 
@@ -12,23 +13,34 @@ warnings.simplefilter(action="ignore", category=FutureWarning)
 from statsforecast import StatsForecast
 from statsforecast.models import ARIMA
 
+Aggregation = Literal["daily", "weekly"]
 
-def predict_with_arima(train: pd.DataFrame, horizon: int):
+freq = {  # map aggregation to frequency
+    "daily": "D",
+    "weekly": "W",
+}
+
+
+def predict_with_arima(train: pd.DataFrame, horizon: int, aggregation: Aggregation):
     train = (  # convert to format for statsforecast
         train.copy()
         .reset_index()
         .rename(columns={"date": "ds", "count": "y"})
         .assign(unique_id=0)
     )
-    fcst = StatsForecast(
-        models=[
-            ARIMA(
+    match aggregation:
+        case "daily":
+            model = ARIMA(
                 order=(1, 1, 1),
                 season_length=7,
                 seasonal_order=(1, 1, 1),
-            ),
-        ],
-        freq="D",
+            )
+        case "weekly":
+            model = ARIMA(order=(1, 1, 1))
+            horizon = horizon // 7
+    fcst = StatsForecast(
+        models=[model],
+        freq=freq[aggregation],
         n_jobs=4,
     )
     fcst.fit(train)
@@ -48,6 +60,7 @@ def estimate_impact(
     df: pd.DataFrame,
     horizon: int,
     hidden_days_before_protest: int,
+    aggregation: Aggregation,
 ) -> tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame]:
     """
     Calculate the impact of a protest event on the media coverage.
@@ -79,7 +92,7 @@ def estimate_impact(
     ]
 
     # predict and calculate impact
-    counterfactual = predict_with_arima(train, _horizon)
+    counterfactual = predict_with_arima(train, _horizon, aggregation)
     impact = actual - counterfactual
     return actual, counterfactual, impact
 
@@ -89,11 +102,16 @@ def estimate_impacts(
     article_counts: pd.DataFrame,
     horizon: int,
     hidden_days_before_protest: int,
+    aggregation: Aggregation,
 ) -> tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame]:
     def _estimate_impact(event_):
         i, event = event_
         return estimate_impact(
-            event["date"], article_counts, horizon, hidden_days_before_protest
+            event["date"],
+            article_counts,
+            horizon,
+            hidden_days_before_protest,
+            aggregation,
         )
 
     estimates = parallel_tqdm(
@@ -108,15 +126,22 @@ def estimate_mean_impact(
     article_counts: pd.DataFrame,
     horizon: int,
     hidden_days_before_protest: int,
+    aggregation: Aggregation,
     cumulative: bool = True,
 ) -> pd.DataFrame:
     # output: dataframe with columns mean, ci_upper, ci_lower
     # and index from -hidden_days_before_protest to horizon
     actuals, counterfactuals, impacts = estimate_impacts(
-        events, article_counts, horizon, hidden_days_before_protest
+        events, article_counts, horizon, hidden_days_before_protest, aggregation
     )
     impacts_df = pd.concat([df.reset_index(drop=True) for df in impacts], axis=1)
+    match aggregation:
+        case "daily":
+            impacts_df.index = range(-hidden_days_before_protest, horizon)
+        case "weekly":
+            assert hidden_days_before_protest % 7 == 0
     impacts_df.index = impacts_df.index - hidden_days_before_protest
+            impacts_df.index = range(-hidden_days_before_protest, horizon, 7)
     if cumulative:
         impacts_df = impacts_df.cumsum()
     average = impacts_df.mean(axis=1)

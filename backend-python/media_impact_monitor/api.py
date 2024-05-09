@@ -110,7 +110,7 @@ def _get_trend(q: TrendSearch) -> Response[TrendSearch, CountTimeSeries]:
     """Fetch media item counts from the Media Impact Monitor database."""
     try:
         df = get_trend(q)
-        return Response(query=q, data=df.to_dict(orient="records"))
+        return Response(query=q, data=df.to_dict())
     except Exception as e:
         raise HTTPException(status_code=400, detail=f"{type(e).__name__}: {str(e)}")
 
@@ -132,3 +132,9 @@ def _get_impact(q: ImpactSearch) -> Response[ImpactSearch, Impact]:
         return Response(query=q, data=impact)
     except Exception as e:
         raise HTTPException(status_code=400, detail=f"{type(e).__name__}: {str(e)}")
+
+
+if __name__ == "__main__":
+    import uvicorn
+
+    uvicorn.run(app)

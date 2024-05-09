@@ -16,7 +16,7 @@ from media_impact_monitor.util.cache import cache
 
 
 @cache
-def get_google_trends_counts(query: str) -> pd.DataFrame:
+def get_google_trends_counts(query: str) -> pd.Series:
     PyTrends = TrendReq(hl="de-DE", tz=60)
     PyTrends.build_payload([query], timeframe="all", geo="DE")
     df = PyTrends.interest_over_time()
@@ -29,4 +29,4 @@ def get_google_trends_counts(query: str) -> pd.DataFrame:
     df.index.name = "date"
     # when rate limit is reached, this should be 60 seconds according to https://github.com/GeneralMills/pytrends
     sleep(1)
-    return df
+    return df["count"]

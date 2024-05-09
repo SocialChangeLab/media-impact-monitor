@@ -6,7 +6,7 @@ from media_impact_monitor.util.cache import cache, get
 
 
 @cache
-def get_genios_counts(query: str, start_date: date, end_date: date) -> pd.DataFrame:
+def get_genios_counts(query: str, start_date: date, end_date: date) -> pd.Series:
     response = get(
         "https://www.genios.de/api/searchResult/Alle/Presse",
         params={
@@ -29,4 +29,4 @@ def get_genios_counts(query: str, start_date: date, end_date: date) -> pd.DataFr
     df = df.set_index("date")
     # there is a bug that sets the count at day -1 to 0
     df = df[df.index >= pd.Timestamp(start_date)]
-    return df
+    return df["count"]

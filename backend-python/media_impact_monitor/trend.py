@@ -11,7 +11,7 @@ from media_impact_monitor.util.date import verify_dates
 
 
 @cache
-def get_trend(q: TrendSearch) -> pd.DataFrame:
+def get_trend(q: TrendSearch) -> pd.Series:
     assert q.trend_type == "keywords", "Only keywords are supported."
     assert verify_dates(q.start_date, q.end_date)
     match q.media_source:

@@ -54,7 +54,7 @@ def predict_with_arima(train: pd.DataFrame, horizon: int, aggregation: Aggregati
     return pred
 
 
-# @cache
+@cache
 def estimate_impact(
     event_date: date,
     df: pd.DataFrame,

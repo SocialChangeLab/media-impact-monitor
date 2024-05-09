@@ -12,7 +12,7 @@ from media_impact_monitor.types_ import Impact, ImpactSearch, TrendSearch
 from media_impact_monitor.util.cache import cache
 
 
-@cache
+# @cache
 def get_impact(q: ImpactSearch) -> Impact:
     events = get_events_by_id(q.cause)
     start_date = min(events["date"]) - pd.Timedelta(days=180)
@@ -21,8 +21,9 @@ def get_impact(q: ImpactSearch) -> Impact:
     trend = get_trend(
         TrendSearch(**dict(q.effect), start_date=start_date, end_date=end_date)
     )
-    hidden_days_before_protest = 4
+    hidden_days_before_protest = 7
     horizon = 28
+    aggregation = "weekly"
     match q.method:
         case "interrupted_time_series":
             ind_act, ind_count, individual_impacts = estimate_impacts(
@@ -30,12 +31,14 @@ def get_impact(q: ImpactSearch) -> Impact:
                 article_counts=trend,
                 horizon=horizon,
                 hidden_days_before_protest=hidden_days_before_protest,
+                aggregation=aggregation,
             )
             mean_impact = estimate_mean_impact(
                 events=events,
                 article_counts=trend,
                 horizon=horizon,
                 hidden_days_before_protest=hidden_days_before_protest,
+                aggregation=aggregation,
             )
         case "synthetic_control":
             raise NotImplementedError("Synthetic control is not yet implemented.")

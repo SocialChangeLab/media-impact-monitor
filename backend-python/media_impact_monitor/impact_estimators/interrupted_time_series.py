@@ -45,7 +45,7 @@ def predict_with_arima(train: pd.DataFrame, horizon: int):
 @cache
 def estimate_impact(
     event_date: date,
-    df: pd.DataFrame,
+    ds: pd.DataFrame,
     horizon: int,
     hidden_days_before_protest: int,
 ) -> tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame]:
@@ -63,19 +63,21 @@ def estimate_impact(
         counterfactual: The counterfactual media coverage.
         impact: The difference between the actual and counterfactual media coverage.
     """
-    assert df.columns == ["count"]
-    assert df.index.name == "date"
+    assert isinstance(ds, pd.Series)
+    assert ds.name == "count"
+    assert ds.index.name == "date"
     # check that all values are numeric
-    assert df.dtypes.apply(pd.api.types.is_numeric_dtype).all()
+    # assert df.dtypes.apply(pd.api.types.is_numeric_dtype).all()
+    assert pd.api.types.is_numeric_dtype(ds.dtypes)
 
     # adjust event_date and horizon to account for hidden_days_before_protest
     _start_date = event_date - timedelta(days=hidden_days_before_protest)
     _horizon = horizon + hidden_days_before_protest
 
     # define train and test (actual) data
-    train = df[df.index < _start_date].copy()
-    actual = df[
-        (df.index >= _start_date) & (df.index < _start_date + timedelta(days=_horizon))
+    train = ds[ds.index < _start_date].copy()
+    actual = ds[
+        (ds.index >= _start_date) & (ds.index < _start_date + timedelta(days=_horizon))
     ]
 
     # predict and calculate impact
@@ -86,7 +88,7 @@ def estimate_impact(
 
 def estimate_impacts(
     events: pd.DataFrame,
-    article_counts: pd.DataFrame,
+    article_counts: pd.Series,
     horizon: int,
     hidden_days_before_protest: int,
 ) -> tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame]:
@@ -97,7 +99,7 @@ def estimate_impacts(
         )
 
     estimates = parallel_tqdm(
-        _estimate_impact, events.iterrows(), total=events.shape[0], n_jobs=4
+        _estimate_impact, events.iterrows(), total=events.shape[0], n_jobs=1
     )
     actuals, counterfactuals, impacts = zip(*estimates)
     return actuals, counterfactuals, impacts

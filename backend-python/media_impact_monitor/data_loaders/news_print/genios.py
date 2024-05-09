@@ -25,7 +25,7 @@ def get_genios_counts(query: str, start_date: date, end_date: date) -> pd.Series
     data = response.json()["aggregations"]["day"]
     data = [{"date": k, "count": v["count"]} for k, v in data.items()]
     df = pd.DataFrame(data)
-    df["date"] = pd.to_datetime(df["date"], format="%d-%m-%Y").dt.date
+    df["date"] = pd.to_datetime(df["date"]).dt.date
     df = df.set_index("date")
     # there is a bug that sets the count at day -1 to 0
     df = df[df.index >= pd.Timestamp(start_date)]

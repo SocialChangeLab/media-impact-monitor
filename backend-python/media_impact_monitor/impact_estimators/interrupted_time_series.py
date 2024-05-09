@@ -45,7 +45,7 @@ def predict_with_arima(train: pd.DataFrame, horizon: int):
 @cache
 def estimate_impact(
     event_date: date,
-    ds: pd.DataFrame,
+    ds: pd.Series,
     horizon: int,
     hidden_days_before_protest: int,
 ) -> tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame]:

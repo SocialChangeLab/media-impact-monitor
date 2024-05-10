@@ -27,9 +27,12 @@ from media_impact_monitor.types_ import (
     TrendSearch,
 )
 
+git_commit = (os.getenv("VCS_REF") or "")[:7]
+build_date = (os.getenv("BUILD_DATE") or "WIP").replace("T", " ")
+
 metadata = dict(
     title="Media Impact Monitor API",
-    version=f"0.1.0+{os.getenv('VCS_REF')} ({os.getenv('BUILD_DATE')})",
+    version=f"0.1.0+{git_commit} ({build_date})",
     contact=dict(
         name="Social Change Lab",
         url="https://github.com/socialchangelab/media-impact-monitor",

@@ -135,7 +135,7 @@
 				],
 				"files.autoSave": "onFocusChange",
 				"mypy-type-checker.importStrategy": "fromEnvironment",
-				"python.defaultInterpreterPath": "/opt/greenwashing-env/bin/python",
+				"python.defaultInterpreterPath": "${workspaceFolder}/backend-python/.venv",
 				"python.terminal.activateEnvironment": false,
 				"python.testing.pytestEnabled": true,
 				"ruff.importStrategy": "fromEnvironment"

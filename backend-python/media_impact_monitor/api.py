@@ -5,7 +5,7 @@ Or, if necessary: `poetry run uvicorn media_impact_monitor.api:app --reload`
 """
 
 import logging
-import subprocess
+import os
 from contextlib import asynccontextmanager
 
 from fastapi import FastAPI, HTTPException
@@ -27,13 +27,12 @@ from media_impact_monitor.types_ import (
     TrendSearch,
 )
 
-commit_hash = (
-    subprocess.check_output(["git", "rev-parse", "--short", "HEAD"]).decode().strip()
-)
+git_commit = (os.getenv("VCS_REF") or "")[:7]
+build_date = (os.getenv("BUILD_DATE") or "WIP").replace("T", " ")
 
 metadata = dict(
     title="Media Impact Monitor API",
-    version=f"0.1.0+{commit_hash}",
+    version=f"0.1.0+{git_commit} ({build_date})",
     contact=dict(
         name="Social Change Lab",
         url="https://github.com/socialchangelab/media-impact-monitor",
@@ -98,40 +97,28 @@ def get_info() -> dict:
 @app.post("/events")
 def _get_events(q: EventSearch) -> Response[EventSearch, list[Event]]:
     """Fetch events from the Media Impact Monitor database."""
-    try:
-        df = get_events(q)
-        return Response(query=q, data=df.to_dict(orient="records"))
-    except Exception as e:
-        raise HTTPException(status_code=400, detail=f"{type(e).__name__}: {str(e)}")
+    df = get_events(q)
+    return Response(query=q, data=df.to_dict(orient="records"))
 
 
 @app.post("/trend")
 def _get_trend(q: TrendSearch) -> Response[TrendSearch, CountTimeSeries]:
     """Fetch media item counts from the Media Impact Monitor database."""
-    try:
-        df = get_trend(q)
-        return Response(query=q, data=df.to_dict())
-    except Exception as e:
-        raise HTTPException(status_code=400, detail=f"{type(e).__name__}: {str(e)}")
+    df = get_trend(q)
+    return Response(query=q, data=df.to_dict())
 
 
 @app.post("/fulltexts")
 def _get_fulltexts(q: FulltextSearch) -> Response[FulltextSearch, list[Event]]:
     """Fetch fulltexts from the Media Impact Monitor database."""
-    try:
-        raise NotImplementedError
-    except Exception as e:
-        raise HTTPException(status_code=400, detail=f"{type(e).__name__}: {str(e)}")
+    raise NotImplementedError
 
 
 @app.post("/impact")
 def _get_impact(q: ImpactSearch) -> Response[ImpactSearch, Impact]:
     """Compute the impact of an event on a media trend."""
-    try:
-        impact = get_impact(q)
-        return Response(query=q, data=impact)
-    except Exception as e:
-        raise HTTPException(status_code=400, detail=f"{type(e).__name__}: {str(e)}")
+    impact = get_impact(q)
+    return Response(query=q, data=impact)
 
 
 if __name__ == "__main__":

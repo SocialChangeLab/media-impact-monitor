@@ -97,37 +97,32 @@ def get_info() -> dict:
 @app.post("/events")
 def _get_events(q: EventSearch) -> Response[EventSearch, list[Event]]:
     """Fetch events from the Media Impact Monitor database."""
-    try:
-        df = get_events(q)
-        return Response(query=q, data=df.to_dict(orient="records"))
-    except Exception as e:
-        raise HTTPException(status_code=400, detail=f"{type(e).__name__}: {str(e)}")
+    df = get_events(q)
+    return Response(query=q, data=df.to_dict(orient="records"))
 
 
 @app.post("/trend")
 def _get_trend(q: TrendSearch) -> Response[TrendSearch, CountTimeSeries]:
     """Fetch media item counts from the Media Impact Monitor database."""
-    try:
-        df = get_trend(q)
-        return Response(query=q, data=df.to_dict(orient="records"))
-    except Exception as e:
-        raise HTTPException(status_code=400, detail=f"{type(e).__name__}: {str(e)}")
+    df = get_trend(q)
+    return Response(query=q, data=df.to_dict())
 
 
 @app.post("/fulltexts")
 def _get_fulltexts(q: FulltextSearch) -> Response[FulltextSearch, list[Event]]:
     """Fetch fulltexts from the Media Impact Monitor database."""
-    try:
-        raise NotImplementedError
-    except Exception as e:
-        raise HTTPException(status_code=400, detail=f"{type(e).__name__}: {str(e)}")
+    raise NotImplementedError
 
 
 @app.post("/impact")
 def _get_impact(q: ImpactSearch) -> Response[ImpactSearch, Impact]:
     """Compute the impact of an event on a media trend."""
-    try:
-        impact = get_impact(q)
-        return Response(query=q, data=impact)
-    except Exception as e:
-        raise HTTPException(status_code=400, detail=f"{type(e).__name__}: {str(e)}")
+    raise NotImplementedError
+    impact = get_impact(q)
+    return Response(query=q, data=impact)
+
+
+if __name__ == "__main__":
+    import uvicorn
+
+    uvicorn.run(app)

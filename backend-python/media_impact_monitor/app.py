@@ -15,20 +15,45 @@ app.layout = html.Div(
         html.P("Organizers:"),
         dash_treeview_antd.TreeView(
             id="organizer-selector",
-            multiple=False,
+            multiple=True,
             checkable=True,
-            checked=[],
-            selected=[],
-            # expanded=["0"],
+            checked=[
+                "Fridays for Future",
+                "Extinction Rebellion",
+                "Last Generation (Germany)",
+            ],
+            expanded=[],
             data={
-                "title": "climate change",
+                "title": "Select protest organizers",
                 "key": "0",
                 "children": [
-                    {"title": "Fridays for Future", "key": "Fridays for Future"},
-                    {"title": "Extinction Rebellion", "key": "Extinction Rebellion"},
                     {
-                        "title": "Last Generation (Germany)",
-                        "key": "Last Generation (Germany)",
+                        "title": "climate change",
+                        "key": "0-0",
+                        "children": [
+                            {
+                                "title": "Fridays for Future",
+                                "key": "Fridays for Future",
+                            },
+                            {
+                                "title": "Extinction Rebellion",
+                                "key": "Extinction Rebellion",
+                            },
+                            {
+                                "title": "Last Generation (Germany)",
+                                "key": "Last Generation (Germany)",
+                            },
+                        ],
+                    },
+                    {
+                        "title": "animal rights",
+                        "key": "0-1",
+                        "children": [
+                            {
+                                "title": "Animal Rising",
+                                "key": "Animal Rising",
+                            }
+                        ],
                     },
                 ],
             },
@@ -36,11 +61,15 @@ app.layout = html.Div(
         # Optionally, you can pass options to the Vega component.
         # See https://github.com/vega/vega-embed#options for more details.
         dvc.Vega(
-            id="altair-chart",
+            id="protest-chart",
             opt={"renderer": "svg", "actions": False},
             signalsToObserve=["selected"],
         ),
-        html.Div(id="detail-text", style={"padding": "20px", "margin-top": "20px"}),
+        html.Div(
+            id="detail-text",
+            style={"padding": "20px", "margin-top": "20px", "max-width": "700px"},
+        ),
+        dvc.Vega(id="media-chart", opt={"renderer": "svg", "actions": False}),
     ]
 )
 
@@ -51,8 +80,8 @@ def shorten_text(text, length=200):
     return text
 
 
-@callback(Output("altair-chart", "spec"), Input("organizer-selector", "checked"))
-def display_altair_chart(checked):
+@callback(Output("protest-chart", "spec"), Input("organizer-selector", "checked"))
+def display_protest_chart(checked):
     organizers = [a for a in checked if not a[0] == "0"]
     if not organizers:
         return None
@@ -101,14 +130,42 @@ def display_altair_chart(checked):
     return chart.to_dict()
 
 
-@callback(Output("detail-text", "children"), Input("altair-chart", "signalData"))
+@callback(Output("detail-text", "children"), Input("protest-chart", "signalData"))
 def handle_click(signalData):
     if signalData and "selected" in signalData:
-        description = signalData["selected"].get(
-            "description", "No description available"
-        )
+        description = signalData["selected"].get("description", "")
         return description
-    return "Click on a bubble for more details."
+    return ""
+
+
+@callback(Output("media-chart", "spec"), Input("organizer-selector", "checked"))
+def display_media_chart(media_source):
+    res = requests.post(
+        # "https://api.dev.mediaimpactmonitor.app/trend",
+        "http://localhost:8000/trend",
+        json={
+            "trend_type": "keywords",
+            "media_source": "news_online",
+            "topic": "climate_change",
+            "query": '"Letzte Generation"',
+            "start_date": "2023-01-01",
+            "end_date": "2023-12-31",
+        },
+    )
+    data = res.json()["data"]
+    df = pd.DataFrame(list(data.items()), columns=["date", "value"])
+    df["date"] = pd.to_datetime(df["date"])
+    chart = (
+        alt.Chart(df)
+        .mark_line(point=True)
+        .encode(
+            x="date:T",  # T: temporal
+            y="value:Q",  # Q: quantitative
+            tooltip=["date", "value"],
+        )
+        .properties(width=600, height=300)
+    )
+    return chart.to_dict()
 
 
 if __name__ == "__main__":

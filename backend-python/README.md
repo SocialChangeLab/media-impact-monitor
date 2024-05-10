@@ -10,6 +10,11 @@
 - `poetry run uvicorn media_impact_monitor.api:app --host 0.0.0.0 --port 8000` to serve the API
 - `poetry run py-spy record -o profile.svg -- python xyz.py` to do profiling
 
+## Setting up a server to serve the Docker container
+
+- Set up a Ubuntu 22.04 server.
+- Create a `.env` file based on `.env.example` and put it on the server.
+- Run `setup_server.sh` on the server.
 
 ## Conventions
 

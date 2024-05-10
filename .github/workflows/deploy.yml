@@ -92,6 +92,8 @@ jobs:
     - name: Build Docker image
       run: |
         docker build \
+          --build-arg VCS_REF=${{ github.sha }} \
+          --build-arg BUILD_DATE=$(date -u +'%Y-%m-%dT%H:%M:%SZ') \
           -t socialchangelab/media-impact-monitor:${{ github.sha }} \
           -t socialchangelab/media-impact-monitor:${{ steps.set_vars.outputs.TAG }} \
           .

@@ -70,6 +70,7 @@ app.layout = html.Div(
             style={"padding": "20px", "margin-top": "20px", "max-width": "700px"},
         ),
         dvc.Vega(id="media-chart", opt={"renderer": "svg", "actions": False}),
+        dvc.Vega(id="impact-chart", opt={"renderer": "svg", "actions": False}),
     ]
 )
 
@@ -80,11 +81,7 @@ def shorten_text(text, length=200):
     return text
 
 
-@callback(Output("protest-chart", "spec"), Input("organizer-selector", "checked"))
-def display_protest_chart(checked):
-    organizers = [a for a in checked if not a[0] == "0"]
-    if not organizers:
-        return None
+def get_events(organizers):
     res = requests.post(
         # "https://api.dev.mediaimpactmonitor.app/events",
         "http://localhost:8000/events",
@@ -97,7 +94,15 @@ def display_protest_chart(checked):
             "organizers": organizers,
         },
     )
-    events = res.json()["data"]
+    return res.json()["data"]
+
+
+@callback(Output("protest-chart", "spec"), Input("organizer-selector", "checked"))
+def display_protest_chart(checked):
+    organizers = [a for a in checked if not a[0] == "0"]
+    if not organizers:
+        return None
+    events = get_events(organizers)
 
     df = pd.DataFrame(events)
     df["organizer"] = df["organizers"].apply(
@@ -123,7 +128,7 @@ def display_protest_chart(checked):
                 alt.Tooltip("description_short:N", title="Description"),
             ],
         )
-        .add_selection(selection)
+        .add_params(selection)
         .properties(width=600, height=300)
     )
 
@@ -165,6 +170,43 @@ def display_media_chart(media_source):
         )
         .properties(width=600, height=300)
     )
+    return chart.to_dict()
+
+
+@callback(Output("impact-chart", "spec"), Input("organizer-selector", "checked"))
+def display_impact_chart(organizers):
+    events = get_events(organizers)
+    event_ids = [e["event_id"] for e in events]
+    res = requests.post(
+        # "https://api.dev.mediaimpactmonitor.app/impact",
+        "http://localhost:8000/impact",
+        json={
+            "cause": event_ids,
+            "effect": {
+                "trend_type": "keywords",
+                "media_source": "news_online",
+                "query": '"Letzte Generation"',
+            },
+            "method": "interrupted_time_series",
+        },
+    )
+    data = res.json()["data"]
+    df = pd.DataFrame(
+        {
+            "impact_mean": data["impact_mean"],
+            "impact_mean_lower": data["impact_mean_lower"],
+            "impact_mean_upper": data["impact_mean_upper"],
+        }
+    ).reset_index()
+
+    base = alt.Chart(df).encode(x=alt.X("index:Q", title="Days after protest"))
+    error_band = base.mark_errorband().encode(
+        y=alt.Y("impact_mean_lower:Q", title=""), y2="impact_mean_upper:Q"
+    )
+    mean_line = base.mark_line(color="red").encode(
+        y=alt.Y("impact_mean:Q", title="Number of additional articles")
+    )
+    chart = alt.layer(error_band, mean_line).properties(title="Impact")
     return chart.to_dict()
 
 

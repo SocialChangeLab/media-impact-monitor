@@ -81,7 +81,7 @@ def estimate_impact(
     ]
 
     # predict and calculate impact
-    counterfactual = predict_with_arima(train, _horizon)
+    counterfactual = predict_with_arima(train, _horizon)["count"]
     impact = actual - counterfactual
     return actual, counterfactual, impact
 

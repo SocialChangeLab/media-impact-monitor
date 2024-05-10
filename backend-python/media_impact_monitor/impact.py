@@ -41,15 +41,13 @@ def get_impact(q: ImpactSearch) -> Impact:
             raise NotImplementedError("Synthetic control is not yet implemented.")
         case _:
             raise ValueError(f"Unsupported method: {q.method}")
-    impacts_dicts = [
-        impact["count"].fillna(-1).to_dict() for impact in individual_impacts
-    ]
+    impacts_dicts = [impact.to_dict() for impact in individual_impacts]
     return Impact(
         method_applicability="maybe",
         method_applicability_reason="We're not checking this yet 🤡",
-        impact_mean=mean_impact["mean"].fillna(-1).to_dict(),
-        impact_mean_lower=mean_impact["ci_lower"].fillna(-1).to_dict(),
-        impact_mean_upper=mean_impact["ci_upper"].fillna(-1).to_dict(),
+        impact_mean=mean_impact["mean"].to_dict(),
+        impact_mean_lower=mean_impact["ci_lower"].to_dict(),
+        impact_mean_upper=mean_impact["ci_upper"].to_dict(),
         individual_impacts=dict(zip(events["event_id"], impacts_dicts)),
     )
     # TODO: divide impact by number of events on that day (by the same org)

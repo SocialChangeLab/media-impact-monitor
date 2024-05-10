@@ -38,6 +38,7 @@ dash = "^2.17.0"
 dash-vega-components = "^0.10.0"
 dash-treeview-antd = "^0.0.1"
 dash-bootstrap-components = "^1.6.0"
+number-parser = "^0.3.2"
 
 [tool.poetry.group.dev.dependencies]
 pytest = "^8.0.2"

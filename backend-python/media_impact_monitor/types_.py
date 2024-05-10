@@ -69,8 +69,16 @@ class Event:
     event_type: EventType = Field(description="The type of event.")
     source: EventSource = Field(description="The source dataset.")
     date: date_ = Field(description="The date of the event.")
+    country: str = Field(description="The country where the event took place.")
+    region: str = Field(description="The region where the event took place.")
+    city: str = Field(description="The city where the event took place.")
     organizers: list[str] = Field(
         description="The organizations involved in the event."
+    )
+    type_: str = Field(description="Type of the event: ...")
+    size_text: str = Field(description="Size of the event, in words.")
+    size_number: int | None = Field(
+        description="Size of the event, quantified if possible."
     )
     description: str = Field(description="Description of the event.")
 

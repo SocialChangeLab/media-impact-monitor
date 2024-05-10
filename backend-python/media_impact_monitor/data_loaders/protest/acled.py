@@ -4,6 +4,10 @@ from datetime import date
 import pandas as pd
 from dotenv import load_dotenv
 
+from media_impact_monitor.data_loaders.protest.acled_size import (
+    get_size_number,
+    get_size_text,
+)
 from media_impact_monitor.util.cache import cache, get
 from media_impact_monitor.util.date import verify_dates
 
@@ -59,7 +63,7 @@ def get_acled_events(
         "event_type": "Protests",
         "event_date": f"{start_date.strftime('%Y-%m-%d')}|{end_date.strftime('%Y-%m-%d')}",
         "event_date_where": "BETWEEN",
-        "fields": "event_date|assoc_actor_1|notes|country",
+        "fields": "event_date|sub_event_type|assoc_actor_1|country|admin1|admin2|notes|tags",
         "limit": limit,
     }
     assert (countries or regions) and not (
@@ -77,13 +81,27 @@ def get_acled_events(
         return df
     if len(df) == limit:
         raise ValueError(f"Limit of {limit} reached.")
-    df["date"] = pd.to_datetime(df["event_date"]).dt.date
-    df = process_orgs(df)
+    df["date"] = pd.to_datetime(df["event_date"], format="%Y-%m-%d")
+    df["region"] = df["admin1"]
+    df["city"] = df["admin2"]
+    df["organizations"] = df["assoc_actor_1"].str.split("; ")
+    df["type"] = df["sub_event_type"]
+    df["size_text"] = df["tags"].apply(get_size_text)
+    df["size_number"] = df["size_text"].apply(get_size_number)
     df["description"] = df["notes"]
-    df["event_type"] = "protest"
-    df["source"] = "acled"
-    df = df[["date", "description", "organizers", "event_type", "source"]]
-    return df
+    return df[
+        [
+            "date",
+            "type",
+            "organizations",
+            "country",
+            "region",
+            "city",
+            "size_text",
+            "size_number",
+            "description",
+        ]
+    ]
 
 
 def process_orgs(df):
@@ -122,3 +140,9 @@ def rename_org(row):
         orgs = [org.replace("Just Stop Oil", "Just Stop Oil (Norway)") for org in orgs]
     row["organizers"] = orgs
     return row
+
+
+data = get_acled_events(
+    countries=["Germany"],
+    end_date=date(2020, 4, 30),
+)

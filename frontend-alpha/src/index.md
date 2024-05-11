@@ -45,14 +45,10 @@ const organizers = [
   'BUND',
   'End Fossil: Occupy'
 ]
-const start_date = '2023-07-01'
-const end_date = '2024-04-30'
 let events = await queryApi('events', {
   event_type: 'protest',
   source: 'acled',
   topic: 'climate_change',
-  start_date: start_date,
-  end_date: end_date,
   organizers: organizers
 })
 
@@ -108,9 +104,7 @@ let trend = await queryApi('trend', {
   trend_type: 'keywords',
   media_source: 'news_online',
   topic: 'climate_change',
-  query: '"Letzte Generation"',
-  start_date: start_date,
-  end_date: end_date
+  query: '"Letzte Generation"'
 })
 trend = Object.keys(trend).map(k => ({
   date: k,

@@ -13,20 +13,11 @@ from media_impact_monitor.util.date import verify_dates
 @cache
 def get_trend(q: TrendSearch) -> pd.Series:
     assert q.trend_type == "keywords", "Only keywords are supported."
-    assert verify_dates(q.start_date, q.end_date)
     match q.media_source:
         case "news_online":
-            df = get_mediacloud_counts(
-                query=q.query,
-                start_date=q.start_date,
-                end_date=q.end_date,
-            )
+            df = get_mediacloud_counts(query=q.query)
         case "news_print":
-            df = get_genios_counts(
-                query=q.query,
-                start_date=q.start_date,
-                end_date=q.end_date,
-            )
+            df = get_genios_counts(query=q.query)
         case "web_google":
             df = get_google_trends_counts(query=q.query)
         case _:

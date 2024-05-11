@@ -7,6 +7,7 @@ There is also regional data, useful for synthetic control.
 For the last 90 days, data is also available with daily resolution; otherwise only weekly.
 """
 
+from datetime import date
 from time import sleep
 
 import pandas as pd
@@ -16,7 +17,7 @@ from media_impact_monitor.util.cache import cache
 
 
 @cache
-def get_google_trends_counts(query: str) -> pd.Series:
+def get_google_trends_counts(query: str, end_date: date = date.today()) -> pd.Series:
     PyTrends = TrendReq(hl="de-DE", tz=60)
     PyTrends.build_payload([query], timeframe="all", geo="DE")
     df = PyTrends.interest_over_time()

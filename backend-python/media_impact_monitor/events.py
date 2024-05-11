@@ -18,10 +18,7 @@ from media_impact_monitor.util.date import verify_dates
 def get_events(q: EventSearch) -> pd.DataFrame:
     assert q.event_type == "protest", "Only protests are supported."
     assert q.source == "acled", "Only ACLED is supported."
-    assert verify_dates(q.start_date, q.end_date)
-    df = get_acled_events(
-        countries=["Germany"], start_date=q.start_date, end_date=q.end_date
-    )
+    df = get_acled_events(countries=["Germany"])
     if df.empty:
         return q, []
     match q.topic:

@@ -40,12 +40,6 @@ class EventSearch(BaseModel):
     source: EventSource = Field(
         description="The source dataset to search. Currently only ACLED is supported."
     )
-    start_date: date = Field(
-        description="The start date of the search, inclusive, in the format YYYY-MM-DD."
-    )
-    end_date: date = Field(
-        description="The end date of the search, inclusive, in the format YYYY-MM-DD."
-    )
     organizers: list[str] | None = Field(
         default=None,
         description="Filter by organizers involved in the events.",
@@ -93,12 +87,6 @@ class TrendSearch(BaseModel):
     )
     media_source: MediaSource = Field(
         description="The data source for the media data, i. e. online news, print news, parliamentary speech, etc."
-    )
-    start_date: date = Field(
-        description="The start date of the search, inclusive, in the format YYYY-MM-DD."
-    )
-    end_date: date = Field(
-        description="The end date of the search, inclusive, in the format YYYY-MM-DD."
     )
     topic: Topic | None = Field(
         default=None,

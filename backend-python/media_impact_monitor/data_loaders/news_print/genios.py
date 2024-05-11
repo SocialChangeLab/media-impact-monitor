@@ -6,7 +6,11 @@ from media_impact_monitor.util.cache import cache, get
 
 
 @cache
-def get_genios_counts(query: str, start_date: date, end_date: date) -> pd.Series:
+def get_genios_counts(
+    query: str,
+    start_date: date = date(2010, 1, 1),
+    end_date: date = date.today(),
+) -> pd.Series:
     response = get(
         "https://www.genios.de/api/searchResult/Alle/Presse",
         params={

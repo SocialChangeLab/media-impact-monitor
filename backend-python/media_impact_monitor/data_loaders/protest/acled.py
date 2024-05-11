@@ -44,15 +44,13 @@ acled_region_keys = {
 def get_acled_events(
     countries: list[str] = [],
     regions: list[str] = [],
-    start_date: date | None = None,
-    end_date: date | None = None,
+    start_date: date = date(2020, 1, 1),
+    end_date: date = date.today(),
 ) -> pd.DataFrame:
     """Fetch protests from the ACLED API.
 
     API documentation: https://apidocs.acleddata.com/
     """
-    start_date = start_date or date(2020, 1, 1)
-    end_date = end_date or date.today()
     assert start_date >= date(2020, 1, 1), "Start date must be after 2020-01-01."
     assert verify_dates(start_date, end_date)
 

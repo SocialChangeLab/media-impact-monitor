@@ -52,10 +52,9 @@ def topic_queries(media_source: str) -> dict[str, str]:
         "science": build_query(media_source=media_source, positive=keywords["science"]),
         "policy": build_query(media_source=media_source, positive=keywords["policy"]),
         "urgency": build_query(media_source=media_source, positive=keywords["urgency"]),
-        "all_incl_activism": all_incl_activism,
-        "all_excl_activism": all_excl_activism,
+        # "all_incl_activism": all_incl_activism,
+        # "all_excl_activism": all_excl_activism,
     }
-    print(keywords)
     return keywords
 
 
@@ -96,10 +95,10 @@ def build_query(
                 else []
             )
             if positive and negative:
-                query = " ".join(q_positive[:3] + q_negative[:3])
+                query = " ".join(q_positive[:4] + q_negative[:4])
             elif positive:
-                query = " ".join(q_positive[:5])
+                query = " ".join(q_positive[:4])
             elif negative:
-                query = " ".join(q_negative[:5])
+                query = " ".join(q_negative[:4])
             query = query.replace("*", "")
     return query

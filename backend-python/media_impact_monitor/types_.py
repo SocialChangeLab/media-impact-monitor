@@ -63,6 +63,7 @@ class Event:
         description="Size of the event, quantified if possible."
     )
     description: str = Field(description="Description of the event.")
+    chart_position: float | None = Field("Index of protest on given day.")
 
 
 #### Trend types ####

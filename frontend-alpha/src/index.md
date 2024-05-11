@@ -54,42 +54,69 @@ events = events.map(a => ({
 ```js
 const spec = {
   data: { values: events },
-  mark: { type: 'circle', tooltip: true },
-  encoding: {
-    x: {
-      field: 'date',
-      type: 'temporal',
-      axis: { title: 'Date' }
+  vconcat: [
+    {
+      mark: { type: 'circle', tooltip: true },
+      encoding: {
+        x: {
+          field: 'date',
+          type: 'temporal',
+          axis: { title: null, grid: false },
+          scale: { domain: { selection: 'brush' } }
+        },
+        y: {
+          field: 'y',
+          type: 'quantitative',
+          axis: null
+        },
+        color: {
+          field: 'organizer',
+          type: 'nominal',
+          legend: { title: 'Organizer' },
+          sort: {
+            field: 'organizer',
+            op: 'count',
+            order: 'descending'
+          }
+        },
+        size: {
+          field: 'size_number',
+          type: 'quantitative',
+          legend: { title: 'Participants' }
+        },
+        tooltip: [
+          { field: 'date', type: 'temporal', title: 'Date' },
+          { field: 'organizer', type: 'nominal', title: 'Organizer' },
+          { field: 'size_text', type: 'nominal', title: 'Participants' },
+          { field: 'description', type: 'nominal', title: 'Description' }
+        ]
+      },
+      width: 600,
+      height: 300
     },
-    y: {
-      field: 'y',
-      type: 'quantitative',
-      axis: { title: 'Value' }
-    },
-    color: {
-      field: 'organizer',
-      type: 'nominal',
-      legend: { title: 'Organizer' },
-      sort: {
-        field: 'organizer',
-        op: 'count',
-        order: 'descending'
+    {
+      width: 600,
+      height: 40,
+      mark: 'bar',
+      selection: {
+        brush: { type: 'interval', encodings: ['x'] }
+      },
+      encoding: {
+        x: {
+          field: 'date',
+          type: 'temporal',
+          axis: { tickCount: 'year', title: null },
+          timeUnit: { unit: 'yearmonth' }
+        },
+        y: {
+          field: 'size_number',
+          type: 'quantitative',
+          axis: { grid: false, title: null },
+          aggregate: 'sum'
+        }
       }
-    },
-    size: {
-      field: 'size_number',
-      type: 'quantitative',
-      legend: { title: 'Participants' }
-    },
-    tooltip: [
-      { field: 'date', type: 'temporal', title: 'Date' },
-      { field: 'organizer', type: 'nominal', title: 'Organizer' },
-      { field: 'size_text', type: 'nominal', title: 'Participants' },
-      { field: 'description', type: 'nominal', title: 'Description' }
-    ]
-  },
-  width: 600,
-  height: 300
+    }
+  ]
 }
 display(await embed(spec))
 ```

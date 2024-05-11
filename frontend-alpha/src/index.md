@@ -100,11 +100,20 @@ display(await embed(spec))
 ```
 
 ```js
+const data_sources = ['news_online', 'web_google']
+const media_source = view(
+  Inputs.select(data_sources, {
+    value: 'news_online',
+    label: 'Media data source'
+  })
+)
+```
+
+```js
 let trend = await queryApi('trend', {
   trend_type: 'keywords',
-  media_source: 'news_online',
-  topic: 'climate_change',
-  query: '"Letzte Generation"'
+  media_source: media_source,
+  query: 'klimawandel'
 })
 trend = Object.keys(trend).map(k => ({
   date: k,
@@ -134,24 +143,6 @@ const spec = {
 }
 display(await embed(spec))
 ```
-
-<!--
-    df = pd.DataFrame(
-        {
-            "impact_mean": data["impact_mean"],
-            "impact_mean_lower": data["impact_mean_lower"],
-            "impact_mean_upper": data["impact_mean_upper"],
-        }
-    ).reset_index()
-
-    base = alt.Chart(df).encode(x=alt.X("index:Q", title="Days after protest"))
-    error_band = base.mark_errorband().encode(
-        y=alt.Y("impact_mean_lower:Q", title=""), y2="impact_mean_upper:Q"
-    )
-    mean_line = base.mark_line(color="red").encode(
-        y=alt.Y("impact_mean:Q", title="Number of additional articles")
-    )
-    chart = alt.layer(error_band, mean_line).properties(title="Impact") -->
 
 ```js
 const event_ids = events.map(a => a.event_id)

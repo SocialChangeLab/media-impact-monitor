@@ -34,23 +34,12 @@ EventId = str
 
 
 class EventSearch(BaseModel):
-    event_type: EventType = Field(
-        description="The type of event to search. Currently only protests are supported."
-    )
     source: EventSource = Field(
         description="The source dataset to search. Currently only ACLED is supported."
-    )
-    organizers: list[str] | None = Field(
-        default=None,
-        description="Filter by organizers involved in the events.",
     )
     topic: Topic | None = Field(
         default=None,
         description="Filter by topic. This will automatically set filters for query and organizers, which you can further refine with the `query` field. Currently only _Climate Change_ is supported.",
-    )
-    query: Query | None = Field(
-        default=None,
-        description="Filter by a keyword query that must occur in the event description.",
     )
 
 
@@ -89,12 +78,7 @@ class TrendSearch(BaseModel):
         description="The data source for the media data, i. e. online news, print news, parliamentary speech, etc."
     )
     topic: Topic | None = Field(
-        default=None,
-        description="Filter by topic. Currently only _Climate Change_ is supported. This will automatically set a  filter for the query, which you can further refine with `query` field.",
-    )
-    query: Query | None = Field(
-        default=None,
-        description="Filter by a keyword query that must occur within a media item in order to be counted.",
+        description="When retrieving keyword frequencies, this automatically sets relevant sets of keywords. Currently only _climate_change_ is supported."
     )
 
 

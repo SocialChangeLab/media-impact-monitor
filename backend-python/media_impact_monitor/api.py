@@ -91,10 +91,13 @@ def _get_events(q: EventSearch) -> Response[EventSearch, list[Event]]:
 
 
 @app.post("/trend")
-def _get_trend(q: TrendSearch) -> Response[TrendSearch, CountTimeSeries]:
+def _get_trend(q: TrendSearch):  # -> Response[TrendSearch, CountTimeSeries]:
     """Fetch media item counts from the Media Impact Monitor database."""
     df = get_trend(q)
-    return Response(query=q, data=df.to_dict())
+    long_df = pd.melt(
+        df.reset_index(), id_vars=["date"], var_name="topic", value_name="n_articles"
+    )
+    return Response(query=q, data=long_df.to_dict(orient="records"))
 
 
 @app.post("/fulltexts")

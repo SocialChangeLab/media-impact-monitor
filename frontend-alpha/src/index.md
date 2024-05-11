@@ -4,6 +4,9 @@
 import * as vega from 'npm:vega'
 import ve from 'npm:vega-embed@6'
 
+// const url = 'https://api.dev.mediaimpactmonitor.app'
+const url = 'http://localhost:8000'
+
 const embed = async (spec, options) => {
   // see https://observablehq.com/@mbostock/hello-vega-embed
   const div = document.createElement('div')
@@ -18,32 +21,36 @@ function gaussianRandom(mean = 0, stdev = 1) {
   const z = Math.sqrt(-2.0 * Math.log(u)) * Math.cos(2.0 * Math.PI * v)
   return z * stdev + mean
 }
+
+const queryApi = (endpoint, query) =>
+  fetch(`${url}/${endpoint}`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(query)
+  })
+    .then(res => res.json())
+    .then(data => data['data'])
+    .catch(err => console.warn(err))
 ```
 
 ```js
-// const url = 'https://api.dev.mediaimpactmonitor.app'
-const url = 'http://localhost:8000'
 const organizers = [
   'Last Generation (Germany)',
   'Fridays for Future',
   'Extinction Rebellion'
 ]
-let events = await fetch(`${url}/events`, {
-  method: 'POST',
-  headers: {
-    'Content-Type': 'application/json'
-  },
-  body: JSON.stringify({
-    event_type: 'protest',
-    source: 'acled',
-    topic: 'climate_change',
-    start_date: '2020-01-01',
-    end_date: '2024-04-30',
-    organizers: organizers
-  })
+const start_date = '2023-07-01'
+const end_date = '2024-04-30'
+let events = await queryApi('events', {
+  event_type: 'protest',
+  source: 'acled',
+  topic: 'climate_change',
+  start_date: start_date,
+  end_date: end_date,
+  organizers: organizers
 })
-  .then(res => res.json())
-  .then(data => data['data'])
 
 events = events.map(a => ({
   ...a,
@@ -93,22 +100,14 @@ display(await embed(spec))
 ```
 
 ```js
-let trend = await fetch(`${url}/trend`, {
-  method: 'POST',
-  headers: {
-    'Content-Type': 'application/json'
-  },
-  body: JSON.stringify({
-    trend_type: 'keywords',
-    media_source: 'web_google',
-    topic: 'climate_change',
-    query: '"Letzte Generation"',
-    start_date: '2023-01-01',
-    end_date: '2024-04-30'
-  })
+let trend = await queryApi('trend', {
+  trend_type: 'keywords',
+  media_source: 'news_online',
+  topic: 'climate_change',
+  query: '"Letzte Generation"',
+  start_date: start_date,
+  end_date: end_date
 })
-  .then(res => res.json())
-  .then(data => data['data'])
 trend = Object.keys(trend).map(k => ({
   date: k,
   value: trend[k]
@@ -135,5 +134,75 @@ const spec = {
   width: 600,
   height: 300
 }
+display(await embed(spec))
+```
+
+<!--
+    df = pd.DataFrame(
+        {
+            "impact_mean": data["impact_mean"],
+            "impact_mean_lower": data["impact_mean_lower"],
+            "impact_mean_upper": data["impact_mean_upper"],
+        }
+    ).reset_index()
+
+    base = alt.Chart(df).encode(x=alt.X("index:Q", title="Days after protest"))
+    error_band = base.mark_errorband().encode(
+        y=alt.Y("impact_mean_lower:Q", title=""), y2="impact_mean_upper:Q"
+    )
+    mean_line = base.mark_line(color="red").encode(
+        y=alt.Y("impact_mean:Q", title="Number of additional articles")
+    )
+    chart = alt.layer(error_band, mean_line).properties(title="Impact") -->
+
+```js
+const event_ids = events.map(a => a.event_id)
+let impact = queryApi('impact', {
+  cause: event_ids,
+  effect: {
+    trend_type: 'keywords',
+    media_source: 'news_online',
+    query: '"Letzte Generation"'
+  },
+  method: 'interrupted_time_series'
+})
+impact = (await impact).time_series
+impact = Object.keys(impact)
+  .map(k => ({ day: parseInt(k), ...impact[k] }))
+  .sort((a, b) => a.day - b.day)
+// display(Inputs.table(impact))
+```
+
+```js
+const spec = {
+  data: { values: impact },
+  layer: [
+    {
+      mark: 'errorband',
+      encoding: {
+        x: {
+          field: 'day',
+          type: 'quantitative',
+          title: 'Days after protest'
+        },
+        y: { field: 'ci_lower', type: 'quantitative', title: '' },
+        y2: { field: 'ci_upper', type: 'quantitative' }
+      }
+    },
+    {
+      mark: { type: 'line', color: 'red' },
+      encoding: {
+        x: { field: 'day', type: 'quantitative' },
+        y: {
+          field: 'mean',
+          type: 'quantitative',
+          title: 'Number of additional articles'
+        }
+      }
+    }
+  ],
+  title: 'Impact'
+}
+
 display(await embed(spec))
 ```

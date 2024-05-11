@@ -4,11 +4,13 @@ Run with: `uvicorn media_impact_monitor.api:app --reload`
 Or, if necessary: `poetry run uvicorn media_impact_monitor.api:app --reload`
 """
 
+import json
 import logging
 import os
 from contextlib import asynccontextmanager
 
-from fastapi import FastAPI, HTTPException
+import pandas as pd
+from fastapi import FastAPI
 from starlette.middleware.cors import CORSMiddleware
 from starlette.responses import RedirectResponse
 from uvicorn.logging import AccessFormatter
@@ -41,20 +43,6 @@ metadata = dict(
     # the original Swagger UI does not properly display POST parameters, so we disable it
     docs_url=None,
 )
-
-
-@asynccontextmanager
-async def app_lifespan(app: FastAPI):
-    logger = logging.getLogger("uvicorn.access")
-    if logger.handlers:
-        console_formatter = AccessFormatter(
-            "{asctime} {levelprefix} {message}", style="{", use_colors=True
-        )
-        logger.handlers[0].setFormatter(console_formatter)
-    yield
-
-
-app = FastAPI(**metadata, lifespan=app_lifespan)
 
 
 # setup logging to also include datetime
@@ -98,7 +86,8 @@ def get_info() -> dict:
 def _get_events(q: EventSearch) -> Response[EventSearch, list[Event]]:
     """Fetch events from the Media Impact Monitor database."""
     df = get_events(q)
-    return Response(query=q, data=df.to_dict(orient="records"))
+    data = json.loads(df.to_json(orient="records"))  # convert nan to None
+    return Response(query=q, data=data)
 
 
 @app.post("/trend")

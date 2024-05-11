@@ -84,22 +84,26 @@ def get_acled_events(
     df["date"] = pd.to_datetime(df["event_date"], format="%Y-%m-%d")
     df["region"] = df["admin1"]
     df["city"] = df["admin2"]
-    df["organizations"] = df["assoc_actor_1"].str.split("; ")
-    df["type"] = df["sub_event_type"]
+    df["event_type"] = df["sub_event_type"]
+    df = process_orgs(df)
     df["size_text"] = df["tags"].apply(get_size_text)
     df["size_number"] = df["size_text"].apply(get_size_number)
     df["description"] = df["notes"]
+    df["source"] = (
+        "adapted from: Armed Conflict Location & Event Data Project (ACLED); www.acleddata.com"
+    )
     return df[
         [
             "date",
-            "type",
-            "organizations",
+            "event_type",
             "country",
             "region",
             "city",
+            "organizers",
             "size_text",
             "size_number",
             "description",
+            "source",
         ]
     ]
 

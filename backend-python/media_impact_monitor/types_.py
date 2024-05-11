@@ -28,8 +28,8 @@ class Response(BaseModel, Generic[Q, R]):
 
 #### Event types ####
 
-EventType = Literal["protest"]
-EventSource = Literal["acled"]
+EventType = str
+EventSource = str
 EventId = str
 
 
@@ -75,7 +75,6 @@ class Event:
     organizers: list[str] = Field(
         description="The organizations involved in the event."
     )
-    type_: str = Field(description="Type of the event: ...")
     size_text: str = Field(description="Size of the event, in words.")
     size_number: int | None = Field(
         description="Size of the event, quantified if possible."

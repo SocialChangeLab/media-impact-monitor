@@ -36,27 +36,17 @@ const queryApi = (endpoint, query) =>
 ```
 
 ```js
-const organizers = [
-  'Fridays for Future',
-  'Extinction Rebellion',
-  'Last Generation (Germany)',
-  'Ende Gelaende',
-  'Greenpeace',
-  'BUND',
-  'End Fossil: Occupy'
-]
+console.log('oi')
 let events = await queryApi('events', {
-  event_type: 'protest',
   source: 'acled',
-  topic: 'climate_change',
-  organizers: organizers
+  topic: 'climate_change'
 })
 
 events = events.map(a => ({
   ...a,
   y: gaussianRandom(),
   size_number: Math.max(a.size_number, 1000),
-  organizer: a.organizers.filter(b => organizers.includes(b))[0]
+  organizer: a.organizers[0]
 }))
 // display(Inputs.table(events))
 ```
@@ -79,7 +69,12 @@ const spec = {
     color: {
       field: 'organizer',
       type: 'nominal',
-      legend: { title: 'Organizer' }
+      legend: { title: 'Organizer' },
+      sort: {
+        field: 'organizer',
+        op: 'count',
+        order: 'descending'
+      }
     },
     size: {
       field: 'size_number',
@@ -113,12 +108,8 @@ const media_source = view(
 let trend = await queryApi('trend', {
   trend_type: 'keywords',
   media_source: media_source,
-  query: 'klimawandel'
+  topic: 'climate_change'
 })
-trend = Object.keys(trend).map(k => ({
-  date: k,
-  value: trend[k]
-}))
 // display(Inputs.table(trend))
 ```
 
@@ -133,9 +124,13 @@ const spec = {
       axis: { title: 'Date' }
     },
     y: {
-      field: 'value',
+      field: 'n_articles',
       type: 'quantitative',
       axis: { title: 'Number of articles' }
+    },
+    color: {
+      field: 'topic',
+      type: 'nominal'
     }
   },
   width: 600,
@@ -144,7 +139,7 @@ const spec = {
 display(await embed(spec))
 ```
 
-```js
+<!-- ```js
 const event_ids = events.map(a => a.event_id)
 let impact = queryApi('impact', {
   cause: event_ids,
@@ -194,4 +189,4 @@ const spec = {
 }
 
 display(await embed(spec))
-```
+``` -->

@@ -107,7 +107,12 @@ def get_acled_events(
 
 
 def process_orgs(df):
-    group_blocklist = ["Students (Germany)", "Labor Group (Germany)"]
+    group_blocklist = [
+        "Students (Germany)",
+        "Labor Group (Germany)",
+        "Women (Germany)",
+        "Christian Group (Germany)",
+    ]
     df = df.rename(columns={"assoc_actor_1": "organizers"})
     df["organizers"] = (
         df["organizers"]

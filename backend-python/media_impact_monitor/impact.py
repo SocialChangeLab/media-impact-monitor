@@ -25,12 +25,6 @@ def get_impact(q: ImpactSearch) -> Impact:
     horizon = 28
     match q.method:
         case "interrupted_time_series":
-            ind_act, ind_count, individual_impacts = estimate_impacts(
-                events=events,
-                article_counts=trend,
-                horizon=horizon,
-                hidden_days_before_protest=hidden_days_before_protest,
-            )
             mean_impact = estimate_mean_impact(
                 events=events,
                 article_counts=trend,
@@ -44,6 +38,6 @@ def get_impact(q: ImpactSearch) -> Impact:
     return Impact(
         method_applicability="maybe",
         method_applicability_reason="We're not checking this yet 🤡",
-        impact_mean=mean_impact.to_dict(),
+        time_series=mean_impact.to_dict(orient="index"),
     )
     # TODO: divide impact by number of events on that day (by the same org)

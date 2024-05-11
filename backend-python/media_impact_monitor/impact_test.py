@@ -36,4 +36,4 @@ def test_get_impact():
     assert hasattr(result, "impact_mean_upper")
     assert hasattr(result, "individual_impacts")
     assert isinstance(result.individual_impacts, dict)
-    assert isinstance(result.impact_mean, dict)
+    assert isinstance(result.time_series, dict)

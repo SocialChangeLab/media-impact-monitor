@@ -157,10 +157,13 @@ class ImpactSearch(BaseModel):
     )
 
 
-class TimeSeriesWithUncertainty(BaseModel):
-    mean: AbstractTimeSeries
-    ci_upper: AbstractTimeSeries
-    ci_lower: AbstractTimeSeries
+class MeanWithUncertainty(BaseModel):
+    mean: float
+    ci_upper: float
+    ci_lower: float
+
+
+AbstractTimeSeriesWithUncertainty = dict[int, MeanWithUncertainty]
 
 
 class Impact(BaseModel):
@@ -170,6 +173,7 @@ class Impact(BaseModel):
     method_applicability_reason: str | None = Field(
         description="Reason why the causal inference method is (not) applicable."
     )
-    impact_mean: TimeSeriesWithUncertainty = Field(
-        description="Impact estimates for each day around the average protest event. Consists of 3 dictinonaries, each one containing a time series -- mean, upper bound, and lower bound of the two-sided 95% confidence interval. The time series are dictionaries of days after event (0 = day of event) and impact estimates for the given days."
-    )
+    time_series: AbstractTimeSeriesWithUncertainty
+    # = Field(
+    #     description="Impact estimates for each day around the average protest event. Consists of 3 dictinonaries, each one containing a time series -- mean, upper bound, and lower bound of the two-sided 95% confidence interval. The time series are dictionaries of days after event (0 = day of event) and impact estimates for the given days."
+    # )

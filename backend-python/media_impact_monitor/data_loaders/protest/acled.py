@@ -148,5 +148,5 @@ def rename_org(row):
 
 data = get_acled_events(
     countries=["Germany"],
-    end_date=date(2020, 4, 30),
+    end_date=date(2024, 4, 30),
 )

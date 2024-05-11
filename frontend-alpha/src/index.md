@@ -37,9 +37,13 @@ const queryApi = (endpoint, query) =>
 
 ```js
 const organizers = [
-  'Last Generation (Germany)',
   'Fridays for Future',
-  'Extinction Rebellion'
+  'Extinction Rebellion',
+  'Last Generation (Germany)',
+  'Ende Gelaende',
+  'Greenpeace',
+  'BUND',
+  'End Fossil: Occupy'
 ]
 const start_date = '2023-07-01'
 const end_date = '2024-04-30'

@@ -1,6 +1,4 @@
-import numpy as np
 import pandas as pd
-import scipy.stats
 
 from media_impact_monitor.events import get_events_by_id
 from media_impact_monitor.impact_estimators.interrupted_time_series import (
@@ -17,7 +15,9 @@ def get_impact(q: ImpactSearch) -> Impact:
     events = get_events_by_id(q.cause)
     start_date = min(events["date"]) - pd.Timedelta(days=180)
     end_date = max(events["date"]) + pd.Timedelta(days=28)
-    end_date = min(pd.Timestamp(end_date), pd.Timestamp("today") - pd.Timedelta(days=1))
+    end_date = min(
+        pd.Timestamp(end_date), pd.Timestamp("today").normalize() - pd.Timedelta(days=1)
+    )
     trend = get_trend(
         TrendSearch(**dict(q.effect), start_date=start_date, end_date=end_date)
     )
@@ -41,13 +41,9 @@ def get_impact(q: ImpactSearch) -> Impact:
             raise NotImplementedError("Synthetic control is not yet implemented.")
         case _:
             raise ValueError(f"Unsupported method: {q.method}")
-    impacts_dicts = [impact.to_dict() for impact in individual_impacts]
     return Impact(
         method_applicability="maybe",
         method_applicability_reason="We're not checking this yet 🤡",
-        impact_mean=mean_impact["mean"].to_dict(),
-        impact_mean_lower=mean_impact["ci_lower"].to_dict(),
-        impact_mean_upper=mean_impact["ci_upper"].to_dict(),
-        individual_impacts=dict(zip(events["event_id"], impacts_dicts)),
+        impact_mean=mean_impact.to_dict(),
     )
     # TODO: divide impact by number of events on that day (by the same org)

@@ -121,7 +121,11 @@ def estimate_mean_impact(
     impacts_df.index = impacts_df.index - hidden_days_before_protest
     if cumulative:
         impacts_df = impacts_df.cumsum()
-    average = impacts_df.mean(axis=1)
-    ci_lower = impacts_df.apply(lambda x: confidence_interval_ttest(x, 0.95)[0], axis=1)
-    ci_upper = impacts_df.apply(lambda x: confidence_interval_ttest(x, 0.95)[1], axis=1)
+    average = impacts_df.mean(axis=1, skipna=True)
+    ci_lower = impacts_df.apply(
+        lambda x: confidence_interval_ttest(x.dropna(), 0.95)[0], axis=1
+    )
+    ci_upper = impacts_df.apply(
+        lambda x: confidence_interval_ttest(x.dropna(), 0.95)[1], axis=1
+    )
     return pd.DataFrame({"mean": average, "ci_lower": ci_lower, "ci_upper": ci_upper})

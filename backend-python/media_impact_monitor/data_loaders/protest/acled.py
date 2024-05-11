@@ -44,15 +44,13 @@ acled_region_keys = {
 def get_acled_events(
     countries: list[str] = [],
     regions: list[str] = [],
-    start_date: date | None = None,
-    end_date: date | None = None,
+    start_date: date = date(2020, 1, 1),
+    end_date: date = date.today(),
 ) -> pd.DataFrame:
     """Fetch protests from the ACLED API.
 
     API documentation: https://apidocs.acleddata.com/
     """
-    start_date = start_date or date(2020, 1, 1)
-    end_date = end_date or date.today()
     assert start_date >= date(2020, 1, 1), "Start date must be after 2020-01-01."
     assert verify_dates(start_date, end_date)
 
@@ -81,31 +79,40 @@ def get_acled_events(
         return df
     if len(df) == limit:
         raise ValueError(f"Limit of {limit} reached.")
-    df["date"] = pd.to_datetime(df["event_date"], format="%Y-%m-%d")
+    df["date"] = pd.to_datetime(df["event_date"]).dt.date
     df["region"] = df["admin1"]
     df["city"] = df["admin2"]
-    df["organizations"] = df["assoc_actor_1"].str.split("; ")
-    df["type"] = df["sub_event_type"]
+    df["event_type"] = df["sub_event_type"]
+    df = process_orgs(df)
     df["size_text"] = df["tags"].apply(get_size_text)
     df["size_number"] = df["size_text"].apply(get_size_number)
     df["description"] = df["notes"]
+    df["source"] = (
+        "adapted from: Armed Conflict Location & Event Data Project (ACLED); www.acleddata.com"
+    )
     return df[
         [
             "date",
-            "type",
-            "organizations",
+            "event_type",
             "country",
             "region",
             "city",
+            "organizers",
             "size_text",
             "size_number",
             "description",
+            "source",
         ]
     ]
 
 
 def process_orgs(df):
-    group_blocklist = ["Students (Germany)", "Labor Group (Germany)"]
+    group_blocklist = [
+        "Students (Germany)",
+        "Labor Group (Germany)",
+        "Women (Germany)",
+        "Christian Group (Germany)",
+    ]
     df = df.rename(columns={"assoc_actor_1": "organizers"})
     df["organizers"] = (
         df["organizers"]
@@ -144,5 +151,5 @@ def rename_org(row):
 
 data = get_acled_events(
     countries=["Germany"],
-    end_date=date(2020, 4, 30),
+    end_date=date(2024, 4, 30),
 )

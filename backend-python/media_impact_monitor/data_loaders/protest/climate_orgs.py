@@ -28,6 +28,7 @@ climate_orgs_aliases = {
     "Restore Passenger Rail": [],
     "Restore Wetlands Movement": ["Återställ Våtmarker"],
     "Direct Action Everywhere": ["DxE"],
+    "End Fossil: Occupy": [],
 }
 
 climate_orgs = list(climate_orgs_aliases.keys())

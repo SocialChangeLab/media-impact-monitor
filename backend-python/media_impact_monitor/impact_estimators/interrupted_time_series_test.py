@@ -24,9 +24,9 @@ def test_estimate_impact():
     actual, counterfactual, impact = estimate_impact(
         date(2023, 7, 1), article_counts, horizon=14, hidden_days_before_protest=2
     )
-    assert isinstance(actual, pd.DataFrame)
-    assert isinstance(counterfactual, pd.DataFrame)
-    assert isinstance(impact, pd.DataFrame)
+    assert isinstance(actual, pd.Series)
+    assert isinstance(counterfactual, pd.Series)
+    assert isinstance(impact, pd.Series)
     assert actual.index.is_monotonic_increasing
     assert actual.index[0] == date(2023, 7, 1) - timedelta(days=2)
     assert actual.index[-1] == date(2023, 7, 1) + timedelta(days=13)
@@ -56,7 +56,7 @@ def test_estimate_impacts():
     assert len(counterfactuals) == len(events)
     assert len(impacts) == len(events)
     for impact in impacts:
-        assert isinstance(impact, pd.DataFrame)
+        assert isinstance(impact, pd.Series)
         assert impact.index.is_monotonic_increasing
         assert len(impact) == 4 + 7
 

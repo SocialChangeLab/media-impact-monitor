@@ -12,7 +12,7 @@ from media_impact_monitor.util.date import verify_dates
 from media_impact_monitor.util.paths import src
 
 
-def get_trend(q: TrendSearch) -> pd.Series:
+def get_trend(q: TrendSearch) -> pd.DataFrame:
     assert q.trend_type == "keywords", "Only keywords are supported."
     assert q.topic == "climate_change", "Only climate_change is supported."
     dss = {}

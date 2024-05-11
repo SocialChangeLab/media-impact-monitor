@@ -66,13 +66,6 @@ def add_aliases(orgs: list[str]) -> list[str]:
 
 
 def get_events_by_id(event_ids: list[str]) -> pd.DataFrame:
-    df = get_events(
-        EventSearch(
-            event_type="protest",
-            source="acled",
-            start_date=date(2020, 1, 1),
-            end_date=date.today(),
-        )
-    )
+    df = get_events(EventSearch(source="acled"))
     df = df[df["event_id"].isin(event_ids)]
     return df.reset_index(drop=True)

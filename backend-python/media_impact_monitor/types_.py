@@ -104,25 +104,14 @@ class Fulltext(BaseModel):
 #### Impact types ####
 
 
-Cause = list[EventId]
-
-
-class Effect(BaseModel):
-    trend_type: TrendType
-    media_source: MediaSource
-    topic: Topic | None = None
-    query: Query | None = None
-    # start_date, end_date can be derived from the EventIds
-
-
 Method = Literal["synthetic_control", "interrupted_time_series"]
 
 
 class ImpactSearch(BaseModel):
-    cause: Cause = Field(
+    cause: list[EventId] = Field(
         description="List of `event_id`s for events whose impact should be estimated. The ids can be obtained from the `/events/` endpoint."
     )
-    effect: Effect = Field(
+    effect: TrendSearch = Field(
         description="The trend on which the impact should be estimated. See the `/trends/` endpoint for details."
     )
     method: Method = Field(

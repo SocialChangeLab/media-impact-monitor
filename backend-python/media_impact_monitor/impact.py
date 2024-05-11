@@ -13,14 +13,7 @@ from media_impact_monitor.util.cache import cache
 @cache
 def get_impact(q: ImpactSearch) -> Impact:
     events = get_events_by_id(q.cause)
-    start_date = min(events["date"]) - pd.Timedelta(days=180)
-    end_date = max(events["date"]) + pd.Timedelta(days=28)
-    end_date = min(
-        pd.Timestamp(end_date), pd.Timestamp("today").normalize() - pd.Timedelta(days=1)
-    )
-    trend = get_trend(
-        TrendSearch(**dict(q.effect), start_date=start_date, end_date=end_date)
-    )
+    trend = get_trend(TrendSearch(**dict(q.effect)))
     hidden_days_before_protest = 4
     horizon = 28
     match q.method:

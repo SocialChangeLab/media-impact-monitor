@@ -47,8 +47,8 @@ let events = await fetch(`${url}/events`, {
 
 events = events.map(a => ({
   ...a,
-  participants: Math.round(Math.random() * 100) * 10,
   y: gaussianRandom(),
+  size_number: Math.max(a.size_number, 1000),
   organizer: a.organizers.filter(b => organizers.includes(b))[0]
 }))
 // display(Inputs.table(events))
@@ -75,14 +75,14 @@ const spec = {
       legend: { title: 'Organizer' }
     },
     size: {
-      field: 'participants',
+      field: 'size_number',
       type: 'quantitative',
       legend: { title: 'Participants' }
     },
     tooltip: [
       { field: 'date', type: 'temporal', title: 'Date' },
       { field: 'organizer', type: 'nominal', title: 'Organizer' },
-      { field: 'participants', type: 'quantitative', title: 'Participants' },
+      { field: 'size_text', type: 'nominal', title: 'Participants' },
       { field: 'description', type: 'nominal', title: 'Description' }
     ]
   },

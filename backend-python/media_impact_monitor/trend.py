@@ -63,6 +63,13 @@ def build_query(
     positive: list[str] | None = None,
     negative: list[str] | None = None,
 ) -> str:
+    """
+    Build a boolean query, which works differently for different data sources.
+    This does not support general boolean queries, but only like:
+    - A or B or ... or G
+    - not (A or B or ... or G)
+    - (A or B or ... or G) and not (Q or V or ... or Z)
+    """
     assert media_source in ["news_online", "news_print", "web_google"]
     assert positive or negative
     match media_source:

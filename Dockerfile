@@ -5,7 +5,7 @@ FROM --platform=linux/amd64 python:3.10-slim
 RUN pip install --upgrade pip
 RUN pip install poetry
 # copy the poetry files and install the dependencies
-COPY backend-python/poetry.lock backend-python/pyproject.toml /app/backend-python/
+COPY backend-python/poetry.lock backend-python/pyproject.toml backend-python/README.md /app/backend-python/
 WORKDIR /app/backend-python
 RUN poetry config virtualenvs.create false \
     && poetry install --no-interaction --no-ansi

@@ -1,12 +1,33 @@
 "use client";
 import { cn } from "@/utility/classNames";
 import { slugifyCssClass } from "@/utility/cssSlugify";
+import type { OrganisationType } from "@/utility/eventsUtil";
 import useEvents from "@/utility/useEvents";
+import { useMemo } from "react";
 
 function EventsTimelineLegend() {
 	const legendOrganisations = useEvents().data?.organisations;
 
-	if (legendOrganisations.length === 0) return null;
+	const orgs = useMemo(() => {
+		const mainOrgs: OrganisationType[] = [];
+		const otherOrgs: OrganisationType[] = [];
+
+		for (const org of legendOrganisations) {
+			if (org.color === "var(--grayDark)") otherOrgs.push(org);
+			else mainOrgs.push(org);
+		}
+
+		return [
+			...mainOrgs,
+			{
+				name: "Other",
+				count: otherOrgs.reduce((acc, org) => acc + org.count, 0),
+				color: "var(--grayDark)",
+			},
+		];
+	}, [legendOrganisations]);
+
+	if (orgs.length === 0) return null;
 	return (
 		<div className="mt-6 flex flex-col gap-2">
 			<h4 className="text-lg font-bold font-headlines antialiased relative">
@@ -14,7 +35,7 @@ function EventsTimelineLegend() {
 				<span className="h-px w-full bg-grayLight absolute top-1/2 z-10"></span>
 			</h4>
 			<ul className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-8">
-				{legendOrganisations.map((org) => (
+				{orgs.map((org) => (
 					<li
 						key={org.name}
 						className={cn(

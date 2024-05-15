@@ -1,5 +1,8 @@
 cache/
 mim
+backend-python/plots/
+profile.svg
+node_modules/
 
 ### macOS ------------------------------------------------------------------------
 # General

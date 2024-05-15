@@ -20,7 +20,7 @@ export default function RootLayout({
 				suppressHydrationWarning
 			>
 				<head />
-				<body className="bg-pattern-soft">
+				<body className="bg-pattern-soft w-screen overflow-x-clip">
 					<Providers>
 						<BaseLayout>{children}</BaseLayout>
 					</Providers>

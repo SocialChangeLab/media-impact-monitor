@@ -37,7 +37,7 @@ function WelcomeMessage({ currentPage }: { currentPage: string }) {
 					animate={{ opacity: 1, height: "auto" }}
 					exit={{ opacity: 0, height: 0 }}
 				>
-					<div className="p-6">
+					<div className="p-6 w-screen overflow-x-clip">
 						<div className="w-full sm:min-h-40 bg-brandGreen bg-blend-screen relative z-0 shadow-xl">
 							<Image
 								src={headerImage}

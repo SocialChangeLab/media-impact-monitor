@@ -1,6 +1,6 @@
 import EventPageLayout from "@/components/EventPageLayout";
 import LoadingEventsTimeline from "@/components/EventsTimeline/LoadingEventsTimeline";
-import { type PropsWithChildren, type ReactNode, Suspense } from "react";
+import { Suspense, type PropsWithChildren, type ReactNode } from "react";
 
 export default function EventsPageLayout({
 	children,

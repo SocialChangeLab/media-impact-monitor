@@ -38,41 +38,41 @@ function EventsTimelineAxis({
 
 	if (eventDays.length === 0) return null;
 	return (
-		<ul
-			ref={ref}
-			aria-label="X Axis - Time"
-			className={cn(
-				"flex items-center pb-6 justify-stretch",
-				"min-w-full border-t border-grayMed px-2",
-			)}
-		>
-			<li aria-hidden="true" className="flex w-full min-h-px justify-center">
-				<span className="absolute left-1/2 -translate-x-1/2 w-px h-2" />
-			</li>
-			{eventDays.map(({ day }) => {
-				const shouldShowLabel = xAxisTicks.find((x) => isSameDay(x, day));
-				return (
-					<li
-						key={day.toISOString()}
-						className="flex w-full min-h-px justify-center relative"
-						aria-label="X Axis Tick"
-					>
-						<span
-							className={cn(
-								"w-px h-2 absolute left-1/2 -translate-x-1/2",
-								shouldShowLabel ? "bg-grayMed" : "bg-grayLight",
+		<div className="sticky bottom-0 w-full z-10">
+			<ul
+				ref={ref}
+				aria-label="X Axis - Time"
+				className={cn(
+					"flex items-start pb-6 h-14 bg-bg",
+					"relative justify-stretch overflow-clip",
+				)}
+				style={{ width: `max(${eventDays.length + 1}rem, 100%)` }}
+			>
+				{eventDays.map(({ day }) => {
+					const shouldShowLabel = xAxisTicks.find((x) => isSameDay(x, day));
+					return (
+						<li
+							key={day.toISOString()}
+							className="flex min-w-4 bg-bg h-14 justify-center relative shrink-0 grow border-t border-grayMed"
+							aria-label="X Axis Tick"
+						>
+							<span
+								className={cn(
+									"w-px h-2 absolute left-1/2 -translate-x-1/2 z-10",
+									shouldShowLabel ? "bg-grayDark" : "bg-grayLight",
+								)}
+								aria-hidden="true"
+							/>
+							{shouldShowLabel && (
+								<span className="absolute left-1/2 top-4 z-10 -translate-x-1/2 text-grayDark text-sm whitespace-nowrap">
+									{format(new Date(day), "EEE dd.MM.yyyy")}
+								</span>
 							)}
-							aria-hidden="true"
-						/>
-						{shouldShowLabel && (
-							<span className="absolute left-1/2 top-4 -translate-x-1/2 text-grayDark text-sm whitespace-nowrap">
-								{format(new Date(day), "EEE dd.MM.yyyy")}
-							</span>
-						)}
-					</li>
-				);
-			})}
-		</ul>
+						</li>
+					);
+				})}
+			</ul>
+		</div>
 	);
 }
 

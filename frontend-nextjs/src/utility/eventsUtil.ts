@@ -1,5 +1,5 @@
 import { parse } from "date-fns";
-import { z } from "zod";
+import { ZodError, z } from "zod";
 import { dateSortCompare, isValidISODateString } from "./dateUtil";
 import type { AllowedParamsInputType } from "./searchParamsUtil";
 
@@ -108,6 +108,12 @@ export async function getEventsData(
 		};
 	} catch (error) {
 		console.error(`Error fetching events: ${error}`);
+		if (error instanceof ZodError) {
+			console.log(`Invalid response format:`);
+			for (const issue of error.issues) {
+				console.log(`- ${issue.path}: ${issue.message}`);
+			}
+		}
 		return {
 			data: {
 				events: [],

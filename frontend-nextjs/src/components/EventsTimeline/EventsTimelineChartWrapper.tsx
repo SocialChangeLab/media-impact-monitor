@@ -2,47 +2,31 @@
 import { fadeVariants } from "@/utility/animationUtil";
 import { cn } from "@/utility/classNames";
 import { motion } from "framer-motion";
-import { useEffect, useRef, type PropsWithChildren } from "react";
 
 function EventsTimelineChartWrapper({
 	children,
 	animationKey,
 	columnsCount = 1,
 	className,
-}: PropsWithChildren<{
+}: {
 	animationKey: string;
 	columnsCount?: number;
 	className?: string;
-}>) {
-	const parentRef = useRef<HTMLDivElement>(null);
-	const middleRef = useRef<HTMLSpanElement>(null);
-
-	// biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
-	useEffect(() => {
-		if (!parentRef.current || !middleRef.current) return;
-		const { clientHeight } = parentRef.current;
-		const middleScrollTop = middleRef.current.offsetTop;
-		const top = middleScrollTop - (clientHeight - clientHeight / 4);
-		parentRef.current.scroll({ top });
-	}, [children, animationKey]);
-
+	children: React.ReactNode;
+}) {
 	return (
 		<motion.div
-			className={cn(
-				"w-full bg-grayUltraLight h-[calc(100vh-17rem)] overflow-auto",
-				className,
-			)}
-			ref={parentRef}
+			className={cn("w-auto min-w-full", className)}
+			style={{ width: `max(${columnsCount}rem, 100%)` }}
 		>
-			<div className="px-2 min-w-full min-h-full relative flex items-stretch justify-center">
+			<div className="min-w-full min-h-full relative flex items-stretch justify-center">
 				<motion.ul
 					key={animationKey || "events-timeline-chart-wrapper"}
 					className={cn(
-						"grid grid-flow-col grid-rows-[1fr_0.5px_auto]",
-						"items-center justify-stretch gap-y-2 size-full",
-						"min-h-[calc(100vh-17rem)]",
+						"flex min-w-full pb-4 min-h-full",
+						"items-end justify-stretch gap-y-2",
 					)}
-					style={{ gridTemplateColumns: `repeat(${columnsCount}, 1fr)` }}
+					style={{ width: `max(${columnsCount}rem, 100%)` }}
 					variants={fadeVariants}
 					initial="initial"
 					animate="enter"

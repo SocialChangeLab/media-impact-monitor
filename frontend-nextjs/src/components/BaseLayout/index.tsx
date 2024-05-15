@@ -2,7 +2,6 @@
 
 import Footer from "@/components/Footer";
 import WelcomeMessage from "@/components/WelcomeMessage";
-import { Breadcrumb } from "@/components/breadcrumb";
 import "@/styles/global.css";
 import { cn } from "@/utility/classNames";
 import { usePathname } from "next/navigation";
@@ -16,7 +15,7 @@ export const BaseLayout: React.FC<PropsWithChildren<{ modal?: ReactNode }>> = ({
 	const pathname = usePathname();
 	const currentPage = pathname.split("/")[1] || "events";
 	return (
-		<div className="layout min-h-screen grid grid-rows-[auto_1fr_auto]">
+		<div className="layout min-h-screen grid grid-rows-[auto_1fr_auto] w-screen overflow-x-clip">
 			<Menu currentPage={currentPage} />
 			<div className="relative">
 				<div
@@ -37,8 +36,7 @@ export const BaseLayout: React.FC<PropsWithChildren<{ modal?: ReactNode }>> = ({
 					)}
 				/>
 				<WelcomeMessage currentPage={currentPage} />
-				{!modal && <Breadcrumb breadcrumbs={[]} />}
-				<div className="min-h-full">{children}</div>
+				<div className="min-h-full w-screen overflow-x-clip">{children}</div>
 			</div>
 			<Footer />
 		</div>

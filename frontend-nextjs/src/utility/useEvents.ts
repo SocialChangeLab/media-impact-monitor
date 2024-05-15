@@ -1,6 +1,7 @@
 "use client";
 import { defaultFrom, defaultTo } from "@/app/(events)/config";
 import { useSuspenseQuery } from "@tanstack/react-query";
+import { format } from "date-fns";
 import { useCallback, useEffect, useState } from "react";
 import { toast } from "sonner";
 import { getEventsData } from "./eventsUtil";
@@ -10,7 +11,11 @@ function useEvents() {
 	const { searchParams } = useQueryParams();
 	const [from, setFrom] = useState(new Date(defaultFrom));
 	const [to, setTo] = useState(new Date(defaultTo));
-	const queryKey = ["events", from.toISOString(), to.toISOString()];
+	const queryKey = [
+		"events",
+		format(from, "yyyy-MM-dd"),
+		format(to, "yyyy-MM-dd"),
+	];
 	const { data, isPending, error } = useSuspenseQuery({
 		queryKey,
 		queryFn: async () => {

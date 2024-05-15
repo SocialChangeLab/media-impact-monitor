@@ -27,7 +27,7 @@ export const Menu = ({ currentPage }: { currentPage: string }) => {
 		<nav
 			className={cn(
 				"px-6 py-4 flex gap-6 flex-wrap items-center justify-between",
-				"border-b border-grayLight",
+				"border-b border-grayLight w-screen overflow-clip",
 			)}
 		>
 			<Link

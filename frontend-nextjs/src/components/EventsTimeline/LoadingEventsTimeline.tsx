@@ -20,7 +20,7 @@ const sizeScale = scalePow(
 	[config.eventMinHeight, config.eventMaxHeight],
 );
 
-function LoadingEventsTimeline() {
+function LoadingEventsTimelineWithoutSuspense() {
 	const { searchParams } = useQueryParams();
 	const { from, to } = searchParams ?? {};
 	const days = useDays({ from, to });
@@ -72,4 +72,6 @@ function LoadingEventsTimeline() {
 	);
 }
 
-export default LoadingEventsTimeline;
+export default function LoadingEventsTimeline() {
+	return <LoadingEventsTimelineWithoutSuspense />;
+}

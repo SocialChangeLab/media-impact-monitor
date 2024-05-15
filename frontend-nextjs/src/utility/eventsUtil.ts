@@ -55,6 +55,7 @@ const organisationZodSchema = z.object({
 	name: z.string(),
 	count: z.number(),
 	color: colorTypeZodSchema,
+	isMain: z.boolean().default(false),
 });
 export type OrganisationType = z.infer<typeof organisationZodSchema>;
 
@@ -151,10 +152,15 @@ function extractEventOrganisations(events: EventType[]): OrganisationType[] {
 					name: "Unknown organisation",
 					color: "var(--grayMed)",
 					count: events.filter((x) => x.organizers?.filter((x) => !x)).length,
+					isMain: false,
 				};
 			}
-			const color = distinctiveTailwindColors[idx] ?? `var(--grayDark)`;
-			return { ...organizer, color };
+			const color = distinctiveTailwindColors[idx];
+			return {
+				...organizer,
+				color: color ?? "var(--grayDark)",
+				isMain: idx < distinctiveTailwindColors.length,
+			};
 		});
 }
 

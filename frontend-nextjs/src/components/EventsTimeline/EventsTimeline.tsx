@@ -120,12 +120,15 @@ function EventTimelineItem({
 				className={cn(
 					"size-3 relative z-10 hover:z-20",
 					"event-item transition-opacity",
-					event.organizers.map(
-						(org) =>
-							`event-item-org-${
-								slugifyCssClass(org) || "unknown-organisation"
-							}`,
-					),
+					event.organizers.map((org) => {
+						const correspondingOrg = organisations.find(
+							(organisation) => organisation.name === org,
+						);
+						const isMain = correspondingOrg?.isMain ?? false;
+						return `event-item-org-${
+							isMain ? slugifyCssClass(org) || "unknown-organisation" : "other"
+						}`;
+					}),
 				)}
 				style={{
 					height: `${Math.ceil(sizeScale(event.size_number ?? 0))}px`,

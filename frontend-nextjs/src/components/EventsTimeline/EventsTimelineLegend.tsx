@@ -13,7 +13,7 @@ function EventsTimelineLegend() {
 		const otherOrgs: OrganisationType[] = [];
 
 		for (const org of legendOrganisations) {
-			if (org.color === "var(--grayDark)") otherOrgs.push(org);
+			if (!org.isMain) otherOrgs.push(org);
 			else mainOrgs.push(org);
 		}
 
@@ -22,7 +22,8 @@ function EventsTimelineLegend() {
 			{
 				name: "Other",
 				count: otherOrgs.reduce((acc, org) => acc + org.count, 0),
-				color: "var(--grayDark)",
+				color: otherOrgs[0].color,
+				isMain: false,
 			},
 		];
 	}, [legendOrganisations]);

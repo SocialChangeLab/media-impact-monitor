@@ -1,12 +1,12 @@
-'use client'
-import ComponentError from '@/components/ComponentError'
+"use client";
+import ComponentError from "@/components/ComponentError";
 
 export default function EventsTablePageError({
 	error,
 	reset,
 }: {
-	error: Error & { digest?: string }
-	reset?: () => void
+	error: Error & { digest?: string };
+	reset?: () => void;
 }) {
 	return (
 		<div className="w-full flex justify-center min-h-96 p-8 items-center bg-grayUltraLight">
@@ -16,5 +16,5 @@ export default function EventsTablePageError({
 				announcement="There was an error loading events"
 			/>
 		</div>
-	)
+	);
 }

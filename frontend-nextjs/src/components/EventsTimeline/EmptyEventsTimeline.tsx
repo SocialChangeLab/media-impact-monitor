@@ -1,5 +1,5 @@
-import EventsTimelineWrapper from './EventsTimelinWrapper'
-import EventsTimelineChartWrapper from './EventsTimelineChartWrapper'
+import EventsTimelineWrapper from "./EventsTimelinWrapper";
+import EventsTimelineChartWrapper from "./EventsTimelineChartWrapper";
 
 export default function EmptyEventsTimeline() {
 	return (
@@ -8,5 +8,5 @@ export default function EmptyEventsTimeline() {
 				No events for this search configuration
 			</EventsTimelineChartWrapper>
 		</EventsTimelineWrapper>
-	)
+	);
 }

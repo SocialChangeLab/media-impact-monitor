@@ -1,13 +1,13 @@
-'use client'
-import { ThemeProvider } from '@/providers/ThemeProvider'
-import { TooltipProvider } from '@radix-ui/react-tooltip'
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
-import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
-import { ReactQueryStreamedHydration } from '@tanstack/react-query-next-experimental'
-import { PropsWithChildren, useState } from 'react'
-import { Toaster } from 'sonner'
+"use client";
+import { ThemeProvider } from "@/providers/ThemeProvider";
+import { TooltipProvider } from "@radix-ui/react-tooltip";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
+import { ReactQueryStreamedHydration } from "@tanstack/react-query-next-experimental";
+import { useState } from "react";
+import { Toaster } from "sonner";
 
-function Providers({ children }: PropsWithChildren<{}>) {
+function Providers({ children }: { children: React.ReactNode }) {
 	const [queryClient] = useState(
 		() =>
 			new QueryClient({
@@ -18,7 +18,7 @@ function Providers({ children }: PropsWithChildren<{}>) {
 					},
 				},
 			}),
-	)
+	);
 
 	return (
 		<>
@@ -34,7 +34,7 @@ function Providers({ children }: PropsWithChildren<{}>) {
 			</QueryClientProvider>
 			<Toaster />
 		</>
-	)
+	);
 }
 
-export default Providers
+export default Providers;

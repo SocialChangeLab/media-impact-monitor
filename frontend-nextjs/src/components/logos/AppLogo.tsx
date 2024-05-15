@@ -1,4 +1,4 @@
-import { SVGProps } from 'react'
+import type { SVGProps } from "react";
 
 function Logo(props: SVGProps<SVGSVGElement>) {
 	return (
@@ -8,6 +8,7 @@ function Logo(props: SVGProps<SVGSVGElement>) {
 			viewBox="0 0 344 41"
 			fill="none"
 			xmlns="http://www.w3.org/2000/svg"
+			role="img"
 			aria-label="Media Impact Monitor Logo"
 			{...props}
 		>
@@ -62,7 +63,7 @@ function Logo(props: SVGProps<SVGSVGElement>) {
 				fill="currentColor"
 			/>
 		</svg>
-	)
+	);
 }
 
-export default Logo
+export default Logo;

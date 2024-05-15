@@ -1,15 +1,15 @@
-'use client'
+"use client";
 
 import {
-	ColumnDef,
+	type ColumnDef,
 	flexRender,
 	getCoreRowModel,
 	getPaginationRowModel,
 	getSortedRowModel,
 	useReactTable,
-} from '@tanstack/react-table'
+} from "@tanstack/react-table";
 
-import { Button } from '@/components/ui/button'
+import { Button } from "@/components/ui/button";
 import {
 	Table,
 	TableBody,
@@ -17,17 +17,18 @@ import {
 	TableHead,
 	TableHeader,
 	TableRow,
-} from '@/components/ui/table'
-import { cn } from '@/utility/classNames'
-import { ArrowDown, ArrowUp, ArrowUpDown } from 'lucide-react'
-import TablePagination from './table-pagination'
+} from "@/components/ui/table";
+import { cn } from "@/utility/classNames";
+import { ArrowDown, ArrowUp, ArrowUpDown } from "lucide-react";
+import TablePagination from "./table-pagination";
 
 export function DataTable<RecordType>({
 	columns,
 	data,
 }: {
-	columns: ColumnDef<RecordType, any>[]
-	data: RecordType[]
+	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+	columns: ColumnDef<RecordType, any>[];
+	data: RecordType[];
 }) {
 	const table = useReactTable({
 		columns,
@@ -35,7 +36,7 @@ export function DataTable<RecordType>({
 		getCoreRowModel: getCoreRowModel(),
 		getPaginationRowModel: getPaginationRowModel(),
 		getSortedRowModel: getSortedRowModel(),
-	})
+	});
 
 	return (
 		<div className="flex flex-col gap-6">
@@ -44,15 +45,15 @@ export function DataTable<RecordType>({
 					{table.getHeaderGroups().map((headerGroup) => (
 						<TableRow key={headerGroup.id}>
 							{headerGroup.headers.map((header) => {
-								const { column } = header
-								const sort = column.getIsSorted()
-								const iconClass = cn('ml-2 h-4 w-4', sort && 'text-fg')
+								const { column } = header;
+								const sort = column.getIsSorted();
+								const iconClass = cn("ml-2 h-4 w-4", sort && "text-fg");
 								const label = header.isPlaceholder
 									? null
 									: flexRender(
 											header.column.columnDef.header,
 											header.getContext(),
-										)
+										);
 								return (
 									<TableHead
 										key={header.id}
@@ -63,18 +64,18 @@ export function DataTable<RecordType>({
 											<Button
 												variant="ghost"
 												onClick={column.getToggleSortingHandler()}
-												className={cn('-ml-4 hover:text-fg group')}
+												className={cn("-ml-4 hover:text-fg group")}
 											>
 												{label}
 												{!sort && <ArrowUpDown className={iconClass} />}
-												{sort === 'asc' && <ArrowDown className={iconClass} />}
-												{sort === 'desc' && <ArrowUp className={iconClass} />}
+												{sort === "asc" && <ArrowDown className={iconClass} />}
+												{sort === "desc" && <ArrowUp className={iconClass} />}
 											</Button>
 										) : (
 											label
 										)}
 									</TableHead>
-								)
+								);
 							})}
 						</TableRow>
 					))}
@@ -84,7 +85,7 @@ export function DataTable<RecordType>({
 						table.getRowModel().rows.map((row) => (
 							<TableRow
 								key={row.id}
-								data-state={row.getIsSelected() && 'selected'}
+								data-state={row.getIsSelected() && "selected"}
 							>
 								{row.getVisibleCells().map((cell) => (
 									<TableCell
@@ -110,5 +111,5 @@ export function DataTable<RecordType>({
 			</Table>
 			<TablePagination {...table} />
 		</div>
-	)
+	);
 }

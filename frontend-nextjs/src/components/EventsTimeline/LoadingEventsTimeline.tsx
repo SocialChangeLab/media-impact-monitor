@@ -1,23 +1,25 @@
-'use client'
-import { scaleInVariants } from '@/utility/animationUtil'
-import useQueryParams from '@/utility/useQueryParams'
-import { addDays, differenceInDays } from 'date-fns'
-import { motion } from 'framer-motion'
-import { Suspense, useMemo } from 'react'
-import seed from 'seed-random'
-import EventsTimelineWrapper from './EventsTimelinWrapper'
-import { impactScale } from './EventsTimeline'
-import EventsTimelineChartWrapper from './EventsTimelineChartWrapper'
+"use client";
+import { scaleInVariants } from "@/utility/animationUtil";
+import useQueryParams from "@/utility/useQueryParams";
+import { addDays, differenceInDays } from "date-fns";
+import { motion } from "framer-motion";
+import { Suspense, useMemo } from "react";
+import seed from "seed-random";
+import EventsTimelineWrapper from "./EventsTimelinWrapper";
+import { impactScale } from "./EventsTimeline";
+import EventsTimelineChartWrapper from "./EventsTimelineChartWrapper";
 
-const seededRandom = seed('loading-screen')
-const randomUntil = (max: number) => Math.ceil(seededRandom() * max)
+const seededRandom = seed("loading-screen");
+const randomUntil = (max: number) => Math.ceil(seededRandom() * max);
 
 function LoadingEventsTimelineWithoutSuspense() {
-	const { searchParams } = useQueryParams()
+	const { searchParams } = useQueryParams();
 
+	// biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
 	const skeletons = useMemo(() => {
-		const { from, to } = searchParams ?? {}
-		const totalDays = !from || !to ? 25 : differenceInDays(addDays(to, 1), from)
+		const { from, to } = searchParams ?? {};
+		const totalDays =
+			!from || !to ? 25 : differenceInDays(addDays(to, 1), from);
 		return Array(totalDays)
 			.fill(null)
 			.map((_, i) => ({
@@ -34,9 +36,8 @@ function LoadingEventsTimelineWithoutSuspense() {
 						eventId: j,
 						height: `${Math.ceil(impactScale(randomUntil(20)))}px`,
 					})),
-			}))
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [searchParams.from?.toISOString(), searchParams.to?.toISOString()])
+			}));
+	}, [searchParams.from?.toISOString(), searchParams.to?.toISOString()]);
 
 	return (
 		<EventsTimelineWrapper>
@@ -85,7 +86,7 @@ function LoadingEventsTimelineWithoutSuspense() {
 				)}
 			</EventsTimelineChartWrapper>
 		</EventsTimelineWrapper>
-	)
+	);
 }
 
 export default function LoadingEventsTimeline() {
@@ -93,5 +94,5 @@ export default function LoadingEventsTimeline() {
 		<Suspense>
 			<LoadingEventsTimelineWithoutSuspense />
 		</Suspense>
-	)
+	);
 }

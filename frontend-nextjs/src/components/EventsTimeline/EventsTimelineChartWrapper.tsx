@@ -1,9 +1,9 @@
-'use client'
-import { fadeVariants } from '@/utility/animationUtil'
-import { cn } from '@/utility/classNames'
-import { motion } from 'framer-motion'
-import { ArrowDown, ArrowUp } from 'lucide-react'
-import { PropsWithChildren, useEffect, useRef } from 'react'
+"use client";
+import { fadeVariants } from "@/utility/animationUtil";
+import { cn } from "@/utility/classNames";
+import { motion } from "framer-motion";
+import { ArrowDown, ArrowUp } from "lucide-react";
+import { type PropsWithChildren, useEffect, useRef } from "react";
 
 function EventsTimelineChartWrapper({
 	children,
@@ -11,36 +11,37 @@ function EventsTimelineChartWrapper({
 	columnsCount = 1,
 	className,
 }: PropsWithChildren<{
-	animationKey: string
-	columnsCount?: number
-	className?: string
+	animationKey: string;
+	columnsCount?: number;
+	className?: string;
 }>) {
-	const parentRef = useRef<HTMLDivElement>(null)
-	const middleRef = useRef<HTMLSpanElement>(null)
+	const parentRef = useRef<HTMLDivElement>(null);
+	const middleRef = useRef<HTMLSpanElement>(null);
 
+	// biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
 	useEffect(() => {
-		if (!parentRef.current || !middleRef.current) return
-		const { clientHeight } = parentRef.current
-		const middleScrollTop = middleRef.current.offsetTop
-		const top = middleScrollTop - (clientHeight - clientHeight / 4)
-		parentRef.current.scroll({ top })
-	}, [children, animationKey])
+		if (!parentRef.current || !middleRef.current) return;
+		const { clientHeight } = parentRef.current;
+		const middleScrollTop = middleRef.current.offsetTop;
+		const top = middleScrollTop - (clientHeight - clientHeight / 4);
+		parentRef.current.scroll({ top });
+	}, [children, animationKey]);
 
 	return (
 		<motion.div
 			className={cn(
-				'w-full bg-grayUltraLight h-[calc(100vh-17rem)] overflow-auto',
+				"w-full bg-grayUltraLight h-[calc(100vh-17rem)] overflow-auto",
 				className,
 			)}
 			ref={parentRef}
 		>
 			<div className="px-2 min-w-full min-h-full relative flex items-stretch justify-center">
 				<motion.ul
-					key={animationKey || 'events-timeline-chart-wrapper'}
+					key={animationKey || "events-timeline-chart-wrapper"}
 					className={cn(
-						'grid grid-flow-col grid-rows-[1fr_0.5px_auto]',
-						'items-center justify-stretch gap-y-2 size-full',
-						'min-h-[calc(100vh-17rem)]',
+						"grid grid-flow-col grid-rows-[1fr_0.5px_auto]",
+						"items-center justify-stretch gap-y-2 size-full",
+						"min-h-[calc(100vh-17rem)]",
 					)}
 					style={{ gridTemplateColumns: `repeat(${columnsCount}, 1fr)` }}
 					variants={fadeVariants}
@@ -55,15 +56,15 @@ function EventsTimelineChartWrapper({
 					>
 						<span
 							className={cn(
-								'h-full opacity-75',
-								'pointer-events-none relative',
+								"h-full opacity-75",
+								"pointer-events-none relative",
 							)}
 						>
 							<div
 								className={cn(
-									'text-grayDark [writing-mode:vertical-lr] [text-orientation:revert]',
-									'flex items-center justify-center gap-2 text-sm',
-									'absolute bottom-0 left-1/2 -translate-x-1/2',
+									"text-grayDark [writing-mode:vertical-lr] [text-orientation:revert]",
+									"flex items-center justify-center gap-2 text-sm",
+									"absolute bottom-0 left-1/2 -translate-x-1/2",
 								)}
 							>
 								<span className="rotate-180 whitespace-nowrap">
@@ -75,15 +76,15 @@ function EventsTimelineChartWrapper({
 						<span className="w-full bg-grayMed" ref={middleRef} />
 						<span
 							className={cn(
-								'h-full opacity-75',
-								'pointer-events-none relative',
+								"h-full opacity-75",
+								"pointer-events-none relative",
 							)}
 						>
 							<div
 								className={cn(
-									'text-grayDark [writing-mode:vertical-lr] [text-orientation:revert]',
-									'flex items-center justify-center gap-2 text-sm',
-									'absolute top-0 left-1/2 -translate-x-1/2',
+									"text-grayDark [writing-mode:vertical-lr] [text-orientation:revert]",
+									"flex items-center justify-center gap-2 text-sm",
+									"absolute top-0 left-1/2 -translate-x-1/2",
 								)}
 							>
 								<ArrowDown size={16} />
@@ -97,7 +98,7 @@ function EventsTimelineChartWrapper({
 				</motion.ul>
 			</div>
 		</motion.div>
-	)
+	);
 }
 
-export default EventsTimelineChartWrapper
+export default EventsTimelineChartWrapper;

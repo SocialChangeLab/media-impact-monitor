@@ -1,39 +1,39 @@
-'use client'
-import { usePathname, useRouter, useSearchParams } from 'next/navigation'
-import { useCallback } from 'react'
+"use client";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { useCallback } from "react";
 import {
-	AllowedParamsInputType,
+	type AllowedParamsInputType,
 	formatSearchParams,
 	parseSearchParams,
-} from './searchParamsUtil'
+} from "./searchParamsUtil";
 
 type UseQueryParamsOutputType = {
-	searchParams: AllowedParamsInputType
-	setSearchParams: (params: Partial<AllowedParamsInputType>) => void
-}
+	searchParams: AllowedParamsInputType;
+	setSearchParams: (params: Partial<AllowedParamsInputType>) => void;
+};
 
 function useQueryParams(): UseQueryParamsOutputType {
-	const pathname = usePathname()
-	const originalSearchParams = useSearchParams()
-	const router = useRouter()
+	const pathname = usePathname();
+	const originalSearchParams = useSearchParams();
+	const router = useRouter();
 
 	const setSearchParams = useCallback(
 		(params: Partial<AllowedParamsInputType>) => {
 			const combinedParams = formatSearchParams({
 				...Object.fromEntries(originalSearchParams.entries()),
 				...params,
-			})
+			});
 			router.push(`${pathname}?${combinedParams.toString()}`, {
 				scroll: false,
-			})
+			});
 		},
 		[originalSearchParams, pathname, router],
-	)
+	);
 
 	return {
 		searchParams: parseSearchParams(originalSearchParams),
 		setSearchParams,
-	}
+	};
 }
 
-export default useQueryParams
+export default useQueryParams;

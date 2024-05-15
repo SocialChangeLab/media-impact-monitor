@@ -1,19 +1,19 @@
-'use client'
+"use client";
 
-import { addDays, format } from 'date-fns'
-import { DateRange } from 'react-day-picker'
+import { addDays, format } from "date-fns";
+import type { DateRange } from "react-day-picker";
 
-import { Button } from '@/components/ui/button'
-import { Calendar, CalendarProps } from '@/components/ui/calendar'
+import { Button } from "@/components/ui/button";
+import { Calendar, type CalendarProps } from "@/components/ui/calendar";
 import {
 	Popover,
 	PopoverContent,
 	PopoverTrigger,
-} from '@/components/ui/popover'
-import { cn } from '@/utility/classNames'
-import useQueryParams from '@/utility/useQueryParams'
-import { CalendarDays } from 'lucide-react'
-import { useEffect, useRef, useState } from 'react'
+} from "@/components/ui/popover";
+import { cn } from "@/utility/classNames";
+import useQueryParams from "@/utility/useQueryParams";
+import { CalendarDays } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
 
 export function DatePickerWithRange({
 	className,
@@ -21,47 +21,45 @@ export function DatePickerWithRange({
 	onChange = () => {},
 	...calendarProps
 }: CalendarProps & {
-	className?: string
-	defaultDateRange?: DateRange
-	onChange?: (date: { from: Date; to: Date }) => void
+	className?: string;
+	defaultDateRange?: DateRange;
+	onChange?: (date: { from: Date; to: Date }) => void;
 }) {
-	const { setSearchParams } = useQueryParams()
-	const [isOpen, setIsOpen] = useState(false)
-	const lastRange = useRef<DateRange | undefined>()
+	const { setSearchParams } = useQueryParams();
+	const [isOpen, setIsOpen] = useState(false);
+	const lastRange = useRef<DateRange | undefined>();
 	const [date, setDate] = useState<DateRange | undefined>(
 		defaultDateRange || {
 			from: new Date(2022, 0, 20),
 			to: addDays(new Date(2022, 0, 20), 20),
 		},
-	)
+	);
 
+	// biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
 	useEffect(() => {
-		if (!defaultDateRange?.from || !defaultDateRange?.to) return
-		const currFrom = lastRange.current?.from?.toISOString()
-		const currTo = lastRange.current?.to?.toISOString()
-		const unchangedFrom = defaultDateRange.from.toISOString() === currFrom
-		const unchangedTo = defaultDateRange.to.toISOString() === currTo
-		if (unchangedFrom && unchangedTo) return
-		setDate(defaultDateRange)
-		// eslint-disable-next-line react-hooks/exhaustive-deps
+		if (!defaultDateRange?.from || !defaultDateRange?.to) return;
+		const currFrom = lastRange.current?.from?.toISOString();
+		const currTo = lastRange.current?.to?.toISOString();
+		const unchangedFrom = defaultDateRange.from.toISOString() === currFrom;
+		const unchangedTo = defaultDateRange.to.toISOString() === currTo;
+		if (unchangedFrom && unchangedTo) return;
+		setDate(defaultDateRange);
 	}, [
-		// eslint-disable-next-line react-hooks/exhaustive-deps
 		defaultDateRange?.from?.toISOString(),
-		// eslint-disable-next-line react-hooks/exhaustive-deps
 		defaultDateRange?.to?.toISOString(),
-	])
+	]);
 
+	// biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
 	useEffect(() => {
-		if (!date?.from || !date?.to || isOpen) return
-		const currFrom = lastRange.current?.from
-		const currTo = lastRange.current?.to
-		const unchangedFrom = date.from.toISOString() === currFrom?.toISOString()
-		const unchangedTo = date.to.toISOString() === currTo?.toISOString()
-		if (unchangedFrom && unchangedTo) return
-		onChange({ from: date.from, to: date.to })
-		lastRange.current = date
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [isOpen, date?.from?.toISOString(), date?.to?.toISOString()])
+		if (!date?.from || !date?.to || isOpen) return;
+		const currFrom = lastRange.current?.from;
+		const currTo = lastRange.current?.to;
+		const unchangedFrom = date.from.toISOString() === currFrom?.toISOString();
+		const unchangedTo = date.to.toISOString() === currTo?.toISOString();
+		if (unchangedFrom && unchangedTo) return;
+		onChange({ from: date.from, to: date.to });
+		lastRange.current = date;
+	}, [isOpen, date?.from?.toISOString(), date?.to?.toISOString()]);
 
 	return (
 		<div className={cn(className)}>
@@ -69,19 +67,19 @@ export function DatePickerWithRange({
 				<PopoverTrigger asChild>
 					<Button
 						id="date"
-						variant={'outline'}
-						className={cn('font-normal', !date && 'text-grayDark')}
+						variant={"outline"}
+						className={cn("font-normal", !date && "text-grayDark")}
 						onClick={() => setIsOpen(true)}
 					>
 						<CalendarDays className="mr-2 w-6 h-6" />
 						{date?.from ? (
 							date.to ? (
 								<>
-									{format(date.from, 'LLL dd, y')} -{' '}
-									{format(date.to, 'LLL dd, y')}
+									{format(date.from, "LLL dd, y")} -{" "}
+									{format(date.to, "LLL dd, y")}
 								</>
 							) : (
-								format(date.from, 'LLL dd, y')
+								format(date.from, "LLL dd, y")
 							)
 						) : (
 							<span>Pick a date</span>
@@ -101,12 +99,12 @@ export function DatePickerWithRange({
 						<div className="p-3 flex justify-end">
 							<Button
 								onClick={() => {
-									setIsOpen(false)
-									if (!date?.from || !date?.to) return
+									setIsOpen(false);
+									if (!date?.from || !date?.to) return;
 									setSearchParams({
 										from: date?.from,
 										to: date?.to,
-									})
+									});
 								}}
 							>
 								Apply
@@ -116,5 +114,5 @@ export function DatePickerWithRange({
 				)}
 			</Popover>
 		</div>
-	)
+	);
 }

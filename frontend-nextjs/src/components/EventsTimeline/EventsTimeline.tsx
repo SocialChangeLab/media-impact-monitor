@@ -1,55 +1,55 @@
-'use client'
-import { fadeVariants, scaleInVariants } from '@/utility/animationUtil'
-import { cn } from '@/utility/classNames'
-import { slugifyCssClass } from '@/utility/cssSlugify'
-import { EventType, OrganisationType } from '@/utility/eventsUtil'
-import useEvents from '@/utility/useEvents'
-import useTimeScale from '@/utility/useTimeScale'
-import { scalePow } from 'd3-scale'
-import { addDays, differenceInDays, isSameDay, startOfDay } from 'date-fns'
-import { motion } from 'framer-motion'
-import { useMemo } from 'react'
-import EmptyEventsTimeline from './EmptyEventsTimeline'
-import EventBubbleLink from './EventBubbleLink'
-import EventTooltip from './EventTooltip'
-import EventsTimelineWrapper from './EventsTimelinWrapper'
-import EventsTimelineAxis from './EventsTimelineAxis'
-import EventsTimelineChartWrapper from './EventsTimelineChartWrapper'
-import EventsTimelineLegend from './EventsTimelineLegend'
+"use client";
+import { fadeVariants, scaleInVariants } from "@/utility/animationUtil";
+import { cn } from "@/utility/classNames";
+import { slugifyCssClass } from "@/utility/cssSlugify";
+import type { EventType, OrganisationType } from "@/utility/eventsUtil";
+import useEvents from "@/utility/useEvents";
+import useTimeScale from "@/utility/useTimeScale";
+import { scalePow } from "d3-scale";
+import { addDays, differenceInDays, isSameDay, startOfDay } from "date-fns";
+import { motion } from "framer-motion";
+import { useMemo } from "react";
+import EmptyEventsTimeline from "./EmptyEventsTimeline";
+import EventBubbleLink from "./EventBubbleLink";
+import EventTooltip from "./EventTooltip";
+import EventsTimelineWrapper from "./EventsTimelinWrapper";
+import EventsTimelineAxis from "./EventsTimelineAxis";
+import EventsTimelineChartWrapper from "./EventsTimelineChartWrapper";
+import EventsTimelineLegend from "./EventsTimelineLegend";
 
-export const impactScale = scalePow([0, 100], [12, 80])
+export const impactScale = scalePow([0, 100], [12, 80]);
 
 function EventsTimeline() {
-	const { from, to, isPending, data } = useEvents()
-	const { events, organisations } = data
+	const { from, to, isPending, data } = useEvents();
+	const { events, organisations } = data;
 
-	const timeScale = useTimeScale()
+	const timeScale = useTimeScale();
 
 	const timeDiffInDays = useMemo(
 		() => Math.abs(differenceInDays(addDays(to, 1), from)),
 		[from, to],
-	)
+	);
 
 	const eventDays = useMemo(() => {
-		if (!timeScale) return []
+		if (!timeScale) return [];
 		return (timeScale.ticks(timeDiffInDays) ?? []).map((d) => {
-			const eventsOfTheDay = events.filter((evt) => isSameDay(evt.date, d))
+			const eventsOfTheDay = events.filter((evt) => isSameDay(evt.date, d));
 			const eventsWithPositiveImpact = eventsOfTheDay
 				.filter((evt) => evt.impact >= 0)
-				.sort((a, b) => a.organizers[0]?.localeCompare(b.organizers[0]))
+				.sort((a, b) => a.organizers[0]?.localeCompare(b.organizers[0]));
 			const eventsWithNegativeImpact = eventsOfTheDay
 				.filter((evt) => evt.impact < 0)
-				.sort((a, b) => b.organizers[0]?.localeCompare(a.organizers[0]))
+				.sort((a, b) => b.organizers[0]?.localeCompare(a.organizers[0]));
 
 			return {
 				day: startOfDay(d),
 				eventsWithPositiveImpact,
 				eventsWithNegativeImpact,
-			}
-		})
-	}, [events, timeDiffInDays, timeScale])
+			};
+		});
+	}, [events, timeDiffInDays, timeScale]);
 
-	if (events.length === 0) return <EmptyEventsTimeline />
+	if (events.length === 0) return <EmptyEventsTimeline />;
 	return (
 		<EventsTimelineWrapper organisations={organisations}>
 			<EventsTimelineChartWrapper
@@ -57,7 +57,7 @@ function EventsTimeline() {
 					from?.toISOString(),
 					to?.toISOString(),
 					isPending.toString(),
-				].join('-')}
+				].join("-")}
 				columnsCount={timeDiffInDays + 1}
 			>
 				{eventDays.map(
@@ -81,7 +81,7 @@ function EventsTimeline() {
 									/>
 								))}
 							</div>
-							<span className="bg-grayMed"></span>
+							<span className="bg-grayMed" />
 							<div className="flex flex-col gap-0.5 items-center">
 								{eventsWithNegativeImpact.map((event) => (
 									<EventTimelineItem
@@ -98,13 +98,13 @@ function EventsTimeline() {
 			<EventsTimelineAxis eventDays={eventDays} />
 			<EventsTimelineLegend />
 		</EventsTimelineWrapper>
-	)
+	);
 }
 
 type EventTimelineItemProps = {
-	event: EventType
-	organisations: OrganisationType[]
-}
+	event: EventType;
+	organisations: OrganisationType[];
+};
 function EventTimelineItem({ event, organisations }: EventTimelineItemProps) {
 	return (
 		<EventTooltip
@@ -114,11 +114,13 @@ function EventTimelineItem({ event, organisations }: EventTimelineItemProps) {
 		>
 			<motion.div
 				className={cn(
-					'size-3 relative z-10 hover:z-20',
-					'event-item transition-opacity',
+					"size-3 relative z-10 hover:z-20",
+					"event-item transition-opacity",
 					event.organizers.map(
 						(org) =>
-							`event-item-org-${slugifyCssClass(org) || 'unknown-organisation'}`,
+							`event-item-org-${
+								slugifyCssClass(org) || "unknown-organisation"
+							}`,
 					),
 				)}
 				style={{
@@ -129,7 +131,7 @@ function EventTimelineItem({ event, organisations }: EventTimelineItemProps) {
 				<EventBubbleLink event={event} organisations={organisations} />
 			</motion.div>
 		</EventTooltip>
-	)
+	);
 }
 
-export default EventsTimeline
+export default EventsTimeline;

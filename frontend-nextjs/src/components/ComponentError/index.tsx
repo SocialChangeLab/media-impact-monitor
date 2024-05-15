@@ -1,19 +1,19 @@
-'use client'
-import { Button } from '@/components/ui/button'
-import { AlertTriangle } from 'lucide-react'
-import { Link } from 'next-view-transitions'
-import { usePathname } from 'next/navigation'
+"use client";
+import { Button } from "@/components/ui/button";
+import { AlertTriangle } from "lucide-react";
+import { Link } from "next-view-transitions";
+import { usePathname } from "next/navigation";
 
 function ComponentError({
 	errorMessage,
-	announcement = 'There was an error while fetching the data:',
+	announcement = "There was an error while fetching the data:",
 	reset,
 }: {
-	errorMessage: string
-	announcement?: string
-	reset?: () => void
+	errorMessage: string;
+	announcement?: string;
+	reset?: () => void;
 }) {
-	const pathname = usePathname()
+	const pathname = usePathname();
 	return (
 		<div className="w-fit max-w-96 flex flex-col items-center">
 			<div className="mb-6 relative min-w-full flex justify-center">
@@ -37,7 +37,7 @@ function ComponentError({
 				</Button>
 			</div>
 		</div>
-	)
+	);
 }
 
-export default ComponentError
+export default ComponentError;

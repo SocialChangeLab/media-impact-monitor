@@ -1,18 +1,18 @@
-import headerImage from '@/images/header-bg.png'
-import { cn } from '@/utility/classNames'
-import Image from 'next/image'
-import { PropsWithChildren } from 'react'
+import headerImage from "@/images/header-bg.png";
+import { cn } from "@/utility/classNames";
+import Image from "next/image";
+import type { ReactNode } from "react";
 
 export default async function AboutPageLayout({
 	children,
-}: PropsWithChildren<{}>) {
+}: { children: ReactNode }) {
 	return (
 		<>
 			<div className="w-screen h-[88px] sm:h-[16vw] sm:min-h-40">
 				<div
 					className={cn(
-						'w-full h-[88px] sm:h-[16vw] sm:min-h-40 bg-fg dark:bg-bg bg-blend-screen relative z-0',
-						'[view-transition-name:header-image]',
+						"w-full h-[88px] sm:h-[16vw] sm:min-h-40 bg-fg dark:bg-bg bg-blend-screen relative z-0",
+						"[view-transition-name:header-image]",
 					)}
 				>
 					<Image
@@ -26,7 +26,7 @@ export default async function AboutPageLayout({
             bg-center mix-blend-screen dark:mix-blend-multipy
             bg-[url(/images/noisy-dark.png)] dark:bg-[url(/images/noisy-inverted.png)]"
 						aria-hidden="true"
-					></div>
+					/>
 				</div>
 			</div>
 			<main className="flex flex-col min-h-[80vh] relative z-10 [view-transition-name:info-main]">
@@ -40,12 +40,12 @@ export default async function AboutPageLayout({
 							aria-hidden="true"
 							className="absolute w-screen h-screen top-[10vw] right-full pointer-events-none dark:invert dark:saturate-0 bg-right-top bg-no-repeat"
 							style={{ backgroundImage: `url(/images/doc-shadow.png)` }}
-						></div>
+						/>
 						<div
 							aria-hidden="true"
 							className="absolute w-screen h-screen top-[10vw] left-full pointer-events-none dark:invert dark:saturate-0 bg-right-top bg-no-repeat -scale-x-100"
 							style={{ backgroundImage: `url(/images/doc-shadow.png)` }}
-						></div>
+						/>
 						<div
 							className="prose prose-fg dark:prose-invert relative pb-8 sm:py-8 m-0
             prose-headings:font-headlines prose-headings:antialiased
@@ -63,5 +63,5 @@ export default async function AboutPageLayout({
 				</div>
 			</main>
 		</>
-	)
+	);
 }

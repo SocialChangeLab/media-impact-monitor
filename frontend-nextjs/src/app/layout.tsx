@@ -1,16 +1,16 @@
-import { inter, neueRegrade } from '@/utility/fonts'
-import React from 'react'
+import { inter, neueRegrade } from "@/utility/fonts";
+import type React from "react";
 
-import { BaseLayout } from '@/components/BaseLayout'
-import Providers from '@/provders'
-import '@/styles/global.css'
-import { cn } from '@/utility/classNames'
-import { ViewTransitions } from 'next-view-transitions'
+import { BaseLayout } from "@/components/BaseLayout";
+import Providers from "@/provders";
+import "@/styles/global.css";
+import { cn } from "@/utility/classNames";
+import { ViewTransitions } from "next-view-transitions";
 
 export default function RootLayout({
 	children,
 }: Readonly<{
-	children: React.ReactNode
+	children: React.ReactNode;
 }>) {
 	return (
 		<ViewTransitions>
@@ -19,7 +19,7 @@ export default function RootLayout({
 				className={cn(neueRegrade.variable, inter.variable)}
 				suppressHydrationWarning
 			>
-				<head></head>
+				<head />
 				<body className="bg-pattern-soft">
 					<Providers>
 						<BaseLayout>{children}</BaseLayout>
@@ -27,5 +27,5 @@ export default function RootLayout({
 				</body>
 			</html>
 		</ViewTransitions>
-	)
+	);
 }

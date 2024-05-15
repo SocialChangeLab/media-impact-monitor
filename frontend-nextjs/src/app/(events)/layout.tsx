@@ -1,15 +1,15 @@
-import EventPageLayout from '@/components/EventPageLayout'
-import LoadingEventsTimeline from '@/components/EventsTimeline/LoadingEventsTimeline'
-import { PropsWithChildren, ReactNode, Suspense } from 'react'
+import EventPageLayout from "@/components/EventPageLayout";
+import LoadingEventsTimeline from "@/components/EventsTimeline/LoadingEventsTimeline";
+import { type PropsWithChildren, type ReactNode, Suspense } from "react";
 
 export default function EventsPageLayout({
 	children,
 	timeline,
 	table,
 }: PropsWithChildren<{
-	children: ReactNode
-	timeline: ReactNode
-	table: ReactNode
+	children: ReactNode;
+	timeline: ReactNode;
+	table: ReactNode;
 }>) {
 	return (
 		<EventPageLayout>
@@ -21,5 +21,5 @@ export default function EventsPageLayout({
 				<Suspense fallback={<div>Loading...</div>}>{table}</Suspense>
 			</div>
 		</EventPageLayout>
-	)
+	);
 }

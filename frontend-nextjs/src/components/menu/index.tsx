@@ -1,33 +1,33 @@
-import ThemeToggle from '@/components/ThemeToggle'
-import AppLogo from '@/components/logos/AppLogo'
-import { cn } from '@/utility/classNames'
-import { Link } from 'next-view-transitions'
-import HeaderMenuLink from './HeaderMenuLink'
+import ThemeToggle from "@/components/ThemeToggle";
+import AppLogo from "@/components/logos/AppLogo";
+import { cn } from "@/utility/classNames";
+import { Link } from "next-view-transitions";
+import HeaderMenuLink from "./HeaderMenuLink";
 
 type MenuItemType = {
-	name: string
-	label?: string
-	route?: string
-}
+	name: string;
+	label?: string;
+	route?: string;
+};
 
 const menuItems: MenuItemType[] = [
 	{
-		name: 'events',
-		label: 'Dashboard',
-		route: '/',
+		name: "events",
+		label: "Dashboard",
+		route: "/",
 	},
 	{
-		name: 'about',
-		label: 'About',
-		route: '/about',
+		name: "about",
+		label: "About",
+		route: "/about",
 	},
-]
+];
 export const Menu = ({ currentPage }: { currentPage: string }) => {
 	return (
 		<nav
 			className={cn(
-				'px-6 py-4 flex gap-6 flex-wrap items-center justify-between',
-				'border-b border-grayLight',
+				"px-6 py-4 flex gap-6 flex-wrap items-center justify-between",
+				"border-b border-grayLight",
 			)}
 		>
 			<Link
@@ -44,8 +44,8 @@ export const Menu = ({ currentPage }: { currentPage: string }) => {
 				{menuItems.map((item) => (
 					<HeaderMenuLink
 						key={item.name}
-						href={item.route ?? '/'}
-						title={item.label ?? '-'}
+						href={item.route ?? "/"}
+						title={item.label ?? "-"}
 						active={currentPage === item.name}
 					/>
 				))}
@@ -62,5 +62,5 @@ export const Menu = ({ currentPage }: { currentPage: string }) => {
 				</li>
 			</ul>
 		</nav>
-	)
-}
+	);
+};

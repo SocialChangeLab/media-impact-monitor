@@ -1,13 +1,13 @@
-import ComponentError from '@/components/ComponentError'
-import EventsTimelineWrapper from './EventsTimelinWrapper'
-import EventsTimelineChartWrapper from './EventsTimelineChartWrapper'
+import ComponentError from "@/components/ComponentError";
+import EventsTimelineWrapper from "./EventsTimelinWrapper";
+import EventsTimelineChartWrapper from "./EventsTimelineChartWrapper";
 
 export default function ErrorEventsTimeline({
 	errorMessage,
 	reset,
 }: {
-	errorMessage: string
-	reset?: () => void
+	errorMessage: string;
+	reset?: () => void;
 }) {
 	return (
 		<EventsTimelineWrapper>
@@ -19,5 +19,5 @@ export default function ErrorEventsTimeline({
 				/>
 			</EventsTimelineChartWrapper>
 		</EventsTimelineWrapper>
-	)
+	);
 }

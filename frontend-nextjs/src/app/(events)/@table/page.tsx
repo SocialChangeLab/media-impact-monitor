@@ -1,5 +1,5 @@
-import EventsTable from './table'
+import EventsTable from "./table";
 
 export default async function EventsTablePage() {
-	return <EventsTable />
+	return <EventsTable />;
 }

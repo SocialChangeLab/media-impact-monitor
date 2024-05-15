@@ -1,0 +1,5 @@
+{
+	"typescript.tsdk": "node_modules/typescript/lib",
+	"editor.defaultFormatter": "biomejs.biome",
+	"biome.lspBin": "./frontend-nextjs/node_modules/@biomejs/biome/bin/biome"
+}

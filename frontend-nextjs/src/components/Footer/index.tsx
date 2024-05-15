@@ -1,14 +1,14 @@
-'use client'
+"use client";
 
-import Logo from '@/components/logos/AppLogo'
-import BMBFLogo from '@/components/logos/BMBFLogo'
-import PrototypeFundLogo from '@/components/logos/PrototypeFundLogo'
-import SocialChangeLabLogo from '@/components/logos/SocialChangeLabLogo'
-import { cn } from '@/utility/classNames'
-import { ArrowUp } from 'lucide-react'
-import { Link } from 'next-view-transitions'
+import Logo from "@/components/logos/AppLogo";
+import BMBFLogo from "@/components/logos/BMBFLogo";
+import PrototypeFundLogo from "@/components/logos/PrototypeFundLogo";
+import SocialChangeLabLogo from "@/components/logos/SocialChangeLabLogo";
+import { cn } from "@/utility/classNames";
+import { ArrowUp } from "lucide-react";
+import { Link } from "next-view-transitions";
 
-const year = new Date().getFullYear()
+const year = new Date().getFullYear();
 
 function Footer() {
 	return (
@@ -94,6 +94,7 @@ function Footer() {
 					</div>
 					<div className="flex flex-col gap-4">
 						<button
+							type="button"
 							id="back-to-top"
 							aria-label="Scroll to top"
 							className={cn(
@@ -102,7 +103,7 @@ function Footer() {
 								`focusable hover:border-grayLight`,
 							)}
 							onClick={() => {
-								window.scrollTo({ top: 0, behavior: 'smooth' })
+								window.scrollTo({ top: 0, behavior: "smooth" });
 							}}
 						>
 							<ArrowUp />
@@ -111,7 +112,7 @@ function Footer() {
 				</div>
 			</div>
 		</footer>
-	)
+	);
 }
 
-export default Footer
+export default Footer;

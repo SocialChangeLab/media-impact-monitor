@@ -1,8 +1,8 @@
-'use client'
-import EventsTimeline from './EventsTimeline'
+"use client";
+import EventsTimeline from "./EventsTimeline";
 
 function EventsTimelineWithState() {
-	return <EventsTimeline />
+	return <EventsTimeline />;
 }
 
-export default EventsTimelineWithState
+export default EventsTimelineWithState;

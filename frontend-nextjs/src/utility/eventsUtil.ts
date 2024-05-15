@@ -1,5 +1,4 @@
-import { format, parse } from "date-fns";
-import seed from "seed-random";
+import { parse } from "date-fns";
 import { z } from "zod";
 import { dateSortCompare, isValidISODateString } from "./dateUtil";
 import type { AllowedParamsInputType } from "./searchParamsUtil";
@@ -20,11 +19,15 @@ const eventZodSchema = z.object({
 	event_id: z.string(),
 	event_type: z.string(),
 	source: z.string(),
-	topic: z.string().optional(),
 	date: z.string(),
+	country: z.string().nullable(),
+	region: z.string().nullable(),
+	city: z.string().nullable(),
 	organizers: z.array(z.string()).default([]),
+	size_text: z.string().nullable(),
+	size_number: z.number().nullable(),
 	description: z.string(),
-	impact: z.number().default(0),
+	chart_position: z.number(),
 });
 export type EventType = z.infer<typeof eventZodSchema>;
 
@@ -44,23 +47,6 @@ const distinctiveTailwindColors = [
 	"var(--categorical-color-13)",
 	"var(--categorical-color-14)",
 ];
-
-let impacts = [
-	1, 2, 3, 4, 5, 6, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20,
-];
-impacts = [
-	...impacts,
-	...impacts,
-	20,
-	30,
-	40,
-	50,
-	...impacts.map((x) => x * -1),
-];
-impacts = [...impacts, 60, 70, 80, 90, 100, 100, 90, 90, 80];
-
-const random = (seedString: string) =>
-	impacts[Math.floor(seed(seedString)() * impacts.length)];
 
 const colorTypeZodSchema = z.string();
 export type ColorType = z.infer<typeof colorTypeZodSchema>;
@@ -104,15 +90,8 @@ export async function getEventsData(
 				"Content-Type": "application/json",
 			},
 			body: JSON.stringify({
-				event_type: "protest",
 				source: "acled",
 				topic: "climate_change",
-				start_date: searchParams.from
-					? format(searchParams.from, "yyyy-MM-dd")
-					: "2021-01-01",
-				end_date: searchParams.to
-					? format(searchParams.to, "yyyy-MM-dd")
-					: "2021-01-31",
 			}),
 		});
 		const json = await response.json();
@@ -185,7 +164,6 @@ function validateGetDataResponse(response: unknown): EventType[] {
 		.filter((x) => isValidISODateString(x.date))
 		.map((x) => ({
 			...x,
-			impact: random(x.event_id),
 			date: parse(x.date, "yyyy-MM-dd", new Date()).toISOString(),
 			organizers: x.organizers ?? [],
 		}))

@@ -2,8 +2,7 @@
 import { fadeVariants } from "@/utility/animationUtil";
 import { cn } from "@/utility/classNames";
 import { motion } from "framer-motion";
-import { ArrowDown, ArrowUp } from "lucide-react";
-import { type PropsWithChildren, useEffect, useRef } from "react";
+import { useEffect, useRef, type PropsWithChildren } from "react";
 
 function EventsTimelineChartWrapper({
 	children,
@@ -49,51 +48,6 @@ function EventsTimelineChartWrapper({
 					animate="enter"
 					transition={{ staggerChildren: 0.01 }}
 				>
-					<motion.li
-						variants={fadeVariants}
-						key={`events-timeline-impact-legend`}
-						className="grid grid-rows-subgrid row-span-3 py-6"
-					>
-						<span
-							className={cn(
-								"h-full opacity-75",
-								"pointer-events-none relative",
-							)}
-						>
-							<div
-								className={cn(
-									"text-grayDark [writing-mode:vertical-lr] [text-orientation:revert]",
-									"flex items-center justify-center gap-2 text-sm",
-									"absolute bottom-0 left-1/2 -translate-x-1/2",
-								)}
-							>
-								<span className="rotate-180 whitespace-nowrap">
-									Positive impact
-								</span>
-								<ArrowUp size={16} />
-							</div>
-						</span>
-						<span className="w-full bg-grayMed" ref={middleRef} />
-						<span
-							className={cn(
-								"h-full opacity-75",
-								"pointer-events-none relative",
-							)}
-						>
-							<div
-								className={cn(
-									"text-grayDark [writing-mode:vertical-lr] [text-orientation:revert]",
-									"flex items-center justify-center gap-2 text-sm",
-									"absolute top-0 left-1/2 -translate-x-1/2",
-								)}
-							>
-								<ArrowDown size={16} />
-								<span className="rotate-180 whitespace-nowrap">
-									Negative impact
-								</span>
-							</div>
-						</span>
-					</motion.li>
 					{children}
 				</motion.ul>
 			</div>

@@ -6,8 +6,8 @@ import {
 import { cn } from "@/utility/classNames";
 import type { EventType, OrganisationType } from "@/utility/eventsUtil";
 import { format } from "date-fns";
-import { Target } from "lucide-react";
-import { type PropsWithChildren, useMemo } from "react";
+import { Users } from "lucide-react";
+import { useMemo, type PropsWithChildren } from "react";
 
 function EventTooltip({
 	event,
@@ -35,8 +35,11 @@ function EventTooltip({
 	);
 
 	const formattedImpact = useMemo(
-		() => Math.round(event.impact).toLocaleString("en-GB"),
-		[event.impact],
+		() =>
+			event.size_number
+				? Math.round(event.size_number).toLocaleString("en-GB")
+				: "?",
+		[event.size_number],
 	);
 
 	return (
@@ -50,18 +53,8 @@ function EventTooltip({
 					)}
 				>
 					<li className="flex gap-4 items-center">{formattedDate}</li>
-					<li
-						className={cn(
-							"flex gap-2 items-center",
-							event.impact < 0 && "text-red-600",
-						)}
-					>
-						<Target
-							size={16}
-							className={cn(
-								event.impact < 0 ? "text-red-600" : "text-black/60",
-							)}
-						/>
+					<li className={cn("flex gap-2 items-center")}>
+						<Users size={16} className={cn("text-black/60")} />
 						<span>{formattedImpact}</span>
 					</li>
 				</ul>

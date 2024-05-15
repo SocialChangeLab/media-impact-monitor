@@ -17,7 +17,10 @@ import EventsTimelineAxis from "./EventsTimelineAxis";
 import EventsTimelineChartWrapper from "./EventsTimelineChartWrapper";
 import EventsTimelineLegend from "./EventsTimelineLegend";
 
-export const impactScale = scalePow([0, 100], [12, 80]);
+export const config = {
+	eventMinHeight: 12,
+	eventMaxHeight: 100,
+};
 
 function EventsTimeline() {
 	const { from, to, isPending, data } = useEvents();
@@ -34,20 +37,27 @@ function EventsTimeline() {
 		if (!timeScale) return [];
 		return (timeScale.ticks(timeDiffInDays) ?? []).map((d) => {
 			const eventsOfTheDay = events.filter((evt) => isSameDay(evt.date, d));
-			const eventsWithPositiveImpact = eventsOfTheDay
-				.filter((evt) => evt.impact >= 0)
-				.sort((a, b) => a.organizers[0]?.localeCompare(b.organizers[0]));
-			const eventsWithNegativeImpact = eventsOfTheDay
-				.filter((evt) => evt.impact < 0)
-				.sort((a, b) => b.organizers[0]?.localeCompare(a.organizers[0]));
+			const eventsWithSize = eventsOfTheDay.sort((a, b) =>
+				a.organizers[0]?.localeCompare(b.organizers[0]),
+			);
 
 			return {
 				day: startOfDay(d),
-				eventsWithPositiveImpact,
-				eventsWithNegativeImpact,
+				eventsWithSize,
 			};
 		});
 	}, [events, timeDiffInDays, timeScale]);
+
+	const sizeScale = useMemo(() => {
+		const displayedEvents = eventDays.reduce((acc, day) => {
+			return acc.concat(day.eventsWithSize);
+		}, [] as EventType[]);
+		const max =
+			displayedEvents.length === 0
+				? 100
+				: Math.max(...displayedEvents.map((e) => e.size_number ?? 0));
+		return scalePow([0, max], [config.eventMinHeight, config.eventMaxHeight]);
+	}, [eventDays]);
 
 	if (events.length === 0) return <EmptyEventsTimeline />;
 	return (
@@ -60,40 +70,29 @@ function EventsTimeline() {
 				].join("-")}
 				columnsCount={timeDiffInDays + 1}
 			>
-				{eventDays.map(
-					({ day, eventsWithNegativeImpact, eventsWithPositiveImpact }) => (
-						<motion.li
-							key={`event-day-${day.toISOString()}`}
-							className="grid grid-rows-subgrid row-span-3 relative"
-							variants={fadeVariants}
-							transition={{ staggerChildren: 0.01 }}
-						>
-							<div className="flex flex-col justify-end items-center gap-0.5">
-								<div
-									className="w-px h-full absolute top-0 left-1/2 -translate-x-1/2 bg-grayLight opacity-50"
-									aria-hidden="true"
+				{eventDays.map(({ day, eventsWithSize }) => (
+					<motion.li
+						key={`event-day-${day.toISOString()}`}
+						className="grid grid-rows-subgrid row-span-3 relative"
+						variants={fadeVariants}
+						transition={{ staggerChildren: 0.01 }}
+					>
+						<div className="flex flex-col justify-end items-center gap-0.5">
+							<div
+								className="w-px h-full absolute top-0 left-1/2 -translate-x-1/2 bg-grayLight opacity-50"
+								aria-hidden="true"
+							/>
+							{eventsWithSize.map((event) => (
+								<EventTimelineItem
+									key={event.event_id}
+									event={event}
+									organisations={organisations}
+									sizeScale={sizeScale}
 								/>
-								{eventsWithPositiveImpact.map((event) => (
-									<EventTimelineItem
-										key={event.event_id}
-										event={event}
-										organisations={organisations}
-									/>
-								))}
-							</div>
-							<span className="bg-grayMed" />
-							<div className="flex flex-col gap-0.5 items-center">
-								{eventsWithNegativeImpact.map((event) => (
-									<EventTimelineItem
-										key={event.event_id}
-										event={event}
-										organisations={organisations}
-									/>
-								))}
-							</div>
-						</motion.li>
-					),
-				)}
+							))}
+						</div>
+					</motion.li>
+				))}
 			</EventsTimelineChartWrapper>
 			<EventsTimelineAxis eventDays={eventDays} />
 			<EventsTimelineLegend />
@@ -104,8 +103,13 @@ function EventsTimeline() {
 type EventTimelineItemProps = {
 	event: EventType;
 	organisations: OrganisationType[];
+	sizeScale: (x: number) => number;
 };
-function EventTimelineItem({ event, organisations }: EventTimelineItemProps) {
+function EventTimelineItem({
+	event,
+	organisations,
+	sizeScale,
+}: EventTimelineItemProps) {
 	return (
 		<EventTooltip
 			key={event.event_id}
@@ -124,7 +128,7 @@ function EventTimelineItem({ event, organisations }: EventTimelineItemProps) {
 					),
 				)}
 				style={{
-					height: `${Math.ceil(impactScale(Math.abs(event.impact)))}px`,
+					height: `${Math.ceil(sizeScale(event.size_number ?? 0))}px`,
 				}}
 				variants={scaleInVariants}
 			>

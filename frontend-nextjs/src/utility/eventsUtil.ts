@@ -1,4 +1,4 @@
-import { parse } from "date-fns";
+import { format, parse } from "date-fns";
 import { ZodError, z } from "zod";
 import { dateSortCompare, isValidISODateString } from "./dateUtil";
 
@@ -76,9 +76,10 @@ interface DataResponseType<DataType> {
 	error: null | string;
 }
 
-export async function getEventsData(): Promise<
-	DataResponseType<EventsDataType>
-> {
+export async function getEventsData(params?: {
+	from?: Date;
+	to?: Date;
+}): Promise<DataResponseType<EventsDataType>> {
 	const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 	if (!apiUrl)
 		throw new Error("NEXT_PUBLIC_API_URL env variable is not defined");
@@ -86,17 +87,20 @@ export async function getEventsData(): Promise<
 		const response = await fetch(`${apiUrl}/events`, {
 			cache: "no-store",
 			method: "POST",
-			headers: {
-				"Content-Type": "application/json",
-			},
+			headers: { "Content-Type": "application/json" },
 			body: JSON.stringify({
 				source: "acled",
 				topic: "climate_change",
+				...(params?.from && params?.to
+					? {
+							start_date: format(params?.from, "yyyy-MM-dd"),
+							end_date: format(params?.to, "yyyy-MM-dd"),
+						}
+					: {}),
 			}),
 		});
 		const json = await response.json();
 		const events = validateGetDataResponse(json);
-
 		return {
 			data: {
 				events,

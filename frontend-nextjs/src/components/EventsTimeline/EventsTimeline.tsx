@@ -19,11 +19,7 @@ import EventsTimelineAxis from "./EventsTimelineAxis";
 import EventsTimelineChartWrapper from "./EventsTimelineChartWrapper";
 import EventsTimelineLegend from "./EventsTimelineLegend";
 import EventsTimelineScrollWrapper from "./EventsTimelineScrollWrapper";
-
-export const config = {
-	eventMinHeight: 12,
-	eventMaxHeight: 100,
-};
+import config from "./eventsTimelineConfig";
 
 function EventsTimeline({
 	data,

@@ -37,5 +37,5 @@ export const useFiltersStore = () => {
 		throw new Error(`useFiltersStore must be use within FiltersStoreProvider`);
 	}
 
-	return useStore(filtersStoreContext);
+	return useStore(filtersStoreContext, (state) => state);
 };

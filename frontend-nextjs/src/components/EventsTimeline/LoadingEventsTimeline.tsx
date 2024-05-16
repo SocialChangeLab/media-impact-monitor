@@ -4,10 +4,10 @@ import { scalePow } from "d3-scale";
 import { useMemo } from "react";
 import seed from "seed-random";
 import EventsTimelineWrapper from "./EventsTimelinWrapper";
-import { config } from "./EventsTimeline";
 import EventsTimelineAxis from "./EventsTimelineAxis";
 import EventsTimelineChartWrapper from "./EventsTimelineChartWrapper";
 import EventsTimelineScrollWrapper from "./EventsTimelineScrollWrapper";
+import config from "./eventsTimelineConfig";
 
 const seededRandom = seed("loading-screen");
 const randomUntil = (max: number) => Math.ceil(seededRandom() * max);

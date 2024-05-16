@@ -19,7 +19,7 @@ function useEvents(
 	const { data, isPending, error } = useSuspenseQuery({
 		queryKey,
 		queryFn: async () => {
-			const { data, error } = await getEventsData();
+			const { data, error } = await getEventsData({ from, to });
 			return { ...data, error: error ? new Error(error) : null };
 		},
 		initialData: initialData && {

@@ -28,7 +28,7 @@ function getQueryClient() {
 	if (!browserQueryClient) browserQueryClient = makeQueryClient();
 	return browserQueryClient;
 }
-export const queryClient = new QueryClient();
+export const queryClient = makeQueryClient();
 
 function CustomQueryClientProvider({
 	children,

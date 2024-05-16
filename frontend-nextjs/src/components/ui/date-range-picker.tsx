@@ -3,7 +3,6 @@
 import { format } from "date-fns";
 import type { DateRange } from "react-day-picker";
 
-import { defaultFrom, defaultTo } from "@/app/(events)/config";
 import { Button } from "@/components/ui/button";
 import { Calendar, type CalendarProps } from "@/components/ui/calendar";
 import {
@@ -30,11 +29,8 @@ export function DatePickerWithRange({
 	const [isOpen, setIsOpen] = useState(false);
 	const lastRange = useRef<DateRange | undefined>();
 	const [date, setDate] = useState<DateRange | undefined>(defaultDateRange);
-	const fromDateString = format(
-		date?.from || new Date(defaultFrom),
-		"yyyy-MM-dd",
-	);
-	const toDateString = format(date?.to || new Date(defaultTo), "yyyy-MM-dd");
+	const fromDateString = format(date?.from || new Date(), "yyyy-MM-dd");
+	const toDateString = format(date?.to || new Date(), "yyyy-MM-dd");
 
 	// biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
 	useEffect(() => {
@@ -89,10 +85,7 @@ export function DatePickerWithRange({
 								onClick={() => {
 									setIsOpen(false);
 									if (!date?.from || !date?.to) return;
-									router.push(
-										`${pathname}?from=${date.from.toISOString()}&to=${date.to.toISOString()}`,
-										{ scroll: false },
-									);
+									onChange({ from: date.from, to: date.to });
 								}}
 							>
 								Apply

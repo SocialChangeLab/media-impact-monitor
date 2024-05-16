@@ -1,5 +1,8 @@
-import { defaultFrom, defaultTo } from "@/app/(events)/config";
+import { subDays } from "date-fns";
 import { createStore } from "zustand/vanilla";
+
+const defaultTo = new Date();
+const defaultFrom = subDays(new Date(), 30);
 
 export type FiltersState = {
 	from: Date;
@@ -22,6 +25,6 @@ export const createFiltersStore = (
 ) => {
 	return createStore<FiltersStore>()((set) => ({
 		...initState,
-		setDateRange: () => set((state) => ({ from: state.from, to: state.to })),
+		setDateRange: ({ from, to }) => set(() => ({ from, to })),
 	}));
 };

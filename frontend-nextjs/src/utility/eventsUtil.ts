@@ -67,6 +67,13 @@ const eventDataResponseTypeZodSchema = z.object({
 	error: z.union([z.string(), z.null()]).optional(),
 });
 
+export class ApiFetchError extends Error {
+	constructor(message: string) {
+		super(message);
+		this.name = "ApiFetchError";
+	}
+}
+
 export async function getEventsData(params?: {
 	from?: Date;
 	to?: Date;
@@ -94,6 +101,7 @@ export async function getEventsData(params?: {
 					: {}),
 			}),
 		});
+		if (!response.ok) throw new ApiFetchError("Error fetching events");
 		json = await response.json();
 	} catch (error) {
 		if (

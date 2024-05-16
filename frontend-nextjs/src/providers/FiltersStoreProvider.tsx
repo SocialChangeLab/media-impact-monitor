@@ -1,9 +1,9 @@
 "use client";
 
-import { createContext, useContext, useRef, type ReactNode } from "react";
-import { useStore, type StoreApi } from "zustand";
+import { type ReactNode, createContext, useContext, useRef } from "react";
+import { type StoreApi, useStore } from "zustand";
 
-import { createFiltersStore, type FiltersStore } from "@/stores/filtersStore";
+import { type FiltersStore, createFiltersStore } from "@/stores/filtersStore";
 
 export const FiltersStoreContext = createContext<StoreApi<FiltersStore> | null>(
 	null,

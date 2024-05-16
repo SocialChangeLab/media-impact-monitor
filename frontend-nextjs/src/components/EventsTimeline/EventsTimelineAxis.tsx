@@ -1,11 +1,11 @@
 import { cn } from "@/utility/classNames";
 import useTimeScale from "@/utility/useTimeScale";
 import {
+	type CountableTimeInterval,
 	utcMonday,
 	utcMonth,
 	utcTicks,
 	utcWeek,
-	type CountableTimeInterval,
 } from "d3-time";
 import {
 	differenceInDays,
@@ -25,10 +25,7 @@ function EventsTimelineAxis({
 	}[];
 }) {
 	const { width, ref } = useComponentSize();
-	const timeScale = useTimeScale({
-		from: eventDays[0].day,
-		to: eventDays[eventDays.length - 1].day,
-	});
+	const timeScale = useTimeScale();
 
 	const xAxisTicks = useMemo(() => {
 		if (!timeScale) return [];

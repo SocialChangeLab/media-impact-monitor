@@ -1,7 +1,7 @@
 "use client";
 import { slugifyCssClass } from "@/utility/cssSlugify";
 import type { OrganisationType } from "@/utility/eventsUtil";
-import { forwardRef, type PropsWithChildren } from "react";
+import { type PropsWithChildren, forwardRef } from "react";
 
 const EventsTimelineWrapper = forwardRef<
 	HTMLDivElement,

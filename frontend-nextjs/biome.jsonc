@@ -13,5 +13,11 @@
 				"useSelfClosingElements": "off"
 			}
 		}
+	},
+	"files": {
+		"ignore": ["src/fakeDataForTesting/**"]
+	},
+	"formatter": {
+		"ignore": ["test/fakeDataForTesting/**"]
 	}
 }

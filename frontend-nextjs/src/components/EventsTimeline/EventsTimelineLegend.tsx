@@ -25,7 +25,7 @@ function EventsTimelineLegend({
 				{
 					name: "Other",
 					count: otherOrgs.reduce((acc, org) => acc + org.count, 0),
-					color: otherOrgs[0].color,
+					color: `var(--grayDark)`,
 					isMain: false,
 					orgs: otherOrgs.sort((a, b) => {
 						if (a.count > b.count) return -1;

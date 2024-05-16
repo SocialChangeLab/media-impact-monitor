@@ -1,5 +1,5 @@
 import { format, parse } from "date-fns";
-import { ZodError, z } from "zod";
+import { z } from "zod";
 import { dateSortCompare, isValidISODateString } from "./dateUtil";
 
 export type Query<T> =
@@ -58,36 +58,31 @@ const organisationZodSchema = z.object({
 });
 export type OrganisationType = z.infer<typeof organisationZodSchema>;
 
-const eventDataTypeZodSchema = z.object({
-	events: z.array(eventZodSchema),
-	organisations: z.array(organisationZodSchema),
-});
+const eventDataTypeZodSchema = z.array(eventZodSchema);
 export type EventsDataType = z.infer<typeof eventDataTypeZodSchema>;
 
 const eventDataResponseTypeZodSchema = z.object({
-	data: z.array(eventZodSchema),
+	data: eventDataTypeZodSchema,
 	isPending: z.boolean().optional(),
 	error: z.union([z.string(), z.null()]).optional(),
 });
 
-interface DataResponseType<DataType> {
-	data: DataType;
-	isPending: false;
-	error: null | string;
-}
-
 export async function getEventsData(params?: {
 	from?: Date;
 	to?: Date;
-}): Promise<DataResponseType<EventsDataType>> {
+}): Promise<EventsDataType> {
 	const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 	if (!apiUrl)
 		throw new Error("NEXT_PUBLIC_API_URL env variable is not defined");
+	let json: unknown = { query: {}, data: [] };
 	try {
 		const response = await fetch(`${apiUrl}/events`, {
 			cache: "no-store",
 			method: "POST",
-			headers: { "Content-Type": "application/json" },
+			headers: {
+				"Content-Type": "application/json",
+				"Cache-Control": "no-cache",
+			},
 			body: JSON.stringify({
 				source: "acled",
 				topic: "climate_change",
@@ -99,47 +94,32 @@ export async function getEventsData(params?: {
 					: {}),
 			}),
 		});
-		const json = await response.json();
-		const events = validateGetDataResponse(json);
-		return {
-			data: {
-				events,
-				organisations: extractEventOrganisations(events),
-			},
-			isPending: false,
-			error: null,
-		};
+		json = await response.json();
 	} catch (error) {
-		console.error(`Error fetching events: ${error}`);
-		if (error instanceof ZodError) {
-			console.log(`Invalid response format:`);
-			for (const issue of error.issues) {
-				console.log(`- ${issue.path}: ${issue.message}`);
-			}
+		if (
+			process.env.NODE_ENV === "development" &&
+			process.env.FAKE_DATA_FALLBACK === "true"
+		) {
+			console.error(error);
+			json = (
+				await import("../fakeDataForTesting/fakeEventsDataForTesting.json")
+			).default;
+		} else {
+			throw new Error(`Error fetching events: ${error}`);
 		}
-		return {
-			data: {
-				events: [],
-				organisations: [],
-			},
-			isPending: false,
-			error: error instanceof Error ? error.message : "Unknown error",
-		};
 	}
+	const events = validateGetDataResponse(json);
+	return events;
 }
 
-export async function getEventData(
-	id: string,
-): Promise<DataResponseType<EventType | undefined>> {
+export async function getEventData(id: string): Promise<EventType | undefined> {
 	const allEvents = await getEventsData();
-	return {
-		data: allEvents.data.events.find((x) => x.event_id === id),
-		isPending: false,
-		error: null,
-	};
+	return allEvents.find((x) => x.event_id === id);
 }
 
-function extractEventOrganisations(events: EventType[]): OrganisationType[] {
+export function extractEventOrganisations(
+	events: EventType[],
+): OrganisationType[] {
 	const organisationStrings = [
 		...events
 			.reduce((acc, event) => {

@@ -13,7 +13,7 @@ export default function ErrorEventsTimeline({
 	return (
 		<EventsTimelineWrapper>
 			<EventsTimelineChartWrapper animationKey="error">
-				<div className="w-full h-[calc(100vh-14rem)] flex justify-center items-center bg-grayUltraLight">
+				<div className="w-full h-[calc(100vh-14rem)] flex justify-center items-center bg-grayUltraLight border border-grayLigh">
 					<ComponentError
 						errorMessage={errorMessage}
 						reset={reset}

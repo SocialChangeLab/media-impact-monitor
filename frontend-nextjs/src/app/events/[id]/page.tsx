@@ -6,9 +6,8 @@ export default async function EventPage({
 }: {
 	params: { id: string };
 }) {
-	const { data, error } = await getEventData(params.id);
+	const data = await getEventData(params.id);
 
-	if (error) throw new Error(error);
 	if (!data) return notFound();
 
 	return (

@@ -1,14 +1,12 @@
 "use client";
 import { useFiltersStore } from "@/providers/FiltersStoreProvider";
-import { useSuspenseQuery } from "@tanstack/react-query";
-import { format } from "date-fns";
-import { useCallback, useEffect, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
+import { format, isAfter, isBefore } from "date-fns";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
-import { getEventsData } from "./eventsUtil";
+import { extractEventOrganisations, getEventsData } from "./eventsUtil";
 
-function useEvents(
-	initialData?: Awaited<ReturnType<typeof getEventsData>>["data"],
-) {
+function useEvents(initialData?: Awaited<ReturnType<typeof getEventsData>>) {
 	const filtersStore = useFiltersStore();
 
 	const [from, setFrom] = useState(filtersStore.from);
@@ -16,22 +14,14 @@ function useEvents(
 	const fromDateString = format(from, "yyyy-MM-dd");
 	const toDateString = format(to, "yyyy-MM-dd");
 	const queryKey = ["events", fromDateString, toDateString];
-	const { data, isPending, error } = useSuspenseQuery({
+	const { data, isPending, error } = useQuery({
 		queryKey,
-		queryFn: async () => {
-			const { data, error } = await getEventsData({ from, to });
-			return { ...data, error: error ? new Error(error) : null };
-		},
-		initialData: initialData && {
-			events: initialData.events,
-			organisations: initialData.organisations,
-			error: null,
-		},
+		queryFn: async () => await getEventsData({ from, to }),
+		initialData: initialData,
 	});
 
 	useEffect(() => {
 		if (!error) return;
-		if (toast.length > 0) return;
 		toast.error(`Error fetching events: ${error}`, {
 			important: true,
 			dismissible: false,
@@ -53,10 +43,24 @@ function useEvents(
 		[filtersStore.setDateRange],
 	);
 
+	const events = useMemo(() => {
+		return (data ?? []).filter((e) => {
+			const beforeFrom = isBefore(e.date, from);
+			const afterTo = isAfter(e.date, to);
+			if (beforeFrom || afterTo) return false;
+			return true;
+		});
+	}, [data, from, to]);
+
+	const organisations = useMemo(
+		() => extractEventOrganisations(events),
+		[events],
+	);
+
 	return {
-		data,
+		data: { events, organisations },
 		isPending,
-		error: data.error || error,
+		error: error,
 		from,
 		to,
 		setDateRange,

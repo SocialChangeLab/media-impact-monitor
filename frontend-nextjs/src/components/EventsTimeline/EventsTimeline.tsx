@@ -9,7 +9,7 @@ import useDays from "@/utility/useDays";
 import useEvents from "@/utility/useEvents";
 import useTimeScale from "@/utility/useTimeScale";
 import { scalePow } from "d3-scale";
-import { isSameDay, startOfDay } from "date-fns";
+import { format, isSameDay, startOfDay } from "date-fns";
 import { useMemo } from "react";
 import EmptyEventsTimeline from "./EmptyEventsTimeline";
 import EventBubbleLink from "./EventBubbleLink";
@@ -68,7 +68,10 @@ function EventsTimeline({
 	}, [eventDays]);
 
 	if (events.length === 0) return <EmptyEventsTimeline />;
-	const animationKey = [from?.toISOString(), to?.toISOString()].join("-");
+	const animationKey = [
+		format(from, "yyyy-MM-dd"),
+		format(to, "yyyy-MM-dd"),
+	].join("-");
 	return (
 		<EventsTimelineWrapper organisations={organisations}>
 			<EventsTimelineScrollWrapper
@@ -150,7 +153,7 @@ function EventTimelineItem({
 export default function EventsTimelineWithData({
 	data: initialData,
 }: {
-	data: { events: EventType[]; organisations: OrganisationType[] };
+	data: EventType[];
 }) {
 	const { data, isPending, error } = useEvents(initialData);
 	if (isPending) return <TimelineRouteLoading />;

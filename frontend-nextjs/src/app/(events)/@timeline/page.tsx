@@ -11,14 +11,7 @@ async function TimelineRoute({
 }) {
 	const from = stringDateZodSchema.safeParse(searchParams?.from)?.data;
 	const to = stringDateZodSchema.safeParse(searchParams?.to)?.data;
-	const { data, error } = await getEventsData(
-		from && to ? { from, to } : undefined,
-	);
-
-	if (error) {
-		console.error("Error loading events", error);
-		throw new Error(error);
-	}
+	const data = await getEventsData(from && to ? { from, to } : undefined);
 
 	return <EventsTimeline data={data} />;
 }

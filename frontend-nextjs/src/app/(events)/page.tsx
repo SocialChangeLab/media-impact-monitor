@@ -1,3 +1,3 @@
-export default function EventsPage() {
+export default function EventsPageWithSuspense() {
 	return null;
 }

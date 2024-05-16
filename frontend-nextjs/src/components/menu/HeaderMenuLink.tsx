@@ -1,5 +1,5 @@
 import { cn } from "@/utility/classNames";
-import { Link } from "next-view-transitions";
+import Link from "next/link";
 import type { ReactNode } from "react";
 
 function HeaderMenuLink({

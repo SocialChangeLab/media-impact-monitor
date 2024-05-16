@@ -4,8 +4,8 @@ import headerImage from "@/images/header-bg.png";
 import { cn } from "@/utility/classNames";
 import { AnimatePresence, motion } from "framer-motion";
 import { X } from "lucide-react";
-import { Link } from "next-view-transitions";
 import Image from "next/image";
+import Link from "next/link";
 import { useCallback, useEffect, useState } from "react";
 
 function WelcomeMessage({ currentPage }: { currentPage: string }) {

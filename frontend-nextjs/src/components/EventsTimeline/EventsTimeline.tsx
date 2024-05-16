@@ -1,5 +1,7 @@
 "use client";
-import { fadeVariants, scaleInVariants } from "@/utility/animationUtil";
+import TimelineRouteError from "@/app/(events)/@timeline/error";
+import TimelineRouteLoading from "@/app/(events)/@timeline/loading";
+import { useFiltersStore } from "@/providers/FiltersStoreProvider";
 import { cn } from "@/utility/classNames";
 import { slugifyCssClass } from "@/utility/cssSlugify";
 import type { EventType, OrganisationType } from "@/utility/eventsUtil";
@@ -8,7 +10,6 @@ import useEvents from "@/utility/useEvents";
 import useTimeScale from "@/utility/useTimeScale";
 import { scalePow } from "d3-scale";
 import { isSameDay, startOfDay } from "date-fns";
-import { motion } from "framer-motion";
 import { useMemo } from "react";
 import EmptyEventsTimeline from "./EmptyEventsTimeline";
 import EventBubbleLink from "./EventBubbleLink";
@@ -24,9 +25,16 @@ export const config = {
 	eventMaxHeight: 100,
 };
 
-function EventsTimeline() {
-	const { from, to, isPending, data } = useEvents();
-	const days = useDays({ from, to });
+function EventsTimeline({
+	data,
+}: {
+	data: {
+		events: EventType[];
+		organisations: OrganisationType[];
+	};
+}) {
+	const { from, to } = useFiltersStore();
+	const days = useDays();
 	const { events, organisations } = data;
 
 	const timeScale = useTimeScale();
@@ -64,11 +72,7 @@ function EventsTimeline() {
 	}, [eventDays]);
 
 	if (events.length === 0) return <EmptyEventsTimeline />;
-	const animationKey = [
-		from?.toISOString(),
-		to?.toISOString(),
-		isPending.toString(),
-	].join("-");
+	const animationKey = [from?.toISOString(), to?.toISOString()].join("-");
 	return (
 		<EventsTimelineWrapper organisations={organisations}>
 			<EventsTimelineScrollWrapper
@@ -79,11 +83,9 @@ function EventsTimeline() {
 					animationKey={`${animationKey}-chart-wrapper`}
 				>
 					{eventDays.map(({ day, eventsWithSize }) => (
-						<motion.li
+						<li
 							key={`event-day-${day.toISOString()}`}
 							className="grid grid-rows-subgrid row-span-3 relative w-4 grow shrink-0"
-							variants={fadeVariants}
-							transition={{ staggerChildren: 0.01 }}
 						>
 							<div className="flex flex-col justify-end items-center gap-0.5">
 								<div
@@ -99,12 +101,12 @@ function EventsTimeline() {
 									/>
 								))}
 							</div>
-						</motion.li>
+						</li>
 					))}
 				</EventsTimelineChartWrapper>
 				<EventsTimelineAxis eventDays={eventDays} />
 			</EventsTimelineScrollWrapper>
-			<EventsTimelineLegend />
+			<EventsTimelineLegend organisations={organisations} />
 		</EventsTimelineWrapper>
 	);
 }
@@ -125,7 +127,7 @@ function EventTimelineItem({
 			event={event}
 			organisations={organisations}
 		>
-			<motion.div
+			<div
 				className={cn(
 					"size-3 relative z-10 hover:z-20",
 					"event-item transition-opacity",
@@ -142,12 +144,20 @@ function EventTimelineItem({
 				style={{
 					height: `${Math.ceil(sizeScale(event.size_number ?? 0))}px`,
 				}}
-				variants={scaleInVariants}
 			>
 				<EventBubbleLink event={event} organisations={organisations} />
-			</motion.div>
+			</div>
 		</EventTooltip>
 	);
 }
 
-export default EventsTimeline;
+export default function EventsTimelineWithData({
+	data: initialData,
+}: {
+	data: { events: EventType[]; organisations: OrganisationType[] };
+}) {
+	const { data, isPending, error } = useEvents(initialData);
+	if (isPending) return <TimelineRouteLoading />;
+	if (error) return <TimelineRouteError error={error} />;
+	return <EventsTimeline data={data} />;
+}

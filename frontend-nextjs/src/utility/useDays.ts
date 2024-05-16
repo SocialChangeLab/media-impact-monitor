@@ -1,13 +1,10 @@
+import { useFiltersStore } from "@/providers/FiltersStoreProvider";
 import { addDays, differenceInDays, startOfDay } from "date-fns";
 import { useMemo } from "react";
 
-function useDays({
-	from,
-	to,
-}: {
-	from?: Date;
-	to?: Date;
-}) {
+function useDays() {
+	const { from, to } = useFiltersStore();
+
 	const eventDays = useMemo(() => {
 		if (!from || !to) return [];
 		const diffInDays = Math.abs(differenceInDays(to, from));

@@ -1,6 +1,6 @@
 import { cn } from "@/utility/classNames";
 import type { EventType, OrganisationType } from "@/utility/eventsUtil";
-import { Link } from "next-view-transitions";
+import Link from "next/link";
 
 type EventBubbleLinkProps = {
 	event: EventType;

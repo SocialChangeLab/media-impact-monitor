@@ -1,12 +1,14 @@
 "use client";
 import ErrorEventsTimeline from "@/components/EventsTimeline/ErrorEventsTimeline";
 
-export default function EventsTimelinePageError({
+function TimelineRouteError({
 	error,
 	reset,
 }: {
 	error: Error & { digest?: string };
-	reset: () => void;
+	reset?: () => void;
 }) {
 	return <ErrorEventsTimeline errorMessage={error.message} reset={reset} />;
 }
+
+export default TimelineRouteError;

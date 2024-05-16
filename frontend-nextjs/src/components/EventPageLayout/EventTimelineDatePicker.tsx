@@ -1,15 +1,14 @@
 "use client";
 import { DatePickerWithRange } from "@/components/ui/date-range-picker";
-import useEvents from "@/utility/useEvents";
+import { useFiltersStore } from "@/providers/FiltersStoreProvider";
 
 function EventTimelineDatePicker() {
-	const { from, to, setDateRange } = useEvents();
+	const { from, to, setDateRange } = useFiltersStore();
+
 	return (
 		<DatePickerWithRange
 			defaultDateRange={{ from, to }}
 			onChange={setDateRange}
-			toDate={new Date()}
-			fromDate={new Date("01/01/2020")}
 		/>
 	);
 }

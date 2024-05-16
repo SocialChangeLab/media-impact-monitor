@@ -1,7 +1,6 @@
 import { parse } from "date-fns";
 import { ZodError, z } from "zod";
 import { dateSortCompare, isValidISODateString } from "./dateUtil";
-import type { AllowedParamsInputType } from "./searchParamsUtil";
 
 export type Query<T> =
 	| {
@@ -77,9 +76,9 @@ interface DataResponseType<DataType> {
 	error: null | string;
 }
 
-export async function getEventsData(
-	searchParams: AllowedParamsInputType = {},
-): Promise<DataResponseType<EventsDataType>> {
+export async function getEventsData(): Promise<
+	DataResponseType<EventsDataType>
+> {
 	const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 	if (!apiUrl)
 		throw new Error("NEXT_PUBLIC_API_URL env variable is not defined");
@@ -127,9 +126,8 @@ export async function getEventsData(
 
 export async function getEventData(
 	id: string,
-	searchParams: AllowedParamsInputType = {},
 ): Promise<DataResponseType<EventType | undefined>> {
-	const allEvents = await getEventsData(searchParams);
+	const allEvents = await getEventsData();
 	return {
 		data: allEvents.data.events.find((x) => x.event_id === id),
 		isPending: false,

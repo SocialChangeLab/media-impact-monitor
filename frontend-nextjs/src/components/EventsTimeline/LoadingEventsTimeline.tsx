@@ -1,9 +1,6 @@
 "use client";
-import { fadeVariants, scaleInVariants } from "@/utility/animationUtil";
 import useDays from "@/utility/useDays";
-import useQueryParams from "@/utility/useQueryParams";
 import { scalePow } from "d3-scale";
-import { motion } from "framer-motion";
 import { useMemo } from "react";
 import seed from "seed-random";
 import EventsTimelineWrapper from "./EventsTimelinWrapper";
@@ -20,10 +17,8 @@ const sizeScale = scalePow(
 	[config.eventMinHeight, config.eventMaxHeight],
 );
 
-function LoadingEventsTimelineWithoutSuspense() {
-	const { searchParams } = useQueryParams();
-	const { from, to } = searchParams ?? {};
-	const days = useDays({ from, to });
+export default function LoadingEventsTimeline() {
+	const days = useDays();
 
 	const skeletons = useMemo(() => {
 		return days.map((_, i) => ({
@@ -45,23 +40,20 @@ function LoadingEventsTimelineWithoutSuspense() {
 					columnsCount={skeletons.length + 1}
 				>
 					{skeletons.map(({ colId, eventsWithSize }) => (
-						<motion.li
+						<li
 							key={`loading-event-col-${colId}`}
 							className="grid grid-rows-subgrid row-span-3 relative animate-pulse w-4 shrink-0 grow"
-							variants={fadeVariants}
-							transition={{ staggerChildren: 0.01 }}
 						>
 							<div className="flex flex-col justify-end items-center gap-0.5">
 								{eventsWithSize.map(({ eventId, height }) => (
-									<motion.div
+									<div
 										key={`loading-event-${eventId}`}
 										className="size-3 relative z-10 bg-grayMed rounded-full "
 										style={{ height }}
-										variants={scaleInVariants}
 									/>
 								))}
 							</div>
-						</motion.li>
+						</li>
 					))}
 				</EventsTimelineChartWrapper>
 				<EventsTimelineAxis
@@ -70,8 +62,4 @@ function LoadingEventsTimelineWithoutSuspense() {
 			</EventsTimelineScrollWrapper>
 		</EventsTimelineWrapper>
 	);
-}
-
-export default function LoadingEventsTimeline() {
-	return <LoadingEventsTimelineWithoutSuspense />;
 }

@@ -1,3 +1,4 @@
+"use client";
 import { slugifyCssClass } from "@/utility/cssSlugify";
 import type { OrganisationType } from "@/utility/eventsUtil";
 import { forwardRef, type PropsWithChildren } from "react";

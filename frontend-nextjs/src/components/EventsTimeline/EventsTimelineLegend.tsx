@@ -2,18 +2,19 @@
 import { cn } from "@/utility/classNames";
 import { slugifyCssClass } from "@/utility/cssSlugify";
 import type { OrganisationType } from "@/utility/eventsUtil";
-import useEvents from "@/utility/useEvents";
 import { useMemo } from "react";
 import { Portal, Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip";
 
-function EventsTimelineLegend() {
-	const legendOrganisations = useEvents().data?.organisations;
-
+function EventsTimelineLegend({
+	organisations,
+}: {
+	organisations: OrganisationType[];
+}) {
 	const { allOrgs, otherOrgs } = useMemo(() => {
 		const mainOrgs: OrganisationType[] = [];
 		const otherOrgs: OrganisationType[] = [];
 
-		for (const org of legendOrganisations) {
+		for (const org of organisations) {
 			if (!org.isMain) otherOrgs.push(org);
 			else mainOrgs.push(org);
 		}
@@ -36,7 +37,7 @@ function EventsTimelineLegend() {
 			otherOrgs,
 			mainOrgs,
 		};
-	}, [legendOrganisations]);
+	}, [organisations]);
 
 	if (allOrgs.length === 0) return null;
 	return (

@@ -1,3 +1,4 @@
+"use client";
 import { cn } from "@/utility/classNames";
 import { useEffect, useRef } from "react";
 

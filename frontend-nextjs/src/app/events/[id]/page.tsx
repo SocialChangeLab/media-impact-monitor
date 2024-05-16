@@ -1,18 +1,16 @@
 import { getEventData } from "@/utility/eventsUtil";
-import { parseSearchParams } from "@/utility/searchParamsUtil";
+import { notFound } from "next/navigation";
 
 export default async function EventPage({
 	params,
-	searchParams,
 }: {
 	params: { id: string };
-	searchParams: Record<string, string>;
 }) {
-	const parsedSearchParams = parseSearchParams(
-		new URLSearchParams(searchParams),
-	);
-	const { data } = await getEventData(params.id, parsedSearchParams);
-	if (!data) return;
+	const { data, error } = await getEventData(params.id);
+
+	if (error) throw new Error(error);
+	if (!data) return notFound();
+
 	return (
 		<>
 			<h1>{data.description}</h1>

@@ -1,37 +1,24 @@
 "use client";
 import { ThemeProvider } from "@/providers/ThemeProvider";
 import { TooltipProvider } from "@radix-ui/react-tooltip";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
-import { ReactQueryStreamedHydration } from "@tanstack/react-query-next-experimental";
-import { useState } from "react";
-import { Toaster } from "sonner";
+import CustomQueryClientProvider from "./components/QueryClientProvider";
+import { Toaster } from "./components/ui/sonner";
+import { FiltersStoreProvider } from "./providers/FiltersStoreProvider";
 
 function Providers({ children }: { children: React.ReactNode }) {
-	const [queryClient] = useState(
-		() =>
-			new QueryClient({
-				defaultOptions: {
-					queries: {
-						// Stale time one hour
-						staleTime: 1000 * 60 * 60,
-					},
-				},
-			}),
-	);
-
 	return (
 		<>
-			<QueryClientProvider client={queryClient}>
-				<ThemeProvider defaultTheme="system" enableSystem>
-					<TooltipProvider>
-						<ReactQueryStreamedHydration>
+			<CustomQueryClientProvider>
+				<FiltersStoreProvider>
+					<ThemeProvider defaultTheme="system" enableSystem>
+						<TooltipProvider>
 							{children}
-						</ReactQueryStreamedHydration>
-						<ReactQueryDevtools initialIsOpen={false} />
-					</TooltipProvider>
-				</ThemeProvider>
-			</QueryClientProvider>
+							<ReactQueryDevtools initialIsOpen={false} />
+						</TooltipProvider>
+					</ThemeProvider>
+				</FiltersStoreProvider>
+			</CustomQueryClientProvider>
 			<Toaster />
 		</>
 	);

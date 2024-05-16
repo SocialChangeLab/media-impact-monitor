@@ -5,13 +5,14 @@ import WelcomeMessage from "@/components/WelcomeMessage";
 import "@/styles/global.css";
 import { cn } from "@/utility/classNames";
 import { usePathname } from "next/navigation";
-import type { PropsWithChildren, ReactNode } from "react";
+import type { ReactNode } from "react";
 import { Menu } from "../menu";
 
-export const BaseLayout: React.FC<PropsWithChildren<{ modal?: ReactNode }>> = ({
+export function BaseLayout({
 	children,
-	modal,
-}) => {
+}: {
+	children: ReactNode;
+}) {
 	const pathname = usePathname();
 	const currentPage = pathname.split("/")[1] || "events";
 	return (
@@ -41,4 +42,4 @@ export const BaseLayout: React.FC<PropsWithChildren<{ modal?: ReactNode }>> = ({
 			<Footer />
 		</div>
 	);
-};
+}

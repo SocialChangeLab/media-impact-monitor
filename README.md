@@ -67,6 +67,16 @@ Please [send us an email](mailto:david@socialchangelab.org) or [book a short mee
 
 <!-- ALL-CONTRIBUTORS-LIST:END -->
 
+## License
+
+We use a mixed license, with GPL as the basis and two additional restrictions:
+
+1. GPL v3 basis: Derivative works must be made open source (copyleft).
+2. NoHarm Clause: Only ethical use is permitted.
+3. Commons Clause: Only noncommercial use is permitted.
+
+For details check out the [full license text](LICENSE).
+
 ## Partners
 
 | Hosted by                                                                                                                                                                    | Funded by                                                                                                                         |                                                                                                                                                       |

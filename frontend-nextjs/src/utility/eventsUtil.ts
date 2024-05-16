@@ -100,8 +100,8 @@ export async function getEventsData(params?: {
 	}
 
 	json = await response.json();
-	json = (await import("../fakeDataForTesting/fakeEventsDataForTesting.json"))
-		.default;
+	// json = (await import("../fakeDataForTesting/fakeEventsDataForTesting.json"))
+	// 	.default;
 	const events = validateGetDataResponse(json);
 	return events;
 }

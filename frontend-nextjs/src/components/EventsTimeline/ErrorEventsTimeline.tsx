@@ -1,5 +1,6 @@
 "use client";
 import ComponentError from "@/components/ComponentError";
+import { cn } from "@/utility/classNames";
 import EventsTimelineWrapper from "./EventsTimelinWrapper";
 import EventsTimelineChartWrapper from "./EventsTimelineChartWrapper";
 
@@ -15,7 +16,13 @@ export default function ErrorEventsTimeline({
 	return (
 		<EventsTimelineWrapper>
 			<EventsTimelineChartWrapper animationKey="error">
-				<div className="w-full h-[calc(100vh-14rem)] flex justify-center items-center bg-grayUltraLight border border-grayLigh">
+				<div
+					className={cn(
+						"w-full h-[calc(100vh-14rem)]",
+						"flex justify-center items-center",
+						"bg-grayUltraLight border border-grayLight",
+					)}
+				>
 					<ComponentError
 						errorMessage={errorMessage}
 						reset={reset}

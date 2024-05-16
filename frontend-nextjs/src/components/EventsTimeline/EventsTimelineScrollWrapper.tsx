@@ -31,7 +31,7 @@ function EventsTimelineScrollWrapper({
 				className={cn(
 					"absolute w-[calc(100vw-3rem)]",
 					"left-0 top-0 bottom-14",
-					"border border-light border-b-0",
+					"border border-grayLight border-b-0",
 					"pointer-events-none",
 				)}
 				aria-hidden="true"

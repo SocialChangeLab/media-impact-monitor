@@ -1,9 +1,9 @@
 import { subDays } from "date-fns";
 import { create } from "zustand";
 import {
+	type StateStorage,
 	createJSONStorage,
 	persist,
-	type StateStorage,
 } from "zustand/middleware";
 
 const defaultTo = subDays(new Date(), 1);

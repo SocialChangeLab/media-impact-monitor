@@ -4,7 +4,11 @@ import { useQuery } from "@tanstack/react-query";
 import { format, isAfter, isBefore } from "date-fns";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
-import { extractEventOrganisations, getEventsData } from "./eventsUtil";
+import {
+	type EventType,
+	extractEventOrganisations,
+	getEventsData,
+} from "./eventsUtil";
 
 function useEvents(initialData?: Awaited<ReturnType<typeof getEventsData>>) {
 	const filtersStore = useFiltersStore();
@@ -14,7 +18,7 @@ function useEvents(initialData?: Awaited<ReturnType<typeof getEventsData>>) {
 	const fromDateString = format(from, "yyyy-MM-dd");
 	const toDateString = format(to, "yyyy-MM-dd");
 	const queryKey = ["events", fromDateString, toDateString];
-	const { data, isPending, error } = useQuery({
+	const { data, isPending, error } = useQuery<EventType[], Error>({
 		queryKey,
 		queryFn: async () => await getEventsData({ from, to }),
 		initialData: initialData,

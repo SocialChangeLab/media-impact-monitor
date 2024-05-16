@@ -1,26 +1,49 @@
 "use client";
 import ErrorEventsTimeline from "@/components/EventsTimeline/ErrorEventsTimeline";
-import { ApiFetchError } from "@/utility/eventsUtil";
 
 function TimelineRouteError({
 	error,
 	reset,
 }: {
-	error: Error & { digest?: string };
+	error: unknown;
 	reset?: () => void;
 }) {
-	const message = parseErrorMessage(error);
-	return <ErrorEventsTimeline errorMessage={message} reset={reset} />;
+	const { message, details } = parseErrorMessage(error);
+	return (
+		<ErrorEventsTimeline
+			errorMessage={message}
+			errorDetails={details}
+			reset={reset}
+		/>
+	);
 }
 
 function parseErrorMessage(error: unknown) {
-	if (error instanceof ApiFetchError)
-		return `We are facing issues with our API and where not able to retrieve the events. Please try again in a few minutes.`;
-	if (error instanceof Error)
-		return `There was an issue with the event data: ${error.message}. Please try again in a few minutes.`;
-	if (typeof error === "string")
-		return `There was an issue with the event data: ${error}. Please try again in a few minutes.`;
-	return `There was an issue with the event data. Please try again in a few minutes.`;
+	const defaultMessage = `There was unexpected issue while retrieving the protests. Please try again in a few minutes.`;
+	if (error instanceof Error) {
+		const [name, message] = error.message.split("&&&");
+		const details =
+			process.env.NODE_ENV === "development" ? message : undefined;
+		if (name === "ApiFetchError")
+			return {
+				message: `We are facing issues with our API and where not able to retrieve the protests. Please try again in a few minutes.`,
+				details,
+			};
+		if (name === "ZodError") {
+			return {
+				message: `The data returned from the API is not in the expected format. Please try again in a few minutes or contact the developers.`,
+				details,
+			};
+		}
+		return {
+			message: defaultMessage,
+			details,
+		};
+	}
+	return {
+		message: defaultMessage,
+		details: typeof error === "string" ? error : undefined,
+	};
 }
 
 export default TimelineRouteError;

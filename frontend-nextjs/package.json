@@ -3,7 +3,7 @@
 	"version": "0.1.0",
 	"private": true,
 	"scripts": {
-		"dev": "cross-env NODE_OPTIONS=--max_old_space_size=4096 FAKE_DATA_FALLBACK=true next dev --turbo",
+		"dev": "cross-env NODE_OPTIONS=--max_old_space_size=4096 next dev --turbo",
 		"build": "bun run check && next build",
 		"start": "next start",
 		"check": "bunx @biomejs/biome check --apply src"

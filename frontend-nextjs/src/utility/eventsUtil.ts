@@ -1,5 +1,5 @@
 import { format, parse } from "date-fns";
-import { z } from "zod";
+import { ZodError, z } from "zod";
 import { dateSortCompare, isValidISODateString } from "./dateUtil";
 
 export type Query<T> =
@@ -67,13 +67,6 @@ const eventDataResponseTypeZodSchema = z.object({
 	error: z.union([z.string(), z.null()]).optional(),
 });
 
-export class ApiFetchError extends Error {
-	constructor(message: string) {
-		super(message);
-		this.name = "ApiFetchError";
-	}
-}
-
 export async function getEventsData(params?: {
 	from?: Date;
 	to?: Date;
@@ -82,38 +75,33 @@ export async function getEventsData(params?: {
 	if (!apiUrl)
 		throw new Error("NEXT_PUBLIC_API_URL env variable is not defined");
 	let json: unknown = { query: {}, data: [] };
-	try {
-		const response = await fetch(`${apiUrl}/events`, {
-			cache: "no-store",
-			method: "POST",
-			headers: {
-				"Content-Type": "application/json",
-				"Cache-Control": "no-cache",
-			},
-			body: JSON.stringify({
-				source: "acled",
-				topic: "climate_change",
-				...(params?.from && params?.to
-					? {
-							start_date: format(params?.from, "yyyy-MM-dd"),
-							end_date: format(params?.to, "yyyy-MM-dd"),
-						}
-					: {}),
-			}),
-		});
-		if (!response.ok) throw new ApiFetchError("Error fetching events");
-		json = await response.json();
-	} catch (error) {
-		if (
-			process.env.NODE_ENV === "development" &&
-			process.env.FAKE_DATA_FALLBACK === "true"
-		) {
-			console.error(error);
-			// json = (await import("../fakeDataForTesting/fakeEventsDataForTesting.json")).default;
-		} else {
-			throw new Error(`Error fetching events: ${error}`);
-		}
+	const response = await fetch(`${apiUrl}/events`, {
+		cache: "no-store",
+		method: "POST",
+		headers: {
+			"Content-Type": "application/json",
+			"Cache-Control": "no-cache",
+		},
+		body: JSON.stringify({
+			source: "acled",
+			topic: "climate_change",
+			...(params?.from && params?.to
+				? {
+						start_date: format(params?.from, "yyyy-MM-dd"),
+						end_date: format(params?.to, "yyyy-MM-dd"),
+					}
+				: {}),
+		}),
+	});
+
+	if (!response.ok) {
+		const message = `An error has occured: ${response.statusText} ${response.status}`;
+		throw new Error(`ApiFetchError&&&${message}`);
 	}
+
+	json = await response.json();
+	json = (await import("../fakeDataForTesting/fakeEventsDataForTesting.json"))
+		.default;
 	const events = validateGetDataResponse(json);
 	return events;
 }
@@ -159,14 +147,28 @@ export function extractEventOrganisations(
 }
 
 function validateGetDataResponse(response: unknown): EventType[] {
-	const parsedResponse = eventDataResponseTypeZodSchema.parse(response);
-	const eventsWithFixedOrgs = parsedResponse.data
-		.filter((x) => isValidISODateString(x.date))
-		.map((x) => ({
-			...x,
-			date: parse(x.date, "yyyy-MM-dd", new Date()).toISOString(),
-			organizers: x.organizers ?? [],
-		}))
-		.sort((a, b) => dateSortCompare(a.date, b.date));
-	return eventsWithFixedOrgs;
+	try {
+		const parsedResponse = eventDataResponseTypeZodSchema.parse(response);
+		const eventsWithFixedOrgs = parsedResponse.data
+			.filter((x) => isValidISODateString(x.date))
+			.map((x) => ({
+				...x,
+				date: parse(x.date, "yyyy-MM-dd", new Date()).toISOString(),
+				organizers: x.organizers ?? [],
+			}))
+			.sort((a, b) => dateSortCompare(a.date, b.date));
+		return eventsWithFixedOrgs;
+	} catch (error) {
+		if (error instanceof ZodError) {
+			const errorMessage = (error.issues ?? [])
+				.map(
+					(x) =>
+						`${x.message}${x.path.length > 0 ? ` at ${x.path.join(".")}` : ""}`,
+				)
+				.join(", ");
+			throw new Error(`ZodError&&&${errorMessage}`);
+		}
+		if (error instanceof Error) throw error;
+		throw new Error(`UnknownError&&&${error}`);
+	}
 }

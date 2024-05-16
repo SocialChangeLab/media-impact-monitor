@@ -5,12 +5,12 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 
 function ComponentError({
-	errorMessage,
-	announcement = "There was an error while fetching the data:",
+	errorDetails,
+	errorMessage = "There was an unexpected error while fetching the data:",
 	reset,
 }: {
 	errorMessage: string;
-	announcement?: string;
+	errorDetails?: string;
 	reset?: () => void;
 }) {
 	const pathname = usePathname();
@@ -26,10 +26,12 @@ function ComponentError({
 					/>
 				</div>
 			</div>
-			{announcement}
-			<pre className="mt-2 min-w-full px-6 py-5 bg-grayDark text-bg mb-6 text-mono max-w-full overflow-x-auto">
-				<code>{errorMessage}</code>
-			</pre>
+			{errorMessage}
+			{errorDetails && (
+				<pre className="mt-2 min-w-full px-6 py-5 bg-grayDark text-bg mb-6 text-mono max-w-full overflow-x-auto">
+					<code>{errorDetails}</code>
+				</pre>
+			)}
 			<div className="flex gap-4 flex-wrap min-w-full justify-between">
 				{reset && <Button onClick={reset}>Try again</Button>}
 				<Button asChild variant="outline">

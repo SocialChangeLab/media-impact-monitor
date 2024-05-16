@@ -7,12 +7,13 @@ import pandas as pd
 from dotenv import load_dotenv
 
 from media_impact_monitor.util.cache import cache
+from media_impact_monitor.util.env import MEDIACLOUD_API_TOKEN
 
 load_dotenv()
 
-token = os.environ["MEDIACLOUD_API_TOKEN"]
-search = mediacloud.api.SearchApi(token)
-directory = mediacloud.api.DirectoryApi(token)
+
+search = mediacloud.api.SearchApi(MEDIACLOUD_API_TOKEN)
+directory = mediacloud.api.DirectoryApi(MEDIACLOUD_API_TOKEN)
 
 
 Platform = Literal["onlinenews-mediacloud", "onlinenews-waybackmachine"]

@@ -1,9 +1,9 @@
 import { subDays } from "date-fns";
 import { create } from "zustand";
 import {
-	type StateStorage,
 	createJSONStorage,
 	persist,
+	type StateStorage,
 } from "zustand/middleware";
 
 const defaultTo = subDays(new Date(), 1);
@@ -34,7 +34,6 @@ const persistentStorage: StateStorage = {
 	getItem: (key: string): string => {
 		const searchParams = new URLSearchParams(getUrlSearch());
 		const storedValue = searchParams.get(key);
-		console.log(key);
 		return JSON.parse(storedValue as string);
 	},
 	setItem: (key, newValue): void => {

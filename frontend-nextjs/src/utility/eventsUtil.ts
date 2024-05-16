@@ -101,9 +101,7 @@ export async function getEventsData(params?: {
 			process.env.FAKE_DATA_FALLBACK === "true"
 		) {
 			console.error(error);
-			json = (
-				await import("../fakeDataForTesting/fakeEventsDataForTesting.json")
-			).default;
+			// json = (await import("../fakeDataForTesting/fakeEventsDataForTesting.json")).default;
 		} else {
 			throw new Error(`Error fetching events: ${error}`);
 		}

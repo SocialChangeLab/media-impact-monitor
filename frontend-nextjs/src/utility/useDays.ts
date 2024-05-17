@@ -7,7 +7,7 @@ function useDays() {
 
 	const eventDays = useMemo(() => {
 		if (!from || !to) return [];
-		const diffInDays = Math.abs(differenceInDays(to, from));
+		const diffInDays = Math.abs(differenceInDays(to, from)) + 1;
 		return new Array(diffInDays).fill(null).map((_, idx) => {
 			const day = startOfDay(addDays(from, idx));
 			return day;

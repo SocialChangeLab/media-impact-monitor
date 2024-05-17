@@ -8,6 +8,7 @@ import {
 	utcWeek,
 } from "d3-time";
 import {
+	addDays,
 	differenceInDays,
 	differenceInMonths,
 	differenceInWeeks,
@@ -30,7 +31,7 @@ function EventsTimelineAxis({
 	const xAxisTicks = useMemo(() => {
 		if (!timeScale) return [];
 		const rangeStart = eventDays[0].day;
-		const rangeEnd = eventDays[eventDays.length - 1].day;
+		const rangeEnd = addDays(eventDays[eventDays.length - 1].day, 1);
 		const ticksCount = getOptimalTicks({ width, rangeStart, rangeEnd });
 		const ticks = utcTicks(rangeStart, rangeEnd, ticksCount);
 		const everyTwoTicks = ticks.filter((_, i) => i % 2 === 0);

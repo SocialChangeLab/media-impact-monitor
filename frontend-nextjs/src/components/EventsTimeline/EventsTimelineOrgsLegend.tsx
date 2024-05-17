@@ -5,7 +5,7 @@ import type { OrganisationType } from "@/utility/eventsUtil";
 import { useMemo } from "react";
 import { Portal, Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip";
 
-function EventsTimelineLegend({
+function EventsTimelineOrgsLegend({
 	organisations,
 }: {
 	organisations: OrganisationType[];
@@ -42,19 +42,16 @@ function EventsTimelineLegend({
 
 	if (allOrgs.length === 0) return null;
 	return (
-		<div className="mt-6 flex flex-col gap-2 w-screen px-6 -ml-6">
-			<h4 className="text-lg font-bold font-headlines antialiased relative z-10">
-				<span className="w-fit pr-4 bg-bg relative z-20">Legend</span>
-				<span className="h-px w-full bg-grayLight absolute top-1/2 left-0 z-10"></span>
-			</h4>
-			<ul className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-8 relative z-20">
+		<div className="flex flex-col gap-2">
+			<h5 className="font-bold">Color</h5>
+			<ul className="grid grid-cols-[repeat(auto-fill,minmax(min(20rem,100%),1fr));] gap-x-6 relative z-20">
 				{allOrgs.map((org) => (
 					<Tooltip key={org.name}>
 						<TooltipTrigger asChild>
 							<li
 								className={cn(
-									"grid grid-cols-[auto_1fr_auto] gap-x-2",
-									"items-center border-b border-b-grayLight py-2",
+									"grid grid-cols-[auto_1fr_auto] gap-x-2 py-2",
+									"items-center border-t border-black/5",
 									`legend-org legend-org-${slugifyCssClass(org.name)}`,
 									`cursor-pointer`,
 								)}
@@ -102,4 +99,4 @@ function EventsTimelineLegend({
 	);
 }
 
-export default EventsTimelineLegend;
+export default EventsTimelineOrgsLegend;

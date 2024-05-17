@@ -11,14 +11,16 @@ import useTimeScale from "@/utility/useTimeScale";
 import { scalePow } from "d3-scale";
 import { format, isSameDay, startOfDay } from "date-fns";
 import { useMemo } from "react";
+import HeadlineWithLine from "../HeadlineWithLine";
 import EmptyEventsTimeline from "./EmptyEventsTimeline";
 import EventBubbleLink from "./EventBubbleLink";
 import EventTooltip from "./EventTooltip";
 import EventsTimelineWrapper from "./EventsTimelinWrapper";
 import EventsTimelineAxis from "./EventsTimelineAxis";
 import EventsTimelineChartWrapper from "./EventsTimelineChartWrapper";
-import EventsTimelineLegend from "./EventsTimelineLegend";
+import EventsTimelineOrgsLegend from "./EventsTimelineOrgsLegend";
 import EventsTimelineScrollWrapper from "./EventsTimelineScrollWrapper";
+import EventsTimelineSizeLegend from "./EventsTimelineSizeLegend";
 import config from "./eventsTimelineConfig";
 
 function EventsTimeline({
@@ -108,7 +110,13 @@ function EventsTimeline({
 				</EventsTimelineChartWrapper>
 				<EventsTimelineAxis eventDays={eventDays} />
 			</EventsTimelineScrollWrapper>
-			<EventsTimelineLegend organisations={organisations} />
+			<div className="mt-6 flex flex-col gap-4 w-screen px-6 -ml-6">
+				<HeadlineWithLine>Legend</HeadlineWithLine>
+				<div className="grid gap-8 md:gap-12 md:grid-cols-[auto_1fr]">
+					<EventsTimelineSizeLegend sizeScale={sizeScale} />
+					<EventsTimelineOrgsLegend organisations={organisations} />
+				</div>
+			</div>
 		</EventsTimelineWrapper>
 	);
 }

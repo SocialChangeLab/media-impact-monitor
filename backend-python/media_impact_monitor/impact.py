@@ -6,17 +6,26 @@ from media_impact_monitor.impact_estimators.interrupted_time_series import (
     estimate_mean_impact,
 )
 from media_impact_monitor.trend import get_trend
-from media_impact_monitor.types_ import Impact, ImpactSearch, TrendSearch
+from media_impact_monitor.types_ import Impact, ImpactSearch, Method, TrendSearch
 from media_impact_monitor.util.cache import cache
 
 
 @cache
 def get_impact(q: ImpactSearch) -> Impact:
     events = get_events_by_id(q.cause)
-    trend = get_trend(TrendSearch(**dict(q.effect)))
+    trends = get_trend(TrendSearch(**dict(q.effect)))
+    trend = trends["policy"]
+    trend.name = "count"
+    impact = get_impact_for_single_trend(events, trend, q.method)
+    return impact
+
+
+def get_impact_for_single_trend(
+    events: pd.DataFrame, trend: pd.DataFrame, method: Method
+) -> Impact:
     hidden_days_before_protest = 4
     horizon = 28
-    match q.method:
+    match method:
         case "interrupted_time_series":
             mean_impact = estimate_mean_impact(
                 events=events,
@@ -27,7 +36,7 @@ def get_impact(q: ImpactSearch) -> Impact:
         case "synthetic_control":
             raise NotImplementedError("Synthetic control is not yet implemented.")
         case _:
-            raise ValueError(f"Unsupported method: {q.method}")
+            raise ValueError(f"Unsupported method: {method}")
     return Impact(
         method_applicability="maybe",
         method_applicability_reason="We're not checking this yet 🤡",

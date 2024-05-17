@@ -216,16 +216,12 @@ let impact = await queryApi('impact', {
   method: 'interrupted_time_series'
 })
 display(html`${impact.method_applicability_reason}`)
-impact = impact.time_series
-impact = Object.keys(impact)
-  .map(k => ({ day: parseInt(k), ...impact[k] }))
-  .sort((a, b) => a.day - b.day)
-// display(Inputs.table(impact))
+// display(impact)
 ```
 
 ```js
-const spec = {
-  data: { values: impact },
+const spec = (topic, data_) => ({
+  data: { values: data_ },
   layer: [
     {
       mark: 'errorband',
@@ -252,8 +248,13 @@ const spec = {
       }
     }
   ],
-  title: 'Impact'
+  title: `Impact on ${topic}`
+})
+for (const topic in impact.time_series) {
+  let data = impact.time_series[topic]
+  data = Object.keys(data)
+    .map(k => ({ day: parseInt(k), ...data[k] }))
+    .sort((a, b) => a.day - b.day)
+  display(await embed(spec(topic, data)))
 }
-
-display(await embed(spec))
 ```

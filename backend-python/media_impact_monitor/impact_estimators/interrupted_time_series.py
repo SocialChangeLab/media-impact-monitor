@@ -155,6 +155,7 @@ def estimate_mean_impact(
             assert hidden_days_before_protest % 7 == 0
 
             impacts_df.index = range(-hidden_days_before_protest, horizon, 7)
+    impacts_df.index.name = "date"
     if cumulative:
         impacts_df = impacts_df.cumsum()
     average = impacts_df.mean(axis=1, skipna=True)

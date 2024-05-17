@@ -105,7 +105,13 @@ export function DatePickerWithRange({
 						/>
 						<div className="p-3 flex justify-end gap-4">
 							{onReset && !isDefault && (
-								<Button variant="ghost" onClick={onReset}>
+								<Button
+									variant="ghost"
+									onClick={() => {
+										setIsOpen(false);
+										onReset();
+									}}
+								>
 									Reset defaults
 								</Button>
 							)}

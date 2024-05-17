@@ -115,7 +115,9 @@ function EventsTimelineScrollWrapper({
 						"text-grayDark hover:bg-none focus-visible:bg-bg",
 						"inline-flex size-auto gap-0.5 py-1 px-0 rounded-full",
 						className,
-						visible ? "group-hover:opacity-70 hover:opacity-100" : "opacity-0",
+						visible
+							? "group-hover:opacity-70 hover:opacity-100"
+							: "opacity-0 pointer-events-none",
 					)}
 					tabIndex={visible ? 0 : -1}
 				>

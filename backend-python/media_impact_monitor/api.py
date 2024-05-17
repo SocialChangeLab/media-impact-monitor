@@ -28,7 +28,6 @@ from media_impact_monitor.types_ import (
     Response,
     TrendSearch,
 )
-from media_impact_monitor.util.env import PORT
 
 git_commit = (os.getenv("VCS_REF") or "")[:7]
 build_date = (os.getenv("BUILD_DATE") or "WIP").replace("T", " ")
@@ -117,4 +116,4 @@ def _get_impact(q: ImpactSearch) -> Response[ImpactSearch, Impact]:
 if __name__ == "__main__":
     import uvicorn
 
-    uvicorn.run(app, port=PORT)
+    uvicorn.run(app)

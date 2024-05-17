@@ -42,7 +42,7 @@ export default function LoadingEventsTimeline() {
 					{skeletons.map(({ colId, eventsWithSize }) => (
 						<li
 							key={`loading-event-col-${colId}`}
-							className="grid grid-rows-subgrid row-span-3 relative animate-pulse w-4 shrink-0 grow"
+							className="grid grid-rows-subgrid row-span-3 relative animate-pulse py-4 w-4 shrink-0 grow"
 						>
 							<div className="flex flex-col justify-end items-center gap-0.5">
 								{eventsWithSize.map(({ eventId, height }) => (

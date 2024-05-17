@@ -15,9 +15,9 @@
 		}
 	},
 	"files": {
-		"ignore": ["src/fakeDataForTesting/**"]
+		"ignore": ["src/data/**"]
 	},
 	"formatter": {
-		"ignore": ["test/fakeDataForTesting/**"]
+		"ignore": ["test/data/**"]
 	}
 }

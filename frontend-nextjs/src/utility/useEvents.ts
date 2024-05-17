@@ -49,6 +49,7 @@ function useEvents(initialData?: Awaited<ReturnType<typeof getEventsData>>) {
 
 	const events = useMemo(() => {
 		return (data ?? []).filter((e) => {
+			if (!e.date) return false;
 			const beforeFrom = isBefore(e.date, from);
 			const afterTo = isAfter(e.date, to);
 			if (beforeFrom || afterTo) return false;

@@ -43,7 +43,7 @@ function EventsTimelineAxis({
 				ref={ref}
 				aria-label="X Axis - Time"
 				className={cn(
-					"flex items-start pb-6 h-14 bg-bg",
+					"flex items-start pb-6 h-14 bg-pattern-soft",
 					"relative justify-stretch overflow-clip",
 				)}
 				style={{ width: `max(${eventDays.length + 1}rem, 100%)` }}
@@ -53,7 +53,7 @@ function EventsTimelineAxis({
 					return (
 						<li
 							key={day.toISOString()}
-							className="flex min-w-4 bg-bg h-14 justify-center relative shrink-0 grow border-t border-grayMed"
+							className="flex min-w-4 bg-pattern-soft h-14 justify-center relative shrink-0 grow border-t border-grayMed"
 							aria-label="X Axis Tick"
 						>
 							<span

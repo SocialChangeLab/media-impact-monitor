@@ -12,7 +12,6 @@ import {
 } from "@/components/ui/popover";
 import { cn } from "@/utility/classNames";
 import { CalendarDays } from "lucide-react";
-import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 
 export function DatePickerWithRange({
@@ -24,13 +23,16 @@ export function DatePickerWithRange({
 	defaultDateRange: { from: Date; to: Date };
 	onChange?: (date: { from: Date; to: Date }) => void;
 }) {
-	const pathname = usePathname();
-	const router = useRouter();
 	const [isOpen, setIsOpen] = useState(false);
 	const lastRange = useRef<DateRange | undefined>();
 	const [date, setDate] = useState<DateRange | undefined>(defaultDateRange);
 	const fromDateString = format(date?.from || new Date(), "yyyy-MM-dd");
 	const toDateString = format(date?.to || new Date(), "yyyy-MM-dd");
+
+	useEffect(() => {
+		if (!defaultDateRange.from || !defaultDateRange.to) return;
+		setDate(defaultDateRange);
+	}, [defaultDateRange]);
 
 	// biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
 	useEffect(() => {

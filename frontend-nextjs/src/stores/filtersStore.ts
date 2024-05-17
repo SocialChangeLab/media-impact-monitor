@@ -1,4 +1,4 @@
-import { subDays } from "date-fns";
+import { endOfDay, startOfDay, subDays } from "date-fns";
 import { create } from "zustand";
 import {
 	type StateStorage,
@@ -61,7 +61,8 @@ export const createFiltersStore = (
 		persist<FiltersStore>(
 			(set) => ({
 				...initState,
-				setDateRange: ({ from, to }) => set(() => ({ from, to })),
+				setDateRange: ({ from, to }) =>
+					set(() => ({ from: startOfDay(from), to: endOfDay(to) })),
 			}),
 			storageOptions,
 		),

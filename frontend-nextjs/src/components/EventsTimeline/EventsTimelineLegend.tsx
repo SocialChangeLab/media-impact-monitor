@@ -19,6 +19,7 @@ function EventsTimelineLegend({
 			else mainOrgs.push(org);
 		}
 
+		if (otherOrgs.length === 0) return { allOrgs: mainOrgs, otherOrgs: [] };
 		return {
 			allOrgs: [
 				...mainOrgs,

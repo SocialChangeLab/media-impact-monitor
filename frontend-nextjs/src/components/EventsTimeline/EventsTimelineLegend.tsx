@@ -82,9 +82,9 @@ function EventsTimelineLegend({
 										<ul className="flex flex-col w-96 max-w-full">
 											{otherOrgs?.map((subOrg) => (
 												<li key={subOrg.name} className="flex flex-col">
-													<div className="grid grid-cols-[1fr_auto] gap-4 py-2 border-b border-grayLight">
+													<div className="grid grid-cols-[1fr_auto] gap-4 py-2 border-b border-black/10">
 														<span className="truncate">{subOrg.name}</span>
-														<span className="font-mono text-xs text-grayDark">
+														<span className="font-mono text-xs text-black/45">
 															{subOrg.count.toLocaleString("en-GB")}
 														</span>
 													</div>

@@ -21,7 +21,7 @@ function EventsTimelineChartWrapper({
 				<ul
 					key={animationKey || "events-timeline-chart-wrapper"}
 					className={cn(
-						"flex min-w-full pb-4 min-h-full",
+						"flex min-w-full min-h-full",
 						"items-end justify-stretch gap-y-2",
 					)}
 					style={{ width: `max(${columnsCount}rem, 100%)` }}

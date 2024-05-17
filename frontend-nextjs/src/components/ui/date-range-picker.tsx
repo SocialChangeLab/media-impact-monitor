@@ -49,7 +49,15 @@ export function DatePickerWithRange({
 
 	return (
 		<div className={cn(className)}>
-			<Popover open={isOpen}>
+			<Popover
+				open={isOpen}
+				onOpenChange={(newOpen) => {
+					setIsOpen(newOpen);
+					if (isOpen && !newOpen) {
+						setDate(lastRange.current || defaultDateRange);
+					}
+				}}
+			>
 				<PopoverTrigger asChild>
 					<Button
 						id="date"
@@ -82,7 +90,16 @@ export function DatePickerWithRange({
 							onSelect={setDate}
 							numberOfMonths={2}
 						/>
-						<div className="p-3 flex justify-end">
+						<div className="p-3 flex justify-end gap-4">
+							<Button
+								variant="outline"
+								onClick={() => {
+									setIsOpen(false);
+									setDate(lastRange.current || defaultDateRange);
+								}}
+							>
+								Cancel
+							</Button>
 							<Button
 								onClick={() => {
 									setIsOpen(false);

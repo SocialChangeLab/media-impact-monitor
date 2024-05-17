@@ -84,11 +84,14 @@ function EventsTimeline({
 					{eventDays.map(({ day, eventsWithSize }) => (
 						<li
 							key={`event-day-${day.toISOString()}`}
-							className="grid grid-rows-subgrid row-span-3 relative w-4 grow shrink-0"
+							className="grid grid-rows-subgrid row-span-3 relative w-4 grow shrink-0 h-full py-4"
 						>
 							<div className="flex flex-col justify-end items-center gap-0.5">
 								<div
-									className="w-px h-full absolute top-0 left-1/2 -translate-x-1/2 bg-grayLight opacity-50"
+									className={cn(
+										"w-px h-full absolute top-0 left-1/2 -translate-x-1/2",
+										"bg-grayLight opacity-50 event-line transition-opacity",
+									)}
 									aria-hidden="true"
 								/>
 								{eventsWithSize.map((event) => (
@@ -126,25 +129,29 @@ function EventTimelineItem({
 			event={event}
 			organisations={organisations}
 		>
-			<div
-				className={cn(
-					"size-3 relative z-10 hover:z-20",
-					"event-item transition-opacity",
-					event.organizers.map((org) => {
-						const correspondingOrg = organisations.find(
-							(organisation) => organisation.name === org,
-						);
-						const isMain = correspondingOrg?.isMain ?? false;
-						return `event-item-org-${
-							isMain ? slugifyCssClass(org) || "unknown-organisation" : "other"
-						}`;
-					}),
-				)}
-				style={{
-					height: `${Math.ceil(sizeScale(event.size_number ?? 0))}px`,
-				}}
-			>
-				<EventBubbleLink event={event} organisations={organisations} />
+			<div className="rounded-full bg-grayUltraLight">
+				<div
+					className={cn(
+						"size-3 relative z-10 hover:z-20",
+						"event-item transition-all",
+						event.organizers.map((org) => {
+							const correspondingOrg = organisations.find(
+								(organisation) => organisation.name === org,
+							);
+							const isMain = correspondingOrg?.isMain ?? false;
+							return `event-item-org-${
+								isMain
+									? slugifyCssClass(org) || "unknown-organisation"
+									: "other"
+							}`;
+						}),
+					)}
+					style={{
+						height: `${Math.ceil(sizeScale(event.size_number ?? 0))}px`,
+					}}
+				>
+					<EventBubbleLink event={event} organisations={organisations} />
+				</div>
 			</div>
 		</EventTooltip>
 	);

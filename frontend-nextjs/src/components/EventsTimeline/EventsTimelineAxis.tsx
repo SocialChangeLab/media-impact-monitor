@@ -29,12 +29,13 @@ function EventsTimelineAxis({
 
 	const xAxisTicks = useMemo(() => {
 		if (!timeScale) return [];
-		const [rangeStart, rangeEnd] = timeScale.domain();
+		const rangeStart = eventDays[0].day;
+		const rangeEnd = eventDays[eventDays.length - 1].day;
 		const ticksCount = getOptimalTicks({ width, rangeStart, rangeEnd });
 		const ticks = utcTicks(rangeStart, rangeEnd, ticksCount);
 		const everyTwoTicks = ticks.filter((_, i) => i % 2 === 0);
 		return ticks.length > ticksCount ? everyTwoTicks : ticks;
-	}, [timeScale, width]);
+	}, [timeScale, width, eventDays]);
 
 	if (eventDays.length === 0) return null;
 	return (

@@ -48,4 +48,4 @@ Rscript -e 'renv::restore(project	= "/workspaces/media-impact-monitor/backend-R"
 ####
 
 echo 'eval "$(starship init bash)"' >> ~/.bashrc
-cd backend-python && poetry install # install everything once at setup
+cd backend-python && poetry config virtualenvs.in-project true && poetry install # install everything once at setup

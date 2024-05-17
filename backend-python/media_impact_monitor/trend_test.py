@@ -6,6 +6,7 @@ from media_impact_monitor.trend import get_trend
 from media_impact_monitor.types_ import TrendSearch
 
 
+@pytest.mark.skip(reason="google trends currently blocked on ci")
 def test_get_trend_keywords():
     trend_search = TrendSearch(
         trend_type="keywords",

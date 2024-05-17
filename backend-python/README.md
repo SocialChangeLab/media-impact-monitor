@@ -10,6 +10,11 @@
 - `poetry run uvicorn media_impact_monitor.api:app --host 0.0.0.0 --port 8000` to serve the API
 - `poetry run py-spy record -o profile.svg -- python xyz.py` to do profiling
 
+## Deployment
+
+Continuous deployment is currently set up with railway.app.
+
+Important: Configure a `PORT` environment variable there, otherwise the app will not be accessible and will be `Shutting down` for no apparent reason.
 
 ## Conventions
 

@@ -4,11 +4,13 @@ Run with: `uvicorn media_impact_monitor.api:app --reload`
 Or, if necessary: `poetry run uvicorn media_impact_monitor.api:app --reload`
 """
 
+import json
 import logging
-import subprocess
+import os
 from contextlib import asynccontextmanager
 
-from fastapi import FastAPI, HTTPException
+import pandas as pd
+from fastapi import FastAPI
 from starlette.middleware.cors import CORSMiddleware
 from starlette.responses import RedirectResponse
 from uvicorn.logging import AccessFormatter
@@ -27,13 +29,12 @@ from media_impact_monitor.types_ import (
     TrendSearch,
 )
 
-commit_hash = (
-    subprocess.check_output(["git", "rev-parse", "--short", "HEAD"]).decode().strip()
-)
+git_commit = (os.getenv("VCS_REF") or "")[:7]
+build_date = (os.getenv("BUILD_DATE") or "WIP").replace("T", " ")
 
 metadata = dict(
     title="Media Impact Monitor API",
-    version=f"0.1.0+{commit_hash}",
+    version=f"0.1.0+{git_commit} ({build_date})",
     contact=dict(
         name="Social Change Lab",
         url="https://github.com/socialchangelab/media-impact-monitor",
@@ -42,20 +43,6 @@ metadata = dict(
     # the original Swagger UI does not properly display POST parameters, so we disable it
     docs_url=None,
 )
-
-
-@asynccontextmanager
-async def app_lifespan(app: FastAPI):
-    logger = logging.getLogger("uvicorn.access")
-    if logger.handlers:
-        console_formatter = AccessFormatter(
-            "{asctime} {levelprefix} {message}", style="{", use_colors=True
-        )
-        logger.handlers[0].setFormatter(console_formatter)
-    yield
-
-
-app = FastAPI(**metadata, lifespan=app_lifespan)
 
 
 # setup logging to also include datetime
@@ -98,37 +85,35 @@ def get_info() -> dict:
 @app.post("/events")
 def _get_events(q: EventSearch) -> Response[EventSearch, list[Event]]:
     """Fetch events from the Media Impact Monitor database."""
-    try:
-        df = get_events(q)
-        return Response(query=q, data=df.to_dict(orient="records"))
-    except Exception as e:
-        raise HTTPException(status_code=400, detail=f"{type(e).__name__}: {str(e)}")
+    df = get_events(q)
+    data = json.loads(df.to_json(orient="records"))  # convert nan to None
+    return Response(query=q, data=data)
 
 
 @app.post("/trend")
-def _get_trend(q: TrendSearch) -> Response[TrendSearch, CountTimeSeries]:
+def _get_trend(q: TrendSearch):  # -> Response[TrendSearch, CountTimeSeries]:
     """Fetch media item counts from the Media Impact Monitor database."""
-    try:
-        df = get_trend(q)
-        return Response(query=q, data=df.to_dict(orient="records"))
-    except Exception as e:
-        raise HTTPException(status_code=400, detail=f"{type(e).__name__}: {str(e)}")
+    df = get_trend(q)
+    long_df = pd.melt(
+        df.reset_index(), id_vars=["date"], var_name="topic", value_name="n_articles"
+    )
+    return Response(query=q, data=long_df.to_dict(orient="records"))
 
 
 @app.post("/fulltexts")
 def _get_fulltexts(q: FulltextSearch) -> Response[FulltextSearch, list[Event]]:
     """Fetch fulltexts from the Media Impact Monitor database."""
-    try:
-        raise NotImplementedError
-    except Exception as e:
-        raise HTTPException(status_code=400, detail=f"{type(e).__name__}: {str(e)}")
+    raise NotImplementedError
 
 
 @app.post("/impact")
 def _get_impact(q: ImpactSearch) -> Response[ImpactSearch, Impact]:
     """Compute the impact of an event on a media trend."""
-    try:
-        impact = get_impact(q)
-        return Response(query=q, data=impact)
-    except Exception as e:
-        raise HTTPException(status_code=400, detail=f"{type(e).__name__}: {str(e)}")
+    impact = get_impact(q)
+    return Response(query=q, data=impact)
+
+
+if __name__ == "__main__":
+    import uvicorn
+
+    uvicorn.run(app)

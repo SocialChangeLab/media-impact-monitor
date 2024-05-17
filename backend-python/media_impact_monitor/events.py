@@ -1,3 +1,4 @@
+import math
 from datetime import date
 from itertools import chain
 
@@ -10,18 +11,11 @@ from media_impact_monitor.data_loaders.protest.climate_orgs import (
     climate_orgs_aliases,
 )
 from media_impact_monitor.types_ import EventSearch
-from media_impact_monitor.util.cache import cache
-from media_impact_monitor.util.date import verify_dates
 
 
-@cache
 def get_events(q: EventSearch) -> pd.DataFrame:
-    assert q.event_type == "protest", "Only protests are supported."
     assert q.source == "acled", "Only ACLED is supported."
-    assert verify_dates(q.start_date, q.end_date)
-    df = get_acled_events(
-        countries=["Germany"], start_date=q.start_date, end_date=q.end_date
-    )
+    df = get_acled_events(countries=["Germany"])
     if df.empty:
         return q, []
     match q.topic:
@@ -34,68 +28,44 @@ def get_events(q: EventSearch) -> pd.DataFrame:
             ]
         case _:
             raise ValueError(f"Unsupported topic: {q.topic}")
-    if q.query:
-        assert not any(
-            sym in q.query.lower() for sym in ["or", "and", ",", "'", '"']
-        ), "Query must be a single keyword."
-        df = df[df["description"].str.lower().str.contains(q.query.lower())]
-    if q.organizers:
-        df = filter_by_organizers(df, q.organizers)
     df["event_id"] = df.apply(joblib_hash, axis=1, raw=True)
+    org_freqs = df["organizers"].str[0].value_counts()
+
+    def sort_organizers(organizers: list[str]) -> list[str]:
+        return sorted(organizers, key=lambda x: org_freqs.get(x, 0), reverse=True)
+
+    df["organizers"] = df["organizers"].apply(sort_organizers)
+    df = df[
+        df["organizers"].str[0].isin(org_freqs.index[:8])
+    ]  # TODO: remove this, or do it in the frontend
+    df["organizer_aliases"] = df["organizers"].apply(add_aliases)
+
+    def get_chart_position(row: pd.Series) -> int:
+        protests_on_same_day = df[df["date"] == row["date"]].sort_values(
+            by=["size_number", "description"], ascending=False
+        )
+        current_row_index = protests_on_same_day.index.get_loc(row.name)
+        position = (
+            protests_on_same_day.iloc[:current_row_index]["size_number"]
+            .apply(scale)
+            .sum()
+        )
+        position += scale(row["size_number"]) / 2
+        return position
+
+    df["chart_position"] = df.apply(get_chart_position, axis=1)
     return df.reset_index(drop=True)
 
 
-def filter_by_organizers(df: pd.DataFrame, organizers: list[str]) -> pd.DataFrame:
-    # check for correct spelling
-    for org in organizers:
-        if not overlap_case_insensitive([org], add_aliases(climate_orgs)):
-            raise ValueError(f"Unknown organizer: {org}")
-    # filter
-    df = df[
-        df["organizers"]
-        .apply(add_aliases)
-        .apply(lambda x: overlap_case_insensitive(x, organizers))
-    ]
-    return df
+def scale(x):
+    return math.sqrt(max(10_000, x))
 
 
 def add_aliases(orgs: list[str]) -> list[str]:
     return orgs + list(chain(*[climate_orgs_aliases.get(org, []) for org in orgs]))
 
 
-def overlap_case_insensitive(s1: list[str], s2: list[str]) -> bool:
-    # do the sets overlap (ignoring case)?
-    _s1 = set(s.lower() for s in s1)
-    _s2 = set(s.lower() for s in s2)
-    return bool(_s1 & _s2)
-
-
 def get_events_by_id(event_ids: list[str]) -> pd.DataFrame:
-    df = get_events(
-        EventSearch(
-            event_type="protest",
-            source="acled",
-            start_date=date(2020, 1, 1),
-            end_date=date.today(),
-        )
-    )
+    df = get_events(EventSearch(source="acled"))
     df = df[df["event_id"].isin(event_ids)]
     return df.reset_index(drop=True)
-
-
-@cache
-def all_events():
-    return get_events(
-        EventSearch(
-            event_type="protest",
-            source="acled",
-            start_date=date(2020, 1, 1),
-            end_date=date(2024, 3, 31),
-        )
-    )
-
-
-@cache
-def all_organizers():
-    df = all_events()
-    return df["organizers"].explode().value_counts().index.tolist()

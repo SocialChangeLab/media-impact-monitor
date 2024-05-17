@@ -1,16 +1,13 @@
 """Cache functions."""
 
-from os import environ
 from time import sleep as _sleep
 
-from dotenv import load_dotenv
 from joblib import Memory
 from requests import get as _get
 from requests import post as _post
 from zenrows import ZenRowsClient
 
-load_dotenv()
-
+from media_impact_monitor.util.env import ZENROWS_API_KEY
 
 memory = Memory("cache", verbose=0)
 cache = memory.cache
@@ -60,9 +57,7 @@ retries = 5
 
 @cache
 def get_proxied(url, *args, **kwargs):
-    client = ZenRowsClient(
-        environ["ZENROWS_API_KEY"], retries=2, concurrency=concurrency
-    )
+    client = ZenRowsClient(ZENROWS_API_KEY, retries=2, concurrency=concurrency)
     response = client.get(url, *args, **kwargs)
     if '{"code":' in response.text:
         raise ValueError(response.text)

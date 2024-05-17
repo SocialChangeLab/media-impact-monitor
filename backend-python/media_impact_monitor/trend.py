@@ -19,7 +19,7 @@ def get_trend(q: TrendSearch) -> pd.DataFrame:
     for topic, query in topic_queries(q.media_source).items():
         match q.media_source:
             case "news_online":
-                ds = get_mediacloud_counts(query=query)
+                ds = get_mediacloud_counts(query=query, countries=["Germany"])
             case "news_print":
                 ds = get_genios_counts(query=query)
             case "web_google":

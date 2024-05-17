@@ -18,12 +18,14 @@ directory = mediacloud.api.DirectoryApi(MEDIACLOUD_API_TOKEN)
 
 Platform = Literal["onlinenews-mediacloud", "onlinenews-waybackmachine"]
 
+end_date = date.today()
+
 
 @cache
 def get_mediacloud_counts(
     query: str,
     start_date: date = date(2023, 1, 1),
-    end_date: date = date.today(),
+    end_date: date = end_date,
     countries: list | None = None,
     platform: Platform = "onlinenews-mediacloud",
 ) -> pd.Series:

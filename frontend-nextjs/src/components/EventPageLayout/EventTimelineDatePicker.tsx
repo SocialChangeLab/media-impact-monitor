@@ -3,12 +3,15 @@ import { DatePickerWithRange } from "@/components/ui/date-range-picker";
 import { useFiltersStore } from "@/providers/FiltersStoreProvider";
 
 function EventTimelineDatePicker() {
-	const { from, to, setDateRange } = useFiltersStore();
+	const { from, to, defaultFrom, defaultTo, setDateRange, resetDateRange } =
+		useFiltersStore();
 
 	return (
 		<DatePickerWithRange
-			defaultDateRange={{ from, to }}
+			defaultDateRange={{ from: defaultFrom, to: defaultTo }}
+			dateRange={{ from, to }}
 			onChange={setDateRange}
+			onReset={resetDateRange}
 		/>
 	);
 }

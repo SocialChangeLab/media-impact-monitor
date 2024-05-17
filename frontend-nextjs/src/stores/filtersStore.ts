@@ -12,11 +12,15 @@ const defaultFrom = subDays(new Date(), 31);
 export type FiltersState = {
 	from: Date;
 	to: Date;
+	defaultFrom: Date;
+	defaultTo: Date;
+	isDefaultTimeRange: boolean;
 };
 
 export type FiltersActions = {
 	setDateRange: (props: { from: Date; to: Date }) => void;
 	resetAllFilters: () => void;
+	resetDateRange: () => void;
 };
 
 export type FiltersStore = FiltersState & FiltersActions;
@@ -24,6 +28,9 @@ export type FiltersStore = FiltersState & FiltersActions;
 export const defaultInitState: FiltersState = {
 	from: new Date(defaultFrom),
 	to: new Date(defaultTo),
+	defaultFrom: new Date(defaultFrom),
+	defaultTo: new Date(defaultTo),
+	isDefaultTimeRange: true,
 };
 
 const getUrlSearch = () => {
@@ -63,8 +70,16 @@ export const createFiltersStore = (
 			(set) => ({
 				...initState,
 				setDateRange: ({ from, to }) =>
-					set(() => ({ from: startOfDay(from), to: endOfDay(to) })),
+					set(() => ({
+						from: startOfDay(from),
+						to: endOfDay(to),
+					})),
 				resetAllFilters: () => set(() => defaultInitState),
+				resetDateRange: () =>
+					set(() => ({
+						from: defaultInitState.from,
+						to: defaultInitState.to,
+					})),
 			}),
 			storageOptions,
 		),

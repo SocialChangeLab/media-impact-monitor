@@ -1,6 +1,6 @@
 "use client";
 
-import { format } from "date-fns";
+import { format, isSameDay } from "date-fns";
 import type { DateRange } from "react-day-picker";
 
 import { Button } from "@/components/ui/button";
@@ -12,27 +12,40 @@ import {
 } from "@/components/ui/popover";
 import { cn } from "@/utility/classNames";
 import { CalendarDays } from "lucide-react";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 
 export function DatePickerWithRange({
 	className,
 	defaultDateRange,
+	dateRange,
 	onChange = () => {},
+	onReset,
 }: CalendarProps & {
 	className?: string;
 	defaultDateRange: { from: Date; to: Date };
+	dateRange: { from: Date; to: Date };
 	onChange?: (date: { from: Date; to: Date }) => void;
+	onReset?: () => void;
 }) {
 	const [isOpen, setIsOpen] = useState(false);
 	const lastRange = useRef<DateRange | undefined>();
-	const [date, setDate] = useState<DateRange | undefined>(defaultDateRange);
+	const [date, setDate] = useState<DateRange | undefined>(dateRange);
 	const fromDateString = format(date?.from || new Date(), "yyyy-MM-dd");
 	const toDateString = format(date?.to || new Date(), "yyyy-MM-dd");
 
+	const isDefault = useMemo(() => {
+		if (!defaultDateRange.from || !defaultDateRange.to) return false;
+		if (!date?.from || !date?.to) return false;
+		return (
+			isSameDay(defaultDateRange.from, date.from) &&
+			isSameDay(defaultDateRange.to, date.to)
+		);
+	}, [defaultDateRange.from, defaultDateRange.to, date?.from, date?.to]);
+
 	useEffect(() => {
-		if (!defaultDateRange.from || !defaultDateRange.to) return;
-		setDate(defaultDateRange);
-	}, [defaultDateRange]);
+		if (!dateRange.from || !dateRange.to) return;
+		setDate(dateRange);
+	}, [dateRange]);
 
 	// biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
 	useEffect(() => {
@@ -54,7 +67,7 @@ export function DatePickerWithRange({
 				onOpenChange={(newOpen) => {
 					setIsOpen(newOpen);
 					if (isOpen && !newOpen) {
-						setDate(lastRange.current || defaultDateRange);
+						setDate(lastRange.current || dateRange);
 					}
 				}}
 			>
@@ -91,11 +104,16 @@ export function DatePickerWithRange({
 							numberOfMonths={2}
 						/>
 						<div className="p-3 flex justify-end gap-4">
+							{onReset && !isDefault && (
+								<Button variant="ghost" onClick={onReset}>
+									Reset defaults
+								</Button>
+							)}
 							<Button
 								variant="outline"
 								onClick={() => {
 									setIsOpen(false);
-									setDate(lastRange.current || defaultDateRange);
+									setDate(lastRange.current || dateRange);
 								}}
 							>
 								Cancel

@@ -102,8 +102,7 @@ export async function getEventsData(params?: {
 
 		json = await response.json();
 	} catch (error) {
-		const jsonFallbackFile = Bun.file(`src/data/fallbackProtests.json`);
-		json = await jsonFallbackFile.json();
+		json = (await import(`../data/fallbackProtests.json`)).default;
 	}
 	const events = validateGetDataResponse(json);
 	return events;

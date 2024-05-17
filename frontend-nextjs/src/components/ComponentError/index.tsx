@@ -1,9 +1,8 @@
 "use client";
 import { Button } from "@/components/ui/button";
+import { useFiltersStore } from "@/providers/FiltersStoreProvider";
 import { cn } from "@/utility/classNames";
 import { AlertTriangle } from "lucide-react";
-import Link from "next/link";
-import { usePathname } from "next/navigation";
 
 function ComponentError({
 	errorDetails,
@@ -14,7 +13,7 @@ function ComponentError({
 	errorDetails?: string;
 	reset?: () => void;
 }) {
-	const pathname = usePathname();
+	const { from, to, resetAllFilters } = useFiltersStore();
 	return (
 		<div className="w-fit max-w-96 flex flex-col items-center">
 			<div className="mb-6 relative min-w-full flex justify-center">
@@ -46,9 +45,11 @@ function ComponentError({
 			)}
 			<div className="flex gap-4 flex-wrap min-w-full justify-between pt-6">
 				{reset && <Button onClick={reset}>Try again</Button>}
-				<Button asChild variant="outline">
-					<Link href={pathname}>Reset all filters</Link>
-				</Button>
+				{from && to && (
+					<Button onClick={resetAllFilters} variant="outline">
+						Reset all filters
+					</Button>
+				)}
 			</div>
 		</div>
 	);

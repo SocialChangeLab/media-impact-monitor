@@ -16,6 +16,7 @@ export type FiltersState = {
 
 export type FiltersActions = {
 	setDateRange: (props: { from: Date; to: Date }) => void;
+	resetAllFilters: () => void;
 };
 
 export type FiltersStore = FiltersState & FiltersActions;
@@ -63,6 +64,7 @@ export const createFiltersStore = (
 				...initState,
 				setDateRange: ({ from, to }) =>
 					set(() => ({ from: startOfDay(from), to: endOfDay(to) })),
+				resetAllFilters: () => set(() => defaultInitState),
 			}),
 			storageOptions,
 		),

@@ -4,8 +4,8 @@
 import * as vega from 'npm:vega'
 import ve from 'npm:vega-embed@6'
 
-const url = 'https://api.dev.mediaimpactmonitor.app'
-// const url = 'http://localhost:8000'
+// const url = 'https://api.dev.mediaimpactmonitor.app'
+const url = 'http://localhost:8000'
 
 const embed = async (spec, options) => {
   // see https://observablehq.com/@mbostock/hello-vega-embed
@@ -215,15 +215,14 @@ let impact = await queryApi('impact', {
   },
   method: 'interrupted_time_series'
 })
-display(impact)
-// impact = (await impact).time_series
-// impact = Object.keys(impact)
-//   .map(k => ({ day: parseInt(k), ...impact[k] }))
-//   .sort((a, b) => a.day - b.day)
-// display(Inputs.table(impact))
+display(impact.method_applicability_reason)
+impact = impact.time_series
+impact = Object.keys(impact)
+  .map(k => ({ day: parseInt(k), ...impact[k] }))
+  .sort((a, b) => a.day - b.day)
+display(Inputs.table(impact))
 ```
 
-<!--
 ```js
 const spec = {
   data: { values: impact },
@@ -234,7 +233,8 @@ const spec = {
         x: {
           field: 'day',
           type: 'quantitative',
-          title: 'Days after protest'
+          title: 'Days after protest',
+          axis: { values: { expr: '[-7,0,7,14,21]' } }
         },
         y: { field: 'ci_lower', type: 'quantitative', title: '' },
         y2: { field: 'ci_upper', type: 'quantitative' }
@@ -256,4 +256,4 @@ const spec = {
 }
 
 display(await embed(spec))
-``` -->
+```

@@ -105,7 +105,12 @@ def estimate_impacts(
     horizon: int,
     hidden_days_before_protest: int,
     aggregation: Aggregation,
-) -> tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame]:
+) -> tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame, list[str]]:
+    min_training_days = 90
+    _events = events[
+        events["date"] >= article_counts.index[0] + timedelta(days=min_training_days)
+    ]
+
     def _estimate_impact(event_):
         i, event = event_
         return estimate_impact(
@@ -117,10 +122,16 @@ def estimate_impacts(
         )
 
     estimates = parallel_tqdm(
-        _estimate_impact, events.iterrows(), total=events.shape[0], n_jobs=1
+        _estimate_impact, _events.iterrows(), total=_events.shape[0], n_jobs=1
     )
     actuals, counterfactuals, impacts = zip(*estimates)
-    return actuals, counterfactuals, impacts
+    if len(events) != len(_events):
+        warnings = [
+            f"Only {len(_events)} out of {len(events)} events were used for estimating the impact, because for the other {len(events) - len(_events)} events there is less than {min_training_days} days of data available, since the media time series starts on {article_counts.index[0].isoformat()}."
+        ]
+    else:
+        warnings = []
+    return actuals, counterfactuals, impacts, warnings
 
 
 def estimate_mean_impact(
@@ -130,10 +141,10 @@ def estimate_mean_impact(
     hidden_days_before_protest: int,
     aggregation: Aggregation,
     cumulative: bool = True,
-) -> pd.DataFrame:
+) -> tuple[pd.DataFrame, list[str]]:
     # output: dataframe with columns mean, ci_upper, ci_lower
     # and index from -hidden_days_before_protest to horizon
-    actuals, counterfactuals, impacts = estimate_impacts(
+    actuals, counterfactuals, impacts, warnings = estimate_impacts(
         events, article_counts, horizon, hidden_days_before_protest, aggregation
     )
     impacts_df = pd.concat([df.reset_index(drop=True) for df in impacts], axis=1)
@@ -153,4 +164,6 @@ def estimate_mean_impact(
     ci_upper = impacts_df.apply(
         lambda x: confidence_interval_ttest(x.dropna(), 0.95)[1], axis=1
     )
-    return pd.DataFrame({"mean": average, "ci_lower": ci_lower, "ci_upper": ci_upper})
+    return pd.DataFrame(
+        {"mean": average, "ci_lower": ci_lower, "ci_upper": ci_upper}
+    ), warnings

@@ -204,24 +204,26 @@ const spec = {
 display(await embed(spec))
 ```
 
-<!-- ```js
+```js
 const event_ids = events.map(a => a.event_id)
-let impact = queryApi('impact', {
+let impact = await queryApi('impact', {
   cause: event_ids,
   effect: {
     trend_type: 'keywords',
     media_source: 'news_online',
-    query: '"Letzte Generation"'
+    topic: 'climate_change'
   },
   method: 'interrupted_time_series'
 })
-impact = (await impact).time_series
-impact = Object.keys(impact)
-  .map(k => ({ day: parseInt(k), ...impact[k] }))
-  .sort((a, b) => a.day - b.day)
+display(impact)
+// impact = (await impact).time_series
+// impact = Object.keys(impact)
+//   .map(k => ({ day: parseInt(k), ...impact[k] }))
+//   .sort((a, b) => a.day - b.day)
 // display(Inputs.table(impact))
 ```
 
+<!--
 ```js
 const spec = {
   data: { values: impact },

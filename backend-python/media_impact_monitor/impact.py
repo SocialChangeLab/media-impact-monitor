@@ -39,7 +39,7 @@ def get_impact_for_single_trend(
             raise NotImplementedError("Synthetic control is not yet implemented.")
         case _:
             raise ValueError(f"Unsupported method: {method}")
-    warning = "We are not yet systematically checking the applicability of the impact estimation method."
+    warning = "We are not yet systematically checking the applicability of the impact estimation method.\n\n"
     if warnings:
         warning += "However, we have determined the following limitations:\n\n"
         warning += "\n".join([f"- {w}" for w in warnings])

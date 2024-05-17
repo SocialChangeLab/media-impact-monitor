@@ -215,12 +215,12 @@ let impact = await queryApi('impact', {
   },
   method: 'interrupted_time_series'
 })
-display(impact.method_applicability_reason)
+display(html`${impact.method_applicability_reason}`)
 impact = impact.time_series
 impact = Object.keys(impact)
   .map(k => ({ day: parseInt(k), ...impact[k] }))
   .sort((a, b) => a.day - b.day)
-display(Inputs.table(impact))
+// display(Inputs.table(impact))
 ```
 
 ```js

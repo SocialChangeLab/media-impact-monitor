@@ -73,7 +73,8 @@ def build_query(
     assert media_source in ["news_online", "news_print", "web_google"]
     assert positive or negative
     match media_source:
-        case "news_online":
+        case "news_online" | "news_print":
+            # for print news see: https://www.gbi-genios.de/de/hilfe/genios/verknuepfung-von-suchworten
             if positive:
                 q_positive = [f'"{a}"' if len(a.split()) > 1 else a for a in positive]
                 q_positive = " OR ".join(q_positive)
@@ -86,8 +87,6 @@ def build_query(
                 query = q_positive
             elif negative:
                 query = f"NOT ({q_negative})"
-        case "news_print":
-            raise NotImplementedError
         case "web_google":
             # see https://newsinitiative.withgoogle.com/resources/trainings/advanced-google-trends/
             # and https://support.google.com/trends/answer/4359582?hl=en

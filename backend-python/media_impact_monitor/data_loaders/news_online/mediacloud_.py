@@ -24,12 +24,12 @@ end_date = date.today()
 @cache
 def get_mediacloud_counts(
     query: str,
-    start_date: date = date(2023, 1, 1),
+    start_date: date = date(2022, 1, 1),
     end_date: date = end_date,
     countries: list | None = None,
     platform: Platform = "onlinenews-mediacloud",
 ) -> pd.Series:
-    assert start_date.year >= 2023, "MediaCloud currently only goes back to 2023"
+    assert start_date.year >= 2022, "MediaCloud currently only goes back to 2022"
     collection_ids: list[int] = []
     if countries:
         collection_ids = []

@@ -43,7 +43,7 @@ events = events.map(a => ({
 ```
 
 ```js
-const media_sources = ['news_online', 'web_google']
+const media_sources = ['news_online', 'news_print', 'web_google']
 // const media_source = view(
 //   Inputs.select(media_sources, {
 //     value: 'news_online',
@@ -83,7 +83,7 @@ const spec = {
           select: { type: 'interval', encodings: ['x'] },
           value: {
             x: [
-              { year: 2023, month: 'jan', date: 1 },
+              { year: 2022, month: 'jan', date: 1 },
               { year: year, month: month, date: lastDay }
             ]
           }
@@ -176,6 +176,30 @@ const spec = {
     },
     {
       data: { values: trends[1] },
+      width: 600,
+      height: 100,
+      title: 'coverage of climate in german print news',
+      mark: { type: 'line', interpolate: 'step-after' },
+      encoding: {
+        x: {
+          field: 'date',
+          type: 'temporal',
+          axis: { title: null },
+          scale: { domain: { selection: 'brush' } }
+        },
+        y: {
+          field: 'n_articles',
+          type: 'quantitative',
+          axis: { title: 'Number of articles' }
+        },
+        color: {
+          field: 'topic',
+          type: 'nominal'
+        }
+      }
+    },
+    {
+      data: { values: trends[2] },
       width: 600,
       height: 100,
       title: 'google search volume in germany',

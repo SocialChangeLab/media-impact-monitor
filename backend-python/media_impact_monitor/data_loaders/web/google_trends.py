@@ -44,5 +44,4 @@ def get_google_trends_counts(query: str, end_date: date = end_date) -> pd.Series
     df = df.rename(columns={"date_from": "date", "value": "count"})
     df["date"] = pd.to_datetime(df["date"]).dt.date
     df = df.set_index("date")["count"]
-    print(df)
     return df

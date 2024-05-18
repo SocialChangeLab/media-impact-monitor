@@ -69,6 +69,7 @@ class Event:
 #### Trend types ####
 
 TrendType = Literal["keywords", "topics", "sentiments"]
+Aggregation = Literal["daily", "weekly", "monthly"]
 
 
 class TrendSearch(BaseModel):
@@ -80,6 +81,9 @@ class TrendSearch(BaseModel):
     )
     topic: Topic | None = Field(
         description="When retrieving keyword frequencies, this automatically sets relevant sets of keywords. Currently only _climate_change_ is supported."
+    )
+    aggregation: Aggregation = Field(
+        default="daily", description="The time aggregation of the trend."
     )
 
 

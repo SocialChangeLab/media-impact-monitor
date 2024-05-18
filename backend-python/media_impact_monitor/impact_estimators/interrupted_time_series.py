@@ -134,6 +134,7 @@ def estimate_impacts(
     return actuals, counterfactuals, impacts, warnings
 
 
+@cache
 def estimate_mean_impact(
     events: pd.DataFrame,
     article_counts: pd.DataFrame,

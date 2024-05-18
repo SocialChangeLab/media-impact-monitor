@@ -19,7 +19,12 @@ def get_impact(q: ImpactSearch) -> Impact:
     for topic in trends.columns:
         trend = trends[topic]
         trend.name = "count"
-        appl, warning, impact = get_impact_for_single_trend(events, trend, q.method)
+        appl, warning, impact = get_impact_for_single_trend(
+            events=events,
+            trend=trend,
+            method=q.method,
+            aggregation=q.effect.aggregation,
+        )
         dfs[topic] = impact.reset_index().to_dict(orient="records")
         applicabilities.append(appl)
         limitations.append(warning)
@@ -34,11 +39,13 @@ def get_impact(q: ImpactSearch) -> Impact:
 
 
 def get_impact_for_single_trend(
-    events: pd.DataFrame, trend: pd.DataFrame, method: Method
+    events: pd.DataFrame,
+    trend: pd.DataFrame,
+    method: Method,
+    aggregation="daily",
 ) -> tuple[str, str, pd.DataFrame]:
     hidden_days_before_protest = 7
     horizon = 28
-    aggregation = "weekly"
     match method:
         case "interrupted_time_series":
             mean_impact, warnings = estimate_mean_impact(

@@ -244,14 +244,14 @@ display(html`${impact.method_applicability_reason}`)
 ```
 
 ```js
-const spec = (topic, data_) => ({
+const spec_ = (topic, data_) => ({
   data: { values: data_ },
   layer: [
     {
       mark: 'errorband',
       encoding: {
         x: {
-          field: 'day',
+          field: 'date',
           type: 'quantitative',
           title: 'Days after protest',
           axis: { values: { expr: '[-7,0,7,14,21]' } }
@@ -263,7 +263,7 @@ const spec = (topic, data_) => ({
     {
       mark: { type: 'line', color: 'red' },
       encoding: {
-        x: { field: 'day', type: 'quantitative' },
+        x: { field: 'date', type: 'quantitative' },
         y: {
           field: 'mean',
           type: 'quantitative',
@@ -279,6 +279,33 @@ for (const topic in impact.time_series) {
   data = Object.keys(data)
     .map(k => ({ day: parseInt(k), ...data[k] }))
     .sort((a, b) => a.day - b.day)
-  display(await embed(spec(topic, data)))
+  display(await embed(spec_(topic, data)))
+}
+```
+
+And now weekly:
+
+```js
+let impact_weekly = await queryApi('impact', {
+  cause: event_ids,
+  effect: {
+    trend_type: 'keywords',
+    media_source: 'news_online',
+    topic: 'climate_change',
+    aggregation: 'weekly'
+  },
+  method: 'interrupted_time_series'
+})
+display(html`${impact.method_applicability_reason}`)
+// display(impact)
+```
+
+```js
+for (const topic in impact_weekly.time_series) {
+  let data = impact_weekly.time_series[topic]
+  data = Object.keys(data)
+    .map(k => ({ day: parseInt(k), ...data[k] }))
+    .sort((a, b) => a.day - b.day)
+  display(await embed(spec_(topic, data)))
 }
 ```

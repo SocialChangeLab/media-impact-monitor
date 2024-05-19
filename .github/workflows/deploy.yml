@@ -62,3 +62,5 @@ jobs:
         AZURE_API_BASE: ${{ secrets.AZURE_API_BASE }}
         AZURE_API_VERSION: ${{ secrets.AZURE_API_VERSION }}
         AZURE_API_KEY: ${{ secrets.AZURE_API_KEY }}
+        DATAFORSEO_EMAIL: ${{ secrets.DATAFORSEO_EMAIL }}
+        DATAFORSEO_PASSWORD: ${{ secrets.DATAFORSEO_PASSWORD }}

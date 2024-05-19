@@ -68,7 +68,7 @@ class Event:
 
 #### Trend types ####
 
-TrendType = Literal["keywords", "topics", "sentiments"]
+TrendType = Literal["keywords", "topic", "sentiment"]
 Aggregation = Literal["daily", "weekly", "monthly"]
 
 

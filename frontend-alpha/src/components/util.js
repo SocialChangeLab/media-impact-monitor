@@ -1,8 +1,8 @@
 import * as vega from 'npm:vega'
 import ve from 'npm:vega-embed@6'
 
-// const url = 'https://api.dev.mediaimpactmonitor.app'
-const url = 'http://localhost:8000'
+const url = 'https://api.dev.mediaimpactmonitor.app'
+// const url = 'http://localhost:8000'
 
 export const embed = async (spec, options) => {
     // see https://observablehq.com/@mbostock/hello-vega-embed

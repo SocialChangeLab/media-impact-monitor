@@ -59,3 +59,6 @@ jobs:
         ACLED_EMAIL: ${{ secrets.ACLED_EMAIL }}
         ACLED_KEY: ${{ secrets.ACLED_KEY }}
         ZENROWS_API_KEY: ${{ secrets.ZENROWS_API_KEY }}
+        AZURE_API_BASE: ${{ secrets.AZURE_API_BASE }}
+        AZURE_API_VERSION: ${{ secrets.AZURE_API_VERSION }}
+        AZURE_API_KEY: ${{ secrets.AZURE_API_KEY }}

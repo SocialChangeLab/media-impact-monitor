@@ -85,7 +85,7 @@ def retrieve_text(url: str) -> str | None:
 def resolve_countries(countries: list | None) -> list | None:
     collection_ids: list[int] = []
     collection_ids = []
-    for country in countries:
+    for country in countries or []:
         # get national newspapers (regional newspapers are also available)
         results = directory.collection_list(name=f"{country} - national")["results"]
         # ignore research collections

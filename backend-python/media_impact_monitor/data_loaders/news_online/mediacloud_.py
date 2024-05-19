@@ -64,13 +64,19 @@ def get_mediacloud_fulltexts(
     df = pd.DataFrame(data[0])
     df["publish_date"] = pd.to_datetime(df["publish_date"])
     df["text"] = parallel_tqdm(
-        retrieve_text, df["url"], n_jobs=2, desc="Retrieving fulltexts"
+        retrieve_text, df["url"], n_jobs=4, desc="Retrieving fulltexts"
     )
+    df = df.dropna(subset=["text"])
     return df
 
 
 def retrieve_text(url: str) -> str | None:
-    html = get_proxied(url).text
+    try:
+        html = get_proxied(url, timeout=15).text
+    except ValueError as e:
+        if "RESP002" in str(e):  # zenrows error code for http 404
+            return None
+        raise e
     data = extract(url=url, html_text=html)
     # this also contains additional metadata (title, language, extraction method, ...) that could be used
     return data["text_content"]

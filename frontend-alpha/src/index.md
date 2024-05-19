@@ -17,25 +17,64 @@ events = events.map(a => ({
 ```
 
 ```js
-const media_sources = ['news_online', 'news_print', 'web_google']
-// const media_source = view(
-//   Inputs.select(media_sources, {
-//     value: 'news_online',
-//     label: 'Media data source'
-//   })
-// )
+const media_sources = {
+  news_online: 'coverage of climate in german online news',
+  news_print: 'coverage of climate in german print news',
+  web_google: 'google search volume in germany'
+}
+const media_source = view(
+  Inputs.select(Object.keys(media_sources), {
+    value: 'news_online',
+    label: 'Media data source'
+  })
+)
 ```
 
 ```js
-let trends = media_sources.map(source =>
-  queryApi('trend', {
-    trend_type: 'keywords',
-    media_source: source,
+const trend_plot = (trend, title) => ({
+  data: { values: trend },
+  width: 600,
+  height: 100,
+  title: title,
+  mark: { type: 'line', interpolate: 'step-after' },
+  encoding: {
+    x: {
+      field: 'date',
+      type: 'temporal',
+      axis: { title: null },
+      scale: { domain: { selection: 'brush' } }
+    },
+    y: {
+      field: 'n_articles',
+      type: 'quantitative',
+      axis: { title: 'Number of articles' }
+    },
+    color: {
+      field: 'topic',
+      type: 'nominal'
+    }
+  }
+})
+
+const keyword_trend = await queryApi('trend', {
+  trend_type: 'keywords',
+  media_source: media_source,
+  topic: 'climate_change'
+})
+const trend_plots = [trend_plot(keyword_trend, media_sources[media_source])]
+if (media_source === 'news_online') {
+  const sentiment_trend = await queryApi('trend', {
+    trend_type: 'sentiment',
+    media_source: media_source,
     topic: 'climate_change'
   })
-)
-trends = await Promise.all(trends)
-const trend = trends[0]
+  trend_plots.push(
+    trend_plot(
+      sentiment_trend,
+      media_sources[media_source].replace(/coverage of/, 'sentiment of')
+    )
+  )
+}
 // display(Inputs.table(trend))
 ```
 
@@ -124,78 +163,7 @@ const spec = {
         ]
       }
     },
-    {
-      data: { values: trends[0] },
-      width: 600,
-      height: 100,
-      title: 'coverage of climate in german online news',
-      mark: { type: 'line', interpolate: 'step-after' },
-      encoding: {
-        x: {
-          field: 'date',
-          type: 'temporal',
-          axis: { title: null },
-          scale: { domain: { selection: 'brush' } }
-        },
-        y: {
-          field: 'n_articles',
-          type: 'quantitative',
-          axis: { title: 'Number of articles' }
-        },
-        color: {
-          field: 'topic',
-          type: 'nominal'
-        }
-      }
-    },
-    {
-      data: { values: trends[1] },
-      width: 600,
-      height: 100,
-      title: 'coverage of climate in german print news',
-      mark: { type: 'line', interpolate: 'step-after' },
-      encoding: {
-        x: {
-          field: 'date',
-          type: 'temporal',
-          axis: { title: null },
-          scale: { domain: { selection: 'brush' } }
-        },
-        y: {
-          field: 'n_articles',
-          type: 'quantitative',
-          axis: { title: 'Number of articles' }
-        },
-        color: {
-          field: 'topic',
-          type: 'nominal'
-        }
-      }
-    },
-    {
-      data: { values: trends[2] },
-      width: 600,
-      height: 100,
-      title: 'google search volume in germany',
-      mark: { type: 'line', interpolate: 'step-after' },
-      encoding: {
-        x: {
-          field: 'date',
-          type: 'temporal',
-          axis: { title: null },
-          scale: { domain: { selection: 'brush' } }
-        },
-        y: {
-          field: 'n_articles',
-          type: 'quantitative',
-          axis: { title: 'Number of articles' }
-        },
-        color: {
-          field: 'topic',
-          type: 'nominal'
-        }
-      }
-    }
+    ...trend_plots
   ],
   resolve: { scale: { color: 'independent', size: 'independent' } }
 }

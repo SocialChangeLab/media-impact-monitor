@@ -1,16 +1,11 @@
-import os
 from datetime import date
 from typing import Literal
 
 import mediacloud.api
 import pandas as pd
-from dotenv import load_dotenv
 
 from media_impact_monitor.util.cache import cache
 from media_impact_monitor.util.env import MEDIACLOUD_API_TOKEN
-
-load_dotenv()
-
 
 search = mediacloud.api.SearchApi(MEDIACLOUD_API_TOKEN)
 directory = mediacloud.api.DirectoryApi(MEDIACLOUD_API_TOKEN)

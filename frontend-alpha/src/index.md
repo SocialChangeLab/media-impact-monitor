@@ -1,34 +1,8 @@
 # Media Impact Monitor
 
 ```js
-import * as vega from 'npm:vega'
-import ve from 'npm:vega-embed@6'
+import { embed, queryApi } from './components/util.js'
 
-// const url = 'https://api.dev.mediaimpactmonitor.app'
-const url = 'http://localhost:8000'
-
-const embed = async (spec, options) => {
-  // see https://observablehq.com/@mbostock/hello-vega-embed
-  const div = document.createElement('div')
-  div.value = (await ve(div, spec, options)).view
-  return div
-}
-embed.changeset = vega.changeset
-
-const queryApi = (endpoint, query) =>
-  fetch(`${url}/${endpoint}`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify(query)
-  })
-    .then(res => res.json())
-    .then(data => data['data'])
-    .catch(err => console.warn(err))
-```
-
-```js
 let events = await queryApi('events', {
   source: 'acled',
   topic: 'climate_change'
@@ -226,86 +200,4 @@ const spec = {
   resolve: { scale: { color: 'independent', size: 'independent' } }
 }
 display(await embed(spec))
-```
-
-```js
-const event_ids = events.map(a => a.event_id)
-let impact = await queryApi('impact', {
-  cause: event_ids,
-  effect: {
-    trend_type: 'keywords',
-    media_source: 'news_online',
-    topic: 'climate_change'
-  },
-  method: 'interrupted_time_series'
-})
-display(html`${impact.method_applicability_reason}`)
-// display(impact)
-```
-
-```js
-const spec_ = (topic, data_) => ({
-  data: { values: data_ },
-  layer: [
-    {
-      mark: 'errorband',
-      encoding: {
-        x: {
-          field: 'date',
-          type: 'quantitative',
-          title: 'Days after protest',
-          axis: { values: { expr: '[-7,0,7,14,21]' } }
-        },
-        y: { field: 'ci_lower', type: 'quantitative', title: '' },
-        y2: { field: 'ci_upper', type: 'quantitative' }
-      }
-    },
-    {
-      mark: { type: 'line', color: 'red' },
-      encoding: {
-        x: { field: 'date', type: 'quantitative' },
-        y: {
-          field: 'mean',
-          type: 'quantitative',
-          title: 'Number of additional articles'
-        }
-      }
-    }
-  ],
-  title: `Impact on ${topic}`
-})
-for (const topic in impact.time_series) {
-  let data = impact.time_series[topic]
-  data = Object.keys(data)
-    .map(k => ({ day: parseInt(k), ...data[k] }))
-    .sort((a, b) => a.day - b.day)
-  display(await embed(spec_(topic, data)))
-}
-```
-
-And now weekly:
-
-```js
-let impact_weekly = await queryApi('impact', {
-  cause: event_ids,
-  effect: {
-    trend_type: 'keywords',
-    media_source: 'news_online',
-    topic: 'climate_change',
-    aggregation: 'weekly'
-  },
-  method: 'interrupted_time_series'
-})
-display(html`${impact.method_applicability_reason}`)
-// display(impact)
-```
-
-```js
-for (const topic in impact_weekly.time_series) {
-  let data = impact_weekly.time_series[topic]
-  data = Object.keys(data)
-    .map(k => ({ day: parseInt(k), ...data[k] }))
-    .sort((a, b) => a.day - b.day)
-  display(await embed(spec_(topic, data)))
-}
 ```

@@ -11,8 +11,10 @@ from media_impact_monitor.data_loaders.protest.climate_orgs import (
     climate_orgs_aliases,
 )
 from media_impact_monitor.types_ import EventSearch
+from media_impact_monitor.util.cache import cache
 
 
+@cache
 def get_events(q: EventSearch) -> pd.DataFrame:
     assert q.source == "acled", "Only ACLED is supported."
     df = get_acled_events(countries=["Germany"])

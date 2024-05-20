@@ -25,7 +25,7 @@ def extract_press_releases() -> pd.DataFrame:
 
         print(f"Getting page {i}/{len(divs)}: {url}")
         try:
-            response = get(url)
+            response = get(url, sleep=0.2)
             page_soup = BeautifulSoup(response.content, "html.parser")
             content = page_soup.get_text("\n", strip=True).strip()
         except Exception:
@@ -34,7 +34,6 @@ def extract_press_releases() -> pd.DataFrame:
 
         # wrap in JSON
         responses[i] = {"title": title, "date": date, "url": url, "content": content}
-        sleep(1)
 
     df = pd.DataFrame(responses).T
 

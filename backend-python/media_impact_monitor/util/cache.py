@@ -52,13 +52,13 @@ def post(url, sleep=None, **kwargs):
 
 
 concurrency = 10
-retries = 5
+retries = 2
 
 
 @cache
 def get_proxied(url, *args, **kwargs):
-    client = ZenRowsClient(ZENROWS_API_KEY, retries=2, concurrency=concurrency)
+    client = ZenRowsClient(ZENROWS_API_KEY, retries=retries, concurrency=concurrency)
     response = client.get(url, *args, **kwargs)
     if '{"code":' in response.text:
-        raise ValueError(response.text)
+        raise ValueError(f"{url}: {response.text}")
     return response

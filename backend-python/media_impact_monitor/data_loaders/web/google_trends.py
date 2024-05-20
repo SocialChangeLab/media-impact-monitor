@@ -13,6 +13,7 @@ from datetime import date
 import pandas as pd
 
 from media_impact_monitor.util.cache import cache, post
+from media_impact_monitor.util.env import DATAFORSEO_EMAIL, DATAFORSEO_PASSWORD
 
 end_date = date.today()
 
@@ -30,7 +31,7 @@ def get_google_trends_counts(query: str, end_date: date = end_date) -> pd.Series
             "language_code": "de",
         }
     ]
-    credentials = "davidpomerenke@mailbox.org:99e67272d04117b1"
+    credentials = f"{DATAFORSEO_EMAIL}:{DATAFORSEO_PASSWORD}"
     credentials_encoded = base64.b64encode(credentials.encode()).decode()
     headers = {
         "Authorization": f"Basic {credentials_encoded}",
@@ -40,9 +41,8 @@ def get_google_trends_counts(query: str, end_date: date = end_date) -> pd.Series
     data = response.json()["tasks"][0]["result"][0]["items"][0]["data"]
     df = pd.DataFrame(data)
     df["value"] = df["values"].str[0]
-    # df = df[~df["missing_data"]]
+    # df = df[~df["missing_data"]] # this ignores data from the current day/week/month, which is not yet complete
     df = df.rename(columns={"date_from": "date", "value": "count"})
     df["date"] = pd.to_datetime(df["date"]).dt.date
     df = df.set_index("date")["count"]
-    print(df)
     return df

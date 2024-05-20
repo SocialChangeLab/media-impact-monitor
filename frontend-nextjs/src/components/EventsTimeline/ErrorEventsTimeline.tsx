@@ -18,7 +18,7 @@ export default function ErrorEventsTimeline({
 			<EventsTimelineChartWrapper animationKey="error">
 				<div
 					className={cn(
-						"w-full h-[calc(100vh-14rem)]",
+						"w-full h-[var(--protest-timeline-height)]",
 						"flex justify-center items-center",
 						"bg-grayUltraLight border border-grayLight",
 					)}

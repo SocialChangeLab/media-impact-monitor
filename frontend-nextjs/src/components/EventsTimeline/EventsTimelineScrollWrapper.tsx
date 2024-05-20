@@ -129,7 +129,7 @@ function EventsTimelineScrollWrapper({
 				aria-hidden="true"
 				className={cn(
 					"w-[calc(100vw-3rem)] overflow-auto grid grid-cols-1 grid-rows-[1fr_3.5rem] relative",
-					"h-[calc(100vh-14rem)] bg-grayUltraLight",
+					"h-[var(--protest-timeline-height)] bg-grayUltraLight",
 				)}
 				ref={parentRef}
 			>

@@ -1,32 +1,15 @@
-import json
+from time import sleep
 
 import pandas as pd
-import requests
 from bs4 import BeautifulSoup
 
-
-def get_page1():
-    """Get page and save"""
-    url = "https://letztegeneration.org/presse/pressemitteilungen/"
-    res = requests.get(url)
-    if res.status_code == 200:
-        with open("data/seite1_current.html", "w", encoding="utf-8") as file:
-            file.write(res.text)
-    else:
-        print("Failed to fetch HTML content")
+from media_impact_monitor.util.cache import cache, get
 
 
-def read_html():
-    """Open and load html file"""
-
-    with open("data/seite1_current.html", "r", encoding="utf-8") as file:
-        html_content = file.read()
-
-    return html_content
-
-
-def get_texts_1(html_content):
+@cache
+def extract_press_releases() -> pd.DataFrame:
     """Extract press releases from page"""
+    html_content = get("https://letztegeneration.org/presse/pressemitteilungen/").text
     soup = BeautifulSoup(html_content, "html.parser")
     divs = soup.find_all("div", class_="elementor-post__text")
 
@@ -41,37 +24,21 @@ def get_texts_1(html_content):
         #     continue
 
         print(f"Getting page {i}/{len(divs)}: {url}")
-        response = requests.get(url)
-        if response.status_code == 200:
+        try:
+            response = get(url)
             page_soup = BeautifulSoup(response.content, "html.parser")
             content = page_soup.get_text("\n", strip=True).strip()
-        else:
+        except Exception:
             print(f"Failed to fetch content for URL: {url}")
             content = None
 
         # wrap in JSON
         responses[i] = {"title": title, "date": date, "url": url, "content": content}
+        sleep(1)
 
-    return responses
-
-
-def wrangle_responses(responses):
-    """Convert responses to DataFrame and wrangle"""
     df = pd.DataFrame(responses).T
 
     # FIXME: date to DateTime (with ChatGPT?)
     # FIXME: clean texts
 
     return df
-
-
-if __name__ == "__main__":
-    ## get current page and save
-    get_page1()
-    html = read_html()
-    texts = get_texts_1(html)
-
-    with open("data/responses_current.json", "w") as f:
-        json.dump(texts, f, indent=2)
-
-    df = wrangle_responses(texts)

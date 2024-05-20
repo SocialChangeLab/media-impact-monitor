@@ -1,47 +1,53 @@
-'use client'
+"use client";
 
-import { useTheme } from 'next-themes'
+import { useTheme } from "next-themes";
 
-import { Button } from '@components/ui/button'
+import { Button } from "@/components/ui/button";
 import {
 	DropdownMenu,
 	DropdownMenuContent,
 	DropdownMenuItem,
 	DropdownMenuTrigger,
-} from '@components/ui/dropdown-menu'
-import { cn } from '@utility/classNames'
-import { Check, Laptop, MoonIcon, SunIcon, type LucideIcon } from 'lucide-react'
-import { useEffect, useState } from 'react'
+} from "@/components/ui/dropdown-menu";
+import { cn } from "@/utility/classNames";
+import {
+	Check,
+	Laptop,
+	type LucideIcon,
+	MoonIcon,
+	SunIcon,
+} from "lucide-react";
+import { useEffect, useState } from "react";
 
 type ThemeOptionType = {
-	name: string
-	label: string
-	Icon: LucideIcon
-}
+	name: string;
+	label: string;
+	Icon: LucideIcon;
+};
 const themeOptions: ThemeOptionType[] = [
 	{
-		name: 'system',
-		label: 'System',
+		name: "system",
+		label: "System",
 		Icon: Laptop,
 	},
 	{
-		name: 'light',
-		label: 'Light',
+		name: "light",
+		label: "Light",
 		Icon: SunIcon,
 	},
 	{
-		name: 'dark',
-		label: 'Dark',
+		name: "dark",
+		label: "Dark",
 		Icon: MoonIcon,
 	},
-]
+];
 export default function ThemeToggle() {
-	const { theme: originalTheme, setTheme: setOriginalTheme } = useTheme()
-	const [theme, setTheme] = useState('system')
+	const { theme: originalTheme, setTheme: setOriginalTheme } = useTheme();
+	const [theme, setTheme] = useState("system");
 
 	useEffect(() => {
-		setTheme(originalTheme || 'system')
-	}, [originalTheme])
+		setTheme(originalTheme || "system");
+	}, [originalTheme]);
 
 	return (
 		<DropdownMenu>
@@ -51,9 +57,9 @@ export default function ThemeToggle() {
 						<option.Icon
 							key={option.name}
 							className={cn(
-								idx !== 0 && 'absolute',
-								'rotate-90 scale-0 opacity-0 transition-all',
-								option.name === theme && 'rotate-0 scale-100 opacity-100',
+								idx !== 0 && "absolute",
+								"rotate-90 scale-0 opacity-0 transition-all",
+								option.name === theme && "rotate-0 scale-100 opacity-100",
 							)}
 						/>
 					))}
@@ -71,8 +77,8 @@ export default function ThemeToggle() {
 							<span>{option.label}</span>
 							<Check
 								className={cn(
-									'opacity-0',
-									option.name === theme && 'opacity-50',
+									"opacity-0",
+									option.name === theme && "opacity-50",
 								)}
 							/>
 						</div>
@@ -80,5 +86,5 @@ export default function ThemeToggle() {
 				))}
 			</DropdownMenuContent>
 		</DropdownMenu>
-	)
+	);
 }

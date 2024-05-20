@@ -1,4 +1,4 @@
-import { SVGProps } from 'react'
+import type { SVGProps } from "react";
 
 function BMBFLogo(props: SVGProps<SVGSVGElement>) {
 	return (
@@ -9,6 +9,8 @@ function BMBFLogo(props: SVGProps<SVGSVGElement>) {
 			fill="none"
 			xmlns="http://www.w3.org/2000/svg"
 			{...props}
+			aria-label="BMBF Logo"
+			role="img"
 		>
 			<g clipPath="url(#clip0_151_2547)">
 				<path
@@ -41,7 +43,7 @@ function BMBFLogo(props: SVGProps<SVGSVGElement>) {
 				</clipPath>
 			</defs>
 		</svg>
-	)
+	);
 }
 
-export default BMBFLogo
+export default BMBFLogo;

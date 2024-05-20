@@ -1,153 +1,177 @@
-import { cn } from '@utility/classNames'
-import { dateSortCompare } from '@utility/dateUtil'
-import { type EventType, type EventsDataType } from '@utility/eventsUtil'
-import { scalePow } from 'd3-scale'
-import { addDays, format, isBefore, startOfDay } from 'date-fns'
-import { AnimationProps, motion } from 'framer-motion'
-import EventBubbleLink from './EventBubbleLink'
-import EventTooltip from './EventTooltip'
-import EventsTimelineWrapper from './EventsTimelinWrapper'
+"use client";
+import TimelineRouteError from "@/app/(events)/@timeline/error";
+import TimelineRouteLoading from "@/app/(events)/@timeline/loading";
+import { useFiltersStore } from "@/providers/FiltersStoreProvider";
+import { cn } from "@/utility/classNames";
+import { slugifyCssClass } from "@/utility/cssSlugify";
+import type { EventType, OrganisationType } from "@/utility/eventsUtil";
+import useDays from "@/utility/useDays";
+import useEvents from "@/utility/useEvents";
+import useTimeScale from "@/utility/useTimeScale";
+import { scalePow } from "d3-scale";
+import { format, isSameDay, startOfDay } from "date-fns";
+import { useMemo } from "react";
+import HeadlineWithLine from "../HeadlineWithLine";
+import EmptyEventsTimeline from "./EmptyEventsTimeline";
+import EventBubbleLink from "./EventBubbleLink";
+import EventTooltip from "./EventTooltip";
+import EventsTimelineWrapper from "./EventsTimelinWrapper";
+import EventsTimelineAxis from "./EventsTimelineAxis";
+import EventsTimelineChartWrapper from "./EventsTimelineChartWrapper";
+import EventsTimelineOrgsLegend from "./EventsTimelineOrgsLegend";
+import EventsTimelineScrollWrapper from "./EventsTimelineScrollWrapper";
+import EventsTimelineSizeLegend from "./EventsTimelineSizeLegend";
+import config from "./eventsTimelineConfig";
 
-export const impactScale = scalePow([0, 100], [12, 80])
+function EventsTimeline({
+	data,
+}: {
+	data: {
+		events: EventType[];
+		organisations: OrganisationType[];
+	};
+}) {
+	const { from, to } = useFiltersStore();
+	const days = useDays();
+	const { events, organisations } = data;
 
-const eventVariants: AnimationProps['variants'] = {
-	initial: { opacity: 0, scale: 0.5 },
-	enter: { opacity: 1, scale: 1 },
-}
+	const timeScale = useTimeScale();
 
-const fadeVariants: AnimationProps['variants'] = {
-	initial: { opacity: 0 },
-	enter: { opacity: 1 },
-}
+	const timeDiffInDays = days.length;
 
-function EventsTimeline({ events, organisations }: EventsDataType) {
-	const eventsByDay = events.reduce((acc, event) => {
-		const day = startOfDay(new Date(event.date)).toISOString()
-		const newEvents = [...(acc.get(day) ?? []), event].sort((a, b) =>
-			a.organizations[0].localeCompare(b.organizations[0]),
-		)
-		acc.set(day, newEvents)
-		return acc
-	}, new Map<string, EventType[]>())
+	const eventDays = useMemo(() => {
+		if (!timeScale) return [];
+		return days.map((d) => {
+			const eventsOfTheDay = events.filter((evt) => isSameDay(evt.date, d));
+			const eventsWithSize = eventsOfTheDay.sort((a, b) => {
+				const aSize = a.size_number ?? 0;
+				const bSize = b.size_number ?? 0;
+				if (aSize < bSize ?? 0) return -1;
+				if (aSize > bSize ?? 0) return 1;
+				return a.organizers[0].localeCompare(b.organizers[0]);
+			});
 
-	const sortedDays = [...eventsByDay.entries()]
-		.map(([day, events]) => ({ day, events }))
-		.sort((a, b) => dateSortCompare(a.day, b.day))
+			return {
+				day: startOfDay(d),
+				eventsWithSize,
+			};
+		});
+	}, [events, timeScale, days]);
 
-	const allDays = createAllDays(sortedDays.at(0)?.day, sortedDays.at(-1)?.day)
-	const eventDays = allDays.map((day) => {
-		const dayString = startOfDay(day)
-		const events = eventsByDay.get(dayString.toISOString()) ?? []
-		return { day: dayString, events }
-	})
+	const sizeScale = useMemo(() => {
+		const displayedEvents = eventDays.reduce((acc, day) => {
+			return acc.concat(day.eventsWithSize);
+		}, [] as EventType[]);
+		const max =
+			displayedEvents.length === 0
+				? 100
+				: Math.max(...displayedEvents.map((e) => e.size_number ?? 0));
+		return scalePow([0, max], [config.eventMinHeight, config.eventMaxHeight]);
+	}, [eventDays]);
 
+	if (events.length === 0) return <EmptyEventsTimeline />;
+	const animationKey = [
+		format(from, "yyyy-MM-dd"),
+		format(to, "yyyy-MM-dd"),
+	].join("-");
 	return (
-		<EventsTimelineWrapper>
-			<motion.ul
-				key="events-timeline-chart-wrapper"
-				className="flex gap-0.5 items-center py-6 justify-evenly min-w-full bg-grayUltraLight min-h-96 max-h-[calc(100vh-17rem)] overflow-auto"
-				variants={fadeVariants}
-				initial="initial"
-				animate="enter"
-				transition={{ staggerChildren: 0.01 }}
+		<EventsTimelineWrapper organisations={organisations}>
+			<EventsTimelineScrollWrapper
+				animationKey={`${animationKey}-scoll-parent`}
 			>
-				{eventDays.map(({ day, events }) => (
-					<motion.li
-						key={day.toISOString()}
-						className="flex flex-col gap-0.5"
-						variants={fadeVariants}
-						transition={{ staggerChildren: 0.01 }}
-					>
-						{events.map((event) => (
-							<EventTooltip
-								key={event.event_id}
-								event={event}
-								organisations={organisations}
-							>
-								<motion.div
-									className="size-3 relative z-10 hover:z-20"
-									style={{
-										height: `${Math.ceil(impactScale(event.impact))}px`,
-									}}
-									variants={eventVariants}
-								>
-									<EventBubbleLink
-										event={event}
-										organisations={organisations}
-									/>
-								</motion.div>
-							</EventTooltip>
-						))}
-					</motion.li>
-				))}
-			</motion.ul>
-			{eventDays.length > 0 && (
-				<>
-					<ul
-						aria-label="X Axis - Time"
-						className="flex gap-0.5 items-center pb-6 justify-evenly min-w-full border-t border-grayMed"
-					>
-						{eventDays.map(({ day }, idx) => (
-							<li
-								key={day.toISOString()}
-								className="size-3 relative"
-								aria-hidden={idx % 4 !== 0 ? 'false' : 'true'}
-								aria-label="X Axis Tick"
-							>
-								<span
-									className="w-px h-2 bg-grayMed absolute left-1/2 -translate-x-1/2"
+				<EventsTimelineChartWrapper
+					columnsCount={timeDiffInDays + 1}
+					animationKey={`${animationKey}-chart-wrapper`}
+				>
+					{eventDays.map(({ day, eventsWithSize }) => (
+						<li
+							key={`event-day-${day.toISOString()}`}
+							className="grid grid-rows-subgrid row-span-3 relative w-4 grow shrink-0 h-full py-4"
+						>
+							<div className="flex flex-col justify-end items-center gap-0.5">
+								<div
+									className={cn(
+										"w-px h-full absolute top-0 left-1/2 -translate-x-1/2",
+										"bg-grayLight opacity-50 event-line transition-opacity",
+									)}
 									aria-hidden="true"
 								/>
-								{idx % 4 === 0 && (
-									<span className="absolute left-1/2 top-full -translate-x-1/2 text-grayDark text-sm">
-										{format(new Date(day), 'dd.MM.yyyy')}
-									</span>
-								)}
-							</li>
-						))}
-					</ul>
-					<div className="mt-6 flex flex-col gap-2">
-						<h4 className="text-lg font-bold font-headlines antialiased relative">
-							<span className="w-fit pr-4 bg-bg relative z-20">Legend</span>
-							<span className="h-px w-full bg-grayLight absolute top-1/2 z-10"></span>
-						</h4>
-						<ul className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-8">
-							{organisations.map((org) => (
-								<li
-									key={org.name}
-									className="grid grid-cols-[auto_1fr_auto] gap-x-2 items-center border-b border-b-grayLight py-2"
-								>
-									<span
-										className={cn(
-											'size-4 rounded-full shadow-[inset_0_0_0_1px_rgba(0,0,0,0.1)] bg-grayDark',
-										)}
-										style={{ backgroundColor: org.color }}
-										aria-hidden="true"
+								{eventsWithSize.map((event) => (
+									<EventTimelineItem
+										key={event.event_id}
+										event={event}
+										organisations={organisations}
+										sizeScale={sizeScale}
 									/>
-									<span className="truncate">{org.name}</span>
-									<span className="font-mono text-xs">{org.count}</span>
-								</li>
-							))}
-						</ul>
-					</div>
-				</>
-			)}
+								))}
+							</div>
+						</li>
+					))}
+				</EventsTimelineChartWrapper>
+				<EventsTimelineAxis eventDays={eventDays} />
+			</EventsTimelineScrollWrapper>
+			<div className="mt-6 flex flex-col gap-4 w-screen px-6 -ml-6">
+				<HeadlineWithLine>Legend</HeadlineWithLine>
+				<div className="grid gap-8 md:gap-12 md:grid-cols-[auto_1fr]">
+					<EventsTimelineSizeLegend sizeScale={sizeScale} />
+					<EventsTimelineOrgsLegend organisations={organisations} />
+				</div>
+			</div>
 		</EventsTimelineWrapper>
-	)
+	);
 }
 
-function createAllDays(start?: string, end?: string) {
-	if (!start || !end) return []
-	const days: Date[] = []
-	let currentDate = startOfDay(new Date(start))
-	const endDate = startOfDay(new Date(end))
-
-	while (isBefore(currentDate, endDate)) {
-		days.push(currentDate)
-		currentDate = addDays(currentDate, 1)
-	}
-
-	return days
+type EventTimelineItemProps = {
+	event: EventType;
+	organisations: OrganisationType[];
+	sizeScale: (x: number) => number;
+};
+function EventTimelineItem({
+	event,
+	organisations,
+	sizeScale,
+}: EventTimelineItemProps) {
+	return (
+		<EventTooltip
+			key={event.event_id}
+			event={event}
+			organisations={organisations}
+		>
+			<div className="rounded-full bg-grayUltraLight">
+				<div
+					className={cn(
+						"size-3 relative z-10 hover:z-20",
+						"event-item transition-all",
+						event.organizers.map((org) => {
+							const correspondingOrg = organisations.find(
+								(organisation) => organisation.name === org,
+							);
+							const isMain = correspondingOrg?.isMain ?? false;
+							return `event-item-org-${
+								isMain
+									? slugifyCssClass(org) || "unknown-organisation"
+									: "other"
+							}`;
+						}),
+					)}
+					style={{
+						height: `${Math.ceil(sizeScale(event.size_number ?? 0))}px`,
+					}}
+				>
+					<EventBubbleLink event={event} organisations={organisations} />
+				</div>
+			</div>
+		</EventTooltip>
+	);
 }
 
-export default EventsTimeline
+export default function EventsTimelineWithData({
+	data: initialData,
+}: {
+	data: EventType[];
+}) {
+	const { data, isPending, error } = useEvents(initialData);
+	if (isPending) return <TimelineRouteLoading />;
+	if (error) return <TimelineRouteError error={error} />;
+	return <EventsTimeline data={data} />;
+}

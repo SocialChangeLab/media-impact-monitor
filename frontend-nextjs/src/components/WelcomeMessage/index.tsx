@@ -1,43 +1,43 @@
-'use client'
-import { Button } from '@components/ui/button'
-import headerImage from '@images/header-bg.png'
-import { cn } from '@utility/classNames'
-import { AnimatePresence, motion } from 'framer-motion'
-import { X } from 'lucide-react'
-import Image from 'next/image'
-import Link from 'next/link'
-import { useCallback, useEffect, useState } from 'react'
+"use client";
+import { Button } from "@/components/ui/button";
+import headerImage from "@/images/header-bg.png";
+import { cn } from "@/utility/classNames";
+import { AnimatePresence, motion } from "framer-motion";
+import { X } from "lucide-react";
+import Image from "next/image";
+import Link from "next/link";
+import { useCallback, useEffect, useState } from "react";
 
 function WelcomeMessage({ currentPage }: { currentPage: string }) {
-	const [isShowing, setIsShowing] = useState(false)
-	const isAboutPage = currentPage === 'about'
+	const [isShowing, setIsShowing] = useState(false);
+	const isAboutPage = currentPage === "about";
 
 	useEffect(() => {
-		if (typeof window === 'undefined') return
-		const preference = localStorage.getItem('showWelcomeMessage')
-		const showWelcomeMessage = preference === 'true'
+		if (typeof window === "undefined") return;
+		const preference = localStorage.getItem("showWelcomeMessage");
+		const showWelcomeMessage = preference === "true";
 		if (!preference || showWelcomeMessage) {
-			setIsShowing(true)
+			setIsShowing(true);
 		} else {
-			setIsShowing(false)
+			setIsShowing(false);
 		}
-	}, [])
+	}, []);
 
 	const onHide = useCallback(() => {
-		if (typeof window === 'undefined') return
-		localStorage.setItem('showWelcomeMessage', 'false')
-		setIsShowing(false)
-	}, [setIsShowing])
+		if (typeof window === "undefined") return;
+		localStorage.setItem("showWelcomeMessage", "false");
+		setIsShowing(false);
+	}, []);
 
 	return (
 		<AnimatePresence>
 			{!isAboutPage && isShowing && (
 				<motion.section
 					initial={{ opacity: 0, height: 0 }}
-					animate={{ opacity: 1, height: 'auto' }}
+					animate={{ opacity: 1, height: "auto" }}
 					exit={{ opacity: 0, height: 0 }}
 				>
-					<div className="p-6">
+					<div className="p-6 w-screen overflow-x-clip">
 						<div className="w-full sm:min-h-40 bg-brandGreen bg-blend-screen relative z-0 shadow-xl">
 							<Image
 								src={headerImage}
@@ -50,7 +50,7 @@ function WelcomeMessage({ currentPage }: { currentPage: string }) {
                     bg-center mix-blend-screen
                     bg-[url(/images/noisy-dark.png)]"
 								aria-hidden="true"
-							></div>
+							/>
 							<div className="px-6 pt-6 pb-8 max-w-prose flex flex-col gap-4">
 								<h1 className="text-3xl font-bold font-headlines antialiased text-brandWhite pr-12 md:pr-0">
 									Welcome to the Media Impact Monitor
@@ -71,8 +71,8 @@ function WelcomeMessage({ currentPage }: { currentPage: string }) {
 										<Link
 											href="/about"
 											className={cn(
-												'text-brandWhite underline focusable focus-visible:ring-offset-0 focus-visible:ring-brandWhite',
-												'p-2 -ml-2 hover:decoration-brandGreen',
+												"text-brandWhite underline focusable focus-visible:ring-offset-0 focus-visible:ring-brandWhite",
+												"p-2 -ml-2 hover:decoration-brandGreen",
 											)}
 										>{`Learn more about the project`}</Link>
 									</p>
@@ -84,7 +84,7 @@ function WelcomeMessage({ currentPage }: { currentPage: string }) {
 											`text-brandGreen bg-brandWhite focus-visible:ring-offset-0`,
 											`focus-visible:bg-brandGreen focus-visible:ring-brandWhite`,
 											`focus-visible:text-brandWhite`,
-											'hover:bg-brandGreen hover:text-brandWhite',
+											"hover:bg-brandGreen hover:text-brandWhite",
 										)}
 									>
 										{`Take the tour`}
@@ -96,7 +96,7 @@ function WelcomeMessage({ currentPage }: { currentPage: string }) {
 											`text-brandWhite focus-visible:ring-offset-0`,
 											`focus-visible:bg-brandGreen focus-visible:ring-brandWhite`,
 											`focus-visible:text-brandWhite`,
-											'hover:bg-brandGreen hover:text-brandWhite hover:border-brandGreen',
+											"hover:bg-brandGreen hover:text-brandWhite hover:border-brandGreen",
 										)}
 									>
 										{`I'll discover on my own`}
@@ -105,10 +105,10 @@ function WelcomeMessage({ currentPage }: { currentPage: string }) {
 								<Button
 									onClick={onHide}
 									className={cn(
-										'absolute top-6 right-6 z-10 text-brandWhite',
-										'focus-visible:ring-offset-0 focus-visible:ring-brandWhite',
-										'focus-visible:bg-brandGreen hover:bg-brandGreen',
-										'hover:bg-brandGreen hover:text-brandWhite',
+										"absolute top-6 right-6 z-10 text-brandWhite",
+										"focus-visible:ring-offset-0 focus-visible:ring-brandWhite",
+										"focus-visible:bg-brandGreen hover:bg-brandGreen",
+										"hover:bg-brandGreen hover:text-brandWhite",
 									)}
 									variant="ghost"
 									size="icon"
@@ -121,7 +121,7 @@ function WelcomeMessage({ currentPage }: { currentPage: string }) {
 				</motion.section>
 			)}
 		</AnimatePresence>
-	)
+	);
 }
 
-export default WelcomeMessage
+export default WelcomeMessage;

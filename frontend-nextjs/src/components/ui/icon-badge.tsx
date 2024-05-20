@@ -1,24 +1,24 @@
-import React, { ReactNode } from 'react'
-import { Badge, BadgeProps } from './badge'
-import { cn } from '@utility/classNames'
+import { cn } from "@/utility/classNames";
+import type { ReactNode } from "react";
+import { Badge, type BadgeProps } from "./badge";
 
 export function IconBadge({
 	icon,
 	badgeProps = {},
 	label,
 }: {
-	icon: ReactNode
-	badgeProps?: BadgeProps
-	label?: string
+	icon: ReactNode;
+	badgeProps?: BadgeProps;
+	label?: string;
 }) {
 	return (
 		<Badge
 			variant="outline"
 			{...badgeProps}
-			className={cn('w-fit pl-1.5 pt-0.5', badgeProps.className)}
+			className={cn("w-fit pl-1.5 pt-0.5", badgeProps.className)}
 		>
 			{icon}
 			{label && <span className="mt-0.5">{label}</span>}
 		</Badge>
-	)
+	);
 }

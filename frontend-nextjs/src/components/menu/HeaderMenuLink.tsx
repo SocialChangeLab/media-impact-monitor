@@ -1,6 +1,6 @@
-import { cn } from '@utility/classNames'
-import Link from 'next/link'
-import { ReactNode } from 'react'
+import { cn } from "@/utility/classNames";
+import Link from "next/link";
+import type { ReactNode } from "react";
 
 function HeaderMenuLink({
 	as = Link,
@@ -11,19 +11,19 @@ function HeaderMenuLink({
 	active,
 	ariaLabel,
 }: {
-	as?: typeof Link | string
-	onClick?: () => void
-	href?: string
-	title: ReactNode
-	ariaLabel?: string
-	className?: string
-	active?: boolean
+	as?: typeof Link | string;
+	onClick?: () => void;
+	href?: string;
+	title: ReactNode;
+	ariaLabel?: string;
+	className?: string;
+	active?: boolean;
 }) {
-	const Tag = as
+	const Tag = as;
 	return (
 		<li className="inline-block w-full sm:w-auto">
 			<Tag
-				href={href ?? '/'}
+				href={href ?? "/"}
 				aria-label={`Header menu link: ${ariaLabel || title} page`}
 				className={cn(
 					`py-1.5 px-4 motion-safe:transition-colors`,
@@ -41,7 +41,7 @@ function HeaderMenuLink({
 				{title}
 			</Tag>
 		</li>
-	)
+	);
 }
 
-export default HeaderMenuLink
+export default HeaderMenuLink;

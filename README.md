@@ -67,8 +67,18 @@ Please [send us an email](mailto:david@socialchangelab.org) or [book a short mee
 
 <!-- ALL-CONTRIBUTORS-LIST:END -->
 
+## License
+
+We use a mixed license, with GPL as the basis and two additional restrictions:
+
+1. GPL v3 basis: Derivative works must be made open source (copyleft).
+2. NoHarm Clause: Only ethical use is permitted.
+3. Commons Clause: Only noncommercial use is permitted.
+
+For details check out the [full license text](LICENSE).
+
 ## Partners
 
-| Hosted by                                                                                                                                                                    | Sponsored by                                                                                                                                          |                                                                                                                                   |
-| ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------- |
-| [![Logo of the Social Change Lab](https://mediaimpactmonitor.app/assets/logos/socialchangelab-hybrid.svg)](https://socialchangelab.org/)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; | [![Logo of the Bundesministerium für Bildung und Forschung](https://mediaimpactmonitor.app/assets/logos/bmbf-hybrid.svg)](https://prototypefund.org/) | [![Logo of the Prototype Fund](https://mediaimpactmonitor.app/assets/logos/prototypefund-hybrid.svg)](https://prototypefund.org/) |
+| Hosted by                                                                                                                                                                    | Funded by                                                                                                                         |                                                                                                                                                       |
+| ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------- |
+| [![Logo of the Social Change Lab](https://mediaimpactmonitor.app/assets/logos/socialchangelab-hybrid.svg)](https://socialchangelab.org/)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; | [![Logo of the Prototype Fund](https://mediaimpactmonitor.app/assets/logos/prototypefund-hybrid.svg)](https://prototypefund.org/) | [![Logo of the Bundesministerium für Bildung und Forschung](https://mediaimpactmonitor.app/assets/logos/bmbf-hybrid.svg)](https://prototypefund.org/) |

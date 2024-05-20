@@ -1,5 +1,5 @@
-'use client'
-import * as React from 'react'
+"use client";
+import type * as React from "react";
 
 import {
 	Dialog,
@@ -8,7 +8,7 @@ import {
 	DialogFooter,
 	DialogHeader,
 	DialogTitle,
-} from '@/components/ui/dialog'
+} from "@/components/ui/dialog";
 import {
 	Drawer,
 	DrawerContent,
@@ -16,8 +16,8 @@ import {
 	DrawerFooter,
 	DrawerHeader,
 	DrawerTitle,
-} from '@/components/ui/drawer'
-import useMediaQuery from '@custom-react-hooks/use-media-query'
+} from "@/components/ui/drawer";
+import useMediaQuery from "@custom-react-hooks/use-media-query";
 
 export function ResponsiveModal({
 	children,
@@ -27,13 +27,13 @@ export function ResponsiveModal({
 	onClose,
 	open,
 }: React.PropsWithChildren<{
-	open: boolean
-	title?: React.ReactNode
-	description?: React.ReactNode
-	footer?: React.ReactNode
-	onClose?: () => void
+	open: boolean;
+	title?: React.ReactNode;
+	description?: React.ReactNode;
+	footer?: React.ReactNode;
+	onClose?: () => void;
 }>) {
-	const isDesktop = useMediaQuery('(min-width: 768px)')
+	const isDesktop = useMediaQuery("(min-width: 768px)");
 
 	if (isDesktop) {
 		return (
@@ -54,7 +54,7 @@ export function ResponsiveModal({
 					{footer && <DialogFooter>{footer}</DialogFooter>}
 				</DialogContent>
 			</Dialog>
-		)
+		);
 	}
 
 	return (
@@ -75,5 +75,5 @@ export function ResponsiveModal({
 				{footer && <DrawerFooter>{footer}</DrawerFooter>}
 			</DrawerContent>
 		</Drawer>
-	)
+	);
 }

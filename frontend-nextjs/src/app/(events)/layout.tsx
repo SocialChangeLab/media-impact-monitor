@@ -1,11 +1,15 @@
-'use client'
-import EventPageLayout from '@components/EventPageLayout'
-import { ReactNode, Suspense } from 'react'
+import EventPageLayout from "@/components/EventPageLayout";
+import type { ReactNode } from "react";
 
-export default function EventPage({ children }: { children: ReactNode }) {
+export default function EventsPageLayout({
+	timeline,
+	calendar,
+	children,
+}: { timeline: ReactNode; calendar: ReactNode; children: ReactNode }) {
 	return (
-		<Suspense>
-			<EventPageLayout>{children}</EventPageLayout>
-		</Suspense>
-	)
+		<EventPageLayout calendar={calendar}>
+			{timeline}
+			{children}
+		</EventPageLayout>
+	);
 }

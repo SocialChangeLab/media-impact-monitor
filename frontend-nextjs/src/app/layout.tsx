@@ -1,18 +1,15 @@
-import { inter, neueRegrade } from '@utility/fonts'
-import React from 'react'
+import { inter, neueRegrade } from "@/utility/fonts";
+import type React from "react";
 
-import { BaseLayout } from '@components/BaseLayout'
-import QueryClientProvider from '@components/QueryClientProvider'
-import { Toaster } from '@components/ui/sonner'
-import { TooltipProvider } from '@components/ui/tooltip'
-import { ThemeProvider } from '@providers/ThemeProvider'
-import '@styles/global.css'
-import { cn } from '@utility/classNames'
+import { BaseLayout } from "@/components/BaseLayout";
+import Providers from "@/provders";
+import "@/styles/global.css";
+import { cn } from "@/utility/classNames";
 
 export default function RootLayout({
 	children,
 }: Readonly<{
-	children: React.ReactNode
+	children: React.ReactNode;
 }>) {
 	return (
 		<html
@@ -20,17 +17,12 @@ export default function RootLayout({
 			className={cn(neueRegrade.variable, inter.variable)}
 			suppressHydrationWarning
 		>
-			<head></head>
-			<body className="bg-pattern-soft">
-				<QueryClientProvider>
-					<ThemeProvider defaultTheme="system" enableSystem>
-						<TooltipProvider>
-							<BaseLayout>{children}</BaseLayout>
-						</TooltipProvider>
-					</ThemeProvider>
-				</QueryClientProvider>
-				<Toaster />
+			<head />
+			<body className="bg-pattern-soft w-screen overflow-x-clip">
+				<Providers>
+					<BaseLayout>{children}</BaseLayout>
+				</Providers>
 			</body>
 		</html>
-	)
+	);
 }

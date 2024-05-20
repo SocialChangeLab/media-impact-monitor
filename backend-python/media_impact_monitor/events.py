@@ -10,14 +10,20 @@ from media_impact_monitor.data_loaders.protest.climate_orgs import (
     climate_orgs,
     climate_orgs_aliases,
 )
+from media_impact_monitor.data_loaders.protest.press_releases.last_generation.categorize import (
+    code_press_releases as get_press_release_events,
+)
 from media_impact_monitor.types_ import EventSearch
 from media_impact_monitor.util.cache import cache
 
 
-@cache
+# @cache
 def get_events(q: EventSearch) -> pd.DataFrame:
-    assert q.source == "acled", "Only ACLED is supported."
-    df = get_acled_events(countries=["Germany"])
+    match q.source:
+        case "acled":
+            df = get_acled_events(countries=["Germany"])
+        case "press_releases":
+            df = get_press_release_events()
     if df.empty:
         return q, []
     match q.topic:
@@ -26,7 +32,9 @@ def get_events(q: EventSearch) -> pd.DataFrame:
         case "climate_change":
             df = df[
                 df["description"].str.lower().str.contains("climate")
-                | df["organizers"].isin(climate_orgs)
+                | df["organizers"].apply(
+                    lambda x: any(org in climate_orgs for org in x)
+                )
             ]
         case _:
             raise ValueError(f"Unsupported topic: {q.topic}")

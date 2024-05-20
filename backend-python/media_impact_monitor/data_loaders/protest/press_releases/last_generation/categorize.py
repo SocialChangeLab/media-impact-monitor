@@ -36,12 +36,27 @@ tools = [
                         "type": ["number", "null"],
                         "$comment": "Size of the protest, as a number, as extracted from `size_text`.",
                     },
+                    "country": {
+                        "type": ["string", "null"],
+                        "$comment": "Country where the protest took place.",
+                    },
+                    "region": {
+                        "type": ["string", "null"],
+                        "$comment": "Region where the protest took place.",
+                    },
+                    "city": {
+                        "type": ["string", "null"],
+                        "$comment": "City where the protest took place.",
+                    },
                 },
                 "required": [
                     "date",
                     "event_type",
                     "size_text",
                     "size_number",
+                    "country",
+                    "region",
+                    "city",
                 ],
             },
         },
@@ -68,12 +83,12 @@ def code_press_releases():
     press_releases = extract_press_releases()
     data = parallel_tqdm(code_press_release, press_releases["content"].tolist())
     df = pd.DataFrame(data)
-    df["date"] = pd.to_datetime(df["date"]).dt.date
+    df["date"] = pd.to_datetime(df["date"], format="%Y-%m-%d").dt.date
     df["description"] = press_releases["title"] + "\n\n" + press_releases["content"]
-    df["organizers"] = ["Last Generation (Germany)" for _ in range(len(df))]
+    df["organizers"] = [["Last Generation (Germany)"] for _ in range(len(df))]
     df["source"] = (
         "Press releases by Last Generation (Germany); scraped from "
         + press_releases["url"]
     )
-    df = df[(df["event_type"] == "protest") & (df["date"].notnull())]
+    df = df[(df["event_type"] == "protest") & df["date"].notnull()]
     return df

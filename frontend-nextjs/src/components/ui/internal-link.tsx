@@ -1,7 +1,7 @@
-import { cn } from '@/utility/classNames'
-import { Link } from 'next-view-transitions'
-import { LinkProps } from 'next/link'
-import React from 'react'
+import { cn } from "@/utility/classNames";
+import type { LinkProps } from "next/link";
+import Link from "next/link";
+import type React from "react";
 
 function InternalLink(
 	props: LinkProps & { className?: string; children?: React.ReactNode },
@@ -20,7 +20,7 @@ function InternalLink(
 				props.className,
 			)}
 		/>
-	)
+	);
 }
 
-export default InternalLink
+export default InternalLink;

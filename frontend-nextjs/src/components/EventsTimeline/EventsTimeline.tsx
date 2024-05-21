@@ -94,9 +94,18 @@ function EventsTimeline({
 		const max =
 			displayedEvents.length === 0
 				? 100
-				: Math.max(...displayedEvents.map((e) => e.size_number ?? 0));
-		return scalePow([0, max], [config.eventMinHeight, config.eventMaxHeight]);
-	}, [eventColumns]);
+				: Math.max(
+						...(aggregationUnit === "day"
+							? displayedEvents.map((e) => e.size_number ?? 0)
+							: eventColumns.map((e) => e.sumSize ?? 0)),
+					);
+
+		const maxHeight =
+			aggregationUnit === "day"
+				? config.eventMaxHeight
+				: config.aggregatedEventMaxHeight;
+		return scalePow([0, max], [config.eventMinHeight, maxHeight]);
+	}, [eventColumns, aggregationUnit]);
 
 	if (events.length === 0) return <EmptyEventsTimeline />;
 	const animationKey = [
@@ -220,6 +229,40 @@ function EventTimelineItem({
 				</div>
 			</div>
 		</EventTooltip>
+	);
+}
+
+function EventsTimelineAggregatedItem({
+	height,
+	organisations,
+	events,
+}: {
+	height: number;
+	organisations: OrganisationType[];
+	events: EventType[];
+}) {
+	return (
+		<div className="rounded-full bg-grayUltraLight">
+			<div
+				className={cn(
+					"size-3 relative z-10 hover:z-20",
+					"event-item transition-all",
+					organisations.map((org) => {
+						const isMain = org?.isMain ?? false;
+						return `event-item-org-${
+							isMain
+								? slugifyCssClass(org.name) || "unknown-organisation"
+								: "other"
+						}`;
+					}),
+				)}
+				style={{
+					height: `${height}px`,
+				}}
+			>
+				<AggregatedEventsBubble organisations={organisations} />
+			</div>
+		</div>
 	);
 }
 

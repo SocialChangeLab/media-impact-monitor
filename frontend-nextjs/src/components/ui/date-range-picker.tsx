@@ -102,6 +102,7 @@ export function DatePickerWithRange({
 							selected={date}
 							onSelect={setDate}
 							numberOfMonths={2}
+							disabled={{ after: new Date() }}
 						/>
 						<div className="p-3 flex justify-end gap-4">
 							{onReset && !isDefault && (

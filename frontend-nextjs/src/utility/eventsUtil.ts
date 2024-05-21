@@ -1,4 +1,4 @@
-import { format, parse } from "date-fns";
+import { parse } from "date-fns";
 import { ZodError, z } from "zod";
 import { dateSortCompare, isValidISODateString } from "./dateUtil";
 
@@ -75,35 +75,35 @@ export async function getEventsData(params?: {
 	if (!apiUrl)
 		throw new Error("NEXT_PUBLIC_API_URL env variable is not defined");
 	let json: unknown = { query: {}, data: [] };
-	try {
-		const response = await fetch(`${apiUrl}/events`, {
-			cache: "no-store",
-			method: "POST",
-			headers: {
-				"Content-Type": "application/json",
-				"Cache-Control": "no-cache",
-			},
-			body: JSON.stringify({
-				source: "acled",
-				topic: "climate_change",
-				...(params?.from && params?.to
-					? {
-							start_date: format(params?.from, "yyyy-MM-dd"),
-							end_date: format(params?.to, "yyyy-MM-dd"),
-						}
-					: {}),
-			}),
-		});
+	// try {
+	// 	const response = await fetch(`${apiUrl}/events`, {
+	// 		cache: "no-store",
+	// 		method: "POST",
+	// 		headers: {
+	// 			"Content-Type": "application/json",
+	// 			"Cache-Control": "no-cache",
+	// 		},
+	// 		body: JSON.stringify({
+	// 			source: "acled",
+	// 			topic: "climate_change",
+	// 			...(params?.from && params?.to
+	// 				? {
+	// 						start_date: format(params?.from, "yyyy-MM-dd"),
+	// 						end_date: format(params?.to, "yyyy-MM-dd"),
+	// 					}
+	// 				: {}),
+	// 		}),
+	// 	});
 
-		if (!response.ok) {
-			const message = `An error has occured: ${response.statusText} ${response.status}`;
-			throw new Error(`ApiFetchError&&&${message}`);
-		}
+	// 	if (!response.ok) {
+	// 		const message = `An error has occured: ${response.statusText} ${response.status}`;
+	// 		throw new Error(`ApiFetchError&&&${message}`);
+	// 	}
 
-		json = await response.json();
-	} catch (error) {
-		json = (await import(`../data/fallbackProtests.json`)).default;
-	}
+	// 	json = await response.json();
+	// } catch (error) {
+	json = (await import(`../data/fallbackProtests.json`)).default;
+	// }
 	const events = validateGetDataResponse(json);
 	return events;
 }

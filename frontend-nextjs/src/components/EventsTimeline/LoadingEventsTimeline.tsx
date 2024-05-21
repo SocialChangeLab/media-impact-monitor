@@ -1,5 +1,6 @@
 "use client";
-import useDays from "@/utility/useDays";
+import useTimeIntervals from "@/utility/useTimeIntervals";
+import useElementSize from "@custom-react-hooks/use-element-size";
 import { scalePow } from "d3-scale";
 import { useMemo } from "react";
 import seed from "seed-random";
@@ -8,6 +9,7 @@ import EventsTimelineAxis from "./EventsTimelineAxis";
 import EventsTimelineChartWrapper from "./EventsTimelineChartWrapper";
 import EventsTimelineScrollWrapper from "./EventsTimelineScrollWrapper";
 import config from "./eventsTimelineConfig";
+import useAggregationUnit from "./useAggregationUnit";
 
 const seededRandom = seed("loading-screen");
 const randomUntil = (max: number) => Math.ceil(seededRandom() * max);
@@ -18,10 +20,12 @@ const sizeScale = scalePow(
 );
 
 export default function LoadingEventsTimeline() {
-	const days = useDays();
+	const [parentRef, size] = useElementSize();
+	const aggregationUnit = useAggregationUnit(size.width);
+	const intervals = useTimeIntervals(aggregationUnit);
 
 	const skeletons = useMemo(() => {
-		return days.map((_, i) => ({
+		return intervals.map((_, i) => ({
 			colId: i,
 			eventsWithSize: Array(randomUntil(11))
 				.fill(null)
@@ -30,15 +34,12 @@ export default function LoadingEventsTimeline() {
 					height: `${Math.ceil(sizeScale(randomUntil(60)))}px`,
 				})),
 		}));
-	}, [days]);
+	}, [intervals]);
 
 	return (
-		<EventsTimelineWrapper>
-			<EventsTimelineScrollWrapper animationKey="loading-parent">
-				<EventsTimelineChartWrapper
-					animationKey="loading"
-					columnsCount={skeletons.length + 1}
-				>
+		<EventsTimelineWrapper ref={parentRef}>
+			<EventsTimelineScrollWrapper>
+				<EventsTimelineChartWrapper columnsCount={skeletons.length + 1}>
 					{skeletons.map(({ colId, eventsWithSize }) => (
 						<li
 							key={`loading-event-col-${colId}`}
@@ -57,7 +58,9 @@ export default function LoadingEventsTimeline() {
 					))}
 				</EventsTimelineChartWrapper>
 				<EventsTimelineAxis
-					eventDays={days.map((d) => ({ day: d, eventsWithSize: [] }))}
+					eventColumns={intervals.map((d) => ({ day: d, eventsWithSize: [] }))}
+					aggregationUnit={aggregationUnit}
+					width={size.width}
 				/>
 			</EventsTimelineScrollWrapper>
 		</EventsTimelineWrapper>

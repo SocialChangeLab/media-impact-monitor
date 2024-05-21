@@ -5,7 +5,7 @@ import { format } from "date-fns";
 import { CalendarDays } from "lucide-react";
 
 function CalendarPageLoading() {
-	const { from, to } = useFiltersStore();
+	const { from, to } = useFiltersStore(({ from, to }) => ({ from, to }));
 	return (
 		<Button variant="outline" className="text-grayDark">
 			<CalendarDays className="mr-2 w-6 h-6" />

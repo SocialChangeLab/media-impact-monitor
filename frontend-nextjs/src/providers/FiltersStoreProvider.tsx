@@ -1,9 +1,9 @@
 "use client";
 
-import { type ReactNode, createContext, useContext, useRef } from "react";
-import { type StoreApi, useStore } from "zustand";
+import { createContext, useContext, useRef, type ReactNode } from "react";
+import { useStore, type StoreApi } from "zustand";
 
-import { type FiltersStore, createFiltersStore } from "@/stores/filtersStore";
+import { createFiltersStore, type FiltersStore } from "@/stores/filtersStore";
 
 export const FiltersStoreContext = createContext<StoreApi<FiltersStore> | null>(
 	null,
@@ -30,12 +30,14 @@ export const FiltersStoreProvider = ({
 	);
 };
 
-export const useFiltersStore = () => {
+export const useFiltersStore = <T,>(
+	selector: (store: FiltersStore) => T,
+): T => {
 	const filtersStoreContext = useContext(FiltersStoreContext);
 
 	if (!filtersStoreContext) {
 		throw new Error(`useFiltersStore must be use within FiltersStoreProvider`);
 	}
 
-	return useStore(filtersStoreContext, (state) => state);
+	return useStore(filtersStoreContext, selector);
 };

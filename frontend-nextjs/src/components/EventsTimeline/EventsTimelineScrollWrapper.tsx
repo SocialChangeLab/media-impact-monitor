@@ -7,8 +7,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 
 function EventsTimelineScrollWrapper({
 	children,
-	animationKey,
-}: { children: React.ReactNode; animationKey: string }) {
+}: { children: React.ReactNode }) {
 	const parentRef = useRef<HTMLDivElement>(null);
 	const [showUpArrow, setShowUpArrow] = useState(false);
 	const [showLeftArrow, setShowLeftArrow] = useState(false);
@@ -37,7 +36,7 @@ function EventsTimelineScrollWrapper({
 		const { clientHeight } = parentRef.current;
 		const top = parentRef.current.scrollHeight - clientHeight;
 		parentRef.current.scroll({ top });
-	}, [children, animationKey]);
+	}, [children]);
 
 	const scrollUp = useCallback(() => {
 		if (!parentRef.current) return;
@@ -129,7 +128,7 @@ function EventsTimelineScrollWrapper({
 				aria-hidden="true"
 				className={cn(
 					"w-[calc(100vw-3rem)] overflow-auto grid grid-cols-1 grid-rows-[1fr_3.5rem] relative",
-					"h-[calc(100vh-14rem)] bg-grayUltraLight",
+					"h-[var(--protest-timeline-height)] bg-grayUltraLight",
 				)}
 				ref={parentRef}
 			>

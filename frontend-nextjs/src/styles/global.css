@@ -45,6 +45,8 @@
 		--sentiment-positive: #229E74;
 		--sentiment-negative: #E69F00;
 		--sentiment-neutral: #D55E00;
+
+		--protest-timeline-height: calc(100vh - 22rem)
 	}
 
 	:root[data-theme='dark'] {

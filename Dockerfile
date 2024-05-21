@@ -1,11 +1,11 @@
 # build it: docker build -t socialchangelab/media-impact-monitor --build-arg VCS_REF=$(git rev-parse --short HEAD) --build-arg BUILD_DATE=$(date -u +'%Y-%m-%dT%H:%M:%SZ') .
 # run it: docker run -p 8000:8000 -e MEDIACLOUD_API_TOKEN="${MEDIACLOUD_API_TOKEN}" -e ACLED_EMAIL="${ACLED_EMAIL}" -e ACLED_KEY="${ACLED_KEY}" socialchangelab/media-impact-monitor
-FROM python:3.10-slim
+FROM --platform=linux/amd64 python:3.10-slim
 # install poetry
 RUN pip install --upgrade pip
 RUN pip install poetry
 # copy the poetry files and install the dependencies
-COPY backend-python/poetry.lock backend-python/pyproject.toml /app/backend-python/
+COPY backend-python/poetry.lock backend-python/pyproject.toml backend-python/README.md /app/backend-python/
 WORKDIR /app/backend-python
 RUN poetry config virtualenvs.create false \
     && poetry install --no-interaction --no-ansi

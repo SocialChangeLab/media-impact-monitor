@@ -1,4 +1,4 @@
-import { SVGProps } from 'react'
+import type { SVGProps } from "react";
 
 function PrototypeFundLogo(props: SVGProps<SVGSVGElement>) {
 	return (
@@ -9,6 +9,8 @@ function PrototypeFundLogo(props: SVGProps<SVGSVGElement>) {
 			fill="none"
 			xmlns="http://www.w3.org/2000/svg"
 			{...props}
+			aria-label="Prototype Fund logo"
+			role="img"
 		>
 			<path
 				fillRule="evenodd"
@@ -79,7 +81,7 @@ function PrototypeFundLogo(props: SVGProps<SVGSVGElement>) {
 				fill="#009ACE"
 			/>
 		</svg>
-	)
+	);
 }
 
-export default PrototypeFundLogo
+export default PrototypeFundLogo;

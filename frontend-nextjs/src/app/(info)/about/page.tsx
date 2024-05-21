@@ -1,4 +1,4 @@
-import Team from '@/components/Team'
+import Team from "@/components/Team";
 
 export default async function AboutPage() {
 	return (
@@ -54,13 +54,13 @@ export default async function AboutPage() {
 				dreams, and your feedback on our prototypes!
 			</p>
 			<p>
-				Please <a href="mailto:david@socialchangelab.org">send us an email</a>{' '}
-				or{' '}
+				Please <a href="mailto:david@socialchangelab.org">send us an email</a>{" "}
+				or{" "}
 				<a href="https://cal.com/davidpomerenke/meeting-mim">
 					book a short meeting
-				</a>{' '}
+				</a>{" "}
 				with us 🤗
 			</p>
 		</>
-	)
+	);
 }

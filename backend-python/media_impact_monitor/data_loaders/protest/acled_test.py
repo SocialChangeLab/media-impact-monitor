@@ -8,9 +8,6 @@ from media_impact_monitor.data_loaders.protest.acled import get_acled_events
 
 def test_get_protests_with_keyword():
     test_countries = ["Germany", "Burkina Faso"]
-    assert (
-        "ACLED_EMAIL" in os.environ and "ACLED_KEY" in os.environ
-    ), "Environment variables for ACLED API access are not set."
     df = get_acled_events(
         countries=test_countries,
         start_date=date(2022, 1, 1),

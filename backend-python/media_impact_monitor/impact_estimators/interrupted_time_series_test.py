@@ -1,9 +1,6 @@
 from datetime import date, timedelta
 
-import matplotlib.pyplot as plt
-import numpy as np
 import pandas as pd
-from tqdm.auto import tqdm
 
 from media_impact_monitor.data_loaders.news_online.mediacloud_ import (
     get_mediacloud_counts,
@@ -22,7 +19,11 @@ def test_estimate_impact():
         '"Letzte Generation"', date(2023, 1, 1), date(2024, 3, 31)
     )
     actual, counterfactual, impact = estimate_impact(
-        date(2023, 7, 1), article_counts, horizon=14, hidden_days_before_protest=2
+        date(2023, 7, 1),
+        article_counts,
+        horizon=14,
+        hidden_days_before_protest=2,
+        aggregation="daily",
     )
     assert isinstance(actual, pd.Series)
     assert isinstance(counterfactual, pd.Series)
@@ -49,8 +50,12 @@ def test_estimate_impacts():
     article_counts = get_mediacloud_counts(
         '"Letzte Generation"', date(2023, 1, 1), date(2024, 3, 31)
     )
-    actuals, counterfactuals, impacts = estimate_impacts(
-        events, article_counts, horizon=7, hidden_days_before_protest=4
+    actuals, counterfactuals, impacts, warnings = estimate_impacts(
+        events,
+        article_counts,
+        horizon=7,
+        hidden_days_before_protest=4,
+        aggregation="daily",
     )
     assert len(actuals) == len(events)
     assert len(counterfactuals) == len(events)
@@ -72,8 +77,12 @@ def test_mean_impact_estimates():
     article_counts = get_mediacloud_counts(
         '"Letzte Generation"', date(2023, 1, 1), date(2024, 3, 31)
     )
-    impacts_df = estimate_mean_impact(
-        events, article_counts, horizon=7, hidden_days_before_protest=4
+    impacts_df, warnings = estimate_mean_impact(
+        events,
+        article_counts,
+        horizon=7,
+        hidden_days_before_protest=4,
+        aggregation="daily",
     )
     assert isinstance(impacts_df, pd.DataFrame)
     assert impacts_df.index.is_monotonic_increasing

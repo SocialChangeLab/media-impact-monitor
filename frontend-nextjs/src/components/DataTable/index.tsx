@@ -1,114 +1,33 @@
-'use client'
+import type { ColumnDef } from "@tanstack/react-table";
+import ComponentError from "../ComponentError";
+import { DataTable } from "./DataTable";
 
-import {
-	ColumnDef,
-	flexRender,
-	getCoreRowModel,
-	getPaginationRowModel,
-	getSortedRowModel,
-	useReactTable,
-} from '@tanstack/react-table'
-
-import { Button } from '@/components/ui/button'
-import {
-	Table,
-	TableBody,
-	TableCell,
-	TableHead,
-	TableHeader,
-	TableRow,
-} from '@/components/ui/table'
-import { cn } from '@/utility/classNames'
-import { ArrowDown, ArrowUp, ArrowUpDown } from 'lucide-react'
-import TablePagination from './table-pagination'
-
-export function DataTable<RecordType>({
-	columns,
-	data,
-}: {
-	columns: ColumnDef<RecordType, any>[]
-	data: RecordType[]
+function DataTableWithState<RecordType>(props: {
+	isPending: boolean;
+	error: Error | null;
+	data: RecordType[] | null;
+	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+	columns: ColumnDef<RecordType, any>[];
 }) {
-	const table = useReactTable({
-		columns,
-		data,
-		getCoreRowModel: getCoreRowModel(),
-		getPaginationRowModel: getPaginationRowModel(),
-		getSortedRowModel: getSortedRowModel(),
-	})
-
+	const { error, isPending, data, columns } = props;
+	if (isPending) return <div>Loading...</div>;
+	if (error) {
+		return (
+			<div className="w-full flex justify-center min-h-96 p-8 items-center bg-grayUltraLight">
+				<ComponentError
+					errorDetails={error.message}
+					errorMessage="There was an error loading events"
+				/>
+			</div>
+		);
+	}
 	return (
-		<div className="flex flex-col gap-6">
-			<Table>
-				<TableHeader>
-					{table.getHeaderGroups().map((headerGroup) => (
-						<TableRow key={headerGroup.id}>
-							{headerGroup.headers.map((header) => {
-								const { column } = header
-								const sort = column.getIsSorted()
-								const iconClass = cn('ml-2 h-4 w-4', sort && 'text-fg')
-								const label = header.isPlaceholder
-									? null
-									: flexRender(
-											header.column.columnDef.header,
-											header.getContext(),
-										)
-								return (
-									<TableHead
-										key={header.id}
-										colSpan={header.colSpan}
-										style={{ width: `${header.getSize()}px` }}
-									>
-										{column.getCanSort() ? (
-											<Button
-												variant="ghost"
-												onClick={column.getToggleSortingHandler()}
-												className={cn('-ml-4 hover:text-fg group')}
-											>
-												{label}
-												{!sort && <ArrowUpDown className={iconClass} />}
-												{sort === 'asc' && <ArrowDown className={iconClass} />}
-												{sort === 'desc' && <ArrowUp className={iconClass} />}
-											</Button>
-										) : (
-											label
-										)}
-									</TableHead>
-								)
-							})}
-						</TableRow>
-					))}
-				</TableHeader>
-				<TableBody>
-					{table.getRowModel().rows?.length ? (
-						table.getRowModel().rows.map((row) => (
-							<TableRow
-								key={row.id}
-								data-state={row.getIsSelected() && 'selected'}
-							>
-								{row.getVisibleCells().map((cell) => (
-									<TableCell
-										key={cell.id}
-										style={{ width: `${cell.column.getSize()}px` }}
-									>
-										{flexRender(cell.column.columnDef.cell, cell.getContext())}
-									</TableCell>
-								))}
-							</TableRow>
-						))
-					) : (
-						<TableRow className="h-96 bg-grayUltraLight">
-							<TableCell
-								colSpan={table.getAllColumns().length}
-								className="h-24 text-center"
-							>
-								No results for this filter configuration.
-							</TableCell>
-						</TableRow>
-					)}
-				</TableBody>
-			</Table>
-			<TablePagination {...table} />
-		</div>
-	)
+		<DataTable<RecordType>
+			// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+			columns={columns as ColumnDef<RecordType, any>[]}
+			data={data || []}
+		/>
+	);
 }
+
+export default DataTableWithState;

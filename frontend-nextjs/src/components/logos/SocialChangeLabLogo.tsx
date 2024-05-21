@@ -1,4 +1,4 @@
-import { SVGProps } from 'react'
+import type { SVGProps } from "react";
 
 function SocialChangeLabLogo(props: SVGProps<SVGSVGElement>) {
 	return (
@@ -9,6 +9,8 @@ function SocialChangeLabLogo(props: SVGProps<SVGSVGElement>) {
 			fill="none"
 			xmlns="http://www.w3.org/2000/svg"
 			{...props}
+			aria-label="Social Change Lab logo"
+			role="img"
 		>
 			<path
 				fillRule="evenodd"
@@ -17,7 +19,7 @@ function SocialChangeLabLogo(props: SVGProps<SVGSVGElement>) {
 				fill="currentColor"
 			/>
 		</svg>
-	)
+	);
 }
 
-export default SocialChangeLabLogo
+export default SocialChangeLabLogo;

@@ -10,6 +10,7 @@ from media_impact_monitor.data_loaders.protest.acled_size import (
 )
 from media_impact_monitor.util.cache import cache, get
 from media_impact_monitor.util.date import verify_dates
+from media_impact_monitor.util.env import ACLED_EMAIL, ACLED_KEY
 
 load_dotenv()
 
@@ -56,8 +57,8 @@ def get_acled_events(
 
     limit = 1_000_000
     parameters = {
-        "email": os.environ["ACLED_EMAIL"],
-        "key": os.environ["ACLED_KEY"],
+        "email": ACLED_EMAIL,
+        "key": ACLED_KEY,
         "event_type": "Protests",
         "event_date": f"{start_date.strftime('%Y-%m-%d')}|{end_date.strftime('%Y-%m-%d')}",
         "event_date_where": "BETWEEN",

@@ -3,6 +3,11 @@ import {
 	differenceInCalendarISOWeeks,
 	differenceInCalendarMonths,
 	differenceInDays,
+	endOfWeek,
+	format,
+	isSameMonth,
+	isSameYear,
+	startOfWeek,
 } from "date-fns";
 import { useMemo } from "react";
 import config from "./eventsTimelineConfig";
@@ -39,4 +44,27 @@ function getAggregationUnitByRange(
 	const amountMonths = Math.abs(differenceInCalendarMonths(from, to));
 	if (amountMonths <= fittableColumnsCount) return "month";
 	return "year";
+}
+
+export function formatDateByAggregationUnit(
+	date: Date,
+	aggregationUnit: AggregationUnitType,
+) {
+	if (aggregationUnit === "day") return format(date, "EEE d.M.yyyy");
+	if (aggregationUnit === "week") {
+		const start = startOfWeek(date, { weekStartsOn: 1 });
+		const end = endOfWeek(date, { weekStartsOn: 1 });
+		const startAndEndOnSameMonth = isSameMonth(start, end);
+		const startAndEndOnSameYear = isSameYear(start, end);
+		const formatStart = [
+			"d",
+			!startAndEndOnSameMonth && " MMM",
+			!startAndEndOnSameYear && " yyyy",
+		]
+			.filter(Boolean)
+			.join("");
+		return `${format(start, formatStart)} - ${format(end, "d MMM yyyy")}`;
+	}
+	if (aggregationUnit === "month") return format(date, "MMM yyyy");
+	return format(date, "yyyy");
 }

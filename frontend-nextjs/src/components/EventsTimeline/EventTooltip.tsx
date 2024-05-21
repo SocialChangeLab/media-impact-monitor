@@ -7,7 +7,7 @@ import { cn } from "@/utility/classNames";
 import type { EventType, OrganisationType } from "@/utility/eventsUtil";
 import { format } from "date-fns";
 import { Users } from "lucide-react";
-import { type PropsWithChildren, useMemo } from "react";
+import { useMemo, type PropsWithChildren } from "react";
 
 function EventTooltip({
 	event,
@@ -44,7 +44,7 @@ function EventTooltip({
 
 	return (
 		<Tooltip>
-			<TooltipTrigger asChild>{children}</TooltipTrigger>
+			<TooltipTrigger>{children}</TooltipTrigger>
 			<TooltipContent>
 				<ul
 					className={cn(

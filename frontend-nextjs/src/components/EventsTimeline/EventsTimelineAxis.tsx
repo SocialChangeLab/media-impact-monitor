@@ -1,7 +1,9 @@
 import { cn } from "@/utility/classNames";
-import { format } from "date-fns";
 import { useMemo } from "react";
-import type { AggregationUnitType } from "./useAggregationUnit";
+import {
+	formatDateByAggregationUnit,
+	type AggregationUnitType,
+} from "./useAggregationUnit";
 
 function EventsTimelineAxis({
 	eventColumns,
@@ -64,7 +66,7 @@ function EventsTimelineAxis({
 }
 
 function getIdxsWithTicks(columnCount: number, width: number) {
-	const labelWidth = 300;
+	const labelWidth = 400;
 	const maxDivider = Math.round(width / labelWidth);
 	if (columnCount === 0) return [];
 	if (columnCount === 1) return [0];
@@ -78,17 +80,6 @@ function getIdxsWithTicks(columnCount: number, width: number) {
 			.map((_, i) => i * part),
 		columnCount - 1,
 	];
-}
-
-function formatDateByAggregationUnit(
-	date: Date,
-	aggregationUnit: AggregationUnitType,
-) {
-	if (aggregationUnit === "day") return format(date, "EEE dd.MM.yyyy");
-	if (aggregationUnit === "week")
-		return `${format(date, "Io")} Week ${format(date, "yyyy")}`;
-	if (aggregationUnit === "month") return format(date, "MMM yyyy");
-	return format(date, "yyyy");
 }
 
 export default EventsTimelineAxis;

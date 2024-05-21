@@ -1,7 +1,6 @@
 "use client";
 import TimelineRouteError from "@/app/(events)/@timeline/error";
 import TimelineRouteLoading from "@/app/(events)/@timeline/loading";
-import { useFiltersStore } from "@/providers/FiltersStoreProvider";
 import { cn } from "@/utility/classNames";
 import { slugifyCssClass } from "@/utility/cssSlugify";
 import type { EventType, OrganisationType } from "@/utility/eventsUtil";
@@ -13,8 +12,9 @@ import useTimeScale from "@/utility/useTimeScale";
 import useElementSize from "@custom-react-hooks/use-element-size";
 import { scalePow } from "d3-scale";
 import { startOfDay } from "date-fns";
-import { useCallback, useMemo } from "react";
+import { forwardRef, useCallback, useMemo, type ReactNode } from "react";
 import HeadlineWithLine from "../HeadlineWithLine";
+import AggregatedEventsTooltip from "./AggregatedEventsTooltip";
 import EmptyEventsTimeline from "./EmptyEventsTimeline";
 import EventBubbleLink, { AggregatedEventsBubble } from "./EventBubbleLink";
 import EventTooltip from "./EventTooltip";
@@ -25,7 +25,9 @@ import EventsTimelineOrgsLegend from "./EventsTimelineOrgsLegend";
 import EventsTimelineScrollWrapper from "./EventsTimelineScrollWrapper";
 import EventsTimelineSizeLegend from "./EventsTimelineSizeLegend";
 import config from "./eventsTimelineConfig";
-import useAggregationUnit from "./useAggregationUnit";
+import useAggregationUnit, {
+	type AggregationUnitType,
+} from "./useAggregationUnit";
 
 function EventsTimeline({
 	data,
@@ -35,7 +37,6 @@ function EventsTimeline({
 		organisations: OrganisationType[];
 	};
 }) {
-	const { from, to } = useFiltersStore(({ from, to }) => ({ from, to }));
 	const [parentRef, size] = useElementSize();
 	const aggregationUnit = useAggregationUnit(size.width);
 	const intervals = useTimeIntervals(aggregationUnit);
@@ -133,14 +134,17 @@ function EventsTimeline({
 												key={event.event_id}
 												event={event}
 												organisations={organisations}
-												sizeScale={sizeScale}
+												height={sizeScale(event.size_number ?? 0)}
 											/>
 										))}
 									{aggregationUnit !== "day" && eventsWithSize.length > 0 && (
 										<EventsTimelineAggregatedItem
+											date={day}
+											sumSize={sumSize}
 											height={Math.ceil(sizeScale(sumSize))}
 											organisations={combinedOrganizers}
 											events={eventsWithSize}
+											aggregationUnit={aggregationUnit}
 										/>
 									)}
 								</div>
@@ -168,15 +172,42 @@ function EventsTimeline({
 	);
 }
 
+const EventsBar = forwardRef<
+	HTMLDivElement,
+	{ height: number; organisations: OrganisationType[]; children: ReactNode }
+>(({ height, organisations, children }, ref) => (
+	<div className="rounded-full bg-grayUltraLight" ref={ref}>
+		<div
+			className={cn(
+				"size-3 relative z-10 hover:z-20",
+				"event-item transition-all",
+				organisations.map((org) => {
+					const isMain = org?.isMain ?? false;
+					return `event-item-org-${
+						isMain
+							? slugifyCssClass(org.name) || "unknown-organisation"
+							: "other"
+					}`;
+				}),
+			)}
+			style={{
+				height: `${height}px`,
+			}}
+		>
+			{children}
+		</div>
+	</div>
+));
+
 type EventTimelineItemProps = {
 	event: EventType;
 	organisations: OrganisationType[];
-	sizeScale: (x: number) => number;
+	height: number;
 };
 function EventTimelineItem({
 	event,
 	organisations,
-	sizeScale,
+	height,
 }: EventTimelineItemProps) {
 	return (
 		<EventTooltip
@@ -184,65 +215,40 @@ function EventTimelineItem({
 			event={event}
 			organisations={organisations}
 		>
-			<div className="rounded-full bg-grayUltraLight">
-				<div
-					className={cn(
-						"size-3 relative z-10 hover:z-20",
-						"event-item transition-all",
-						event.organizers.map((org) => {
-							const correspondingOrg = organisations.find(
-								(organisation) => organisation.name === org,
-							);
-							const isMain = correspondingOrg?.isMain ?? false;
-							return `event-item-org-${
-								isMain
-									? slugifyCssClass(org) || "unknown-organisation"
-									: "other"
-							}`;
-						}),
-					)}
-					style={{
-						height: `${Math.ceil(sizeScale(event.size_number ?? 0))}px`,
-					}}
-				>
-					<EventBubbleLink event={event} organisations={organisations} />
-				</div>
-			</div>
+			<EventsBar height={height} organisations={organisations}>
+				<EventBubbleLink event={event} organisations={organisations} />
+			</EventsBar>
 		</EventTooltip>
 	);
 }
 
 function EventsTimelineAggregatedItem({
+	date,
 	height,
 	organisations,
 	events,
+	sumSize,
+	aggregationUnit,
 }: {
+	date: Date;
 	height: number;
 	organisations: OrganisationType[];
 	events: EventType[];
+	sumSize: number | undefined;
+	aggregationUnit: AggregationUnitType;
 }) {
 	return (
-		<div className="rounded-full bg-grayUltraLight">
-			<div
-				className={cn(
-					"size-3 relative z-10 hover:z-20",
-					"event-item transition-all",
-					organisations.map((org) => {
-						const isMain = org?.isMain ?? false;
-						return `event-item-org-${
-							isMain
-								? slugifyCssClass(org.name) || "unknown-organisation"
-								: "other"
-						}`;
-					}),
-				)}
-				style={{
-					height: `${height}px`,
-				}}
-			>
+		<AggregatedEventsTooltip
+			date={date}
+			events={events}
+			sumSize={sumSize}
+			aggregationUnit={aggregationUnit}
+			organisations={organisations}
+		>
+			<EventsBar height={height} organisations={organisations}>
 				<AggregatedEventsBubble organisations={organisations} />
-			</div>
-		</div>
+			</EventsBar>
+		</AggregatedEventsTooltip>
 	);
 }
 

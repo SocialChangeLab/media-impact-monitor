@@ -10,10 +10,10 @@ function EventsTimelineSizeLegend({
 		const min = 10;
 		const max = Math.max(sizeScale.domain()[1], 30);
 		const mid = Math.floor((min + max) / 2);
-		return [min, mid, max].map((x, idx) => ({
+		return [undefined, min, mid, max].map((x, idx) => ({
 			id: idx,
 			size: x,
-			height: Math.max(sizeScale(x), 16),
+			height: sizeScale(x ?? 0),
 		}));
 	}, [sizeScale]);
 
@@ -24,7 +24,11 @@ function EventsTimelineSizeLegend({
 				{exampleSizes.map(({ id, size, height }) => (
 					<Fragment key={id}>
 						<div className="rounded-full bg-grayDark w-3" style={{ height }} />
-						<span>{size.toLocaleString("en-GB")} participants</span>
+						<span>
+							{size
+								? `${size.toLocaleString("en-GB")} participants`
+								: "0 or unknown amount of participants"}
+						</span>
 					</Fragment>
 				))}
 			</div>

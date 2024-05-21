@@ -4,7 +4,7 @@ import { useFiltersStore } from "@/providers/FiltersStoreProvider";
 
 function EventTimelineDatePicker() {
 	const { from, to, defaultFrom, defaultTo, setDateRange, resetDateRange } =
-		useFiltersStore();
+		useFiltersStore((store) => store);
 
 	return (
 		<DatePickerWithRange

@@ -13,7 +13,13 @@ function ComponentError({
 	errorDetails?: string;
 	reset?: () => void;
 }) {
-	const { from, to, resetAllFilters } = useFiltersStore();
+	const { from, to, resetAllFilters } = useFiltersStore(
+		({ from, to, resetAllFilters }) => ({
+			from,
+			to,
+			resetAllFilters,
+		}),
+	);
 	return (
 		<div className="w-fit max-w-96 flex flex-col items-center">
 			<div className="mb-6 relative min-w-full flex justify-center">

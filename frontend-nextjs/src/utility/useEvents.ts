@@ -5,13 +5,17 @@ import { format, isAfter, isBefore } from "date-fns";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
 import {
-	type EventType,
 	extractEventOrganisations,
 	getEventsData,
+	type EventType,
 } from "./eventsUtil";
 
 function useEvents(initialData?: Awaited<ReturnType<typeof getEventsData>>) {
-	const filtersStore = useFiltersStore();
+	const filtersStore = useFiltersStore(({ from, to, setDateRange }) => ({
+		from,
+		to,
+		setDateRange,
+	}));
 
 	const [from, setFrom] = useState(filtersStore.from);
 	const [to, setTo] = useState(filtersStore.to);

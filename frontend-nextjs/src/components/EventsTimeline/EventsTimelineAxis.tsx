@@ -1,57 +1,38 @@
 import { cn } from "@/utility/classNames";
-import useTimeScale from "@/utility/useTimeScale";
-import {
-	type CountableTimeInterval,
-	utcMonday,
-	utcMonth,
-	utcTicks,
-	utcWeek,
-} from "d3-time";
-import {
-	addDays,
-	differenceInDays,
-	differenceInMonths,
-	differenceInWeeks,
-	format,
-	isSameDay,
-} from "date-fns";
+import { format } from "date-fns";
 import { useMemo } from "react";
-import { useComponentSize } from "react-use-size";
+import type { AggregationUnitType } from "./useAggregationUnit";
 
 function EventsTimelineAxis({
-	eventDays,
+	eventColumns,
+	aggregationUnit,
+	width,
 }: {
-	eventDays: {
+	eventColumns: {
 		day: Date;
 	}[];
+	aggregationUnit: AggregationUnitType;
+	width: number;
 }) {
-	const { width, ref } = useComponentSize();
-	const timeScale = useTimeScale();
+	if (eventColumns.length === 0) return null;
 
-	const xAxisTicks = useMemo(() => {
-		if (!timeScale) return [];
-		const rangeStart = eventDays[0].day;
-		const rangeEnd = addDays(eventDays[eventDays.length - 1].day, 1);
-		const ticksCount = getOptimalTicks({ width, rangeStart, rangeEnd });
-		const ticks = utcTicks(rangeStart, rangeEnd, ticksCount);
-		const everyTwoTicks = ticks.filter((_, i) => i % 2 === 0);
-		return ticks.length > ticksCount ? everyTwoTicks : ticks;
-	}, [timeScale, width, eventDays]);
+	const idxsWithTicks = useMemo(
+		() => getIdxsWithTicks(eventColumns.length, width),
+		[eventColumns.length, width],
+	);
 
-	if (eventDays.length === 0) return null;
 	return (
 		<div className="sticky bottom-0 w-full z-10">
 			<ul
-				ref={ref}
 				aria-label="X Axis - Time"
 				className={cn(
 					"flex items-start pb-6 h-14 bg-pattern-soft",
 					"relative justify-stretch overflow-clip",
 				)}
-				style={{ width: `max(${eventDays.length + 1}rem, 100%)` }}
+				style={{ width: `max(${eventColumns.length + 1}rem, 100%)` }}
 			>
-				{eventDays.map(({ day }) => {
-					const shouldShowLabel = xAxisTicks.find((x) => isSameDay(x, day));
+				{eventColumns.map(({ day }, idx) => {
+					const showLabel = idxsWithTicks.includes(idx);
 					return (
 						<li
 							key={day.toISOString()}
@@ -61,15 +42,19 @@ function EventsTimelineAxis({
 							<span
 								className={cn(
 									"w-px h-2 absolute left-1/2 -translate-x-1/2 z-10",
-									shouldShowLabel ? "bg-grayDark" : "bg-grayLight",
+									showLabel ? "bg-grayDark" : "bg-grayLight",
 								)}
 								aria-hidden="true"
 							/>
-							{shouldShowLabel && (
-								<span className="absolute left-1/2 top-4 z-10 -translate-x-1/2 text-grayDark text-sm whitespace-nowrap">
-									{format(new Date(day), "EEE dd.MM.yyyy")}
-								</span>
-							)}
+							<span
+								className={cn(
+									"absolute left-1/2 top-4 z-10 -translate-x-1/2 text-grayDark text-sm whitespace-nowrap",
+									idx === 0 && "translate-x-0",
+									idx === eventColumns.length - 1 && "-translate-x-full",
+								)}
+							>
+								{showLabel && formatDateByAggregationUnit(day, aggregationUnit)}
+							</span>
 						</li>
 					);
 				})}
@@ -78,30 +63,32 @@ function EventsTimelineAxis({
 	);
 }
 
-function getOptimalTicks({
-	width,
-	rangeStart,
-	rangeEnd,
-}: {
-	width?: number | undefined;
-	rangeStart?: Date | undefined;
-	rangeEnd?: Date | undefined;
-} = {}): number {
-	if (!width || !rangeStart || !rangeEnd) return 1;
-	const widthOfALabel = 110;
-	const amountOfFittingLabel = Math.floor(width / widthOfALabel) - 1;
-	const toTicks = (timeInterval: CountableTimeInterval) => {
-		const dateRangeLength = timeInterval.range(rangeStart, rangeEnd).length - 1;
-		return Math.max(1, Math.min(dateRangeLength, amountOfFittingLabel));
-	};
+function getIdxsWithTicks(columnCount: number, width: number) {
+	const labelWidth = 300;
+	const maxDivider = Math.round(width / labelWidth);
+	if (columnCount === 0) return [];
+	if (columnCount === 1) return [0];
+	if (columnCount === 2) return [0, 1];
+	if (columnCount === 3) return [0, 1, 2];
+	const part = Math.round(columnCount / maxDivider - 1);
+	return [
+		0,
+		...Array(Math.max(0, maxDivider))
+			.fill(null)
+			.map((_, i) => i * part),
+		columnCount - 1,
+	];
+}
 
-	if (differenceInMonths(rangeEnd, rangeStart) > 6) return toTicks(utcMonth);
-	if (differenceInMonths(rangeEnd, rangeStart) > 3) return toTicks(utcWeek);
-	if (differenceInWeeks(rangeEnd, rangeStart) > 3) return toTicks(utcMonday);
-	return Math.max(
-		1,
-		Math.min(differenceInDays(rangeEnd, rangeStart), amountOfFittingLabel),
-	);
+function formatDateByAggregationUnit(
+	date: Date,
+	aggregationUnit: AggregationUnitType,
+) {
+	if (aggregationUnit === "day") return format(date, "EEE dd.MM.yyyy");
+	if (aggregationUnit === "week")
+		return `${format(date, "Io")} Week ${format(date, "yyyy")}`;
+	if (aggregationUnit === "month") return format(date, "MMM yyyy");
+	return format(date, "yyyy");
 }
 
 export default EventsTimelineAxis;

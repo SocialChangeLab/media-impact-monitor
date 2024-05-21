@@ -3,11 +3,9 @@ import { cn } from "@/utility/classNames";
 
 function EventsTimelineChartWrapper({
 	children,
-	animationKey,
 	columnsCount = 1,
 	className,
 }: {
-	animationKey: string;
 	columnsCount?: number;
 	className?: string;
 	children: React.ReactNode;
@@ -19,7 +17,6 @@ function EventsTimelineChartWrapper({
 		>
 			<div className="min-w-full min-h-full relative flex items-stretch justify-center">
 				<ul
-					key={animationKey || "events-timeline-chart-wrapper"}
 					className={cn(
 						"flex min-w-full min-h-full",
 						"items-end justify-stretch gap-y-2",

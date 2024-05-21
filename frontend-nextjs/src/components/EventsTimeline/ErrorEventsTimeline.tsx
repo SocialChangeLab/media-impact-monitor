@@ -15,7 +15,7 @@ export default function ErrorEventsTimeline({
 }) {
 	return (
 		<EventsTimelineWrapper>
-			<EventsTimelineChartWrapper animationKey="error">
+			<EventsTimelineChartWrapper>
 				<div
 					className={cn(
 						"w-full h-[var(--protest-timeline-height)]",

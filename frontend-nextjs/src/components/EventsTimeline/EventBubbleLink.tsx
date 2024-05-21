@@ -39,7 +39,7 @@ export function AggregatedEventsBubble({
 }) {
 	return (
 		<span
-			className={bubbleClasses}
+			className={cn(bubbleClasses, "rounded-sm")}
 			style={{
 				background: getCSSStyleGradient(organisations.map((x) => x.color)),
 			}}

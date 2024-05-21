@@ -12,7 +12,7 @@ import useTimeIntervals, {
 import useTimeScale from "@/utility/useTimeScale";
 import useElementSize from "@custom-react-hooks/use-element-size";
 import { scalePow } from "d3-scale";
-import { format, startOfDay } from "date-fns";
+import { startOfDay } from "date-fns";
 import { useCallback, useMemo } from "react";
 import HeadlineWithLine from "../HeadlineWithLine";
 import EmptyEventsTimeline from "./EmptyEventsTimeline";
@@ -108,10 +108,6 @@ function EventsTimeline({
 	}, [eventColumns, aggregationUnit]);
 
 	if (events.length === 0) return <EmptyEventsTimeline />;
-	const animationKey = [
-		format(from, "yyyy-MM-dd"),
-		format(to, "yyyy-MM-dd"),
-	].join("-");
 
 	return (
 		<EventsTimelineWrapper organisations={organisations} ref={parentRef}>
@@ -141,30 +137,11 @@ function EventsTimeline({
 											/>
 										))}
 									{aggregationUnit !== "day" && eventsWithSize.length > 0 && (
-										<div className="rounded-full bg-grayUltraLight">
-											<div
-												className={cn(
-													"size-3 relative z-10 hover:z-20",
-													"event-item transition-all",
-													combinedOrganizers.map((org) => {
-														const isMain = org?.isMain ?? false;
-														return `event-item-org-${
-															isMain
-																? slugifyCssClass(org.name) ||
-																	"unknown-organisation"
-																: "other"
-														}`;
-													}),
-												)}
-												style={{
-													height: `${Math.ceil(sizeScale(sumSize ?? 0))}px`,
-												}}
-											>
-												<AggregatedEventsBubble
-													organisations={combinedOrganizers}
-												/>
-											</div>
-										</div>
+										<EventsTimelineAggregatedItem
+											height={Math.ceil(sizeScale(sumSize))}
+											organisations={combinedOrganizers}
+											events={eventsWithSize}
+										/>
 									)}
 								</div>
 							</li>
@@ -180,7 +157,10 @@ function EventsTimeline({
 			<div className="mt-6 flex flex-col gap-4 w-screen px-6 -ml-6">
 				<HeadlineWithLine>Legend</HeadlineWithLine>
 				<div className="grid gap-8 md:gap-12 md:grid-cols-[auto_1fr]">
-					<EventsTimelineSizeLegend sizeScale={sizeScale} />
+					<EventsTimelineSizeLegend
+						sizeScale={sizeScale}
+						aggragationUnit={aggregationUnit}
+					/>
 					<EventsTimelineOrgsLegend organisations={organisations} />
 				</div>
 			</div>

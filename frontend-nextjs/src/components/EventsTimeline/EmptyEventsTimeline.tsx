@@ -5,7 +5,7 @@ import EventsTimelineChartWrapper from "./EventsTimelineChartWrapper";
 export default function EmptyEventsTimeline() {
 	return (
 		<EventsTimelineWrapper>
-			<EventsTimelineChartWrapper animationKey="empty">
+			<EventsTimelineChartWrapper>
 				<div
 					className={cn(
 						"w-full h-[var(--protest-timeline-height)]",

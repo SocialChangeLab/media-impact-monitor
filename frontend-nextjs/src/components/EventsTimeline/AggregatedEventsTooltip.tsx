@@ -100,7 +100,7 @@ function AggregatedEventsTooltip({
 							aria-hidden="true"
 						/>
 						<span className="truncate max-w-64">{org.name}</span>
-						<span className="text-grayDark text-xs">{org.count}</span>
+						<span className="text-black/50 text-xs">{org.count}</span>
 					</div>
 				))}
 			</TooltipContent>

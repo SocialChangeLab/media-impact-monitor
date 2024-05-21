@@ -9,9 +9,13 @@ import {
 	differenceInCalendarMonths,
 	differenceInDays,
 	differenceInYears,
+	isSameDay,
+	isSameMonth,
+	isSameWeek,
+	isSameYear,
 	startOfDay,
-	startOfISOWeek,
 	startOfMonth,
+	startOfWeek,
 	startOfYear,
 } from "date-fns";
 import { useMemo } from "react";
@@ -48,7 +52,8 @@ function getTimeComparatorByAggregationUnit(
 
 function getTimeStartByAggregationUnit(aggregationUnit: AggregationUnitType) {
 	if (aggregationUnit === "day") return startOfDay;
-	if (aggregationUnit === "week") return startOfISOWeek;
+	if (aggregationUnit === "week")
+		return (d: Date | string) => startOfWeek(d, { weekStartsOn: 1 });
 	if (aggregationUnit === "month") return startOfMonth;
 	return startOfYear;
 }
@@ -67,5 +72,9 @@ export function isInSameAggregationUnit(
 	d1: Date,
 	d2: Date,
 ) {
-	return getTimeComparatorByAggregationUnit(aggregationUnit)(d1, d2) === 0;
+	if (aggregationUnit === "day") return isSameDay(d1, d2);
+	if (aggregationUnit === "week")
+		return isSameWeek(d1, d2, { weekStartsOn: 1 });
+	if (aggregationUnit === "month") return isSameMonth(d1, d2);
+	return isSameYear(d1, d2);
 }

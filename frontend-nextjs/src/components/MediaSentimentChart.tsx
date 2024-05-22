@@ -35,7 +35,7 @@ function MediaSentimentChart({
 				.values(),
 		);
 		return {
-			topics: allTopics.toSorted(),
+			topics: allTopics.sort(),
 			filteredData: intervals.map((d) => {
 				const daysInUnit = data.filter((day) =>
 					isInSameUnit(new Date(day.date), d),
@@ -108,8 +108,8 @@ function MediaSentimentChart({
 									{" "}
 									{formatDateByAggregationUnit(date, aggregationUnit)}
 								</strong>
-								{topics
-									.toReversed()
+								{[...topics]
+									.reverse()
 									.map((topic) => ({ topic, value: item[topic] }))
 									.map(({ topic, value }, idx) => (
 										<div key={topic} className="flex gap-2 items-center">

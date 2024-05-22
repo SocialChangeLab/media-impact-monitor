@@ -1,8 +1,8 @@
 import { cn } from "@/utility/classNames";
 import { useMemo } from "react";
 import {
-	formatDateByAggregationUnit,
 	type AggregationUnitType,
+	formatDateByAggregationUnit,
 } from "./useAggregationUnit";
 
 function EventsTimelineAxis({

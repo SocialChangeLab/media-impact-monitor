@@ -7,10 +7,10 @@ import { cn } from "@/utility/classNames";
 import type { EventType, OrganisationType } from "@/utility/eventsUtil";
 import { format } from "date-fns";
 import { Users } from "lucide-react";
-import { useMemo, type ReactNode } from "react";
+import { type ReactNode, useMemo } from "react";
 import {
-	formatDateByAggregationUnit,
 	type AggregationUnitType,
+	formatDateByAggregationUnit,
 } from "./useAggregationUnit";
 
 function AggregatedEventsTooltip({

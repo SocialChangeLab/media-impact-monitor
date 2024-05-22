@@ -12,7 +12,7 @@ import useTimeScale from "@/utility/useTimeScale";
 import useElementSize from "@custom-react-hooks/use-element-size";
 import { scalePow } from "d3-scale";
 import { startOfDay } from "date-fns";
-import { forwardRef, useCallback, useMemo, type ReactNode } from "react";
+import { type ReactNode, forwardRef, useCallback, useMemo } from "react";
 import HeadlineWithLine from "../HeadlineWithLine";
 import AggregatedEventsTooltip from "./AggregatedEventsTooltip";
 import EmptyEventsTimeline from "./EmptyEventsTimeline";

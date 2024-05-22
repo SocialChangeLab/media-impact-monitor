@@ -1,0 +1,4726 @@
+{
+  "query": {
+    "trend_type": "keywords",
+    "media_source": "web_google",
+    "topic": "climate_change",
+    "aggregation": "daily"
+  },
+  "data": [
+    {
+      "date": "2019-05-19",
+      "topic": "science",
+      "n_articles": 7.0,
+      "sentiment": 0.5855
+    },
+    {
+      "date": "2019-05-26",
+      "topic": "science",
+      "n_articles": 8.0,
+      "sentiment": 0.8850
+    },
+    {
+      "date": "2019-06-02",
+      "topic": "science",
+      "n_articles": 7.0,
+      "sentiment": 0.1620
+    },
+    {
+      "date": "2019-06-09",
+      "topic": "science",
+      "n_articles": 5.0,
+      "sentiment": 0.4536
+    },
+    {
+      "date": "2019-06-16",
+      "topic": "science",
+      "n_articles": 5.0,
+      "sentiment": 0.5536
+    },
+    {
+      "date": "2019-06-23",
+      "topic": "science",
+      "n_articles": 6.0,
+      "sentiment": 0.4518
+    },
+    {
+      "date": "2019-06-30",
+      "topic": "science",
+      "n_articles": 5.0,
+      "sentiment": 0.8751
+    },
+    {
+      "date": "2019-07-07",
+      "topic": "science",
+      "n_articles": 4.0,
+      "sentiment": 0.7804
+    },
+    {
+      "date": "2019-07-14",
+      "topic": "science",
+      "n_articles": 4.0,
+      "sentiment": 0.6731
+    },
+    {
+      "date": "2019-07-21",
+      "topic": "science",
+      "n_articles": 7.0,
+      "sentiment": 0.5441
+    },
+    {
+      "date": "2019-07-28",
+      "topic": "science",
+      "n_articles": 4.0,
+      "sentiment": 0.7500
+    },
+    {
+      "date": "2019-08-04",
+      "topic": "science",
+      "n_articles": 4.0,
+      "sentiment": 0.7844
+    },
+    {
+      "date": "2019-08-11",
+      "topic": "science",
+      "n_articles": 4.0,
+      "sentiment": 0.0452
+    },
+    {
+      "date": "2019-08-18",
+      "topic": "science",
+      "n_articles": 4.0,
+      "sentiment": 0.2603
+    },
+    {
+      "date": "2019-08-25",
+      "topic": "science",
+      "n_articles": 5.0,
+      "sentiment": 0.3311
+    },
+    {
+      "date": "2019-09-01",
+      "topic": "science",
+      "n_articles": 4.0,
+      "sentiment": 0.6350
+    },
+    {
+      "date": "2019-09-08",
+      "topic": "science",
+      "n_articles": 5.0,
+      "sentiment": 0.7053
+    },
+    {
+      "date": "2019-09-15",
+      "topic": "science",
+      "n_articles": 12.0,
+      "sentiment": 0.3176
+    },
+    {
+      "date": "2019-09-22",
+      "topic": "science",
+      "n_articles": 12.0,
+      "sentiment": 0.4053
+    },
+    {
+      "date": "2019-09-29",
+      "topic": "science",
+      "n_articles": 7.0,
+      "sentiment": 0.1873
+    },
+    {
+      "date": "2019-10-06",
+      "topic": "science",
+      "n_articles": 6.0,
+      "sentiment": 0.5473
+    },
+    {
+      "date": "2019-10-13",
+      "topic": "science",
+      "n_articles": 5.0,
+      "sentiment": 0.5747
+    },
+    {
+      "date": "2019-10-20",
+      "topic": "science",
+      "n_articles": 4.0,
+      "sentiment": 0.0863
+    },
+    {
+      "date": "2019-10-27",
+      "topic": "science",
+      "n_articles": 4.0,
+      "sentiment": 0.7236
+    },
+    {
+      "date": "2019-11-03",
+      "topic": "science",
+      "n_articles": 5.0,
+      "sentiment": 0.5272
+    },
+    {
+      "date": "2019-11-10",
+      "topic": "science",
+      "n_articles": 4.0,
+      "sentiment": 0.8720
+    },
+    {
+      "date": "2019-11-17",
+      "topic": "science",
+      "n_articles": 5.0,
+      "sentiment": 0.5530
+    },
+    {
+      "date": "2019-11-24",
+      "topic": "science",
+      "n_articles": 6.0,
+      "sentiment": 0.5828
+    },
+    {
+      "date": "2019-12-01",
+      "topic": "science",
+      "n_articles": 6.0,
+      "sentiment": 0.8623
+    },
+    {
+      "date": "2019-12-08",
+      "topic": "science",
+      "n_articles": 6.0,
+      "sentiment": 0.7271
+    },
+    {
+      "date": "2019-12-15",
+      "topic": "science",
+      "n_articles": 5.0,
+      "sentiment": 0.4563
+    },
+    {
+      "date": "2019-12-22",
+      "topic": "science",
+      "n_articles": 3.0,
+      "sentiment": 0.7434
+    },
+    {
+      "date": "2019-12-29",
+      "topic": "science",
+      "n_articles": 4.0,
+      "sentiment": 0.1343
+    },
+    {
+      "date": "2020-01-05",
+      "topic": "science",
+      "n_articles": 6.0,
+      "sentiment": 0.3452
+    },
+    {
+      "date": "2020-01-12",
+      "topic": "science",
+      "n_articles": 6.0,
+      "sentiment": 0.1232
+    },
+    {
+      "date": "2020-01-19",
+      "topic": "science",
+      "n_articles": 6.0,
+      "sentiment": 0.7118
+    },
+    {
+      "date": "2020-01-26",
+      "topic": "science",
+      "n_articles": 4.0,
+      "sentiment": 0.2760
+    },
+    {
+      "date": "2020-02-02",
+      "topic": "science",
+      "n_articles": 4.0,
+      "sentiment": 0.1782
+    },
+    {
+      "date": "2020-02-09",
+      "topic": "science",
+      "n_articles": 4.0,
+      "sentiment": 0.6460
+    },
+    {
+      "date": "2020-02-16",
+      "topic": "science",
+      "n_articles": 4.0,
+      "sentiment": 0.6254
+    },
+    {
+      "date": "2020-02-23",
+      "topic": "science",
+      "n_articles": 3.0,
+      "sentiment": 0.0816
+    },
+    {
+      "date": "2020-03-01",
+      "topic": "science",
+      "n_articles": 3.0,
+      "sentiment": 0.0222
+    },
+    {
+      "date": "2020-03-08",
+      "topic": "science",
+      "n_articles": 3.0,
+      "sentiment": 0.6701
+    },
+    {
+      "date": "2020-03-15",
+      "topic": "science",
+      "n_articles": 3.0,
+      "sentiment": 0.4101
+    },
+    {
+      "date": "2020-03-22",
+      "topic": "science",
+      "n_articles": 3.0,
+      "sentiment": 0.7141
+    },
+    {
+      "date": "2020-03-29",
+      "topic": "science",
+      "n_articles": 3.0,
+      "sentiment": 0.3056
+    },
+    {
+      "date": "2020-04-05",
+      "topic": "science",
+      "n_articles": 2.0,
+      "sentiment": 0.6083
+    },
+    {
+      "date": "2020-04-12",
+      "topic": "science",
+      "n_articles": 2.0,
+      "sentiment": 0.8601
+    },
+    {
+      "date": "2020-04-19",
+      "topic": "science",
+      "n_articles": 3.0,
+      "sentiment": 0.1455
+    },
+    {
+      "date": "2020-04-26",
+      "topic": "science",
+      "n_articles": 2.0,
+      "sentiment": 0.3436
+    },
+    {
+      "date": "2020-05-03",
+      "topic": "science",
+      "n_articles": 2.0,
+      "sentiment": 0.0403
+    },
+    {
+      "date": "2020-05-10",
+      "topic": "science",
+      "n_articles": 3.0,
+      "sentiment": 0.6007
+    },
+    {
+      "date": "2020-05-17",
+      "topic": "science",
+      "n_articles": 2.0,
+      "sentiment": 0.6113
+    },
+    {
+      "date": "2020-05-24",
+      "topic": "science",
+      "n_articles": 2.0,
+      "sentiment": 0.4403
+    },
+    {
+      "date": "2020-05-31",
+      "topic": "science",
+      "n_articles": 2.0,
+      "sentiment": 0.0468
+    },
+    {
+      "date": "2020-06-07",
+      "topic": "science",
+      "n_articles": 2.0,
+      "sentiment": 0.3360
+    },
+    {
+      "date": "2020-06-14",
+      "topic": "science",
+      "n_articles": 2.0,
+      "sentiment": 0.1723
+    },
+    {
+      "date": "2020-06-21",
+      "topic": "science",
+      "n_articles": 2.0,
+      "sentiment": 0.4440
+    },
+    {
+      "date": "2020-06-28",
+      "topic": "science",
+      "n_articles": 2.0,
+      "sentiment": 0.6150
+    },
+    {
+      "date": "2020-07-05",
+      "topic": "science",
+      "n_articles": 2.0,
+      "sentiment": 0.2712
+    },
+    {
+      "date": "2020-07-12",
+      "topic": "science",
+      "n_articles": 2.0,
+      "sentiment": 0.6502
+    },
+    {
+      "date": "2020-07-19",
+      "topic": "science",
+      "n_articles": 2.0,
+      "sentiment": 0.2503
+    },
+    {
+      "date": "2020-07-26",
+      "topic": "science",
+      "n_articles": 1.0,
+      "sentiment": 0.8305
+    },
+    {
+      "date": "2020-08-02",
+      "topic": "science",
+      "n_articles": 2.0,
+      "sentiment": 0.5637
+    },
+    {
+      "date": "2020-08-09",
+      "topic": "science",
+      "n_articles": 2.0,
+      "sentiment": 0.3536
+    },
+    {
+      "date": "2020-08-16",
+      "topic": "science",
+      "n_articles": 2.0,
+      "sentiment": 0.0088
+    },
+    {
+      "date": "2020-08-23",
+      "topic": "science",
+      "n_articles": 2.0,
+      "sentiment": 0.7150
+    },
+    {
+      "date": "2020-08-30",
+      "topic": "science",
+      "n_articles": 2.0,
+      "sentiment": 0.7853
+    },
+    {
+      "date": "2020-09-06",
+      "topic": "science",
+      "n_articles": 2.0,
+      "sentiment": 0.6778
+    },
+    {
+      "date": "2020-09-13",
+      "topic": "science",
+      "n_articles": 3.0,
+      "sentiment": 0.2044
+    },
+    {
+      "date": "2020-09-20",
+      "topic": "science",
+      "n_articles": 3.0,
+      "sentiment": 0.4406
+    },
+    {
+      "date": "2020-09-27",
+      "topic": "science",
+      "n_articles": 2.0,
+      "sentiment": 0.4432
+    },
+    {
+      "date": "2020-10-04",
+      "topic": "science",
+      "n_articles": 2.0,
+      "sentiment": 0.6742
+    },
+    {
+      "date": "2020-10-11",
+      "topic": "science",
+      "n_articles": 2.0,
+      "sentiment": 0.0376
+    },
+    {
+      "date": "2020-10-18",
+      "topic": "science",
+      "n_articles": 2.0,
+      "sentiment": 0.7300
+    },
+    {
+      "date": "2020-10-25",
+      "topic": "science",
+      "n_articles": 2.0,
+      "sentiment": 0.6775
+    },
+    {
+      "date": "2020-11-01",
+      "topic": "science",
+      "n_articles": 2.0,
+      "sentiment": 0.4068
+    },
+    {
+      "date": "2020-11-08",
+      "topic": "science",
+      "n_articles": 3.0,
+      "sentiment": 0.0854
+    },
+    {
+      "date": "2020-11-15",
+      "topic": "science",
+      "n_articles": 3.0,
+      "sentiment": 0.2781
+    },
+    {
+      "date": "2020-11-22",
+      "topic": "science",
+      "n_articles": 3.0,
+      "sentiment": 0.5580
+    },
+    {
+      "date": "2020-11-29",
+      "topic": "science",
+      "n_articles": 3.0,
+      "sentiment": 0.7754
+    },
+    {
+      "date": "2020-12-06",
+      "topic": "science",
+      "n_articles": 3.0,
+      "sentiment": 0.5601
+    },
+    {
+      "date": "2020-12-13",
+      "topic": "science",
+      "n_articles": 2.0,
+      "sentiment": 0.5624
+    },
+    {
+      "date": "2020-12-20",
+      "topic": "science",
+      "n_articles": 2.0,
+      "sentiment": 0.4486
+    },
+    {
+      "date": "2020-12-27",
+      "topic": "science",
+      "n_articles": 2.0,
+      "sentiment": 0.2001
+    },
+    {
+      "date": "2021-01-03",
+      "topic": "science",
+      "n_articles": 2.0,
+      "sentiment": 0.7575
+    },
+    {
+      "date": "2021-01-10",
+      "topic": "science",
+      "n_articles": 3.0,
+      "sentiment": 0.6458
+    },
+    {
+      "date": "2021-01-17",
+      "topic": "science",
+      "n_articles": 3.0,
+      "sentiment": 0.4201
+    },
+    {
+      "date": "2021-01-24",
+      "topic": "science",
+      "n_articles": 3.0,
+      "sentiment": 0.1382
+    },
+    {
+      "date": "2021-01-31",
+      "topic": "science",
+      "n_articles": 3.0,
+      "sentiment": 0.1506
+    },
+    {
+      "date": "2021-02-07",
+      "topic": "science",
+      "n_articles": 4.0,
+      "sentiment": 0.5411
+    },
+    {
+      "date": "2021-02-14",
+      "topic": "science",
+      "n_articles": 3.0,
+      "sentiment": 0.3686
+    },
+    {
+      "date": "2021-02-21",
+      "topic": "science",
+      "n_articles": 3.0,
+      "sentiment": 0.7822
+    },
+    {
+      "date": "2021-02-28",
+      "topic": "science",
+      "n_articles": 3.0,
+      "sentiment": 0.2253
+    },
+    {
+      "date": "2021-03-07",
+      "topic": "science",
+      "n_articles": 3.0,
+      "sentiment": 0.3430
+    },
+    {
+      "date": "2021-03-14",
+      "topic": "science",
+      "n_articles": 3.0,
+      "sentiment": 0.7370
+    },
+    {
+      "date": "2021-03-21",
+      "topic": "science",
+      "n_articles": 3.0,
+      "sentiment": 0.7616
+    },
+    {
+      "date": "2021-03-28",
+      "topic": "science",
+      "n_articles": 2.0,
+      "sentiment": 0.7422
+    },
+    {
+      "date": "2021-04-04",
+      "topic": "science",
+      "n_articles": 2.0,
+      "sentiment": 0.2025
+    },
+    {
+      "date": "2021-04-11",
+      "topic": "science",
+      "n_articles": 3.0,
+      "sentiment": 0.0362
+    },
+    {
+      "date": "2021-04-18",
+      "topic": "science",
+      "n_articles": 4.0,
+      "sentiment": 0.1321
+    },
+    {
+      "date": "2021-04-25",
+      "topic": "science",
+      "n_articles": 4.0,
+      "sentiment": 0.4337
+    },
+    {
+      "date": "2021-05-02",
+      "topic": "science",
+      "n_articles": 4.0,
+      "sentiment": 0.2826
+    },
+    {
+      "date": "2021-05-09",
+      "topic": "science",
+      "n_articles": 3.0,
+      "sentiment": 0.1187
+    },
+    {
+      "date": "2021-05-16",
+      "topic": "science",
+      "n_articles": 4.0,
+      "sentiment": 0.2843
+    },
+    {
+      "date": "2021-05-23",
+      "topic": "science",
+      "n_articles": 3.0,
+      "sentiment": 0.8744
+    },
+    {
+      "date": "2021-05-30",
+      "topic": "science",
+      "n_articles": 3.0,
+      "sentiment": 0.6268
+    },
+    {
+      "date": "2021-06-06",
+      "topic": "science",
+      "n_articles": 3.0,
+      "sentiment": 0.5310
+    },
+    {
+      "date": "2021-06-13",
+      "topic": "science",
+      "n_articles": 3.0,
+      "sentiment": 0.3542
+    },
+    {
+      "date": "2021-06-20",
+      "topic": "science",
+      "n_articles": 4.0,
+      "sentiment": 0.2528
+    },
+    {
+      "date": "2021-06-27",
+      "topic": "science",
+      "n_articles": 3.0,
+      "sentiment": 0.1866
+    },
+    {
+      "date": "2021-07-04",
+      "topic": "science",
+      "n_articles": 3.0,
+      "sentiment": 0.5765
+    },
+    {
+      "date": "2021-07-11",
+      "topic": "science",
+      "n_articles": 6.0,
+      "sentiment": 0.2107
+    },
+    {
+      "date": "2021-07-18",
+      "topic": "science",
+      "n_articles": 5.0,
+      "sentiment": 0.5852
+    },
+    {
+      "date": "2021-07-25",
+      "topic": "science",
+      "n_articles": 3.0,
+      "sentiment": 0.0716
+    },
+    {
+      "date": "2021-08-01",
+      "topic": "science",
+      "n_articles": 3.0,
+      "sentiment": 0.4033
+    },
+    {
+      "date": "2021-08-08",
+      "topic": "science",
+      "n_articles": 5.0,
+      "sentiment": 0.2762
+    },
+    {
+      "date": "2021-08-15",
+      "topic": "science",
+      "n_articles": 3.0,
+      "sentiment": 0.4810
+    },
+    {
+      "date": "2021-08-22",
+      "topic": "science",
+      "n_articles": 3.0,
+      "sentiment": 0.4142
+    },
+    {
+      "date": "2021-08-29",
+      "topic": "science",
+      "n_articles": 4.0,
+      "sentiment": 0.8712
+    },
+    {
+      "date": "2021-09-05",
+      "topic": "science",
+      "n_articles": 4.0,
+      "sentiment": 0.7052
+    },
+    {
+      "date": "2021-09-12",
+      "topic": "science",
+      "n_articles": 5.0,
+      "sentiment": 0.8320
+    },
+    {
+      "date": "2021-09-19",
+      "topic": "science",
+      "n_articles": 6.0,
+      "sentiment": 0.1678
+    },
+    {
+      "date": "2021-09-26",
+      "topic": "science",
+      "n_articles": 5.0,
+      "sentiment": 0.0042
+    },
+    {
+      "date": "2021-10-03",
+      "topic": "science",
+      "n_articles": 3.0,
+      "sentiment": 0.3044
+    },
+    {
+      "date": "2021-10-10",
+      "topic": "science",
+      "n_articles": 3.0,
+      "sentiment": 0.1413
+    },
+    {
+      "date": "2021-10-17",
+      "topic": "science",
+      "n_articles": 3.0,
+      "sentiment": 0.4040
+    },
+    {
+      "date": "2021-10-24",
+      "topic": "science",
+      "n_articles": 4.0,
+      "sentiment": 0.4143
+    },
+    {
+      "date": "2021-10-31",
+      "topic": "science",
+      "n_articles": 5.0,
+      "sentiment": 0.8222
+    },
+    {
+      "date": "2021-11-07",
+      "topic": "science",
+      "n_articles": 4.0,
+      "sentiment": 0.7676
+    },
+    {
+      "date": "2021-11-14",
+      "topic": "science",
+      "n_articles": 4.0,
+      "sentiment": 0.4715
+    },
+    {
+      "date": "2021-11-21",
+      "topic": "science",
+      "n_articles": 3.0,
+      "sentiment": 0.3600
+    },
+    {
+      "date": "2021-11-28",
+      "topic": "science",
+      "n_articles": 3.0,
+      "sentiment": 0.4281
+    },
+    {
+      "date": "2021-12-05",
+      "topic": "science",
+      "n_articles": 3.0,
+      "sentiment": 0.1480
+    },
+    {
+      "date": "2021-12-12",
+      "topic": "science",
+      "n_articles": 3.0,
+      "sentiment": 0.6551
+    },
+    {
+      "date": "2021-12-19",
+      "topic": "science",
+      "n_articles": 2.0,
+      "sentiment": 0.6452
+    },
+    {
+      "date": "2021-12-26",
+      "topic": "science",
+      "n_articles": 2.0,
+      "sentiment": 0.5504
+    },
+    {
+      "date": "2022-01-02",
+      "topic": "science",
+      "n_articles": 3.0,
+      "sentiment": 0.0131
+    },
+    {
+      "date": "2022-01-09",
+      "topic": "science",
+      "n_articles": 4.0,
+      "sentiment": 0.7866
+    },
+    {
+      "date": "2022-01-16",
+      "topic": "science",
+      "n_articles": 4.0,
+      "sentiment": 0.6178
+    },
+    {
+      "date": "2022-01-23",
+      "topic": "science",
+      "n_articles": 3.0,
+      "sentiment": 0.3185
+    },
+    {
+      "date": "2022-01-30",
+      "topic": "science",
+      "n_articles": 3.0,
+      "sentiment": 0.7235
+    },
+    {
+      "date": "2022-02-06",
+      "topic": "science",
+      "n_articles": 4.0,
+      "sentiment": 0.4450
+    },
+    {
+      "date": "2022-02-13",
+      "topic": "science",
+      "n_articles": 3.0,
+      "sentiment": 0.6664
+    },
+    {
+      "date": "2022-02-20",
+      "topic": "science",
+      "n_articles": 3.0,
+      "sentiment": 0.1735
+    },
+    {
+      "date": "2022-02-27",
+      "topic": "science",
+      "n_articles": 3.0,
+      "sentiment": 0.8286
+    },
+    {
+      "date": "2022-03-06",
+      "topic": "science",
+      "n_articles": 3.0,
+      "sentiment": 0.7360
+    },
+    {
+      "date": "2022-03-13",
+      "topic": "science",
+      "n_articles": 3.0,
+      "sentiment": 0.7267
+    },
+    {
+      "date": "2022-03-20",
+      "topic": "science",
+      "n_articles": 3.0,
+      "sentiment": 0.3811
+    },
+    {
+      "date": "2022-03-27",
+      "topic": "science",
+      "n_articles": 4.0,
+      "sentiment": 0.3138
+    },
+    {
+      "date": "2022-04-03",
+      "topic": "science",
+      "n_articles": 3.0,
+      "sentiment": 0.8013
+    },
+    {
+      "date": "2022-04-10",
+      "topic": "science",
+      "n_articles": 2.0,
+      "sentiment": 0.5506
+    },
+    {
+      "date": "2022-04-17",
+      "topic": "science",
+      "n_articles": 100.0,
+      "sentiment": 0.1157
+    },
+    {
+      "date": "2022-04-24",
+      "topic": "science",
+      "n_articles": 5.0,
+      "sentiment": 0.6172
+    },
+    {
+      "date": "2022-05-01",
+      "topic": "science",
+      "n_articles": 3.0,
+      "sentiment": 0.5123
+    },
+    {
+      "date": "2022-05-08",
+      "topic": "science",
+      "n_articles": 4.0,
+      "sentiment": 0.0106
+    },
+    {
+      "date": "2022-05-15",
+      "topic": "science",
+      "n_articles": 3.0,
+      "sentiment": 0.4685
+    },
+    {
+      "date": "2022-05-22",
+      "topic": "science",
+      "n_articles": 3.0,
+      "sentiment": 0.3206
+    },
+    {
+      "date": "2022-05-29",
+      "topic": "science",
+      "n_articles": 3.0,
+      "sentiment": 0.5138
+    },
+    {
+      "date": "2022-06-05",
+      "topic": "science",
+      "n_articles": 3.0,
+      "sentiment": 0.4831
+    },
+    {
+      "date": "2022-06-12",
+      "topic": "science",
+      "n_articles": 3.0,
+      "sentiment": 0.8320
+    },
+    {
+      "date": "2022-06-19",
+      "topic": "science",
+      "n_articles": 3.0,
+      "sentiment": 0.7748
+    },
+    {
+      "date": "2022-06-26",
+      "topic": "science",
+      "n_articles": 3.0,
+      "sentiment": 0.7003
+    },
+    {
+      "date": "2022-07-03",
+      "topic": "science",
+      "n_articles": 3.0,
+      "sentiment": 0.4323
+    },
+    {
+      "date": "2022-07-10",
+      "topic": "science",
+      "n_articles": 3.0,
+      "sentiment": 0.1014
+    },
+    {
+      "date": "2022-07-17",
+      "topic": "science",
+      "n_articles": 4.0,
+      "sentiment": 0.3284
+    },
+    {
+      "date": "2022-07-24",
+      "topic": "science",
+      "n_articles": 3.0,
+      "sentiment": 0.8117
+    },
+    {
+      "date": "2022-07-31",
+      "topic": "science",
+      "n_articles": 2.0,
+      "sentiment": 0.7656
+    },
+    {
+      "date": "2022-08-07",
+      "topic": "science",
+      "n_articles": 3.0,
+      "sentiment": 0.2757
+    },
+    {
+      "date": "2022-08-14",
+      "topic": "science",
+      "n_articles": 3.0,
+      "sentiment": 0.4371
+    },
+    {
+      "date": "2022-08-21",
+      "topic": "science",
+      "n_articles": 3.0,
+      "sentiment": 0.0174
+    },
+    {
+      "date": "2022-08-28",
+      "topic": "science",
+      "n_articles": 3.0,
+      "sentiment": 0.0851
+    },
+    {
+      "date": "2022-09-04",
+      "topic": "science",
+      "n_articles": 3.0,
+      "sentiment": 0.8266
+    },
+    {
+      "date": "2022-09-11",
+      "topic": "science",
+      "n_articles": 3.0,
+      "sentiment": 0.6186
+    },
+    {
+      "date": "2022-09-18",
+      "topic": "science",
+      "n_articles": 3.0,
+      "sentiment": 0.8321
+    },
+    {
+      "date": "2022-09-25",
+      "topic": "science",
+      "n_articles": 3.0,
+      "sentiment": 0.3140
+    },
+    {
+      "date": "2022-10-02",
+      "topic": "science",
+      "n_articles": 2.0,
+      "sentiment": 0.7425
+    },
+    {
+      "date": "2022-10-09",
+      "topic": "science",
+      "n_articles": 3.0,
+      "sentiment": 0.0150
+    },
+    {
+      "date": "2022-10-16",
+      "topic": "science",
+      "n_articles": 3.0,
+      "sentiment": 0.4286
+    },
+    {
+      "date": "2022-10-23",
+      "topic": "science",
+      "n_articles": 3.0,
+      "sentiment": 0.5613
+    },
+    {
+      "date": "2022-10-30",
+      "topic": "science",
+      "n_articles": 3.0,
+      "sentiment": 0.0633
+    },
+    {
+      "date": "2022-11-06",
+      "topic": "science",
+      "n_articles": 4.0,
+      "sentiment": 0.2056
+    },
+    {
+      "date": "2022-11-13",
+      "topic": "science",
+      "n_articles": 4.0,
+      "sentiment": 0.0644
+    },
+    {
+      "date": "2022-11-20",
+      "topic": "science",
+      "n_articles": 3.0,
+      "sentiment": 0.8838
+    },
+    {
+      "date": "2022-11-27",
+      "topic": "science",
+      "n_articles": 3.0,
+      "sentiment": 0.8764
+    },
+    {
+      "date": "2022-12-04",
+      "topic": "science",
+      "n_articles": 3.0,
+      "sentiment": 0.2576
+    },
+    {
+      "date": "2022-12-11",
+      "topic": "science",
+      "n_articles": 4.0,
+      "sentiment": 0.2378
+    },
+    {
+      "date": "2022-12-18",
+      "topic": "science",
+      "n_articles": 2.0,
+      "sentiment": 0.8275
+    },
+    {
+      "date": "2022-12-25",
+      "topic": "science",
+      "n_articles": 2.0,
+      "sentiment": 0.6558
+    },
+    {
+      "date": "2023-01-01",
+      "topic": "science",
+      "n_articles": 3.0,
+      "sentiment": 0.5102
+    },
+    {
+      "date": "2023-01-08",
+      "topic": "science",
+      "n_articles": 4.0,
+      "sentiment": 0.1270
+    },
+    {
+      "date": "2023-01-15",
+      "topic": "science",
+      "n_articles": 4.0,
+      "sentiment": 0.4843
+    },
+    {
+      "date": "2023-01-22",
+      "topic": "science",
+      "n_articles": 3.0,
+      "sentiment": 0.7404
+    },
+    {
+      "date": "2023-01-29",
+      "topic": "science",
+      "n_articles": 3.0,
+      "sentiment": 0.6761
+    },
+    {
+      "date": "2023-02-05",
+      "topic": "science",
+      "n_articles": 4.0,
+      "sentiment": 0.5255
+    },
+    {
+      "date": "2023-02-12",
+      "topic": "science",
+      "n_articles": 3.0,
+      "sentiment": 0.1437
+    },
+    {
+      "date": "2023-02-19",
+      "topic": "science",
+      "n_articles": 3.0,
+      "sentiment": 0.4167
+    },
+    {
+      "date": "2023-02-26",
+      "topic": "science",
+      "n_articles": 3.0,
+      "sentiment": 0.4374
+    },
+    {
+      "date": "2023-03-05",
+      "topic": "science",
+      "n_articles": 4.0,
+      "sentiment": 0.0420
+    },
+    {
+      "date": "2023-03-12",
+      "topic": "science",
+      "n_articles": 4.0,
+      "sentiment": 0.0183
+    },
+    {
+      "date": "2023-03-19",
+      "topic": "science",
+      "n_articles": 4.0,
+      "sentiment": 0.2362
+    },
+    {
+      "date": "2023-03-26",
+      "topic": "science",
+      "n_articles": 4.0,
+      "sentiment": 0.7825
+    },
+    {
+      "date": "2023-04-02",
+      "topic": "science",
+      "n_articles": 3.0,
+      "sentiment": 0.3031
+    },
+    {
+      "date": "2023-04-09",
+      "topic": "science",
+      "n_articles": 3.0,
+      "sentiment": 0.1057
+    },
+    {
+      "date": "2023-04-16",
+      "topic": "science",
+      "n_articles": 52.0,
+      "sentiment": 0.5207
+    },
+    {
+      "date": "2023-04-23",
+      "topic": "science",
+      "n_articles": 6.0,
+      "sentiment": 0.2887
+    },
+    {
+      "date": "2023-04-30",
+      "topic": "science",
+      "n_articles": 4.0,
+      "sentiment": 0.4805
+    },
+    {
+      "date": "2023-05-07",
+      "topic": "science",
+      "n_articles": 4.0,
+      "sentiment": 0.6702
+    },
+    {
+      "date": "2023-05-14",
+      "topic": "science",
+      "n_articles": 3.0,
+      "sentiment": 0.5852
+    },
+    {
+      "date": "2023-05-21",
+      "topic": "science",
+      "n_articles": 5.0,
+      "sentiment": 0.4223
+    },
+    {
+      "date": "2023-05-28",
+      "topic": "science",
+      "n_articles": 3.0,
+      "sentiment": 0.7830
+    },
+    {
+      "date": "2023-06-04",
+      "topic": "science",
+      "n_articles": 3.0,
+      "sentiment": 0.7833
+    },
+    {
+      "date": "2023-06-11",
+      "topic": "science",
+      "n_articles": 4.0,
+      "sentiment": 0.4740
+    },
+    {
+      "date": "2023-06-18",
+      "topic": "science",
+      "n_articles": 4.0,
+      "sentiment": 0.0043
+    },
+    {
+      "date": "2023-06-25",
+      "topic": "science",
+      "n_articles": 4.0,
+      "sentiment": 0.8284
+    },
+    {
+      "date": "2023-07-02",
+      "topic": "science",
+      "n_articles": 3.0,
+      "sentiment": 0.1282
+    },
+    {
+      "date": "2023-07-09",
+      "topic": "science",
+      "n_articles": 4.0,
+      "sentiment": 0.7733
+    },
+    {
+      "date": "2023-07-16",
+      "topic": "science",
+      "n_articles": 4.0,
+      "sentiment": 0.0464
+    },
+    {
+      "date": "2023-07-23",
+      "topic": "science",
+      "n_articles": 3.0,
+      "sentiment": 0.1430
+    },
+    {
+      "date": "2023-07-30",
+      "topic": "science",
+      "n_articles": 3.0,
+      "sentiment": 0.5722
+    },
+    {
+      "date": "2023-08-06",
+      "topic": "science",
+      "n_articles": 3.0,
+      "sentiment": 0.3431
+    },
+    {
+      "date": "2023-08-13",
+      "topic": "science",
+      "n_articles": 3.0,
+      "sentiment": 0.0264
+    },
+    {
+      "date": "2023-08-20",
+      "topic": "science",
+      "n_articles": 3.0,
+      "sentiment": 0.1380
+    },
+    {
+      "date": "2023-08-27",
+      "topic": "science",
+      "n_articles": 3.0,
+      "sentiment": 0.2260
+    },
+    {
+      "date": "2023-09-03",
+      "topic": "science",
+      "n_articles": 3.0,
+      "sentiment": 0.8384
+    },
+    {
+      "date": "2023-09-10",
+      "topic": "science",
+      "n_articles": 4.0,
+      "sentiment": 0.8844
+    },
+    {
+      "date": "2023-09-17",
+      "topic": "science",
+      "n_articles": 3.0,
+      "sentiment": 0.2178
+    },
+    {
+      "date": "2023-09-24",
+      "topic": "science",
+      "n_articles": 3.0,
+      "sentiment": 0.1125
+    },
+    {
+      "date": "2023-10-01",
+      "topic": "science",
+      "n_articles": 3.0,
+      "sentiment": 0.0848
+    },
+    {
+      "date": "2023-10-08",
+      "topic": "science",
+      "n_articles": 3.0,
+      "sentiment": 0.0706
+    },
+    {
+      "date": "2023-10-15",
+      "topic": "science",
+      "n_articles": 2.0,
+      "sentiment": 0.5516
+    },
+    {
+      "date": "2023-10-22",
+      "topic": "science",
+      "n_articles": 2.0,
+      "sentiment": 0.6582
+    },
+    {
+      "date": "2023-10-29",
+      "topic": "science",
+      "n_articles": 2.0,
+      "sentiment": 0.5526
+    },
+    {
+      "date": "2023-11-05",
+      "topic": "science",
+      "n_articles": 3.0,
+      "sentiment": 0.2566
+    },
+    {
+      "date": "2023-11-12",
+      "topic": "science",
+      "n_articles": 3.0,
+      "sentiment": 0.8646
+    },
+    {
+      "date": "2023-11-19",
+      "topic": "science",
+      "n_articles": 3.0,
+      "sentiment": 0.3831
+    },
+    {
+      "date": "2023-11-26",
+      "topic": "science",
+      "n_articles": 4.0,
+      "sentiment": 0.1218
+    },
+    {
+      "date": "2023-12-03",
+      "topic": "science",
+      "n_articles": 4.0,
+      "sentiment": 0.2406
+    },
+    {
+      "date": "2023-12-10",
+      "topic": "science",
+      "n_articles": 3.0,
+      "sentiment": 0.2675
+    },
+    {
+      "date": "2023-12-17",
+      "topic": "science",
+      "n_articles": 2.0,
+      "sentiment": 0.3618
+    },
+    {
+      "date": "2023-12-24",
+      "topic": "science",
+      "n_articles": 2.0,
+      "sentiment": 0.5064
+    },
+    {
+      "date": "2023-12-31",
+      "topic": "science",
+      "n_articles": 2.0,
+      "sentiment": 0.8681
+    },
+    {
+      "date": "2024-01-07",
+      "topic": "science",
+      "n_articles": 3.0,
+      "sentiment": 0.7272
+    },
+    {
+      "date": "2024-01-14",
+      "topic": "science",
+      "n_articles": 3.0,
+      "sentiment": 0.2475
+    },
+    {
+      "date": "2024-01-21",
+      "topic": "science",
+      "n_articles": 3.0,
+      "sentiment": 0.3085
+    },
+    {
+      "date": "2024-01-28",
+      "topic": "science",
+      "n_articles": 3.0,
+      "sentiment": 0.6156
+    },
+    {
+      "date": "2024-02-04",
+      "topic": "science",
+      "n_articles": 3.0,
+      "sentiment": 0.3426
+    },
+    {
+      "date": "2024-02-11",
+      "topic": "science",
+      "n_articles": 3.0,
+      "sentiment": 0.0367
+    },
+    {
+      "date": "2024-02-18",
+      "topic": "science",
+      "n_articles": 3.0,
+      "sentiment": 0.2580
+    },
+    {
+      "date": "2024-02-25",
+      "topic": "science",
+      "n_articles": 3.0,
+      "sentiment": 0.7815
+    },
+    {
+      "date": "2024-03-03",
+      "topic": "science",
+      "n_articles": 3.0,
+      "sentiment": 0.2730
+    },
+    {
+      "date": "2024-03-10",
+      "topic": "science",
+      "n_articles": 3.0,
+      "sentiment": 0.5747
+    },
+    {
+      "date": "2024-03-17",
+      "topic": "science",
+      "n_articles": 3.0,
+      "sentiment": 0.6662
+    },
+    {
+      "date": "2024-03-24",
+      "topic": "science",
+      "n_articles": 2.0,
+      "sentiment": 0.8164
+    },
+    {
+      "date": "2024-03-31",
+      "topic": "science",
+      "n_articles": 2.0,
+      "sentiment": 0.0533
+    },
+    {
+      "date": "2024-04-07",
+      "topic": "science",
+      "n_articles": 3.0,
+      "sentiment": 0.5374
+    },
+    {
+      "date": "2024-04-14",
+      "topic": "science",
+      "n_articles": 4.0,
+      "sentiment": 0.5455
+    },
+    {
+      "date": "2024-04-21",
+      "topic": "science",
+      "n_articles": 4.0,
+      "sentiment": 0.1705
+    },
+    {
+      "date": "2024-04-28",
+      "topic": "science",
+      "n_articles": 3.0,
+      "sentiment": 0.5720
+    },
+    {
+      "date": "2024-05-05",
+      "topic": "science",
+      "n_articles": 3.0,
+      "sentiment": 0.4743
+    },
+    {
+      "date": "2024-05-12",
+      "topic": "science",
+      "n_articles": 3.0,
+      "sentiment": 0.7835
+    },
+    {
+      "date": "2024-05-19",
+      "topic": "science",
+      "n_articles": 2.0,
+      "sentiment": 0.7284
+    },
+    {
+      "date": "2019-05-19",
+      "topic": "policy",
+      "n_articles": 3.0,
+      "sentiment": 0.7331
+    },
+    {
+      "date": "2019-05-26",
+      "topic": "policy",
+      "n_articles": 6.0,
+      "sentiment": 0.5513
+    },
+    {
+      "date": "2019-06-02",
+      "topic": "policy",
+      "n_articles": 3.0,
+      "sentiment": 0.6681
+    },
+    {
+      "date": "2019-06-09",
+      "topic": "policy",
+      "n_articles": 4.0,
+      "sentiment": 0.0128
+    },
+    {
+      "date": "2019-06-16",
+      "topic": "policy",
+      "n_articles": 4.0,
+      "sentiment": 0.1660
+    },
+    {
+      "date": "2019-06-23",
+      "topic": "policy",
+      "n_articles": 4.0,
+      "sentiment": 0.7427
+    },
+    {
+      "date": "2019-06-30",
+      "topic": "policy",
+      "n_articles": 2.0,
+      "sentiment": 0.5127
+    },
+    {
+      "date": "2019-07-07",
+      "topic": "policy",
+      "n_articles": 4.0,
+      "sentiment": 0.7175
+    },
+    {
+      "date": "2019-07-14",
+      "topic": "policy",
+      "n_articles": 5.0,
+      "sentiment": 0.1527
+    },
+    {
+      "date": "2019-07-21",
+      "topic": "policy",
+      "n_articles": 4.0,
+      "sentiment": 0.5600
+    },
+    {
+      "date": "2019-07-28",
+      "topic": "policy",
+      "n_articles": 2.0,
+      "sentiment": 0.8026
+    },
+    {
+      "date": "2019-08-04",
+      "topic": "policy",
+      "n_articles": 3.0,
+      "sentiment": 0.2767
+    },
+    {
+      "date": "2019-08-11",
+      "topic": "policy",
+      "n_articles": 4.0,
+      "sentiment": 0.2202
+    },
+    {
+      "date": "2019-08-18",
+      "topic": "policy",
+      "n_articles": 4.0,
+      "sentiment": 0.2138
+    },
+    {
+      "date": "2019-08-25",
+      "topic": "policy",
+      "n_articles": 5.0,
+      "sentiment": 0.8142
+    },
+    {
+      "date": "2019-09-01",
+      "topic": "policy",
+      "n_articles": 4.0,
+      "sentiment": 0.2720
+    },
+    {
+      "date": "2019-09-08",
+      "topic": "policy",
+      "n_articles": 4.0,
+      "sentiment": 0.2443
+    },
+    {
+      "date": "2019-09-15",
+      "topic": "policy",
+      "n_articles": 22.0,
+      "sentiment": 0.4251
+    },
+    {
+      "date": "2019-09-22",
+      "topic": "policy",
+      "n_articles": 18.0,
+      "sentiment": 0.2805
+    },
+    {
+      "date": "2019-09-29",
+      "topic": "policy",
+      "n_articles": 7.0,
+      "sentiment": 0.7430
+    },
+    {
+      "date": "2019-10-06",
+      "topic": "policy",
+      "n_articles": 19.0,
+      "sentiment": 0.6602
+    },
+    {
+      "date": "2019-10-13",
+      "topic": "policy",
+      "n_articles": 8.0,
+      "sentiment": 0.7746
+    },
+    {
+      "date": "2019-10-20",
+      "topic": "policy",
+      "n_articles": 7.0,
+      "sentiment": 0.3407
+    },
+    {
+      "date": "2019-10-27",
+      "topic": "policy",
+      "n_articles": 6.0,
+      "sentiment": 0.8851
+    },
+    {
+      "date": "2019-11-03",
+      "topic": "policy",
+      "n_articles": 6.0,
+      "sentiment": 0.8724
+    },
+    {
+      "date": "2019-11-10",
+      "topic": "policy",
+      "n_articles": 12.0,
+      "sentiment": 0.8405
+    },
+    {
+      "date": "2019-11-17",
+      "topic": "policy",
+      "n_articles": 11.0,
+      "sentiment": 0.1283
+    },
+    {
+      "date": "2019-11-24",
+      "topic": "policy",
+      "n_articles": 8.0,
+      "sentiment": 0.3741
+    },
+    {
+      "date": "2019-12-01",
+      "topic": "policy",
+      "n_articles": 8.0,
+      "sentiment": 0.2760
+    },
+    {
+      "date": "2019-12-08",
+      "topic": "policy",
+      "n_articles": 11.0,
+      "sentiment": 0.8834
+    },
+    {
+      "date": "2019-12-15",
+      "topic": "policy",
+      "n_articles": 10.0,
+      "sentiment": 0.0004
+    },
+    {
+      "date": "2019-12-22",
+      "topic": "policy",
+      "n_articles": 6.0,
+      "sentiment": 0.5758
+    },
+    {
+      "date": "2019-12-29",
+      "topic": "policy",
+      "n_articles": 4.0,
+      "sentiment": 0.5830
+    },
+    {
+      "date": "2020-01-05",
+      "topic": "policy",
+      "n_articles": 7.0,
+      "sentiment": 0.8883
+    },
+    {
+      "date": "2020-01-12",
+      "topic": "policy",
+      "n_articles": 8.0,
+      "sentiment": 0.7268
+    },
+    {
+      "date": "2020-01-19",
+      "topic": "policy",
+      "n_articles": 8.0,
+      "sentiment": 0.4882
+    },
+    {
+      "date": "2020-01-26",
+      "topic": "policy",
+      "n_articles": 6.0,
+      "sentiment": 0.1822
+    },
+    {
+      "date": "2020-02-02",
+      "topic": "policy",
+      "n_articles": 5.0,
+      "sentiment": 0.1440
+    },
+    {
+      "date": "2020-02-09",
+      "topic": "policy",
+      "n_articles": 4.0,
+      "sentiment": 0.5532
+    },
+    {
+      "date": "2020-02-16",
+      "topic": "policy",
+      "n_articles": 5.0,
+      "sentiment": 0.8166
+    },
+    {
+      "date": "2020-02-23",
+      "topic": "policy",
+      "n_articles": 5.0,
+      "sentiment": 0.3053
+    },
+    {
+      "date": "2020-03-01",
+      "topic": "policy",
+      "n_articles": 6.0,
+      "sentiment": 0.7784
+    },
+    {
+      "date": "2020-03-08",
+      "topic": "policy",
+      "n_articles": 3.0,
+      "sentiment": 0.4176
+    },
+    {
+      "date": "2020-03-15",
+      "topic": "policy",
+      "n_articles": 2.0,
+      "sentiment": 0.3685
+    },
+    {
+      "date": "2020-03-22",
+      "topic": "policy",
+      "n_articles": 4.0,
+      "sentiment": 0.4428
+    },
+    {
+      "date": "2020-03-29",
+      "topic": "policy",
+      "n_articles": 3.0,
+      "sentiment": 0.6386
+    },
+    {
+      "date": "2020-04-05",
+      "topic": "policy",
+      "n_articles": 2.0,
+      "sentiment": 0.7373
+    },
+    {
+      "date": "2020-04-12",
+      "topic": "policy",
+      "n_articles": 2.0,
+      "sentiment": 0.2537
+    },
+    {
+      "date": "2020-04-19",
+      "topic": "policy",
+      "n_articles": 2.0,
+      "sentiment": 0.2221
+    },
+    {
+      "date": "2020-04-26",
+      "topic": "policy",
+      "n_articles": 2.0,
+      "sentiment": 0.7534
+    },
+    {
+      "date": "2020-05-03",
+      "topic": "policy",
+      "n_articles": 3.0,
+      "sentiment": 0.1605
+    },
+    {
+      "date": "2020-05-10",
+      "topic": "policy",
+      "n_articles": 2.0,
+      "sentiment": 0.5552
+    },
+    {
+      "date": "2020-05-17",
+      "topic": "policy",
+      "n_articles": 3.0,
+      "sentiment": 0.3887
+    },
+    {
+      "date": "2020-05-24",
+      "topic": "policy",
+      "n_articles": 3.0,
+      "sentiment": 0.6116
+    },
+    {
+      "date": "2020-05-31",
+      "topic": "policy",
+      "n_articles": 3.0,
+      "sentiment": 0.0358
+    },
+    {
+      "date": "2020-06-07",
+      "topic": "policy",
+      "n_articles": 3.0,
+      "sentiment": 0.2235
+    },
+    {
+      "date": "2020-06-14",
+      "topic": "policy",
+      "n_articles": 5.0,
+      "sentiment": 0.6246
+    },
+    {
+      "date": "2020-06-21",
+      "topic": "policy",
+      "n_articles": 3.0,
+      "sentiment": 0.3462
+    },
+    {
+      "date": "2020-06-28",
+      "topic": "policy",
+      "n_articles": 3.0,
+      "sentiment": 0.4688
+    },
+    {
+      "date": "2020-07-05",
+      "topic": "policy",
+      "n_articles": 4.0,
+      "sentiment": 0.3645
+    },
+    {
+      "date": "2020-07-12",
+      "topic": "policy",
+      "n_articles": 3.0,
+      "sentiment": 0.4301
+    },
+    {
+      "date": "2020-07-19",
+      "topic": "policy",
+      "n_articles": 3.0,
+      "sentiment": 0.7232
+    },
+    {
+      "date": "2020-07-26",
+      "topic": "policy",
+      "n_articles": 2.0,
+      "sentiment": 0.6705
+    },
+    {
+      "date": "2020-08-02",
+      "topic": "policy",
+      "n_articles": 3.0,
+      "sentiment": 0.1121
+    },
+    {
+      "date": "2020-08-09",
+      "topic": "policy",
+      "n_articles": 3.0,
+      "sentiment": 0.1405
+    },
+    {
+      "date": "2020-08-16",
+      "topic": "policy",
+      "n_articles": 3.0,
+      "sentiment": 0.8550
+    },
+    {
+      "date": "2020-08-23",
+      "topic": "policy",
+      "n_articles": 3.0,
+      "sentiment": 0.7718
+    },
+    {
+      "date": "2020-08-30",
+      "topic": "policy",
+      "n_articles": 3.0,
+      "sentiment": 0.4331
+    },
+    {
+      "date": "2020-09-06",
+      "topic": "policy",
+      "n_articles": 5.0,
+      "sentiment": 0.4430
+    },
+    {
+      "date": "2020-09-13",
+      "topic": "policy",
+      "n_articles": 6.0,
+      "sentiment": 0.1813
+    },
+    {
+      "date": "2020-09-20",
+      "topic": "policy",
+      "n_articles": 5.0,
+      "sentiment": 0.4864
+    },
+    {
+      "date": "2020-09-27",
+      "topic": "policy",
+      "n_articles": 4.0,
+      "sentiment": 0.7158
+    },
+    {
+      "date": "2020-10-04",
+      "topic": "policy",
+      "n_articles": 3.0,
+      "sentiment": 0.3520
+    },
+    {
+      "date": "2020-10-11",
+      "topic": "policy",
+      "n_articles": 4.0,
+      "sentiment": 0.4511
+    },
+    {
+      "date": "2020-10-18",
+      "topic": "policy",
+      "n_articles": 4.0,
+      "sentiment": 0.1635
+    },
+    {
+      "date": "2020-10-25",
+      "topic": "policy",
+      "n_articles": 3.0,
+      "sentiment": 0.2020
+    },
+    {
+      "date": "2020-11-01",
+      "topic": "policy",
+      "n_articles": 4.0,
+      "sentiment": 0.1866
+    },
+    {
+      "date": "2020-11-08",
+      "topic": "policy",
+      "n_articles": 5.0,
+      "sentiment": 0.8435
+    },
+    {
+      "date": "2020-11-15",
+      "topic": "policy",
+      "n_articles": 5.0,
+      "sentiment": 0.7050
+    },
+    {
+      "date": "2020-11-22",
+      "topic": "policy",
+      "n_articles": 3.0,
+      "sentiment": 0.6817
+    },
+    {
+      "date": "2020-11-29",
+      "topic": "policy",
+      "n_articles": 4.0,
+      "sentiment": 0.2287
+    },
+    {
+      "date": "2020-12-06",
+      "topic": "policy",
+      "n_articles": 6.0,
+      "sentiment": 0.8445
+    },
+    {
+      "date": "2020-12-13",
+      "topic": "policy",
+      "n_articles": 4.0,
+      "sentiment": 0.2162
+    },
+    {
+      "date": "2020-12-20",
+      "topic": "policy",
+      "n_articles": 2.0,
+      "sentiment": 0.8677
+    },
+    {
+      "date": "2020-12-27",
+      "topic": "policy",
+      "n_articles": 2.0,
+      "sentiment": 0.3050
+    },
+    {
+      "date": "2021-01-03",
+      "topic": "policy",
+      "n_articles": 4.0,
+      "sentiment": 0.1047
+    },
+    {
+      "date": "2021-01-10",
+      "topic": "policy",
+      "n_articles": 6.0,
+      "sentiment": 0.2288
+    },
+    {
+      "date": "2021-01-17",
+      "topic": "policy",
+      "n_articles": 4.0,
+      "sentiment": 0.3222
+    },
+    {
+      "date": "2021-01-24",
+      "topic": "policy",
+      "n_articles": 4.0,
+      "sentiment": 0.3458
+    },
+    {
+      "date": "2021-01-31",
+      "topic": "policy",
+      "n_articles": 5.0,
+      "sentiment": 0.7331
+    },
+    {
+      "date": "2021-02-07",
+      "topic": "policy",
+      "n_articles": 5.0,
+      "sentiment": 0.3467
+    },
+    {
+      "date": "2021-02-14",
+      "topic": "policy",
+      "n_articles": 6.0,
+      "sentiment": 0.5846
+    },
+    {
+      "date": "2021-02-21",
+      "topic": "policy",
+      "n_articles": 4.0,
+      "sentiment": 0.4001
+    },
+    {
+      "date": "2021-02-28",
+      "topic": "policy",
+      "n_articles": 4.0,
+      "sentiment": 0.6021
+    },
+    {
+      "date": "2021-03-07",
+      "topic": "policy",
+      "n_articles": 5.0,
+      "sentiment": 0.7601
+    },
+    {
+      "date": "2021-03-14",
+      "topic": "policy",
+      "n_articles": 7.0,
+      "sentiment": 0.4684
+    },
+    {
+      "date": "2021-03-21",
+      "topic": "policy",
+      "n_articles": 7.0,
+      "sentiment": 0.4013
+    },
+    {
+      "date": "2021-03-28",
+      "topic": "policy",
+      "n_articles": 4.0,
+      "sentiment": 0.7410
+    },
+    {
+      "date": "2021-04-04",
+      "topic": "policy",
+      "n_articles": 3.0,
+      "sentiment": 0.6487
+    },
+    {
+      "date": "2021-04-11",
+      "topic": "policy",
+      "n_articles": 4.0,
+      "sentiment": 0.2600
+    },
+    {
+      "date": "2021-04-18",
+      "topic": "policy",
+      "n_articles": 8.0,
+      "sentiment": 0.1727
+    },
+    {
+      "date": "2021-04-25",
+      "topic": "policy",
+      "n_articles": 22.0,
+      "sentiment": 0.6320
+    },
+    {
+      "date": "2021-05-02",
+      "topic": "policy",
+      "n_articles": 22.0,
+      "sentiment": 0.2851
+    },
+    {
+      "date": "2021-05-09",
+      "topic": "policy",
+      "n_articles": 31.0,
+      "sentiment": 0.4605
+    },
+    {
+      "date": "2021-05-16",
+      "topic": "policy",
+      "n_articles": 16.0,
+      "sentiment": 0.1410
+    },
+    {
+      "date": "2021-05-23",
+      "topic": "policy",
+      "n_articles": 11.0,
+      "sentiment": 0.6685
+    },
+    {
+      "date": "2021-05-30",
+      "topic": "policy",
+      "n_articles": 10.0,
+      "sentiment": 0.8002
+    },
+    {
+      "date": "2021-06-06",
+      "topic": "policy",
+      "n_articles": 10.0,
+      "sentiment": 0.4812
+    },
+    {
+      "date": "2021-06-13",
+      "topic": "policy",
+      "n_articles": 11.0,
+      "sentiment": 0.8774
+    },
+    {
+      "date": "2021-06-20",
+      "topic": "policy",
+      "n_articles": 16.0,
+      "sentiment": 0.7101
+    },
+    {
+      "date": "2021-06-27",
+      "topic": "policy",
+      "n_articles": 11.0,
+      "sentiment": 0.2331
+    },
+    {
+      "date": "2021-07-04",
+      "topic": "policy",
+      "n_articles": 9.0,
+      "sentiment": 0.4786
+    },
+    {
+      "date": "2021-07-11",
+      "topic": "policy",
+      "n_articles": 11.0,
+      "sentiment": 0.6870
+    },
+    {
+      "date": "2021-07-18",
+      "topic": "policy",
+      "n_articles": 15.0,
+      "sentiment": 0.6626
+    },
+    {
+      "date": "2021-07-25",
+      "topic": "policy",
+      "n_articles": 7.0,
+      "sentiment": 0.4455
+    },
+    {
+      "date": "2021-08-01",
+      "topic": "policy",
+      "n_articles": 9.0,
+      "sentiment": 0.3614
+    },
+    {
+      "date": "2021-08-08",
+      "topic": "policy",
+      "n_articles": 11.0,
+      "sentiment": 0.3276
+    },
+    {
+      "date": "2021-08-15",
+      "topic": "policy",
+      "n_articles": 9.0,
+      "sentiment": 0.1206
+    },
+    {
+      "date": "2021-08-22",
+      "topic": "policy",
+      "n_articles": 9.0,
+      "sentiment": 0.6837
+    },
+    {
+      "date": "2021-08-29",
+      "topic": "policy",
+      "n_articles": 13.0,
+      "sentiment": 0.2630
+    },
+    {
+      "date": "2021-09-05",
+      "topic": "policy",
+      "n_articles": 12.0,
+      "sentiment": 0.7824
+    },
+    {
+      "date": "2021-09-12",
+      "topic": "policy",
+      "n_articles": 15.0,
+      "sentiment": 0.3170
+    },
+    {
+      "date": "2021-09-19",
+      "topic": "policy",
+      "n_articles": 19.0,
+      "sentiment": 0.7338
+    },
+    {
+      "date": "2021-09-26",
+      "topic": "policy",
+      "n_articles": 12.0,
+      "sentiment": 0.6361
+    },
+    {
+      "date": "2021-10-03",
+      "topic": "policy",
+      "n_articles": 12.0,
+      "sentiment": 0.6035
+    },
+    {
+      "date": "2021-10-10",
+      "topic": "policy",
+      "n_articles": 9.0,
+      "sentiment": 0.7518
+    },
+    {
+      "date": "2021-10-17",
+      "topic": "policy",
+      "n_articles": 10.0,
+      "sentiment": 0.1040
+    },
+    {
+      "date": "2021-10-24",
+      "topic": "policy",
+      "n_articles": 11.0,
+      "sentiment": 0.6381
+    },
+    {
+      "date": "2021-10-31",
+      "topic": "policy",
+      "n_articles": 13.0,
+      "sentiment": 0.0348
+    },
+    {
+      "date": "2021-11-07",
+      "topic": "policy",
+      "n_articles": 9.0,
+      "sentiment": 0.2415
+    },
+    {
+      "date": "2021-11-14",
+      "topic": "policy",
+      "n_articles": 9.0,
+      "sentiment": 0.5030
+    },
+    {
+      "date": "2021-11-21",
+      "topic": "policy",
+      "n_articles": 9.0,
+      "sentiment": 0.5531
+    },
+    {
+      "date": "2021-11-28",
+      "topic": "policy",
+      "n_articles": 9.0,
+      "sentiment": 0.6154
+    },
+    {
+      "date": "2021-12-05",
+      "topic": "policy",
+      "n_articles": 12.0,
+      "sentiment": 0.4435
+    },
+    {
+      "date": "2021-12-12",
+      "topic": "policy",
+      "n_articles": 10.0,
+      "sentiment": 0.6157
+    },
+    {
+      "date": "2021-12-19",
+      "topic": "policy",
+      "n_articles": 6.0,
+      "sentiment": 0.6455
+    },
+    {
+      "date": "2021-12-26",
+      "topic": "policy",
+      "n_articles": 6.0,
+      "sentiment": 0.5135
+    },
+    {
+      "date": "2022-01-02",
+      "topic": "policy",
+      "n_articles": 8.0,
+      "sentiment": 0.0105
+    },
+    {
+      "date": "2022-01-09",
+      "topic": "policy",
+      "n_articles": 10.0,
+      "sentiment": 0.3153
+    },
+    {
+      "date": "2022-01-16",
+      "topic": "policy",
+      "n_articles": 9.0,
+      "sentiment": 0.3411
+    },
+    {
+      "date": "2022-01-23",
+      "topic": "policy",
+      "n_articles": 8.0,
+      "sentiment": 0.6385
+    },
+    {
+      "date": "2022-01-30",
+      "topic": "policy",
+      "n_articles": 9.0,
+      "sentiment": 0.5264
+    },
+    {
+      "date": "2022-02-06",
+      "topic": "policy",
+      "n_articles": 8.0,
+      "sentiment": 0.0823
+    },
+    {
+      "date": "2022-02-13",
+      "topic": "policy",
+      "n_articles": 7.0,
+      "sentiment": 0.7115
+    },
+    {
+      "date": "2022-02-20",
+      "topic": "policy",
+      "n_articles": 7.0,
+      "sentiment": 0.4787
+    },
+    {
+      "date": "2022-02-27",
+      "topic": "policy",
+      "n_articles": 7.0,
+      "sentiment": 0.5230
+    },
+    {
+      "date": "2022-03-06",
+      "topic": "policy",
+      "n_articles": 6.0,
+      "sentiment": 0.1156
+    },
+    {
+      "date": "2022-03-13",
+      "topic": "policy",
+      "n_articles": 8.0,
+      "sentiment": 0.3453
+    },
+    {
+      "date": "2022-03-20",
+      "topic": "policy",
+      "n_articles": 7.0,
+      "sentiment": 0.4037
+    },
+    {
+      "date": "2022-03-27",
+      "topic": "policy",
+      "n_articles": 8.0,
+      "sentiment": 0.6545
+    },
+    {
+      "date": "2022-04-03",
+      "topic": "policy",
+      "n_articles": 7.0,
+      "sentiment": 0.3787
+    },
+    {
+      "date": "2022-04-10",
+      "topic": "policy",
+      "n_articles": 5.0,
+      "sentiment": 0.8235
+    },
+    {
+      "date": "2022-04-17",
+      "topic": "policy",
+      "n_articles": 5.0,
+      "sentiment": 0.6470
+    },
+    {
+      "date": "2022-04-24",
+      "topic": "policy",
+      "n_articles": 7.0,
+      "sentiment": 0.5424
+    },
+    {
+      "date": "2022-05-01",
+      "topic": "policy",
+      "n_articles": 7.0,
+      "sentiment": 0.3656
+    },
+    {
+      "date": "2022-05-08",
+      "topic": "policy",
+      "n_articles": 8.0,
+      "sentiment": 0.5176
+    },
+    {
+      "date": "2022-05-15",
+      "topic": "policy",
+      "n_articles": 8.0,
+      "sentiment": 0.6464
+    },
+    {
+      "date": "2022-05-22",
+      "topic": "policy",
+      "n_articles": 6.0,
+      "sentiment": 0.8060
+    },
+    {
+      "date": "2022-05-29",
+      "topic": "policy",
+      "n_articles": 6.0,
+      "sentiment": 0.1466
+    },
+    {
+      "date": "2022-06-05",
+      "topic": "policy",
+      "n_articles": 5.0,
+      "sentiment": 0.5742
+    },
+    {
+      "date": "2022-06-12",
+      "topic": "policy",
+      "n_articles": 6.0,
+      "sentiment": 0.4323
+    },
+    {
+      "date": "2022-06-19",
+      "topic": "policy",
+      "n_articles": 9.0,
+      "sentiment": 0.8752
+    },
+    {
+      "date": "2022-06-26",
+      "topic": "policy",
+      "n_articles": 8.0,
+      "sentiment": 0.5871
+    },
+    {
+      "date": "2022-07-03",
+      "topic": "policy",
+      "n_articles": 7.0,
+      "sentiment": 0.8016
+    },
+    {
+      "date": "2022-07-10",
+      "topic": "policy",
+      "n_articles": 8.0,
+      "sentiment": 0.1165
+    },
+    {
+      "date": "2022-07-17",
+      "topic": "policy",
+      "n_articles": 6.0,
+      "sentiment": 0.6205
+    },
+    {
+      "date": "2022-07-24",
+      "topic": "policy",
+      "n_articles": 5.0,
+      "sentiment": 0.0278
+    },
+    {
+      "date": "2022-07-31",
+      "topic": "policy",
+      "n_articles": 4.0,
+      "sentiment": 0.1847
+    },
+    {
+      "date": "2022-08-07",
+      "topic": "policy",
+      "n_articles": 4.0,
+      "sentiment": 0.4701
+    },
+    {
+      "date": "2022-08-14",
+      "topic": "policy",
+      "n_articles": 5.0,
+      "sentiment": 0.8657
+    },
+    {
+      "date": "2022-08-21",
+      "topic": "policy",
+      "n_articles": 6.0,
+      "sentiment": 0.7847
+    },
+    {
+      "date": "2022-08-28",
+      "topic": "policy",
+      "n_articles": 8.0,
+      "sentiment": 0.6804
+    },
+    {
+      "date": "2022-09-04",
+      "topic": "policy",
+      "n_articles": 6.0,
+      "sentiment": 0.8671
+    },
+    {
+      "date": "2022-09-11",
+      "topic": "policy",
+      "n_articles": 6.0,
+      "sentiment": 0.3514
+    },
+    {
+      "date": "2022-09-18",
+      "topic": "policy",
+      "n_articles": 8.0,
+      "sentiment": 0.6827
+    },
+    {
+      "date": "2022-09-25",
+      "topic": "policy",
+      "n_articles": 7.0,
+      "sentiment": 0.1478
+    },
+    {
+      "date": "2022-10-02",
+      "topic": "policy",
+      "n_articles": 7.0,
+      "sentiment": 0.8361
+    },
+    {
+      "date": "2022-10-09",
+      "topic": "policy",
+      "n_articles": 6.0,
+      "sentiment": 0.8541
+    },
+    {
+      "date": "2022-10-16",
+      "topic": "policy",
+      "n_articles": 7.0,
+      "sentiment": 0.5850
+    },
+    {
+      "date": "2022-10-23",
+      "topic": "policy",
+      "n_articles": 6.0,
+      "sentiment": 0.4547
+    },
+    {
+      "date": "2022-10-30",
+      "topic": "policy",
+      "n_articles": 7.0,
+      "sentiment": 0.4353
+    },
+    {
+      "date": "2022-11-06",
+      "topic": "policy",
+      "n_articles": 8.0,
+      "sentiment": 0.5066
+    },
+    {
+      "date": "2022-11-13",
+      "topic": "policy",
+      "n_articles": 10.0,
+      "sentiment": 0.4674
+    },
+    {
+      "date": "2022-11-20",
+      "topic": "policy",
+      "n_articles": 8.0,
+      "sentiment": 0.8035
+    },
+    {
+      "date": "2022-11-27",
+      "topic": "policy",
+      "n_articles": 8.0,
+      "sentiment": 0.3720
+    },
+    {
+      "date": "2022-12-04",
+      "topic": "policy",
+      "n_articles": 14.0,
+      "sentiment": 0.7037
+    },
+    {
+      "date": "2022-12-11",
+      "topic": "policy",
+      "n_articles": 7.0,
+      "sentiment": 0.5337
+    },
+    {
+      "date": "2022-12-18",
+      "topic": "policy",
+      "n_articles": 6.0,
+      "sentiment": 0.2857
+    },
+    {
+      "date": "2022-12-25",
+      "topic": "policy",
+      "n_articles": 5.0,
+      "sentiment": 0.7747
+    },
+    {
+      "date": "2023-01-01",
+      "topic": "policy",
+      "n_articles": 5.0,
+      "sentiment": 0.1650
+    },
+    {
+      "date": "2023-01-08",
+      "topic": "policy",
+      "n_articles": 7.0,
+      "sentiment": 0.8333
+    },
+    {
+      "date": "2023-01-15",
+      "topic": "policy",
+      "n_articles": 8.0,
+      "sentiment": 0.4574
+    },
+    {
+      "date": "2023-01-22",
+      "topic": "policy",
+      "n_articles": 10.0,
+      "sentiment": 0.6128
+    },
+    {
+      "date": "2023-01-29",
+      "topic": "policy",
+      "n_articles": 7.0,
+      "sentiment": 0.8162
+    },
+    {
+      "date": "2023-02-05",
+      "topic": "policy",
+      "n_articles": 9.0,
+      "sentiment": 0.2861
+    },
+    {
+      "date": "2023-02-12",
+      "topic": "policy",
+      "n_articles": 8.0,
+      "sentiment": 0.1762
+    },
+    {
+      "date": "2023-02-19",
+      "topic": "policy",
+      "n_articles": 14.0,
+      "sentiment": 0.0108
+    },
+    {
+      "date": "2023-02-26",
+      "topic": "policy",
+      "n_articles": 15.0,
+      "sentiment": 0.8464
+    },
+    {
+      "date": "2023-03-05",
+      "topic": "policy",
+      "n_articles": 15.0,
+      "sentiment": 0.0438
+    },
+    {
+      "date": "2023-03-12",
+      "topic": "policy",
+      "n_articles": 19.0,
+      "sentiment": 0.7678
+    },
+    {
+      "date": "2023-03-19",
+      "topic": "policy",
+      "n_articles": 35.0,
+      "sentiment": 0.8522
+    },
+    {
+      "date": "2023-03-26",
+      "topic": "policy",
+      "n_articles": 100.0,
+      "sentiment": 0.8128
+    },
+    {
+      "date": "2023-04-02",
+      "topic": "policy",
+      "n_articles": 10.0,
+      "sentiment": 0.7801
+    },
+    {
+      "date": "2023-04-09",
+      "topic": "policy",
+      "n_articles": 9.0,
+      "sentiment": 0.4748
+    },
+    {
+      "date": "2023-04-16",
+      "topic": "policy",
+      "n_articles": 11.0,
+      "sentiment": 0.2838
+    },
+    {
+      "date": "2023-04-23",
+      "topic": "policy",
+      "n_articles": 11.0,
+      "sentiment": 0.1315
+    },
+    {
+      "date": "2023-04-30",
+      "topic": "policy",
+      "n_articles": 9.0,
+      "sentiment": 0.0584
+    },
+    {
+      "date": "2023-05-07",
+      "topic": "policy",
+      "n_articles": 7.0,
+      "sentiment": 0.5424
+    },
+    {
+      "date": "2023-05-14",
+      "topic": "policy",
+      "n_articles": 7.0,
+      "sentiment": 0.5358
+    },
+    {
+      "date": "2023-05-21",
+      "topic": "policy",
+      "n_articles": 11.0,
+      "sentiment": 0.1005
+    },
+    {
+      "date": "2023-05-28",
+      "topic": "policy",
+      "n_articles": 7.0,
+      "sentiment": 0.8638
+    },
+    {
+      "date": "2023-06-04",
+      "topic": "policy",
+      "n_articles": 9.0,
+      "sentiment": 0.6614
+    },
+    {
+      "date": "2023-06-11",
+      "topic": "policy",
+      "n_articles": 11.0,
+      "sentiment": 0.6110
+    },
+    {
+      "date": "2023-06-18",
+      "topic": "policy",
+      "n_articles": 13.0,
+      "sentiment": 0.6435
+    },
+    {
+      "date": "2023-06-25",
+      "topic": "policy",
+      "n_articles": 8.0,
+      "sentiment": 0.3481
+    },
+    {
+      "date": "2023-07-02",
+      "topic": "policy",
+      "n_articles": 6.0,
+      "sentiment": 0.3012
+    },
+    {
+      "date": "2023-07-09",
+      "topic": "policy",
+      "n_articles": 6.0,
+      "sentiment": 0.8427
+    },
+    {
+      "date": "2023-07-16",
+      "topic": "policy",
+      "n_articles": 7.0,
+      "sentiment": 0.0217
+    },
+    {
+      "date": "2023-07-23",
+      "topic": "policy",
+      "n_articles": 8.0,
+      "sentiment": 0.0153
+    },
+    {
+      "date": "2023-07-30",
+      "topic": "policy",
+      "n_articles": 5.0,
+      "sentiment": 0.2310
+    },
+    {
+      "date": "2023-08-06",
+      "topic": "policy",
+      "n_articles": 5.0,
+      "sentiment": 0.1278
+    },
+    {
+      "date": "2023-08-13",
+      "topic": "policy",
+      "n_articles": 6.0,
+      "sentiment": 0.6047
+    },
+    {
+      "date": "2023-08-20",
+      "topic": "policy",
+      "n_articles": 6.0,
+      "sentiment": 0.8401
+    },
+    {
+      "date": "2023-08-27",
+      "topic": "policy",
+      "n_articles": 5.0,
+      "sentiment": 0.0561
+    },
+    {
+      "date": "2023-09-03",
+      "topic": "policy",
+      "n_articles": 7.0,
+      "sentiment": 0.8742
+    },
+    {
+      "date": "2023-09-10",
+      "topic": "policy",
+      "n_articles": 7.0,
+      "sentiment": 0.5518
+    },
+    {
+      "date": "2023-09-17",
+      "topic": "policy",
+      "n_articles": 8.0,
+      "sentiment": 0.0724
+    },
+    {
+      "date": "2023-09-24",
+      "topic": "policy",
+      "n_articles": 7.0,
+      "sentiment": 0.6056
+    },
+    {
+      "date": "2023-10-01",
+      "topic": "policy",
+      "n_articles": 6.0,
+      "sentiment": 0.3774
+    },
+    {
+      "date": "2023-10-08",
+      "topic": "policy",
+      "n_articles": 6.0,
+      "sentiment": 0.7102
+    },
+    {
+      "date": "2023-10-15",
+      "topic": "policy",
+      "n_articles": 6.0,
+      "sentiment": 0.5213
+    },
+    {
+      "date": "2023-10-22",
+      "topic": "policy",
+      "n_articles": 5.0,
+      "sentiment": 0.4015
+    },
+    {
+      "date": "2023-10-29",
+      "topic": "policy",
+      "n_articles": 5.0,
+      "sentiment": 0.1502
+    },
+    {
+      "date": "2023-11-05",
+      "topic": "policy",
+      "n_articles": 8.0,
+      "sentiment": 0.5218
+    },
+    {
+      "date": "2023-11-12",
+      "topic": "policy",
+      "n_articles": 5.0,
+      "sentiment": 0.3716
+    },
+    {
+      "date": "2023-11-19",
+      "topic": "policy",
+      "n_articles": 7.0,
+      "sentiment": 0.8215
+    },
+    {
+      "date": "2023-11-26",
+      "topic": "policy",
+      "n_articles": 8.0,
+      "sentiment": 0.7617
+    },
+    {
+      "date": "2023-12-03",
+      "topic": "policy",
+      "n_articles": 7.0,
+      "sentiment": 0.4404
+    },
+    {
+      "date": "2023-12-10",
+      "topic": "policy",
+      "n_articles": 6.0,
+      "sentiment": 0.2287
+    },
+    {
+      "date": "2023-12-17",
+      "topic": "policy",
+      "n_articles": 6.0,
+      "sentiment": 0.6216
+    },
+    {
+      "date": "2023-12-24",
+      "topic": "policy",
+      "n_articles": 2.0,
+      "sentiment": 0.7655
+    },
+    {
+      "date": "2023-12-31",
+      "topic": "policy",
+      "n_articles": 5.0,
+      "sentiment": 0.8666
+    },
+    {
+      "date": "2024-01-07",
+      "topic": "policy",
+      "n_articles": 7.0,
+      "sentiment": 0.4467
+    },
+    {
+      "date": "2024-01-14",
+      "topic": "policy",
+      "n_articles": 5.0,
+      "sentiment": 0.8512
+    },
+    {
+      "date": "2024-01-21",
+      "topic": "policy",
+      "n_articles": 7.0,
+      "sentiment": 0.5568
+    },
+    {
+      "date": "2024-01-28",
+      "topic": "policy",
+      "n_articles": 6.0,
+      "sentiment": 0.6810
+    },
+    {
+      "date": "2024-02-04",
+      "topic": "policy",
+      "n_articles": 7.0,
+      "sentiment": 0.6750
+    },
+    {
+      "date": "2024-02-11",
+      "topic": "policy",
+      "n_articles": 5.0,
+      "sentiment": 0.6151
+    },
+    {
+      "date": "2024-02-18",
+      "topic": "policy",
+      "n_articles": 5.0,
+      "sentiment": 0.4661
+    },
+    {
+      "date": "2024-02-25",
+      "topic": "policy",
+      "n_articles": 6.0,
+      "sentiment": 0.3443
+    },
+    {
+      "date": "2024-03-03",
+      "topic": "policy",
+      "n_articles": 6.0,
+      "sentiment": 0.6317
+    },
+    {
+      "date": "2024-03-10",
+      "topic": "policy",
+      "n_articles": 6.0,
+      "sentiment": 0.6302
+    },
+    {
+      "date": "2024-03-17",
+      "topic": "policy",
+      "n_articles": 6.0,
+      "sentiment": 0.2504
+    },
+    {
+      "date": "2024-03-24",
+      "topic": "policy",
+      "n_articles": 4.0,
+      "sentiment": 0.8342
+    },
+    {
+      "date": "2024-03-31",
+      "topic": "policy",
+      "n_articles": 3.0,
+      "sentiment": 0.0281
+    },
+    {
+      "date": "2024-04-07",
+      "topic": "policy",
+      "n_articles": 7.0,
+      "sentiment": 0.3703
+    },
+    {
+      "date": "2024-04-14",
+      "topic": "policy",
+      "n_articles": 33.0,
+      "sentiment": 0.1551
+    },
+    {
+      "date": "2024-04-21",
+      "topic": "policy",
+      "n_articles": 15.0,
+      "sentiment": 0.6861
+    },
+    {
+      "date": "2024-04-28",
+      "topic": "policy",
+      "n_articles": 8.0,
+      "sentiment": 0.3131
+    },
+    {
+      "date": "2024-05-05",
+      "topic": "policy",
+      "n_articles": 6.0,
+      "sentiment": 0.0075
+    },
+    {
+      "date": "2024-05-12",
+      "topic": "policy",
+      "n_articles": 8.0,
+      "sentiment": 0.4183
+    },
+    {
+      "date": "2024-05-19",
+      "topic": "policy",
+      "n_articles": 6.0,
+      "sentiment": 0.1708
+    },
+    {
+      "date": "2019-05-19",
+      "topic": "urgency",
+      "n_articles": 58.0,
+      "sentiment": 0.1337
+    },
+    {
+      "date": "2019-05-26",
+      "topic": "urgency",
+      "n_articles": 27.0,
+      "sentiment": 0.6687
+    },
+    {
+      "date": "2019-06-02",
+      "topic": "urgency",
+      "n_articles": 48.0,
+      "sentiment": 0.5364
+    },
+    {
+      "date": "2019-06-09",
+      "topic": "urgency",
+      "n_articles": 29.0,
+      "sentiment": 0.1113
+    },
+    {
+      "date": "2019-06-16",
+      "topic": "urgency",
+      "n_articles": 32.0,
+      "sentiment": 0.0857
+    },
+    {
+      "date": "2019-06-23",
+      "topic": "urgency",
+      "n_articles": 48.0,
+      "sentiment": 0.0265
+    },
+    {
+      "date": "2019-06-30",
+      "topic": "urgency",
+      "n_articles": 56.0,
+      "sentiment": 0.3501
+    },
+    {
+      "date": "2019-07-07",
+      "topic": "urgency",
+      "n_articles": 90.0,
+      "sentiment": 0.1218
+    },
+    {
+      "date": "2019-07-14",
+      "topic": "urgency",
+      "n_articles": 47.0,
+      "sentiment": 0.3410
+    },
+    {
+      "date": "2019-07-21",
+      "topic": "urgency",
+      "n_articles": 32.0,
+      "sentiment": 0.1030
+    },
+    {
+      "date": "2019-07-28",
+      "topic": "urgency",
+      "n_articles": 19.0,
+      "sentiment": 0.7710
+    },
+    {
+      "date": "2019-08-04",
+      "topic": "urgency",
+      "n_articles": 20.0,
+      "sentiment": 0.8312
+    },
+    {
+      "date": "2019-08-11",
+      "topic": "urgency",
+      "n_articles": 29.0,
+      "sentiment": 0.4631
+    },
+    {
+      "date": "2019-08-18",
+      "topic": "urgency",
+      "n_articles": 22.0,
+      "sentiment": 0.7722
+    },
+    {
+      "date": "2019-08-25",
+      "topic": "urgency",
+      "n_articles": 30.0,
+      "sentiment": 0.8273
+    },
+    {
+      "date": "2019-09-01",
+      "topic": "urgency",
+      "n_articles": 23.0,
+      "sentiment": 0.7722
+    },
+    {
+      "date": "2019-09-08",
+      "topic": "urgency",
+      "n_articles": 24.0,
+      "sentiment": 0.8555
+    },
+    {
+      "date": "2019-09-15",
+      "topic": "urgency",
+      "n_articles": 29.0,
+      "sentiment": 0.8307
+    },
+    {
+      "date": "2019-09-22",
+      "topic": "urgency",
+      "n_articles": 57.0,
+      "sentiment": 0.5734
+    },
+    {
+      "date": "2019-09-29",
+      "topic": "urgency",
+      "n_articles": 24.0,
+      "sentiment": 0.2101
+    },
+    {
+      "date": "2019-10-06",
+      "topic": "urgency",
+      "n_articles": 22.0,
+      "sentiment": 0.4108
+    },
+    {
+      "date": "2019-10-13",
+      "topic": "urgency",
+      "n_articles": 18.0,
+      "sentiment": 0.5283
+    },
+    {
+      "date": "2019-10-20",
+      "topic": "urgency",
+      "n_articles": 18.0,
+      "sentiment": 0.2177
+    },
+    {
+      "date": "2019-10-27",
+      "topic": "urgency",
+      "n_articles": 20.0,
+      "sentiment": 0.1223
+    },
+    {
+      "date": "2019-11-03",
+      "topic": "urgency",
+      "n_articles": 24.0,
+      "sentiment": 0.1354
+    },
+    {
+      "date": "2019-11-10",
+      "topic": "urgency",
+      "n_articles": 8.0,
+      "sentiment": 0.5148
+    },
+    {
+      "date": "2019-11-17",
+      "topic": "urgency",
+      "n_articles": 14.0,
+      "sentiment": 0.5684
+    },
+    {
+      "date": "2019-11-24",
+      "topic": "urgency",
+      "n_articles": 100.0,
+      "sentiment": 0.8761
+    },
+    {
+      "date": "2019-12-01",
+      "topic": "urgency",
+      "n_articles": 45.0,
+      "sentiment": 0.0051
+    },
+    {
+      "date": "2019-12-08",
+      "topic": "urgency",
+      "n_articles": 24.0,
+      "sentiment": 0.3646
+    },
+    {
+      "date": "2019-12-15",
+      "topic": "urgency",
+      "n_articles": 26.0,
+      "sentiment": 0.4672
+    },
+    {
+      "date": "2019-12-22",
+      "topic": "urgency",
+      "n_articles": 17.0,
+      "sentiment": 0.0383
+    },
+    {
+      "date": "2019-12-29",
+      "topic": "urgency",
+      "n_articles": 12.0,
+      "sentiment": 0.4223
+    },
+    {
+      "date": "2020-01-05",
+      "topic": "urgency",
+      "n_articles": 11.0,
+      "sentiment": 0.4285
+    },
+    {
+      "date": "2020-01-12",
+      "topic": "urgency",
+      "n_articles": 14.0,
+      "sentiment": 0.8473
+    },
+    {
+      "date": "2020-01-19",
+      "topic": "urgency",
+      "n_articles": 21.0,
+      "sentiment": 0.3813
+    },
+    {
+      "date": "2020-01-26",
+      "topic": "urgency",
+      "n_articles": 17.0,
+      "sentiment": 0.1742
+    },
+    {
+      "date": "2020-02-02",
+      "topic": "urgency",
+      "n_articles": 10.0,
+      "sentiment": 0.2500
+    },
+    {
+      "date": "2020-02-09",
+      "topic": "urgency",
+      "n_articles": 9.0,
+      "sentiment": 0.0716
+    },
+    {
+      "date": "2020-02-16",
+      "topic": "urgency",
+      "n_articles": 11.0,
+      "sentiment": 0.4547
+    },
+    {
+      "date": "2020-02-23",
+      "topic": "urgency",
+      "n_articles": 8.0,
+      "sentiment": 0.3513
+    },
+    {
+      "date": "2020-03-01",
+      "topic": "urgency",
+      "n_articles": 7.0,
+      "sentiment": 0.8140
+    },
+    {
+      "date": "2020-03-08",
+      "topic": "urgency",
+      "n_articles": 10.0,
+      "sentiment": 0.7308
+    },
+    {
+      "date": "2020-03-15",
+      "topic": "urgency",
+      "n_articles": 7.0,
+      "sentiment": 0.0005
+    },
+    {
+      "date": "2020-03-22",
+      "topic": "urgency",
+      "n_articles": 4.0,
+      "sentiment": 0.6115
+    },
+    {
+      "date": "2020-03-29",
+      "topic": "urgency",
+      "n_articles": null,
+      "sentiment": 0.6205
+    },
+    {
+      "date": "2020-04-05",
+      "topic": "urgency",
+      "n_articles": null,
+      "sentiment": 0.4000
+    },
+    {
+      "date": "2020-04-12",
+      "topic": "urgency",
+      "n_articles": 4.0,
+      "sentiment": 0.1617
+    },
+    {
+      "date": "2020-04-19",
+      "topic": "urgency",
+      "n_articles": 8.0,
+      "sentiment": 0.5630
+    },
+    {
+      "date": "2020-04-26",
+      "topic": "urgency",
+      "n_articles": 5.0,
+      "sentiment": 0.8566
+    },
+    {
+      "date": "2020-05-03",
+      "topic": "urgency",
+      "n_articles": null,
+      "sentiment": 0.8478
+    },
+    {
+      "date": "2020-05-10",
+      "topic": "urgency",
+      "n_articles": null,
+      "sentiment": 0.7277
+    },
+    {
+      "date": "2020-05-17",
+      "topic": "urgency",
+      "n_articles": null,
+      "sentiment": 0.2843
+    },
+    {
+      "date": "2020-05-24",
+      "topic": "urgency",
+      "n_articles": 6.0,
+      "sentiment": 0.4531
+    },
+    {
+      "date": "2020-05-31",
+      "topic": "urgency",
+      "n_articles": 7.0,
+      "sentiment": 0.3222
+    },
+    {
+      "date": "2020-06-07",
+      "topic": "urgency",
+      "n_articles": null,
+      "sentiment": 0.0278
+    },
+    {
+      "date": "2020-06-14",
+      "topic": "urgency",
+      "n_articles": 5.0,
+      "sentiment": 0.3670
+    },
+    {
+      "date": "2020-06-21",
+      "topic": "urgency",
+      "n_articles": 4.0,
+      "sentiment": 0.7477
+    },
+    {
+      "date": "2020-06-28",
+      "topic": "urgency",
+      "n_articles": 4.0,
+      "sentiment": 0.5713
+    },
+    {
+      "date": "2020-07-05",
+      "topic": "urgency",
+      "n_articles": null,
+      "sentiment": 0.0242
+    },
+    {
+      "date": "2020-07-12",
+      "topic": "urgency",
+      "n_articles": null,
+      "sentiment": 0.5113
+    },
+    {
+      "date": "2020-07-19",
+      "topic": "urgency",
+      "n_articles": 5.0,
+      "sentiment": 0.1820
+    },
+    {
+      "date": "2020-07-26",
+      "topic": "urgency",
+      "n_articles": 4.0,
+      "sentiment": 0.8410
+    },
+    {
+      "date": "2020-08-02",
+      "topic": "urgency",
+      "n_articles": 6.0,
+      "sentiment": 0.7830
+    },
+    {
+      "date": "2020-08-09",
+      "topic": "urgency",
+      "n_articles": 5.0,
+      "sentiment": 0.3111
+    },
+    {
+      "date": "2020-08-16",
+      "topic": "urgency",
+      "n_articles": 5.0,
+      "sentiment": 0.3563
+    },
+    {
+      "date": "2020-08-23",
+      "topic": "urgency",
+      "n_articles": 6.0,
+      "sentiment": 0.5131
+    },
+    {
+      "date": "2020-08-30",
+      "topic": "urgency",
+      "n_articles": 6.0,
+      "sentiment": 0.7210
+    },
+    {
+      "date": "2020-09-06",
+      "topic": "urgency",
+      "n_articles": 5.0,
+      "sentiment": 0.2174
+    },
+    {
+      "date": "2020-09-13",
+      "topic": "urgency",
+      "n_articles": 8.0,
+      "sentiment": 0.4810
+    },
+    {
+      "date": "2020-09-20",
+      "topic": "urgency",
+      "n_articles": 10.0,
+      "sentiment": 0.0638
+    },
+    {
+      "date": "2020-09-27",
+      "topic": "urgency",
+      "n_articles": 7.0,
+      "sentiment": 0.7421
+    },
+    {
+      "date": "2020-10-04",
+      "topic": "urgency",
+      "n_articles": 5.0,
+      "sentiment": 0.1372
+    },
+    {
+      "date": "2020-10-11",
+      "topic": "urgency",
+      "n_articles": 6.0,
+      "sentiment": 0.3788
+    },
+    {
+      "date": "2020-10-18",
+      "topic": "urgency",
+      "n_articles": null,
+      "sentiment": 0.7010
+    },
+    {
+      "date": "2020-10-25",
+      "topic": "urgency",
+      "n_articles": 7.0,
+      "sentiment": 0.0708
+    },
+    {
+      "date": "2020-11-01",
+      "topic": "urgency",
+      "n_articles": 4.0,
+      "sentiment": 0.4561
+    },
+    {
+      "date": "2020-11-08",
+      "topic": "urgency",
+      "n_articles": 8.0,
+      "sentiment": 0.2411
+    },
+    {
+      "date": "2020-11-15",
+      "topic": "urgency",
+      "n_articles": 6.0,
+      "sentiment": 0.6456
+    },
+    {
+      "date": "2020-11-22",
+      "topic": "urgency",
+      "n_articles": 5.0,
+      "sentiment": 0.8024
+    },
+    {
+      "date": "2020-11-29",
+      "topic": "urgency",
+      "n_articles": 5.0,
+      "sentiment": 0.5174
+    },
+    {
+      "date": "2020-12-06",
+      "topic": "urgency",
+      "n_articles": 7.0,
+      "sentiment": 0.2701
+    },
+    {
+      "date": "2020-12-13",
+      "topic": "urgency",
+      "n_articles": 7.0,
+      "sentiment": 0.8881
+    },
+    {
+      "date": "2020-12-20",
+      "topic": "urgency",
+      "n_articles": null,
+      "sentiment": 0.6515
+    },
+    {
+      "date": "2020-12-27",
+      "topic": "urgency",
+      "n_articles": 6.0,
+      "sentiment": 0.2347
+    },
+    {
+      "date": "2021-01-03",
+      "topic": "urgency",
+      "n_articles": 5.0,
+      "sentiment": 0.6277
+    },
+    {
+      "date": "2021-01-10",
+      "topic": "urgency",
+      "n_articles": 5.0,
+      "sentiment": 0.7415
+    },
+    {
+      "date": "2021-01-17",
+      "topic": "urgency",
+      "n_articles": 7.0,
+      "sentiment": 0.0686
+    },
+    {
+      "date": "2021-01-24",
+      "topic": "urgency",
+      "n_articles": null,
+      "sentiment": 0.8436
+    },
+    {
+      "date": "2021-01-31",
+      "topic": "urgency",
+      "n_articles": 5.0,
+      "sentiment": 0.4660
+    },
+    {
+      "date": "2021-02-07",
+      "topic": "urgency",
+      "n_articles": 8.0,
+      "sentiment": 0.2858
+    },
+    {
+      "date": "2021-02-14",
+      "topic": "urgency",
+      "n_articles": 9.0,
+      "sentiment": 0.0011
+    },
+    {
+      "date": "2021-02-21",
+      "topic": "urgency",
+      "n_articles": 7.0,
+      "sentiment": 0.2640
+    },
+    {
+      "date": "2021-02-28",
+      "topic": "urgency",
+      "n_articles": 6.0,
+      "sentiment": 0.6161
+    },
+    {
+      "date": "2021-03-07",
+      "topic": "urgency",
+      "n_articles": 8.0,
+      "sentiment": 0.4704
+    },
+    {
+      "date": "2021-03-14",
+      "topic": "urgency",
+      "n_articles": 6.0,
+      "sentiment": 0.7618
+    },
+    {
+      "date": "2021-03-21",
+      "topic": "urgency",
+      "n_articles": 5.0,
+      "sentiment": 0.4066
+    },
+    {
+      "date": "2021-03-28",
+      "topic": "urgency",
+      "n_articles": null,
+      "sentiment": 0.7552
+    },
+    {
+      "date": "2021-04-04",
+      "topic": "urgency",
+      "n_articles": 6.0,
+      "sentiment": 0.0105
+    },
+    {
+      "date": "2021-04-11",
+      "topic": "urgency",
+      "n_articles": 10.0,
+      "sentiment": 0.2367
+    },
+    {
+      "date": "2021-04-18",
+      "topic": "urgency",
+      "n_articles": 6.0,
+      "sentiment": 0.2853
+    },
+    {
+      "date": "2021-04-25",
+      "topic": "urgency",
+      "n_articles": 6.0,
+      "sentiment": 0.5218
+    },
+    {
+      "date": "2021-05-02",
+      "topic": "urgency",
+      "n_articles": 6.0,
+      "sentiment": 0.1237
+    },
+    {
+      "date": "2021-05-09",
+      "topic": "urgency",
+      "n_articles": 6.0,
+      "sentiment": 0.1616
+    },
+    {
+      "date": "2021-05-16",
+      "topic": "urgency",
+      "n_articles": 9.0,
+      "sentiment": 0.6271
+    },
+    {
+      "date": "2021-05-23",
+      "topic": "urgency",
+      "n_articles": 6.0,
+      "sentiment": 0.4347
+    },
+    {
+      "date": "2021-05-30",
+      "topic": "urgency",
+      "n_articles": null,
+      "sentiment": 0.1360
+    },
+    {
+      "date": "2021-06-06",
+      "topic": "urgency",
+      "n_articles": 9.0,
+      "sentiment": 0.7205
+    },
+    {
+      "date": "2021-06-13",
+      "topic": "urgency",
+      "n_articles": 5.0,
+      "sentiment": 0.8057
+    },
+    {
+      "date": "2021-06-20",
+      "topic": "urgency",
+      "n_articles": null,
+      "sentiment": 0.6152
+    },
+    {
+      "date": "2021-06-27",
+      "topic": "urgency",
+      "n_articles": 5.0,
+      "sentiment": 0.6746
+    },
+    {
+      "date": "2021-07-04",
+      "topic": "urgency",
+      "n_articles": 7.0,
+      "sentiment": 0.2721
+    },
+    {
+      "date": "2021-07-11",
+      "topic": "urgency",
+      "n_articles": 16.0,
+      "sentiment": 0.6141
+    },
+    {
+      "date": "2021-07-18",
+      "topic": "urgency",
+      "n_articles": 15.0,
+      "sentiment": 0.2851
+    },
+    {
+      "date": "2021-07-25",
+      "topic": "urgency",
+      "n_articles": 12.0,
+      "sentiment": 0.5715
+    },
+    {
+      "date": "2021-08-01",
+      "topic": "urgency",
+      "n_articles": 14.0,
+      "sentiment": 0.2805
+    },
+    {
+      "date": "2021-08-08",
+      "topic": "urgency",
+      "n_articles": 19.0,
+      "sentiment": 0.7736
+    },
+    {
+      "date": "2021-08-15",
+      "topic": "urgency",
+      "n_articles": 13.0,
+      "sentiment": 0.4687
+    },
+    {
+      "date": "2021-08-22",
+      "topic": "urgency",
+      "n_articles": 9.0,
+      "sentiment": 0.3526
+    },
+    {
+      "date": "2021-08-29",
+      "topic": "urgency",
+      "n_articles": 7.0,
+      "sentiment": 0.1114
+    },
+    {
+      "date": "2021-09-05",
+      "topic": "urgency",
+      "n_articles": 18.0,
+      "sentiment": 0.1847
+    },
+    {
+      "date": "2021-09-12",
+      "topic": "urgency",
+      "n_articles": 15.0,
+      "sentiment": 0.2414
+    },
+    {
+      "date": "2021-09-19",
+      "topic": "urgency",
+      "n_articles": 27.0,
+      "sentiment": 0.6003
+    },
+    {
+      "date": "2021-09-26",
+      "topic": "urgency",
+      "n_articles": 15.0,
+      "sentiment": 0.1784
+    },
+    {
+      "date": "2021-10-03",
+      "topic": "urgency",
+      "n_articles": 8.0,
+      "sentiment": 0.6286
+    },
+    {
+      "date": "2021-10-10",
+      "topic": "urgency",
+      "n_articles": 12.0,
+      "sentiment": 0.7682
+    },
+    {
+      "date": "2021-10-17",
+      "topic": "urgency",
+      "n_articles": 10.0,
+      "sentiment": 0.8068
+    },
+    {
+      "date": "2021-10-24",
+      "topic": "urgency",
+      "n_articles": 11.0,
+      "sentiment": 0.8787
+    },
+    {
+      "date": "2021-10-31",
+      "topic": "urgency",
+      "n_articles": 12.0,
+      "sentiment": 0.3347
+    },
+    {
+      "date": "2021-11-07",
+      "topic": "urgency",
+      "n_articles": 12.0,
+      "sentiment": 0.0773
+    },
+    {
+      "date": "2021-11-14",
+      "topic": "urgency",
+      "n_articles": 6.0,
+      "sentiment": 0.5285
+    },
+    {
+      "date": "2021-11-21",
+      "topic": "urgency",
+      "n_articles": 9.0,
+      "sentiment": 0.6173
+    },
+    {
+      "date": "2021-11-28",
+      "topic": "urgency",
+      "n_articles": 7.0,
+      "sentiment": 0.8121
+    },
+    {
+      "date": "2021-12-05",
+      "topic": "urgency",
+      "n_articles": 12.0,
+      "sentiment": 0.5126
+    },
+    {
+      "date": "2021-12-12",
+      "topic": "urgency",
+      "n_articles": null,
+      "sentiment": 0.4808
+    },
+    {
+      "date": "2021-12-19",
+      "topic": "urgency",
+      "n_articles": null,
+      "sentiment": 0.2505
+    },
+    {
+      "date": "2021-12-26",
+      "topic": "urgency",
+      "n_articles": null,
+      "sentiment": 0.4105
+    },
+    {
+      "date": "2022-01-02",
+      "topic": "urgency",
+      "n_articles": 6.0,
+      "sentiment": 0.4633
+    },
+    {
+      "date": "2022-01-09",
+      "topic": "urgency",
+      "n_articles": 10.0,
+      "sentiment": 0.8605
+    },
+    {
+      "date": "2022-01-16",
+      "topic": "urgency",
+      "n_articles": 6.0,
+      "sentiment": 0.8113
+    },
+    {
+      "date": "2022-01-23",
+      "topic": "urgency",
+      "n_articles": 8.0,
+      "sentiment": 0.6520
+    },
+    {
+      "date": "2022-01-30",
+      "topic": "urgency",
+      "n_articles": 8.0,
+      "sentiment": 0.0036
+    },
+    {
+      "date": "2022-02-06",
+      "topic": "urgency",
+      "n_articles": 7.0,
+      "sentiment": 0.2343
+    },
+    {
+      "date": "2022-02-13",
+      "topic": "urgency",
+      "n_articles": 8.0,
+      "sentiment": 0.7781
+    },
+    {
+      "date": "2022-02-20",
+      "topic": "urgency",
+      "n_articles": 6.0,
+      "sentiment": 0.1807
+    },
+    {
+      "date": "2022-02-27",
+      "topic": "urgency",
+      "n_articles": 8.0,
+      "sentiment": 0.4113
+    },
+    {
+      "date": "2022-03-06",
+      "topic": "urgency",
+      "n_articles": 6.0,
+      "sentiment": 0.5763
+    },
+    {
+      "date": "2022-03-13",
+      "topic": "urgency",
+      "n_articles": 8.0,
+      "sentiment": 0.6455
+    },
+    {
+      "date": "2022-03-20",
+      "topic": "urgency",
+      "n_articles": 9.0,
+      "sentiment": 0.5304
+    },
+    {
+      "date": "2022-03-27",
+      "topic": "urgency",
+      "n_articles": 10.0,
+      "sentiment": 0.2710
+    },
+    {
+      "date": "2022-04-03",
+      "topic": "urgency",
+      "n_articles": 9.0,
+      "sentiment": 0.8028
+    },
+    {
+      "date": "2022-04-10",
+      "topic": "urgency",
+      "n_articles": 6.0,
+      "sentiment": 0.5311
+    },
+    {
+      "date": "2022-04-17",
+      "topic": "urgency",
+      "n_articles": 5.0,
+      "sentiment": 0.4503
+    },
+    {
+      "date": "2022-04-24",
+      "topic": "urgency",
+      "n_articles": 8.0,
+      "sentiment": 0.7440
+    },
+    {
+      "date": "2022-05-01",
+      "topic": "urgency",
+      "n_articles": 6.0,
+      "sentiment": 0.6326
+    },
+    {
+      "date": "2022-05-08",
+      "topic": "urgency",
+      "n_articles": 10.0,
+      "sentiment": 0.0050
+    },
+    {
+      "date": "2022-05-15",
+      "topic": "urgency",
+      "n_articles": 8.0,
+      "sentiment": 0.0250
+    },
+    {
+      "date": "2022-05-22",
+      "topic": "urgency",
+      "n_articles": 8.0,
+      "sentiment": 0.5746
+    },
+    {
+      "date": "2022-05-29",
+      "topic": "urgency",
+      "n_articles": 11.0,
+      "sentiment": 0.7060
+    },
+    {
+      "date": "2022-06-05",
+      "topic": "urgency",
+      "n_articles": 5.0,
+      "sentiment": 0.2575
+    },
+    {
+      "date": "2022-06-12",
+      "topic": "urgency",
+      "n_articles": 11.0,
+      "sentiment": 0.5516
+    },
+    {
+      "date": "2022-06-19",
+      "topic": "urgency",
+      "n_articles": 8.0,
+      "sentiment": 0.6775
+    },
+    {
+      "date": "2022-06-26",
+      "topic": "urgency",
+      "n_articles": 10.0,
+      "sentiment": 0.7886
+    },
+    {
+      "date": "2022-07-03",
+      "topic": "urgency",
+      "n_articles": 8.0,
+      "sentiment": 0.8882
+    },
+    {
+      "date": "2022-07-10",
+      "topic": "urgency",
+      "n_articles": 12.0,
+      "sentiment": 0.3457
+    },
+    {
+      "date": "2022-07-17",
+      "topic": "urgency",
+      "n_articles": 15.0,
+      "sentiment": 0.2426
+    },
+    {
+      "date": "2022-07-24",
+      "topic": "urgency",
+      "n_articles": 9.0,
+      "sentiment": 0.1657
+    },
+    {
+      "date": "2022-07-31",
+      "topic": "urgency",
+      "n_articles": 9.0,
+      "sentiment": 0.0385
+    },
+    {
+      "date": "2022-08-07",
+      "topic": "urgency",
+      "n_articles": 10.0,
+      "sentiment": 0.4832
+    },
+    {
+      "date": "2022-08-14",
+      "topic": "urgency",
+      "n_articles": 13.0,
+      "sentiment": 0.4807
+    },
+    {
+      "date": "2022-08-21",
+      "topic": "urgency",
+      "n_articles": 11.0,
+      "sentiment": 0.5030
+    },
+    {
+      "date": "2022-08-28",
+      "topic": "urgency",
+      "n_articles": 9.0,
+      "sentiment": 0.3484
+    },
+    {
+      "date": "2022-09-04",
+      "topic": "urgency",
+      "n_articles": 11.0,
+      "sentiment": 0.8141
+    },
+    {
+      "date": "2022-09-11",
+      "topic": "urgency",
+      "n_articles": 12.0,
+      "sentiment": 0.5312
+    },
+    {
+      "date": "2022-09-18",
+      "topic": "urgency",
+      "n_articles": 7.0,
+      "sentiment": 0.7117
+    },
+    {
+      "date": "2022-09-25",
+      "topic": "urgency",
+      "n_articles": 6.0,
+      "sentiment": 0.3170
+    },
+    {
+      "date": "2022-10-02",
+      "topic": "urgency",
+      "n_articles": 6.0,
+      "sentiment": 0.3802
+    },
+    {
+      "date": "2022-10-09",
+      "topic": "urgency",
+      "n_articles": 12.0,
+      "sentiment": 0.1783
+    },
+    {
+      "date": "2022-10-16",
+      "topic": "urgency",
+      "n_articles": 5.0,
+      "sentiment": 0.8586
+    },
+    {
+      "date": "2022-10-23",
+      "topic": "urgency",
+      "n_articles": 8.0,
+      "sentiment": 0.3175
+    },
+    {
+      "date": "2022-10-30",
+      "topic": "urgency",
+      "n_articles": 11.0,
+      "sentiment": 0.6858
+    },
+    {
+      "date": "2022-11-06",
+      "topic": "urgency",
+      "n_articles": 20.0,
+      "sentiment": 0.4401
+    },
+    {
+      "date": "2022-11-13",
+      "topic": "urgency",
+      "n_articles": 18.0,
+      "sentiment": 0.1806
+    },
+    {
+      "date": "2022-11-20",
+      "topic": "urgency",
+      "n_articles": 13.0,
+      "sentiment": 0.8757
+    },
+    {
+      "date": "2022-11-27",
+      "topic": "urgency",
+      "n_articles": 10.0,
+      "sentiment": 0.2723
+    },
+    {
+      "date": "2022-12-04",
+      "topic": "urgency",
+      "n_articles": 12.0,
+      "sentiment": 0.6457
+    },
+    {
+      "date": "2022-12-11",
+      "topic": "urgency",
+      "n_articles": 10.0,
+      "sentiment": 0.3376
+    },
+    {
+      "date": "2022-12-18",
+      "topic": "urgency",
+      "n_articles": 7.0,
+      "sentiment": 0.0204
+    },
+    {
+      "date": "2022-12-25",
+      "topic": "urgency",
+      "n_articles": 7.0,
+      "sentiment": 0.4461
+    },
+    {
+      "date": "2023-01-01",
+      "topic": "urgency",
+      "n_articles": 9.0,
+      "sentiment": 0.5114
+    },
+    {
+      "date": "2023-01-08",
+      "topic": "urgency",
+      "n_articles": 16.0,
+      "sentiment": 0.6814
+    },
+    {
+      "date": "2023-01-15",
+      "topic": "urgency",
+      "n_articles": 12.0,
+      "sentiment": 0.7136
+    },
+    {
+      "date": "2023-01-22",
+      "topic": "urgency",
+      "n_articles": 12.0,
+      "sentiment": 0.5555
+    },
+    {
+      "date": "2023-01-29",
+      "topic": "urgency",
+      "n_articles": 10.0,
+      "sentiment": 0.0264
+    },
+    {
+      "date": "2023-02-05",
+      "topic": "urgency",
+      "n_articles": 10.0,
+      "sentiment": 0.1713
+    },
+    {
+      "date": "2023-02-12",
+      "topic": "urgency",
+      "n_articles": 8.0,
+      "sentiment": 0.0165
+    },
+    {
+      "date": "2023-02-19",
+      "topic": "urgency",
+      "n_articles": 12.0,
+      "sentiment": 0.8330
+    },
+    {
+      "date": "2023-02-26",
+      "topic": "urgency",
+      "n_articles": 13.0,
+      "sentiment": 0.0816
+    },
+    {
+      "date": "2023-03-05",
+      "topic": "urgency",
+      "n_articles": 9.0,
+      "sentiment": 0.1318
+    },
+    {
+      "date": "2023-03-12",
+      "topic": "urgency",
+      "n_articles": 11.0,
+      "sentiment": 0.0078
+    },
+    {
+      "date": "2023-03-19",
+      "topic": "urgency",
+      "n_articles": 12.0,
+      "sentiment": 0.5568
+    },
+    {
+      "date": "2023-03-26",
+      "topic": "urgency",
+      "n_articles": 10.0,
+      "sentiment": 0.2845
+    },
+    {
+      "date": "2023-04-02",
+      "topic": "urgency",
+      "n_articles": 7.0,
+      "sentiment": 0.6722
+    },
+    {
+      "date": "2023-04-09",
+      "topic": "urgency",
+      "n_articles": 7.0,
+      "sentiment": 0.8745
+    },
+    {
+      "date": "2023-04-16",
+      "topic": "urgency",
+      "n_articles": 12.0,
+      "sentiment": 0.5502
+    },
+    {
+      "date": "2023-04-23",
+      "topic": "urgency",
+      "n_articles": 14.0,
+      "sentiment": 0.0410
+    },
+    {
+      "date": "2023-04-30",
+      "topic": "urgency",
+      "n_articles": 12.0,
+      "sentiment": 0.6523
+    },
+    {
+      "date": "2023-05-07",
+      "topic": "urgency",
+      "n_articles": 7.0,
+      "sentiment": 0.8227
+    },
+    {
+      "date": "2023-05-14",
+      "topic": "urgency",
+      "n_articles": 11.0,
+      "sentiment": 0.7660
+    },
+    {
+      "date": "2023-05-21",
+      "topic": "urgency",
+      "n_articles": 10.0,
+      "sentiment": 0.2388
+    },
+    {
+      "date": "2023-05-28",
+      "topic": "urgency",
+      "n_articles": 9.0,
+      "sentiment": 0.8760
+    },
+    {
+      "date": "2023-06-04",
+      "topic": "urgency",
+      "n_articles": 9.0,
+      "sentiment": 0.4142
+    },
+    {
+      "date": "2023-06-11",
+      "topic": "urgency",
+      "n_articles": 14.0,
+      "sentiment": 0.7406
+    },
+    {
+      "date": "2023-06-18",
+      "topic": "urgency",
+      "n_articles": 17.0,
+      "sentiment": 0.1474
+    },
+    {
+      "date": "2023-06-25",
+      "topic": "urgency",
+      "n_articles": 9.0,
+      "sentiment": 0.5035
+    },
+    {
+      "date": "2023-07-02",
+      "topic": "urgency",
+      "n_articles": 12.0,
+      "sentiment": 0.6547
+    },
+    {
+      "date": "2023-07-09",
+      "topic": "urgency",
+      "n_articles": 16.0,
+      "sentiment": 0.6272
+    },
+    {
+      "date": "2023-07-16",
+      "topic": "urgency",
+      "n_articles": 11.0,
+      "sentiment": 0.3302
+    },
+    {
+      "date": "2023-07-23",
+      "topic": "urgency",
+      "n_articles": 17.0,
+      "sentiment": 0.5867
+    },
+    {
+      "date": "2023-07-30",
+      "topic": "urgency",
+      "n_articles": 12.0,
+      "sentiment": 0.8185
+    },
+    {
+      "date": "2023-08-06",
+      "topic": "urgency",
+      "n_articles": 17.0,
+      "sentiment": 0.0347
+    },
+    {
+      "date": "2023-08-13",
+      "topic": "urgency",
+      "n_articles": 13.0,
+      "sentiment": 0.2820
+    },
+    {
+      "date": "2023-08-20",
+      "topic": "urgency",
+      "n_articles": 10.0,
+      "sentiment": 0.4503
+    },
+    {
+      "date": "2023-08-27",
+      "topic": "urgency",
+      "n_articles": 13.0,
+      "sentiment": 0.0818
+    },
+    {
+      "date": "2023-09-03",
+      "topic": "urgency",
+      "n_articles": 12.0,
+      "sentiment": 0.1784
+    },
+    {
+      "date": "2023-09-10",
+      "topic": "urgency",
+      "n_articles": 16.0,
+      "sentiment": 0.6145
+    },
+    {
+      "date": "2023-09-17",
+      "topic": "urgency",
+      "n_articles": 11.0,
+      "sentiment": 0.4437
+    },
+    {
+      "date": "2023-09-24",
+      "topic": "urgency",
+      "n_articles": 12.0,
+      "sentiment": 0.6501
+    },
+    {
+      "date": "2023-10-01",
+      "topic": "urgency",
+      "n_articles": 10.0,
+      "sentiment": 0.4855
+    },
+    {
+      "date": "2023-10-08",
+      "topic": "urgency",
+      "n_articles": 8.0,
+      "sentiment": 0.7311
+    },
+    {
+      "date": "2023-10-15",
+      "topic": "urgency",
+      "n_articles": 7.0,
+      "sentiment": 0.3024
+    },
+    {
+      "date": "2023-10-22",
+      "topic": "urgency",
+      "n_articles": 6.0,
+      "sentiment": 0.0324
+    },
+    {
+      "date": "2023-10-29",
+      "topic": "urgency",
+      "n_articles": 6.0,
+      "sentiment": 0.7282
+    },
+    {
+      "date": "2023-11-05",
+      "topic": "urgency",
+      "n_articles": 6.0,
+      "sentiment": 0.0365
+    },
+    {
+      "date": "2023-11-12",
+      "topic": "urgency",
+      "n_articles": 12.0,
+      "sentiment": 0.5332
+    },
+    {
+      "date": "2023-11-19",
+      "topic": "urgency",
+      "n_articles": 15.0,
+      "sentiment": 0.0314
+    },
+    {
+      "date": "2023-11-26",
+      "topic": "urgency",
+      "n_articles": 7.0,
+      "sentiment": 0.2365
+    },
+    {
+      "date": "2023-12-03",
+      "topic": "urgency",
+      "n_articles": 12.0,
+      "sentiment": 0.2502
+    },
+    {
+      "date": "2023-12-10",
+      "topic": "urgency",
+      "n_articles": 10.0,
+      "sentiment": 0.2780
+    },
+    {
+      "date": "2023-12-17",
+      "topic": "urgency",
+      "n_articles": null,
+      "sentiment": 0.8061
+    },
+    {
+      "date": "2023-12-24",
+      "topic": "urgency",
+      "n_articles": 6.0,
+      "sentiment": 0.3150
+    },
+    {
+      "date": "2023-12-31",
+      "topic": "urgency",
+      "n_articles": 6.0,
+      "sentiment": 0.6758
+    },
+    {
+      "date": "2024-01-07",
+      "topic": "urgency",
+      "n_articles": 7.0,
+      "sentiment": 0.3055
+    },
+    {
+      "date": "2024-01-14",
+      "topic": "urgency",
+      "n_articles": 6.0,
+      "sentiment": 0.4088
+    },
+    {
+      "date": "2024-01-21",
+      "topic": "urgency",
+      "n_articles": 8.0,
+      "sentiment": 0.5530
+    },
+    {
+      "date": "2024-01-28",
+      "topic": "urgency",
+      "n_articles": 9.0,
+      "sentiment": 0.8563
+    },
+    {
+      "date": "2024-02-04",
+      "topic": "urgency",
+      "n_articles": 12.0,
+      "sentiment": 0.7408
+    },
+    {
+      "date": "2024-02-11",
+      "topic": "urgency",
+      "n_articles": 7.0,
+      "sentiment": 0.8046
+    },
+    {
+      "date": "2024-02-18",
+      "topic": "urgency",
+      "n_articles": 8.0,
+      "sentiment": 0.3746
+    },
+    {
+      "date": "2024-02-25",
+      "topic": "urgency",
+      "n_articles": 7.0,
+      "sentiment": 0.0317
+    },
+    {
+      "date": "2024-03-03",
+      "topic": "urgency",
+      "n_articles": null,
+      "sentiment": 0.6154
+    },
+    {
+      "date": "2024-03-10",
+      "topic": "urgency",
+      "n_articles": 6.0,
+      "sentiment": 0.2103
+    },
+    {
+      "date": "2024-03-17",
+      "topic": "urgency",
+      "n_articles": 12.0,
+      "sentiment": 0.0777
+    },
+    {
+      "date": "2024-03-24",
+      "topic": "urgency",
+      "n_articles": 6.0,
+      "sentiment": 0.3087
+    },
+    {
+      "date": "2024-03-31",
+      "topic": "urgency",
+      "n_articles": 5.0,
+      "sentiment": 0.2823
+    },
+    {
+      "date": "2024-04-07",
+      "topic": "urgency",
+      "n_articles": 9.0,
+      "sentiment": 0.3415
+    },
+    {
+      "date": "2024-04-14",
+      "topic": "urgency",
+      "n_articles": 12.0,
+      "sentiment": 0.0366
+    },
+    {
+      "date": "2024-04-21",
+      "topic": "urgency",
+      "n_articles": 10.0,
+      "sentiment": 0.7378
+    },
+    {
+      "date": "2024-04-28",
+      "topic": "urgency",
+      "n_articles": 7.0,
+      "sentiment": 0.8672
+    },
+    {
+      "date": "2024-05-05",
+      "topic": "urgency",
+      "n_articles": 4.0,
+      "sentiment": 0.8438
+    },
+    {
+      "date": "2024-05-12",
+      "topic": "urgency",
+      "n_articles": 7.0,
+      "sentiment": 0.3581
+    },
+    {
+      "date": "2024-05-19",
+      "topic": "urgency",
+      "n_articles": 7.0,
+      "sentiment": 0.5575
+    }
+  ]
+}

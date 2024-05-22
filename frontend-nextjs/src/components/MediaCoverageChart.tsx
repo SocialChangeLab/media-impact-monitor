@@ -1,5 +1,5 @@
 "use client";
-import type { MediaSentimentType } from "@/utility/mediaSentimentUtil";
+import type { MediaCoverageType } from "@/utility/mediaCoverageUtil";
 import useTimeIntervals, {
 	isInSameAggregationUnit,
 } from "@/utility/useTimeIntervals";
@@ -11,10 +11,10 @@ import useAggregationUnit, {
 	formatDateByAggregationUnit,
 } from "./EventsTimeline/useAggregationUnit";
 
-function MediaSentimentChart({
+function MediaCoverageChart({
 	data,
 }: {
-	data: MediaSentimentType[];
+	data: MediaCoverageType[];
 }) {
 	const [parentRef, size] = useElementSize();
 	const aggregationUnit = useAggregationUnit(size.width);
@@ -55,7 +55,12 @@ function MediaSentimentChart({
 					{
 						date: d,
 						dateFormatted: formatDateByAggregationUnit(d, aggregationUnit),
-					} as Record<string, string | number | Date>,
+					} as {
+						date: Date;
+						dateFormatted: string;
+					} & {
+						[key: string]: number;
+					},
 				);
 			}),
 		};
@@ -148,4 +153,4 @@ function MediaSentimentChart({
 	);
 }
 
-export default MediaSentimentChart;
+export default MediaCoverageChart;

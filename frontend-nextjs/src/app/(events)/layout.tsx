@@ -3,16 +3,16 @@ import type { ReactNode } from "react";
 export default function EventsPageLayout({
 	timeline,
 	children,
-	mediaSentiment,
+	mediaCoverage,
 }: {
 	timeline: ReactNode;
-	mediaSentiment: ReactNode;
+	mediaCoverage: ReactNode;
 	children: ReactNode;
 }) {
 	return (
 		<>
 			{timeline}
-			{mediaSentiment}
+			{mediaCoverage}
 			{children}
 		</>
 	);

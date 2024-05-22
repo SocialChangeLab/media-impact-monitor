@@ -3,7 +3,7 @@ import ComponentError from "@/components/ComponentError";
 import { cn } from "@/utility/classNames";
 import { parseErrorMessage } from "@/utility/errorHandlingUtil";
 
-function MediaSentimentRouteError({
+function MediaCoverageRouteError({
 	error,
 	reset,
 }: {
@@ -27,4 +27,4 @@ function MediaSentimentRouteError({
 	);
 }
 
-export default MediaSentimentRouteError;
+export default MediaCoverageRouteError;

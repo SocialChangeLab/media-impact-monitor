@@ -1,7 +1,7 @@
 import SectionHeadlineWithExplanation from "@/components/SectionHeadlineWithExplanation";
 import type { ReactNode } from "react";
 
-function MediaSentimentLayout({ children }: { children: ReactNode }) {
+function MediaCoverageLayout({ children }: { children: ReactNode }) {
 	return (
 		<SectionHeadlineWithExplanation
 			headline="Coverage of climate change in German newspapers"
@@ -13,4 +13,4 @@ function MediaSentimentLayout({ children }: { children: ReactNode }) {
 	);
 }
 
-export default MediaSentimentLayout;
+export default MediaCoverageLayout;

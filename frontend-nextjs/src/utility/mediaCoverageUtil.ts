@@ -3,24 +3,24 @@ import { ZodError, z } from "zod";
 import { dateSortCompare, isValidISODateString } from "./dateUtil";
 import { fetchApiData } from "./fetchUtil";
 
-const mediaSentimentZodSchema = z.object({
+const mediaCoverageZodSchema = z.object({
 	date: z.string(),
 	topic: z.string(),
 	n_articles: z.number().nullable(),
 	sentiment: z.number(),
 });
-export type MediaSentimentType = z.infer<typeof mediaSentimentZodSchema>;
+export type MediaCoverageType = z.infer<typeof mediaCoverageZodSchema>;
 
-const mediaDataTypeZodSchema = z.array(mediaSentimentZodSchema);
+const mediaDataTypeZodSchema = z.array(mediaCoverageZodSchema);
 export type MediaDataType = z.infer<typeof mediaDataTypeZodSchema>;
 
-const mediaSentimentDataResponseTypeZodSchema = z.object({
+const mediaCoverageDataResponseTypeZodSchema = z.object({
 	data: mediaDataTypeZodSchema,
 	isPending: z.boolean().optional(),
 	error: z.union([z.string(), z.null()]).optional(),
 });
 
-export async function getMediaSentimentData(params?: {
+export async function getMediaCoverageData(params?: {
 	from?: Date;
 	to?: Date;
 }): Promise<MediaDataType> {
@@ -38,16 +38,16 @@ export async function getMediaSentimentData(params?: {
 				: {}),
 		},
 		fallbackFilePathContent: (
-			await import("../data/fallbackMediaSentiment.json")
+			await import("../data/fallbackMediaCoverage.json")
 		).default,
 	});
 	return validateGetDataResponse(json);
 }
 
-function validateGetDataResponse(response: unknown): MediaSentimentType[] {
+function validateGetDataResponse(response: unknown): MediaCoverageType[] {
 	try {
 		const parsedResponse =
-			mediaSentimentDataResponseTypeZodSchema.parse(response);
+			mediaCoverageDataResponseTypeZodSchema.parse(response);
 		const sortedMedia = parsedResponse.data
 			.filter((x) => isValidISODateString(x.date))
 			.map((x) => ({

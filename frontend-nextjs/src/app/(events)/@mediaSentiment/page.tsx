@@ -1,3 +1,4 @@
+import MediaSentimentChart from "@/components/MediaSentimentChart";
 import { getMediaSentimentData } from "@/utility/mediaSentimentUtil";
 import { parseSearchParamsFilters } from "@/utility/searchParamsUtil";
 
@@ -11,11 +12,7 @@ async function MediaSentimentRoute({
 		from && to ? { from, to } : undefined,
 	);
 
-	return (
-		<code>
-			<pre>{JSON.stringify(data, null, 2)}</pre>
-		</code>
-	);
+	return <MediaSentimentChart data={data} />;
 }
 
 export default MediaSentimentRoute;

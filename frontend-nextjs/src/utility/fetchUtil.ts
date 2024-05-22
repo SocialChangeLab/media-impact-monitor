@@ -12,15 +12,24 @@ export async function fetchApiData({
 		throw new Error("NEXT_PUBLIC_API_URL env variable is not defined");
 	let json: unknown = { query: {}, data: [] };
 	try {
-		const response = await fetch(`${apiUrl}/${endpoint}`, {
-			cache: "no-store",
-			method: "POST",
-			headers: {
-				"Content-Type": "application/json",
-				"Cache-Control": "no-cache",
-			},
-			body: JSON.stringify(body),
-		});
+		const response = await Promise.race([
+			fetch(`${apiUrl}/${endpoint}`, {
+				cache: "no-store",
+				method: "POST",
+				headers: {
+					"Content-Type": "application/json",
+					"Cache-Control": "no-cache",
+				},
+				body: JSON.stringify(body),
+			}),
+			new Promise<Error>((resolve) =>
+				setTimeout(() => resolve(new Error("ApiFetchTimeoutError")), 2000),
+			),
+		]);
+
+		if (response instanceof Error) {
+			throw new Error(`ApiFetchTimeoutError`);
+		}
 
 		if (!response.ok) {
 			const message = `An error has occured: ${response.statusText} ${response.status}`;

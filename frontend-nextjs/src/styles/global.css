@@ -46,7 +46,8 @@
 		--sentiment-negative: #E69F00;
 		--sentiment-neutral: #D55E00;
 
-		--protest-timeline-height: calc(100vh - 22rem)
+		--protest-timeline-height: calc(100vh - 22rem);
+		--media-sentiment-chart-height: max(40vh, 400px);
 	}
 
 	:root[data-theme='dark'] {

@@ -34,7 +34,7 @@ events = events.map(a => ({
   organizer: a.organizers[0],
   organizers_text: a.organizers.join(', ')
 }))
-display(Inputs.table(events))
+// display(Inputs.table(events))
 ```
 
 ```js

@@ -10,6 +10,7 @@ from media_impact_monitor.util.env import MEDIACLOUD_API_TOKEN
 from media_impact_monitor.util.parallel import parallel_tqdm
 
 search = mediacloud.api.SearchApi(MEDIACLOUD_API_TOKEN)
+search.TIMEOUT_SECS = 10 * 60
 directory = mediacloud.api.DirectoryApi(MEDIACLOUD_API_TOKEN)
 
 

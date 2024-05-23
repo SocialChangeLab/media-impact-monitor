@@ -6,10 +6,10 @@ import {
 import { cn } from "@/utility/classNames";
 import type { EventType, OrganisationType } from "@/utility/eventsUtil";
 import { format } from "date-fns";
-import { type ReactNode, memo, useMemo } from "react";
+import { memo, useMemo, type ReactNode } from "react";
 import {
-	type AggregationUnitType,
 	formatDateByAggregationUnit,
+	type AggregationUnitType,
 } from "./useAggregationUnit";
 
 function AggregatedEventsTooltip({
@@ -87,7 +87,6 @@ function AggregatedEventsTooltip({
 							aria-hidden="true"
 						/>
 						<span className="truncate max-w-64">{org.name}</span>
-						<span className="text-black/50 text-xs">({org.count})</span>
 					</div>
 				))}
 			</TooltipContent>

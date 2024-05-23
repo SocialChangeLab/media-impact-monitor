@@ -15,6 +15,7 @@ from starlette.middleware.cors import CORSMiddleware
 from starlette.responses import RedirectResponse
 from uvicorn.logging import AccessFormatter
 
+from media_impact_monitor.cron import setup_cron
 from media_impact_monitor.events import get_events
 from media_impact_monitor.impact import get_impact
 from media_impact_monitor.trend import get_trend
@@ -45,15 +46,18 @@ metadata = dict(
 )
 
 
-# setup logging to also include datetime
+# this is run only once at startup, rather than for every request
 @asynccontextmanager
 async def app_lifespan(app: FastAPI):
+    # setup logging to also include datetime
     logger = logging.getLogger("uvicorn.access")
     if logger.handlers:
         console_formatter = AccessFormatter(
             "{asctime} {levelprefix} {message}", style="{", use_colors=True
         )
         logger.handlers[0].setFormatter(console_formatter)
+    # setup cron to regularly fills the cache
+    setup_cron()
     yield
 
 

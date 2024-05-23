@@ -1,6 +1,7 @@
 import { cn } from "@/utility/classNames";
 import type { EventType, OrganisationType } from "@/utility/eventsUtil";
 import Link from "next/link";
+import { memo } from "react";
 
 type EventBubbleLinkProps = {
 	event: EventType;
@@ -62,4 +63,4 @@ function getCSSStyleGradient(colors: string[]) {
 		.join(", ")})`;
 }
 
-export default EventBubbleLink;
+export default memo(EventBubbleLink);

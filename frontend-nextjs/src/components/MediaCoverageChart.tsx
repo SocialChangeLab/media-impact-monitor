@@ -231,19 +231,6 @@ function MediaCoverageChart({
 									text: "MediaCloud",
 									url: "https://mediacloud.org/",
 								},
-								{
-									text: "MediaCloud",
-									url: "https://mediacloud.org/",
-								},
-							],
-						},
-						{
-							label: "Media data",
-							links: [
-								{
-									text: "MediaCloud",
-									url: "https://mediacloud.org/",
-								},
 							],
 						},
 					]}

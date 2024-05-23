@@ -7,7 +7,7 @@ import { cn } from "@/utility/classNames";
 import type { EventType, OrganisationType } from "@/utility/eventsUtil";
 import { format } from "date-fns";
 import { Users } from "lucide-react";
-import { type PropsWithChildren, useMemo } from "react";
+import { type PropsWithChildren, memo, useMemo } from "react";
 
 function EventTooltip({
 	event,
@@ -43,7 +43,7 @@ function EventTooltip({
 	);
 
 	return (
-		<Tooltip>
+		<Tooltip delayDuration={50}>
 			<TooltipTrigger>{children}</TooltipTrigger>
 			<TooltipContent>
 				<ul
@@ -84,4 +84,4 @@ function EventTooltip({
 	);
 }
 
-export default EventTooltip;
+export default memo(EventTooltip);

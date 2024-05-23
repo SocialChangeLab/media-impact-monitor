@@ -1,5 +1,5 @@
 import { cn } from "@/utility/classNames";
-import { useMemo } from "react";
+import { memo, useMemo } from "react";
 import {
 	type AggregationUnitType,
 	formatDateByAggregationUnit,
@@ -82,4 +82,4 @@ function getIdxsWithTicks(columnCount: number, width: number) {
 	];
 }
 
-export default EventsTimelineAxis;
+export default memo(EventsTimelineAxis);

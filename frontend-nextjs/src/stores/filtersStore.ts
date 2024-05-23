@@ -6,8 +6,8 @@ import {
 	persist,
 } from "zustand/middleware";
 
-const defaultTo = subDays(new Date(), 1);
-const defaultFrom = subDays(new Date(), 31);
+const defaultTo = startOfDay(subDays(new Date(), 1));
+const defaultFrom = startOfDay(subDays(new Date(), 31));
 
 export type FiltersState = {
 	from: Date;

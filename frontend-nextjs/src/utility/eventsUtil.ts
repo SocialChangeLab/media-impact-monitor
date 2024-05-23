@@ -1,4 +1,4 @@
-import { format, parse } from "date-fns";
+import { format, parse, startOfDay } from "date-fns";
 import { ZodError, z } from "zod";
 import { dateSortCompare, isValidISODateString } from "./dateUtil";
 import { fetchApiData } from "./fetchUtil";
@@ -73,7 +73,7 @@ function validateGetDataResponse(response: unknown): EventType[] {
 			.filter((x) => isValidISODateString(x.date))
 			.map((x) => ({
 				...x,
-				date: parse(x.date, "yyyy-MM-dd", new Date()).toISOString(),
+				date: parse(x.date, "yyyy-MM-dd", startOfDay(new Date())).toISOString(),
 				organizers: x.organizers ?? [],
 			}))
 			.sort((a, b) => dateSortCompare(a.date, b.date));

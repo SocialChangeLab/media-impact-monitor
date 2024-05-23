@@ -1,6 +1,6 @@
 import { cn } from "@/utility/classNames";
 import type { ScalePower } from "d3-scale";
-import { Fragment, useMemo } from "react";
+import { Fragment, memo, useMemo } from "react";
 import type { AggregationUnitType } from "./useAggregationUnit";
 
 function EventsTimelineSizeLegend({
@@ -47,7 +47,7 @@ function EventsTimelineSizeLegend({
 	);
 }
 
-export default EventsTimelineSizeLegend;
+export default memo(EventsTimelineSizeLegend);
 
 function getLegendMinNumber(maxNumber: number) {
 	if (maxNumber < 1000) return 10;

@@ -1,7 +1,7 @@
 "use client";
 import { slugifyCssClass } from "@/utility/cssSlugify";
 import type { OrganisationType } from "@/utility/eventsUtil";
-import { type PropsWithChildren, forwardRef } from "react";
+import { type PropsWithChildren, forwardRef, memo } from "react";
 
 const EventsTimelineWrapper = forwardRef<
 	HTMLDivElement,
@@ -39,4 +39,4 @@ const EventsTimelineWrapper = forwardRef<
 
 EventsTimelineWrapper.displayName = "EventsTimelineWrapper";
 
-export default EventsTimelineWrapper;
+export default memo(EventsTimelineWrapper);

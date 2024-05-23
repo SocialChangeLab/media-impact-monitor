@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { cn } from "@/utility/classNames";
 import { useAnimationFrame } from "framer-motion";
 import { ArrowDown, ArrowLeft, ArrowRight, ArrowUp, Mouse } from "lucide-react";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { memo, useCallback, useEffect, useRef, useState } from "react";
 
 function EventsTimelineScrollWrapper({
 	children,
@@ -146,4 +146,4 @@ function EventsTimelineScrollWrapper({
 	);
 }
 
-export default EventsTimelineScrollWrapper;
+export default memo(EventsTimelineScrollWrapper);

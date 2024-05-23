@@ -1,37 +1,29 @@
 "use client";
-import type { MediaCoverageType } from "@/utility/mediaCoverageUtil";
+import type { MediaSentimentType } from "@/utility/mediaSentimentUtil";
 import useTimeIntervals, {
 	isInSameAggregationUnit,
 } from "@/utility/useTimeIntervals";
 import useElementSize from "@custom-react-hooks/use-element-size";
 import { memo, useCallback, useMemo } from "react";
-import {
-	CartesianGrid,
-	Line,
-	LineChart,
-	Tooltip,
-	XAxis,
-	YAxis,
-} from "recharts";
+import { Bar, BarChart, CartesianGrid, Tooltip, XAxis, YAxis } from "recharts";
 
 import useAggregationUnit, {
 	formatDateByAggregationUnit,
 } from "@/components/EventsTimeline/useAggregationUnit";
 import { slugifyCssClass } from "@/utility/cssSlugify";
 import { parseErrorMessage } from "@/utility/errorHandlingUtil";
-import useMediaCoverageData from "@/utility/useKeywords";
-import { getIdxsWithTicks } from "../EventsTimeline/EventsTimelineAxis";
-import MediaCoverageChartEmpty from "./MediaCoverageChartEmpty";
-import MediaCoverageChartError from "./MediaCoverageChartError";
-import MediaCoverageChartLegend from "./MediaCoverageChartLegend";
-import MediaCoverageChartLoading from "./MediaCoverageChartLoading";
-import MediaCoverageChartTooltip from "./MediaCoverageChartTooltip";
+import useMediaSentimentData from "@/utility/useMediaSentiment";
+import MediaSentimentChartEmpty from "./MediaSentimentChartEmpty";
+import MediaSentimentChartError from "./MediaSentimentChartError";
+import MediaSentimentChartLegend from "./MediaSentimentChartLegend";
+import MediaSentimentChartLoading from "./MediaSentimentChartLoading";
+import MediaSentimentChartTooltip from "./MediaSentimentChartTooltip";
 
-const MediaCoverageChart = memo(
+const MediaSentimentChart = memo(
 	({
 		data,
 	}: {
-		data: MediaCoverageType[];
+		data: MediaSentimentType[];
 	}) => {
 		const [parentRef, size] = useElementSize();
 		const aggregationUnit = useAggregationUnit(size.width);
@@ -79,9 +71,9 @@ const MediaCoverageChart = memo(
 				);
 			});
 			return {
-				topics: allTopics.sort().map((topic, idx) => ({
+				topics: allTopics.sort().map((topic) => ({
 					topic,
-					color: `var(--categorical-color-${idx + 1})`,
+					color: `var(--sentiment-${topic})`,
 					sum: filteredData.reduce((acc, day) => acc + day[topic], 0),
 				})),
 				filteredData,
@@ -90,22 +82,17 @@ const MediaCoverageChart = memo(
 
 		const reversedTopics = useMemo(() => [...topics].reverse(), [topics]);
 
-		const idxsWithTicks = useMemo(
-			() => getIdxsWithTicks(intervals.length, size.width),
-			[intervals.length, size.width],
-		);
-
 		return (
-			<div className="media-coverage-chart">
+			<div className="media-sentiment-chart">
 				<style jsx global>{`
-				.media-coverage-chart .recharts-cartesian-grid-vertical {
+				.media-sentiment-chart .recharts-cartesian-grid-vertical {
 					transition: opacity 150ms cubic-bezier(0.4, 0, 0.2, 1);
 					opacity: 0 !important;
 				}
-				.media-coverage-chart svg:hover .recharts-cartesian-grid-vertical {
+				.media-sentiment-chart svg:hover .recharts-cartesian-grid-vertical {
 					opacity: 1 !important;
 				}
-				.media-coverage-chart:has(.legend-topic:hover) .media-coverage-item {
+				.media-sentiment-chart:has(.legend-topic:hover) .media-sentiment-item {
 					opacity: 0.2 !important;
 					filter: grayscale(100%) !important;
 				}
@@ -113,8 +100,8 @@ const MediaCoverageChart = memo(
 					.map(({ topic }) => {
 						const slug = slugifyCssClass(topic);
 						return `
-							.media-coverage-chart:has(.legend-topic-${slug}:hover)
-								.media-coverage-item-topic-${slug} {
+							.media-sentiment-chart:has(.legend-topic-${slug}:hover)
+								.media-sentiment-item-topic-${slug} {
 									opacity: 1 !important;
 									filter: grayscale(0%) !important;
 								}
@@ -123,10 +110,10 @@ const MediaCoverageChart = memo(
 					.join("")}
 			`}</style>
 				<div
-					className="w-full h-[var(--media-coverage-chart-height)] bg-grayUltraLight"
+					className="w-full h-[var(--media-sentiment-chart-height)] bg-grayUltraLight"
 					ref={parentRef}
 				>
-					<LineChart
+					<BarChart
 						width={size.width}
 						height={size.height}
 						data={filteredData}
@@ -163,12 +150,12 @@ const MediaCoverageChart = memo(
 						/>
 						<Tooltip
 							formatter={(value) => `${value} articles`}
-							cursor={{ stroke: "var(--grayMed)" }}
+							cursor={{ fill: "var(--bgOverlay)", fillOpacity: 0.5 }}
 							content={({ payload, active }) => {
 								const item = payload?.at(0)?.payload;
 								if (!active || !payload || !item) return null;
 								return (
-									<MediaCoverageChartTooltip
+									<MediaSentimentChartTooltip
 										topics={reversedTopics}
 										aggregationUnit={aggregationUnit}
 										item={item}
@@ -176,40 +163,40 @@ const MediaCoverageChart = memo(
 								);
 							}}
 						/>
-						{topics.map(({ topic }, idx) => (
-							<Line
+						{topics.map(({ topic, color }, idx) => (
+							<Bar
 								key={topic}
 								type="monotone"
+								stackId="1"
 								dataKey={topic}
-								stroke={`var(--categorical-color-${idx + 1})`}
-								fill={`var(--categorical-color-${idx + 1})`}
-								className={`media-coverage-item media-coverage-item-topic-${slugifyCssClass(
+								stroke={color}
+								fill={color}
+								className={`media-sentiment-item media-sentiment-item-topic-${slugifyCssClass(
 									topic,
 								)} transition-all`}
-								activeDot={{ r: 6, stroke: "var(--grayUltraLight)" }}
 							/>
 						))}
-					</LineChart>
+					</BarChart>
 				</div>
-				<MediaCoverageChartLegend topics={reversedTopics} />
+				<MediaSentimentChartLegend topics={reversedTopics} />
 			</div>
 		);
 	},
 );
 
-export default function MediaCoverageChartWithData({
+export default function MediaSentimentChartWithData({
 	data: initialData,
 }: {
-	data: MediaCoverageType[];
+	data: MediaSentimentType[];
 }) {
-	const { data, isPending, error } = useMediaCoverageData(initialData);
+	const { data, isPending, error } = useMediaSentimentData(initialData);
 	if (error)
 		return (
-			<MediaCoverageChartError
+			<MediaSentimentChartError
 				{...parseErrorMessage(error, "media sentiment data")}
 			/>
 		);
-	if (isPending) return <MediaCoverageChartLoading />;
-	if (!data) return <MediaCoverageChartEmpty />;
-	return <MediaCoverageChart data={data} />;
+	if (isPending) return <MediaSentimentChartLoading />;
+	if (!data) return <MediaSentimentChartEmpty />;
+	return <MediaSentimentChart data={data} />;
 }

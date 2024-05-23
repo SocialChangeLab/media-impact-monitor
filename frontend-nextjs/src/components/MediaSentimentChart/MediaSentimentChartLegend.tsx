@@ -34,7 +34,6 @@ function MediaCoverageChartLegend({
 								<span
 									className={cn(
 										"size-4 shadow-[inset_0_0_0_1px_rgba(0,0,0,0.1)] bg-grayDark",
-										"rounded-full",
 									)}
 									style={{ backgroundColor: color }}
 									aria-hidden="true"

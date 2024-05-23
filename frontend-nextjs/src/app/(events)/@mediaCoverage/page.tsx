@@ -1,4 +1,5 @@
 import MediaCoverageChart from "@/components/MediaCoverageChart";
+import SectionHeadlineWithExplanation from "@/components/SectionHeadlineWithExplanation";
 import { getMediaCoverageData } from "@/utility/mediaCoverageUtil";
 import { parseSearchParamsFilters } from "@/utility/searchParamsUtil";
 
@@ -12,7 +13,15 @@ async function MediaCoverageRoute({
 		from && to ? { from, to } : undefined,
 	);
 
-	return <MediaCoverageChart data={data} />;
+	return (
+		<SectionHeadlineWithExplanation
+			headline="Coverage of climate change in German newspapers"
+			description="See the media coverage of climate-related topics in germany over time"
+			help="See the media coverage of climate-related topics in germany over time"
+		>
+			<MediaCoverageChart data={data} />
+		</SectionHeadlineWithExplanation>
+	);
 }
 
 export default MediaCoverageRoute;

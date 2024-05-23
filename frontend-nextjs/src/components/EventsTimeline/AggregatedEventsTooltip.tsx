@@ -6,11 +6,10 @@ import {
 import { cn } from "@/utility/classNames";
 import type { EventType, OrganisationType } from "@/utility/eventsUtil";
 import { format } from "date-fns";
-import { Users } from "lucide-react";
-import { type ReactNode, useMemo } from "react";
+import { useMemo, type ReactNode } from "react";
 import {
-	type AggregationUnitType,
 	formatDateByAggregationUnit,
+	type AggregationUnitType,
 } from "./useAggregationUnit";
 
 function AggregatedEventsTooltip({
@@ -51,18 +50,6 @@ function AggregatedEventsTooltip({
 		<Tooltip>
 			<TooltipTrigger>{children}</TooltipTrigger>
 			<TooltipContent>
-				<ul
-					className={cn(
-						"flex justify-between items-center border-b py-2",
-						"mb-2 border-black/10 gap-6",
-					)}
-				>
-					<li className="flex gap-4 items-center">{formattedDate}</li>
-					<li className={cn("flex gap-2 items-center")}>
-						<Users size={16} className={cn("text-black/60")} />
-						<span>{sumSize?.toLocaleString("en-GB") || "?"}</span>
-					</li>
-				</ul>
 				<p className="text-base pt-2 pb-3 max-w-80">
 					The {aggregationUnit} of{" "}
 					<strong>

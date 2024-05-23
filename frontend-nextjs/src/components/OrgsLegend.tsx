@@ -3,9 +3,9 @@ import { cn } from "@/utility/classNames";
 import { slugifyCssClass } from "@/utility/cssSlugify";
 import type { OrganisationType } from "@/utility/eventsUtil";
 import { useMemo } from "react";
-import { Portal, Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip";
+import { Portal, Tooltip, TooltipContent, TooltipTrigger } from "./ui/tooltip";
 
-function EventsTimelineOrgsLegend({
+function OrgsLegend({
 	organisations,
 }: {
 	organisations: OrganisationType[];
@@ -44,14 +44,14 @@ function EventsTimelineOrgsLegend({
 	return (
 		<div className="flex flex-col gap-2">
 			<h5 className="font-bold">Color</h5>
-			<ul className="grid grid-cols-[repeat(auto-fill,minmax(min(20rem,100%),1fr));] gap-x-6 relative z-20">
+			<ul className="grid grid-cols-[repeat(auto-fill,minmax(min(15rem,100%),1fr))] gap-x-6 relative z-20">
 				{allOrgs.map((org) => (
 					<Tooltip key={org.name}>
 						<TooltipTrigger asChild>
 							<li
 								className={cn(
 									"grid grid-cols-[auto_1fr_auto] gap-x-2 py-2",
-									"items-center border-t border-black/5",
+									"items-center",
 									`legend-org legend-org-${slugifyCssClass(org.name)}`,
 									`cursor-pointer`,
 								)}
@@ -63,12 +63,11 @@ function EventsTimelineOrgsLegend({
 									style={{ backgroundColor: org.color }}
 									aria-hidden="true"
 								/>
-								<span className="truncate">
-									{org.name}
-									{!org.isMain && ` (${org.count.toLocaleString("en-GB")})`}
-								</span>
-								<span className="font-mono text-xs">
-									{org.count.toLocaleString("en-GB")}
+								<span className="grid grid-cols-[1fr_auto] gap-4">
+									<div className="truncate">{org.name}</div>
+									<span className="font-mono text-xs text-grayDark">
+										({org.count.toLocaleString("en-GB")})
+									</span>
 								</span>
 							</li>
 						</TooltipTrigger>
@@ -99,4 +98,4 @@ function EventsTimelineOrgsLegend({
 	);
 }
 
-export default EventsTimelineOrgsLegend;
+export default OrgsLegend;

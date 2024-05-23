@@ -7,7 +7,6 @@ const mediaCoverageZodSchema = z.object({
 	date: z.string(),
 	topic: z.string(),
 	n_articles: z.number().nullable(),
-	sentiment: z.number(),
 });
 export type MediaCoverageType = z.infer<typeof mediaCoverageZodSchema>;
 

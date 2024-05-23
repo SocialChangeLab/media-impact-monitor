@@ -12,8 +12,10 @@ import useTimeScale from "@/utility/useTimeScale";
 import useElementSize from "@custom-react-hooks/use-element-size";
 import { scalePow } from "d3-scale";
 import { startOfDay } from "date-fns";
-import { type ReactNode, forwardRef, useCallback, useMemo } from "react";
+import { forwardRef, useCallback, useMemo, type ReactNode } from "react";
+import DataCreditLegend from "../DataCreditLegend";
 import HeadlineWithLine from "../HeadlineWithLine";
+import OrgsLegend from "../OrgsLegend";
 import AggregatedEventsTooltip from "./AggregatedEventsTooltip";
 import EmptyEventsTimeline from "./EmptyEventsTimeline";
 import EventBubbleLink, { AggregatedEventsBubble } from "./EventBubbleLink";
@@ -21,7 +23,6 @@ import EventTooltip from "./EventTooltip";
 import EventsTimelineWrapper from "./EventsTimelinWrapper";
 import EventsTimelineAxis from "./EventsTimelineAxis";
 import EventsTimelineChartWrapper from "./EventsTimelineChartWrapper";
-import EventsTimelineOrgsLegend from "./EventsTimelineOrgsLegend";
 import EventsTimelineScrollWrapper from "./EventsTimelineScrollWrapper";
 import EventsTimelineSizeLegend from "./EventsTimelineSizeLegend";
 import config from "./eventsTimelineConfig";
@@ -158,15 +159,30 @@ function EventsTimeline({
 					width={size.width}
 				/>
 			</EventsTimelineScrollWrapper>
-			<div className="mt-6 flex flex-col gap-4 w-screen px-6 -ml-6">
-				<HeadlineWithLine>Legend</HeadlineWithLine>
-				<div className="grid gap-8 md:gap-12 md:grid-cols-[auto_1fr]">
-					<EventsTimelineSizeLegend
-						sizeScale={sizeScale}
-						aggragationUnit={aggregationUnit}
-					/>
-					<EventsTimelineOrgsLegend organisations={organisations} />
+			<div className="pt-10 flex gap-[max(2rem,4vmax)] sm:grid sm:grid-cols-[1fr_auto]">
+				<div className="flex flex-col gap-4">
+					<HeadlineWithLine>Legend</HeadlineWithLine>
+					<div className="grid gap-8 md:gap-12 md:grid-cols-[auto_1fr]">
+						<EventsTimelineSizeLegend
+							sizeScale={sizeScale}
+							aggragationUnit={aggregationUnit}
+						/>
+						<OrgsLegend organisations={organisations} />
+					</div>
 				</div>
+				<DataCreditLegend
+					sources={[
+						{
+							label: "Protest data",
+							links: [
+								{
+									text: "Armed Conflict Location & Event Data Project (ACLED)",
+									url: "https://acleddata.com",
+								},
+							],
+						},
+					]}
+				/>
 			</div>
 		</EventsTimelineWrapper>
 	);

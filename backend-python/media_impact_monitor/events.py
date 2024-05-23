@@ -17,7 +17,7 @@ from media_impact_monitor.types_ import EventSearch
 from media_impact_monitor.util.cache import cache
 
 
-# @cache
+@cache
 def get_events(q: EventSearch) -> pd.DataFrame:
     match q.source:
         case "acled":

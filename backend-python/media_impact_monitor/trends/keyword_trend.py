@@ -11,6 +11,7 @@ from media_impact_monitor.util.cache import cache
 from media_impact_monitor.util.paths import src
 
 
+@cache
 def get_keyword_trend(q: TrendSearch):
     assert q.trend_type == "keywords"
     assert q.topic == "climate_change", "Only climate_change is supported."

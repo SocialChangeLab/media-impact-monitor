@@ -21,5 +21,5 @@ export const queryApi = (endpoint, query) =>
         body: JSON.stringify(query)
     })
         .then(res => res.json())
-        .then(data => data['data'])
+        .then(data => data.data)
         .catch(err => console.warn(err))

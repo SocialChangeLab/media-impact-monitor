@@ -40,6 +40,7 @@ dash-bootstrap-components = "^1.6.0"
 number-parser = "^0.3.2"
 litellm = "^1.37.16"
 mediacloud-metadata = "^1.0.2"
+apscheduler = "^3.10.4"
 
 [tool.poetry.group.dev.dependencies]
 pytest = "^8.0.2"

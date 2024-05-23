@@ -3,8 +3,29 @@
 ```js
 import { embed, queryApi } from './components/util.js'
 
+const protest_sources = ['acled', 'press_releases']
+const protest_source = await view(
+  Inputs.select(protest_sources, {
+    value: 'acled',
+    label: 'protest data source'
+  })
+)
+const media_sources = {
+  news_online: 'coverage of climate in german online news',
+  news_print: 'coverage of climate in german print news',
+  web_google: 'google search volume in germany'
+}
+const media_source = view(
+  Inputs.select(Object.keys(media_sources), {
+    value: 'news_online',
+    label: 'media data source'
+  })
+)
+```
+
+```js
 let events = await queryApi('events', {
-  source: 'acled',
+  source: protest_source,
   topic: 'climate_change'
 })
 
@@ -14,20 +35,6 @@ events = events.map(a => ({
   organizers_text: a.organizers.join(', ')
 }))
 // display(Inputs.table(events))
-```
-
-```js
-const media_sources = {
-  news_online: 'coverage of climate in german online news',
-  news_print: 'coverage of climate in german print news',
-  web_google: 'google search volume in germany'
-}
-const media_source = view(
-  Inputs.select(Object.keys(media_sources), {
-    value: 'news_online',
-    label: 'Media data source'
-  })
-)
 ```
 
 ```js
@@ -121,7 +128,7 @@ const spec = {
       data: { values: events },
       width: 600,
       height: 300,
-      title: 'climate protest events in germany',
+      title: `climate protest events in germany (${protest_source})`,
       mark: { type: 'circle', tooltip: true },
       encoding: {
         x: {

@@ -16,6 +16,8 @@ Continuous deployment is currently set up with railway.app.
 
 Important: Configure a `PORT` environment variable there, otherwise the app will not be accessible and will be `Shutting down` for no apparent reason.
 
+Mount a persistent disk to `/app/backend-python/cache`.
+
 ## 3rd party services
 
 These are configured via a `.env` file, see [`.env.example`](../.env.example).

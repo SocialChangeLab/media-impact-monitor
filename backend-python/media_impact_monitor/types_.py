@@ -29,7 +29,7 @@ class Response(BaseModel, Generic[Q, R]):
 #### Event types ####
 
 EventType = str
-EventSource = str
+EventSource = Literal["acled", "press_releases"]
 EventId = str
 
 
@@ -50,15 +50,15 @@ date_ = date
 class Event:
     event_id: EventId = Field(description="Unique identifier for the event.")
     event_type: EventType = Field(description="The type of event.")
-    source: EventSource = Field(description="The source dataset.")
+    source: str = Field(description="The source dataset.")
     date: date_ = Field(description="The date of the event.")
-    country: str = Field(description="The country where the event took place.")
-    region: str = Field(description="The region where the event took place.")
-    city: str = Field(description="The city where the event took place.")
+    country: str | None = Field(description="The country where the event took place.")
+    region: str | None = Field(description="The region where the event took place.")
+    city: str | None = Field(description="The city where the event took place.")
     organizers: list[str] = Field(
         description="The organizations involved in the event."
     )
-    size_text: str = Field(description="Size of the event, in words.")
+    size_text: str | None = Field(description="Size of the event, in words.")
     size_number: int | None = Field(
         description="Size of the event, quantified if possible."
     )

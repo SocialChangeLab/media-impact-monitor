@@ -17,17 +17,12 @@ const bubbleClasses = cn(
 );
 
 function EventBubbleLink({ event, organisations }: EventBubbleLinkProps) {
-	const mappedOrganisations = event.organizers
-		.map((x) => organisations.find((y) => y.name === x))
-		.filter(Boolean) as OrganisationType[];
 	return (
 		<Link
 			href={`/events/${event.event_id}`}
 			className={bubbleClasses}
 			style={{
-				background: getCSSStyleGradient(
-					mappedOrganisations.map((x) => x.color),
-				),
+				background: getCSSStyleGradient(organisations.map((x) => x.color)),
 			}}
 		/>
 	);

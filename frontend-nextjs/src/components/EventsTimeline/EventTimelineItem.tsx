@@ -1,4 +1,5 @@
 import type { EventType, OrganisationType } from "@/utility/eventsUtil";
+import { memo, useMemo } from "react";
 import EventBubbleLink from "./EventBubbleLink";
 import EventTooltip from "./EventTooltip";
 import EventsBar from "./EventsBar";
@@ -13,17 +14,24 @@ function EventTimelineItem({
 	organisations,
 	height,
 }: EventTimelineItemProps) {
+	const mappedOrganisations = useMemo(
+		() =>
+			event.organizers
+				.map((x) => organisations.find((y) => y.name === x))
+				.filter(Boolean) as OrganisationType[],
+		[event.organizers, organisations],
+	);
 	return (
 		<EventTooltip
 			key={event.event_id}
 			event={event}
-			organisations={organisations}
+			organisations={mappedOrganisations}
 		>
-			<EventsBar height={height} organisations={organisations}>
-				<EventBubbleLink event={event} organisations={organisations} />
+			<EventsBar height={height} organisations={mappedOrganisations}>
+				<EventBubbleLink event={event} organisations={mappedOrganisations} />
 			</EventsBar>
 		</EventTooltip>
 	);
 }
 
-export default EventTimelineItem;
+export default memo(EventTimelineItem);

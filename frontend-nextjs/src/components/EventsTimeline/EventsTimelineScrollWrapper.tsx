@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { cn } from "@/utility/classNames";
 import { useAnimationFrame } from "framer-motion";
 import { ArrowDown, ArrowLeft, ArrowRight, ArrowUp, Mouse } from "lucide-react";
-import { memo, useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 function EventsTimelineScrollWrapper({
 	children,
@@ -66,39 +66,54 @@ function EventsTimelineScrollWrapper({
 		});
 	}, []);
 
-	const arrowButtons = [
-		{
-			direction: "up",
-			Icon: ArrowUp,
-			onClick: scrollUp,
-			visible: showUpArrow,
-			className: cn("top-4 left-1/2 -translate-x-1/2", "flex-col"),
-		},
-		{
-			direction: "left",
-			Icon: ArrowLeft,
-			onClick: scrollLeft,
-			visible: showLeftArrow,
-			className: cn("top-1/2 -translate-y-1/2 left-4", "px-1 py-0"),
-		},
-		{
-			direction: "right",
-			Icon: ArrowRight,
-			onClick: scrollRight,
-			visible: showRightArrow,
-			className: cn(
-				"top-1/2 -translate-y-1/2 right-4",
-				"flex-row-reverse px-1 py-0",
-			),
-		},
-		{
-			direction: "down",
-			Icon: ArrowDown,
-			onClick: scrollDown,
-			visible: showDownArrow,
-			className: cn("bottom-20 left-1/2 -translate-x-1/2", "flex-col-reverse"),
-		},
-	];
+	const arrowButtons = useMemo(
+		() => [
+			{
+				direction: "up",
+				Icon: ArrowUp,
+				onClick: scrollUp,
+				visible: showUpArrow,
+				className: cn("top-4 left-1/2 -translate-x-1/2", "flex-col"),
+			},
+			{
+				direction: "left",
+				Icon: ArrowLeft,
+				onClick: scrollLeft,
+				visible: showLeftArrow,
+				className: cn("top-1/2 -translate-y-1/2 left-4", "px-1 py-0"),
+			},
+			{
+				direction: "right",
+				Icon: ArrowRight,
+				onClick: scrollRight,
+				visible: showRightArrow,
+				className: cn(
+					"top-1/2 -translate-y-1/2 right-4",
+					"flex-row-reverse px-1 py-0",
+				),
+			},
+			{
+				direction: "down",
+				Icon: ArrowDown,
+				onClick: scrollDown,
+				visible: showDownArrow,
+				className: cn(
+					"bottom-20 left-1/2 -translate-x-1/2",
+					"flex-col-reverse",
+				),
+			},
+		],
+		[
+			showUpArrow,
+			showLeftArrow,
+			showRightArrow,
+			showDownArrow,
+			scrollUp,
+			scrollLeft,
+			scrollRight,
+			scrollDown,
+		],
+	);
 
 	return (
 		<div className="w-[calc(100vw-3rem)] overflow-clip relative group">
@@ -146,4 +161,4 @@ function EventsTimelineScrollWrapper({
 	);
 }
 
-export default memo(EventsTimelineScrollWrapper);
+export default EventsTimelineScrollWrapper;

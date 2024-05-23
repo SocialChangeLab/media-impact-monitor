@@ -1,7 +1,7 @@
 import { cn } from "@/utility/classNames";
 import { slugifyCssClass } from "@/utility/cssSlugify";
 import type { OrganisationType } from "@/utility/eventsUtil";
-import { type ReactNode, forwardRef, memo } from "react";
+import { forwardRef, type ReactNode } from "react";
 
 const EventsBar = forwardRef<
 	HTMLDivElement,
@@ -21,13 +21,11 @@ const EventsBar = forwardRef<
 					}`;
 				}),
 			)}
-			style={{
-				height: `${height}px`,
-			}}
+			style={{ height: `${height}px` }}
 		>
 			{children}
 		</div>
 	</div>
 ));
 
-export default memo(EventsBar);
+export default EventsBar;

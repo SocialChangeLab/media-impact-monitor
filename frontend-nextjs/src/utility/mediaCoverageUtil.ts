@@ -24,11 +24,11 @@ export async function getMediaCoverageData(params?: {
 	to?: Date;
 }): Promise<MediaDataType> {
 	const json = await fetchApiData({
-		endpoint: "events",
+		endpoint: "trend",
 		body: {
 			media_source: "news_online",
 			topic: "climate_change",
-			trend_type: "sentiment",
+			trend_type: "keywords",
 			...(params?.from && params?.to
 				? {
 						start_date: format(params?.from, "yyyy-MM-dd"),

@@ -23,7 +23,7 @@ export async function fetchApiData({
 				body: JSON.stringify(body),
 			}),
 			new Promise<Error>((resolve) =>
-				setTimeout(() => resolve(new Error("ApiFetchTimeoutError")), 2000),
+				setTimeout(() => resolve(new Error("ApiFetchTimeoutError")), 10000),
 			),
 		]);
 
@@ -38,6 +38,9 @@ export async function fetchApiData({
 
 		json = await response.json();
 	} catch (error) {
+		console.warn(
+			`Failed fetching from endpoint "${endpoint}", now using Fallback Data: ${error}`,
+		);
 		json = fallbackFilePathContent;
 	}
 	return json;

@@ -2,6 +2,7 @@ import { cn } from "@/utility/classNames";
 import type { EventType, OrganisationType } from "@/utility/eventsUtil";
 import Link from "next/link";
 import { memo } from "react";
+import { TooltipTrigger } from "../ui/tooltip";
 
 type EventBubbleLinkProps = {
 	event: EventType;
@@ -16,15 +17,32 @@ const bubbleClasses = cn(
 	"cursor-pointer active:cursor-pointer focusable",
 );
 
-function EventBubbleLink({ event, organisations }: EventBubbleLinkProps) {
+function EventBubbleLink({
+	event,
+	organisations,
+	...otherProps
+}: EventBubbleLinkProps) {
 	return (
-		<Link
-			href={`/events/${event.event_id}`}
-			className={bubbleClasses}
-			style={{
-				background: getCSSStyleGradient(organisations.map((x) => x.color)),
-			}}
-		/>
+		<TooltipTrigger asChild>
+			<Link
+				href={`/events/${event.event_id}`}
+				className={bubbleClasses}
+				style={{
+					background: getCSSStyleGradient(organisations.map((x) => x.color)),
+				}}
+				{...otherProps}
+			>
+				<span className="sr-only">
+					{`Protest by ${event.organizers.slice(0, 3).join(", ")}${
+						event.organizers.length > 3
+							? `and ${event.organizers.length - 3} more`
+							: ""
+					}: "${event.description.slice(0, 300)}${
+						event.description.length > 300 ? "..." : ""
+					}"`}
+				</span>
+			</Link>
+		</TooltipTrigger>
 	);
 }
 

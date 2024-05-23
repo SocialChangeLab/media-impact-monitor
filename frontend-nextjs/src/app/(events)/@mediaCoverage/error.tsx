@@ -1,7 +1,6 @@
 "use client";
-import ComponentError from "@/components/ComponentError";
+import MediaCoverageChartError from "@/components/MediaCoverageChart/MediaCoverageChartError";
 import SectionHeadlineWithExplanation from "@/components/SectionHeadlineWithExplanation";
-import { cn } from "@/utility/classNames";
 import { parseErrorMessage } from "@/utility/errorHandlingUtil";
 
 function MediaCoverageRouteError({
@@ -18,18 +17,11 @@ function MediaCoverageRouteError({
 			description="See the media coverage of climate-related topics in germany over time"
 			help="See the media coverage of climate-related topics in germany over time"
 		>
-			<div
-				className={cn(
-					"w-full min-h-96 p-8 border border-grayLight",
-					"flex items-center justify-center bg-grayUltraLight",
-				)}
-			>
-				<ComponentError
-					errorMessage={message}
-					errorDetails={details}
-					reset={reset}
-				/>
-			</div>
+			<MediaCoverageChartError
+				details={details}
+				message={message}
+				reset={reset}
+			/>
 		</SectionHeadlineWithExplanation>
 	);
 }

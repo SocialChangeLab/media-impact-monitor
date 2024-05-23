@@ -2,23 +2,19 @@
 import { useFiltersStore } from "@/providers/FiltersStoreProvider";
 import { useQuery } from "@tanstack/react-query";
 import { format, isAfter, isBefore } from "date-fns";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo } from "react";
 import { toast } from "sonner";
 import {
+	getEventsData,
 	type EventType,
 	type OrganisationType,
-	getEventsData,
 } from "./eventsUtil";
 
 function useEvents(initialData?: Awaited<ReturnType<typeof getEventsData>>) {
-	const filtersStore = useFiltersStore(({ from, to, setDateRange }) => ({
+	const { from, to } = useFiltersStore(({ from, to }) => ({
 		from,
 		to,
-		setDateRange,
 	}));
-
-	const [from, setFrom] = useState(filtersStore.from);
-	const [to, setTo] = useState(filtersStore.to);
 	const fromDateString = format(from, "yyyy-MM-dd");
 	const toDateString = format(to, "yyyy-MM-dd");
 	const queryKey = ["events", fromDateString, toDateString];
@@ -36,20 +32,6 @@ function useEvents(initialData?: Awaited<ReturnType<typeof getEventsData>>) {
 			duration: 1000000,
 		});
 	}, [error]);
-
-	useEffect(() => {
-		setFrom(filtersStore.from);
-		setTo(filtersStore.to);
-	}, [filtersStore.from, filtersStore.to]);
-
-	const setDateRange = useCallback(
-		({ from, to }: { from: Date; to: Date }) => {
-			setFrom(from);
-			setTo(to);
-			filtersStore.setDateRange({ from, to });
-		},
-		[filtersStore.setDateRange],
-	);
 
 	const events = useMemo(() => {
 		return (data ?? []).filter((e) => {
@@ -70,9 +52,6 @@ function useEvents(initialData?: Awaited<ReturnType<typeof getEventsData>>) {
 		data: { events, organisations },
 		isPending,
 		error: error,
-		from,
-		to,
-		setDateRange,
 	};
 }
 

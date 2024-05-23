@@ -1,5 +1,7 @@
 import MediaCoverageChart from "@/components/MediaCoverageChart";
+import MediaCoverageChartEmpty from "@/components/MediaCoverageChart/MediaCoverageChartEmpty";
 import SectionHeadlineWithExplanation from "@/components/SectionHeadlineWithExplanation";
+import { defaultInitState } from "@/stores/filtersStore";
 import { getMediaCoverageData } from "@/utility/mediaCoverageUtil";
 import { parseSearchParamsFilters } from "@/utility/searchParamsUtil";
 
@@ -10,9 +12,15 @@ async function MediaCoverageRoute({
 }) {
 	const { from, to } = parseSearchParamsFilters(searchParams);
 	const data = await getMediaCoverageData(
-		from && to ? { from, to } : undefined,
+		from && to
+			? { from, to }
+			: {
+					from: defaultInitState.from,
+					to: defaultInitState.to,
+				},
 	);
 
+	if (!data) return <MediaCoverageChartEmpty />;
 	return (
 		<SectionHeadlineWithExplanation
 			headline="Coverage of climate change in German newspapers"

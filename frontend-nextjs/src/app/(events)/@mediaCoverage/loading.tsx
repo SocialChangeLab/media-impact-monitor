@@ -1,5 +1,6 @@
 "use client";
 
+import MediaCoverageChartLoading from "@/components/MediaCoverageChart/MediaCoverageChartLoading";
 import SectionHeadlineWithExplanation from "@/components/SectionHeadlineWithExplanation";
 
 function MediaCoverageRouteLoading() {
@@ -9,7 +10,7 @@ function MediaCoverageRouteLoading() {
 			description="See the media coverage of climate-related topics in germany over time"
 			help="See the media coverage of climate-related topics in germany over time"
 		>
-			<div className="h-[var(--media-coverage-chart-height)] bg-grayUltraLight motion-safe:animate-pulse border border-grayLight"></div>
+			<MediaCoverageChartLoading />
 		</SectionHeadlineWithExplanation>
 	);
 }

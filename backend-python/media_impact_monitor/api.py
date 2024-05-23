@@ -8,6 +8,7 @@ import json
 import logging
 import os
 from contextlib import asynccontextmanager
+from datetime import date, timedelta
 
 import pandas as pd
 from fastapi import FastAPI
@@ -89,7 +90,7 @@ def get_info() -> dict:
 @app.post("/events")
 def _get_events(q: EventSearch) -> Response[EventSearch, list[Event]]:
     """Fetch events from the Media Impact Monitor database."""
-    df = get_events(q)
+    df = get_events(q, request_date=date.today())
     data = json.loads(df.to_json(orient="records"))  # convert nan to None
     return Response(query=q, data=data)
 
@@ -97,7 +98,7 @@ def _get_events(q: EventSearch) -> Response[EventSearch, list[Event]]:
 @app.post("/trend")
 def _get_trend(q: TrendSearch):  # -> Response[TrendSearch, CountTimeSeries]:
     """Fetch media item counts from the Media Impact Monitor database."""
-    df = get_trend(q)
+    df = get_trend(q, request_date=date.today())
     long_df = pd.melt(
         df.reset_index(), id_vars=["date"], var_name="topic", value_name="n_articles"
     )
@@ -113,7 +114,7 @@ def _get_fulltexts(q: FulltextSearch) -> Response[FulltextSearch, list[Event]]:
 @app.post("/impact")
 def _get_impact(q: ImpactSearch):  # -> Response[ImpactSearch, Impact]:
     """Compute the impact of an event on a media trend."""
-    impact = get_impact(q)
+    impact = get_impact(q, request_date=date.today())
     return Response(query=q, data=impact)
 
 

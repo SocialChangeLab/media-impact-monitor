@@ -22,7 +22,6 @@ function Calendar({
 			ISOWeek
 			toYear={new Date().getFullYear()}
 			showOutsideDays={showOutsideDays}
-			today={new Date()}
 			className={cn("p-3", className)}
 			classNames={{
 				months: "flex flex-col sm:flex-row space-y-4 sm:space-x-4 sm:space-y-0",
@@ -60,8 +59,8 @@ function Calendar({
 				...classNames,
 			}}
 			components={{
-				IconLeft: ({ ...props }) => <ChevronLeft className="h-4 w-4" />,
-				IconRight: ({ ...props }) => <ChevronRight className="h-4 w-4" />,
+				IconLeft: () => <ChevronLeft className="h-4 w-4" />,
+				IconRight: () => <ChevronRight className="h-4 w-4" />,
 
 				Dropdown: ({ ...props }) => {
 					return (

@@ -1,5 +1,5 @@
 import { cn } from "@/utility/classNames";
-import { useMemo } from "react";
+import { memo, useMemo } from "react";
 import {
 	formatDateByAggregationUnit,
 	type AggregationUnitType,
@@ -65,7 +65,7 @@ function EventsTimelineAxis({
 	);
 }
 
-function getIdxsWithTicks(columnCount: number, width: number) {
+export function getIdxsWithTicks(columnCount: number, width: number) {
 	const labelWidth = 400;
 	const maxDivider = Math.round(width / labelWidth);
 	if (columnCount === 0) return [];
@@ -82,4 +82,4 @@ function getIdxsWithTicks(columnCount: number, width: number) {
 	];
 }
 
-export default EventsTimelineAxis;
+export default memo(EventsTimelineAxis);

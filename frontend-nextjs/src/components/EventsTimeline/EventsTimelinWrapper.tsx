@@ -1,7 +1,7 @@
 "use client";
 import { slugifyCssClass } from "@/utility/cssSlugify";
 import type { OrganisationType } from "@/utility/eventsUtil";
-import { type PropsWithChildren, forwardRef } from "react";
+import { forwardRef, type PropsWithChildren } from "react";
 
 const EventsTimelineWrapper = forwardRef<
 	HTMLDivElement,
@@ -12,9 +12,6 @@ const EventsTimelineWrapper = forwardRef<
 	return (
 		<div className="events-timeline w-full relative" ref={ref}>
 			<style jsx global>{`
-				.events-timeline:has(.legend-org:hover) .event-line {
-					opacity: 0 !important;
-				}
 				.events-timeline:has(.legend-org:hover) .event-item {
 					opacity: 0.2 !important;
 					filter: grayscale(100%) !important;

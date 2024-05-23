@@ -2,7 +2,7 @@
 import { DatePickerWithRange } from "@/components/ui/date-range-picker";
 import { useFiltersStore } from "@/providers/FiltersStoreProvider";
 
-function EventTimelineDatePicker() {
+function CalendarFilter() {
 	const { from, to, defaultFrom, defaultTo, setDateRange, resetDateRange } =
 		useFiltersStore((store) => store);
 
@@ -16,4 +16,4 @@ function EventTimelineDatePicker() {
 	);
 }
 
-export default EventTimelineDatePicker;
+export default CalendarFilter;

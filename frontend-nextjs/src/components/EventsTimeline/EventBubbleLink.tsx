@@ -1,6 +1,8 @@
 import { cn } from "@/utility/classNames";
 import type { EventType, OrganisationType } from "@/utility/eventsUtil";
 import Link from "next/link";
+import { memo } from "react";
+import { TooltipTrigger } from "../ui/tooltip";
 
 type EventBubbleLinkProps = {
 	event: EventType;
@@ -12,23 +14,35 @@ const bubbleClasses = cn(
 	"ring-0 ring-fg transition-all hover:ring-2",
 	"ring-offset-0 ring-offset-bg hover:ring-offset-2",
 	"focus-visible:ring-offset-2 focus-visible:ring-2",
-	"cursor-pointer active:cursor-pointer",
+	"cursor-pointer active:cursor-pointer focusable",
 );
 
-function EventBubbleLink({ event, organisations }: EventBubbleLinkProps) {
-	const mappedOrganisations = event.organizers
-		.map((x) => organisations.find((y) => y.name === x))
-		.filter(Boolean) as OrganisationType[];
+function EventBubbleLink({
+	event,
+	organisations,
+	...otherProps
+}: EventBubbleLinkProps) {
 	return (
-		<Link
-			href={`/events/${event.event_id}`}
-			className={bubbleClasses}
-			style={{
-				background: getCSSStyleGradient(
-					mappedOrganisations.map((x) => x.color),
-				),
-			}}
-		/>
+		<TooltipTrigger asChild>
+			<Link
+				href={`/events/${event.event_id}`}
+				className={bubbleClasses}
+				style={{
+					background: getCSSStyleGradient(organisations.map((x) => x.color)),
+				}}
+				{...otherProps}
+			>
+				<span className="sr-only">
+					{`Protest by ${event.organizers.slice(0, 3).join(", ")}${
+						event.organizers.length > 3
+							? `and ${event.organizers.length - 3} more`
+							: ""
+					}: "${event.description.slice(0, 300)}${
+						event.description.length > 300 ? "..." : ""
+					}"`}
+				</span>
+			</Link>
+		</TooltipTrigger>
 	);
 }
 
@@ -62,4 +76,4 @@ function getCSSStyleGradient(colors: string[]) {
 		.join(", ")})`;
 }
 
-export default EventBubbleLink;
+export default memo(EventBubbleLink);

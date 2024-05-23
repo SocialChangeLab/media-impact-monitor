@@ -22,6 +22,7 @@ const PopoverContent = React.forwardRef<
 			sideOffset={sideOffset}
 			className={cn(
 				"z-50 w-72 border border-grayMed bg-bg p-4 text-fg",
+				"shadow-lg shadow-black/5 dark:shadow-black/50",
 				"outline-none data-[state=open]:animate-in",
 				"data-[state=closed]:animate-out",
 				"data-[state=closed]:fade-out-0",
@@ -40,4 +41,4 @@ const PopoverContent = React.forwardRef<
 ));
 PopoverContent.displayName = PopoverPrimitive.Content.displayName;
 
-export { Popover, PopoverTrigger, PopoverContent, PopoverAnchor };
+export { Popover, PopoverAnchor, PopoverContent, PopoverTrigger };

@@ -1,18 +1,7 @@
-import { format, parse } from "date-fns";
+import { format, parse, startOfDay } from "date-fns";
 import { ZodError, z } from "zod";
 import { dateSortCompare, isValidISODateString } from "./dateUtil";
-
-export type Query<T> =
-	| {
-			data: T;
-			isPending: false;
-			error: null | string;
-	  }
-	| {
-			data?: T;
-			isPending: true;
-			error: null;
-	  };
+import { fetchApiData } from "./fetchUtil";
 
 const eventZodSchema = z.object({
 	event_id: z.string(),
@@ -29,23 +18,6 @@ const eventZodSchema = z.object({
 	chart_position: z.number(),
 });
 export type EventType = z.infer<typeof eventZodSchema>;
-
-const distinctiveTailwindColors = [
-	`var(--categorical-color-1)`,
-	`var(--categorical-color-2)`,
-	`var(--categorical-color-3)`,
-	`var(--categorical-color-4)`,
-	`var(--categorical-color-5)`,
-	`var(--categorical-color-6)`,
-	`var(--categorical-color-7)`,
-	`var(--categorical-color-8)`,
-	`var(--categorical-color-9)`,
-	`var(--categorical-color-10)`,
-	`var(--categorical-color-11)`,
-	`var(--categorical-color-12)`,
-	"var(--categorical-color-13)",
-	"var(--categorical-color-14)",
-];
 
 const colorTypeZodSchema = z.string();
 export type ColorType = z.infer<typeof colorTypeZodSchema>;
@@ -71,81 +43,27 @@ export async function getEventsData(params?: {
 	from?: Date;
 	to?: Date;
 }): Promise<EventsDataType> {
-	const apiUrl = process.env.NEXT_PUBLIC_API_URL;
-	if (!apiUrl)
-		throw new Error("NEXT_PUBLIC_API_URL env variable is not defined");
-	let json: unknown = { query: {}, data: [] };
-	try {
-		const response = await fetch(`${apiUrl}/events`, {
-			cache: "no-store",
-			method: "POST",
-			headers: {
-				"Content-Type": "application/json",
-				"Cache-Control": "no-cache",
-			},
-			body: JSON.stringify({
-				source: "acled",
-				topic: "climate_change",
-				...(params?.from && params?.to
-					? {
-							start_date: format(params?.from, "yyyy-MM-dd"),
-							end_date: format(params?.to, "yyyy-MM-dd"),
-						}
-					: {}),
-			}),
-		});
-
-		if (!response.ok) {
-			const message = `An error has occured: ${response.statusText} ${response.status}`;
-			throw new Error(`ApiFetchError&&&${message}`);
-		}
-
-		json = await response.json();
-	} catch (error) {
-		json = (await import(`../data/fallbackProtests.json`)).default;
-	}
-	const events = validateGetDataResponse(json);
-	return events;
+	const json = await fetchApiData({
+		endpoint: "events",
+		body: {
+			source: "acled",
+			topic: "climate_change",
+			...(params?.from && params?.to
+				? {
+						start_date: format(params?.from, "yyyy-MM-dd"),
+						end_date: format(params?.to, "yyyy-MM-dd"),
+					}
+				: {}),
+		},
+		fallbackFilePathContent: (await import("../data/fallbackProtests.json"))
+			.default,
+	});
+	return validateGetDataResponse(json);
 }
 
 export async function getEventData(id: string): Promise<EventType | undefined> {
 	const allEvents = await getEventsData();
 	return allEvents.find((x) => x.event_id === id);
-}
-
-export function extractEventOrganisations(
-	events: EventType[],
-): OrganisationType[] {
-	const organisationStrings = [
-		...events
-			.reduce((acc, event) => {
-				for (const organizer of event.organizers ?? []) acc.add(organizer);
-				return acc;
-			}, new Set<string>())
-			.values(),
-	];
-	return organisationStrings
-		.map((organizer) => ({
-			name: organizer,
-			count: events.filter((x) => x.organizers?.includes(organizer)).length,
-		}))
-		.sort((a, b) => b.count - a.count)
-		.map((organizer, idx) => {
-			if (organizer.name.toLocaleLowerCase().trim() === "") {
-				return {
-					name: "Unknown organisation",
-					color: "var(--grayMed)",
-					count: events.filter((x) => x.organizers?.filter((x) => !x)).length,
-					isMain: false,
-				};
-			}
-			const color = distinctiveTailwindColors[idx];
-			return {
-				...organizer,
-				color: color ?? "var(--grayDark)",
-				isMain: idx < distinctiveTailwindColors.length,
-			};
-		});
 }
 
 function validateGetDataResponse(response: unknown): EventType[] {
@@ -155,7 +73,7 @@ function validateGetDataResponse(response: unknown): EventType[] {
 			.filter((x) => isValidISODateString(x.date))
 			.map((x) => ({
 				...x,
-				date: parse(x.date, "yyyy-MM-dd", new Date()).toISOString(),
+				date: parse(x.date, "yyyy-MM-dd", startOfDay(new Date())).toISOString(),
 				organizers: x.organizers ?? [],
 			}))
 			.sort((a, b) => dateSortCompare(a.date, b.date));

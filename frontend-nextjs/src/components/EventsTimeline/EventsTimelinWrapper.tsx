@@ -12,9 +12,6 @@ const EventsTimelineWrapper = forwardRef<
 	return (
 		<div className="events-timeline w-full relative" ref={ref}>
 			<style jsx global>{`
-				.events-timeline:has(.legend-org:hover) .event-line {
-					opacity: 0 !important;
-				}
 				.events-timeline:has(.legend-org:hover) .event-item {
 					opacity: 0.2 !important;
 					filter: grayscale(100%) !important;

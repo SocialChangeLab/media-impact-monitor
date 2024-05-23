@@ -1,8 +1,8 @@
 import { cn } from "@/utility/classNames";
 import { memo, useMemo } from "react";
 import {
-	type AggregationUnitType,
 	formatDateByAggregationUnit,
+	type AggregationUnitType,
 } from "./useAggregationUnit";
 
 function EventsTimelineAxis({
@@ -65,7 +65,7 @@ function EventsTimelineAxis({
 	);
 }
 
-function getIdxsWithTicks(columnCount: number, width: number) {
+export function getIdxsWithTicks(columnCount: number, width: number) {
 	const labelWidth = 400;
 	const maxDivider = Math.round(width / labelWidth);
 	if (columnCount === 0) return [];

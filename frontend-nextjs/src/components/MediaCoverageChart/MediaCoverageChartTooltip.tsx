@@ -1,3 +1,4 @@
+import { cn } from "@/utility/classNames";
 import { memo } from "react";
 import {
 	formatDateByAggregationUnit,
@@ -20,15 +21,23 @@ function MediaCoverageChartTooltip({
 	};
 }) {
 	return (
-		<div className="bg-bg border border-grayMed p-4 flex flex-col gap-1">
-			<strong className="font-bold font-headlines text-lg leading-tight pb-2">
+		<div
+			className={cn(
+				"bg-bg border border-grayMed p-4 flex flex-col gap-1",
+				"shadow-lg shadow-black/5 dark:shadow-black/50",
+			)}
+		>
+			<strong className="font-bold font-headlines text-base leading-tight pb-2 mb-2 border-b border-grayLight min-w-40">
 				{formatDateByAggregationUnit(item.date, aggregationUnit)}
 			</strong>
 			{[...topics]
 				.reverse()
 				.map(({ topic }) => ({ topic, value: item[topic] }))
 				.map(({ topic, value }, idx) => (
-					<div key={topic} className="flex gap-2 items-center text-sm">
+					<div
+						key={topic}
+						className="grid grid-cols-[auto_1fr_auto] gap-2 items-center text-sm"
+					>
 						<span
 							className="size-3 rounded-full"
 							style={{
@@ -40,7 +49,9 @@ function MediaCoverageChartTooltip({
 							{topic.slice(1)}
 							{": "}
 						</strong>
-						{(+value)?.toLocaleString("en-GB") ?? 0}
+						<span className="font-mono text-xs text-grayDark">
+							{(+value)?.toLocaleString("en-GB") ?? 0}
+						</span>
 					</div>
 				))}
 		</div>

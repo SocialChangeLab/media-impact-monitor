@@ -47,12 +47,14 @@ function EventTooltip({
 				<ul
 					className={cn(
 						"flex justify-between items-center border-b py-2",
-						"mb-2 border-black/10",
+						"mb-2 border-grayLight",
 					)}
 				>
-					<li className="flex gap-4 items-center">{formattedDate}</li>
+					<li className="flex gap-4 items-center font-bold font-headlines text-base">
+						{formattedDate}
+					</li>
 					<li className={cn("flex gap-2 items-center")}>
-						<Users size={16} className={cn("text-black/60")} />
+						<Users size={16} className={cn("text-grayDark")} />
 						<span>{formattedImpact}</span>
 					</li>
 				</ul>
@@ -76,7 +78,7 @@ function EventTooltip({
 						key={org.name}
 						className={cn(
 							"grid grid-cols-[auto_1fr] gap-x-2 items-center",
-							"border-t border-white/10 dark:border-black/10 py-2",
+							"border-t border-white/10 dark:border-grayLight py-2",
 						)}
 					>
 						<span

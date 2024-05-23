@@ -20,6 +20,7 @@ import useAggregationUnit, {
 import { slugifyCssClass } from "@/utility/cssSlugify";
 import { parseErrorMessage } from "@/utility/errorHandlingUtil";
 import useMediaCoverageData from "@/utility/useKeywords";
+import { getIdxsWithTicks } from "../EventsTimeline/EventsTimelineAxis";
 import MediaCoverageChartEmpty from "./MediaCoverageChartEmpty";
 import MediaCoverageChartError from "./MediaCoverageChartError";
 import MediaCoverageChartLegend from "./MediaCoverageChartLegend";
@@ -89,14 +90,20 @@ const MediaCoverageChart = memo(
 
 		const reversedTopics = useMemo(() => [...topics].reverse(), [topics]);
 
+		const idxsWithTicks = useMemo(
+			() => getIdxsWithTicks(intervals.length, size.width),
+			[intervals.length, size.width],
+		);
+
 		return (
 			<div className="media-coverage-chart">
 				<style jsx global>{`
 				.media-coverage-chart .recharts-cartesian-grid-vertical {
 					transition: opacity 150ms cubic-bezier(0.4, 0, 0.2, 1);
-				}
-				.media-coverage-chart:has(.legend-topic:hover) .recharts-cartesian-grid-vertical {
 					opacity: 0 !important;
+				}
+				.media-coverage-chart svg:hover .recharts-cartesian-grid-vertical {
+					opacity: 1 !important;
 				}
 				.media-coverage-chart:has(.legend-topic:hover) .media-coverage-item {
 					opacity: 0.2 !important;
@@ -141,6 +148,7 @@ const MediaCoverageChart = memo(
 							stroke="var(--grayDark)"
 							strokeWidth={0.25}
 							fontSize="0.875rem"
+							interval="equidistantPreserveStart"
 						/>
 						<YAxis
 							stroke="var(--grayDark)"

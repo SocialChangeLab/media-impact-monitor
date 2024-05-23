@@ -121,7 +121,7 @@ function EventsTimeline({
 									<div
 										className={cn(
 											"w-px h-full absolute top-0 left-1/2 -translate-x-1/2",
-											"bg-grayLight opacity-50 event-line transition-opacity",
+											"bg-grayLight group-hover:opacity-50 event-line opacity-0 transition-opacity",
 										)}
 										aria-hidden="true"
 									/>

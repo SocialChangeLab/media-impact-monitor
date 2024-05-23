@@ -5,7 +5,14 @@ import useTimeIntervals, {
 } from "@/utility/useTimeIntervals";
 import useElementSize from "@custom-react-hooks/use-element-size";
 import { useCallback, useMemo } from "react";
-import { Bar, BarChart, CartesianGrid, Tooltip, XAxis, YAxis } from "recharts";
+import {
+	CartesianGrid,
+	Line,
+	LineChart,
+	Tooltip,
+	XAxis,
+	YAxis,
+} from "recharts";
 
 import { cn } from "@/utility/classNames";
 import { slugifyCssClass } from "@/utility/cssSlugify";
@@ -105,7 +112,7 @@ function MediaCoverageChart({
 				className="w-full h-[var(--media-coverage-chart-height)] bg-grayUltraLight"
 				ref={parentRef}
 			>
-				<BarChart
+				<LineChart
 					width={size.width}
 					height={size.height}
 					data={filteredData}
@@ -135,7 +142,7 @@ function MediaCoverageChart({
 					/>
 					<Tooltip
 						formatter={(value) => `${value} articles`}
-						cursor={{ fill: "var(--bgOverlay)", fillOpacity: 0.1 }}
+						cursor={{ stroke: "var(--grayMed)" }}
 						content={({ payload, active }) => {
 							if (!active || !payload) return null;
 							const item = payload[0]?.payload;
@@ -175,19 +182,19 @@ function MediaCoverageChart({
 						}}
 					/>
 					{topics.map(({ topic }, idx) => (
-						<Bar
+						<Line
 							key={topic}
 							type="monotone"
 							dataKey={topic}
-							stackId="topic"
 							stroke={`var(--categorical-color-${idx + 1})`}
 							fill={`var(--categorical-color-${idx + 1})`}
 							className={`media-coverage-item media-coverage-item-topic-${slugifyCssClass(
 								topic,
 							)} transition-all`}
+							activeDot={{ r: 6, stroke: "var(--grayUltraLight)" }}
 						/>
 					))}
-				</BarChart>
+				</LineChart>
 			</div>
 			<div className="pt-6 flex gap-[max(2rem,4vmax)] sm:grid sm:grid-cols-[1fr_auto]">
 				<CollapsableSection

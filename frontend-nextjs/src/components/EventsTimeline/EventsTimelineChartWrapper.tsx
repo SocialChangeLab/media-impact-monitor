@@ -1,6 +1,5 @@
 "use client";
 import { cn } from "@/utility/classNames";
-import { memo } from "react";
 
 function EventsTimelineChartWrapper({
 	children,
@@ -31,4 +30,4 @@ function EventsTimelineChartWrapper({
 	);
 }
 
-export default memo(EventsTimelineChartWrapper);
+export default EventsTimelineChartWrapper;

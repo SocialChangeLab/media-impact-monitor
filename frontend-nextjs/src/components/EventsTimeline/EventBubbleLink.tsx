@@ -13,7 +13,7 @@ const bubbleClasses = cn(
 	"ring-0 ring-fg transition-all hover:ring-2",
 	"ring-offset-0 ring-offset-bg hover:ring-offset-2",
 	"focus-visible:ring-offset-2 focus-visible:ring-2",
-	"cursor-pointer active:cursor-pointer",
+	"cursor-pointer active:cursor-pointer focusable",
 );
 
 function EventBubbleLink({ event, organisations }: EventBubbleLinkProps) {

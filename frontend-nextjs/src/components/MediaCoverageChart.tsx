@@ -9,11 +9,11 @@ import { Bar, BarChart, CartesianGrid, Tooltip, XAxis, YAxis } from "recharts";
 
 import { cn } from "@/utility/classNames";
 import { slugifyCssClass } from "@/utility/cssSlugify";
+import CollapsableSection from "./CollapsableSection";
 import DataCreditLegend from "./DataCreditLegend";
 import useAggregationUnit, {
 	formatDateByAggregationUnit,
 } from "./EventsTimeline/useAggregationUnit";
-import HeadlineWithLine from "./HeadlineWithLine";
 
 function MediaCoverageChart({
 	data,
@@ -190,8 +190,10 @@ function MediaCoverageChart({
 				</BarChart>
 			</div>
 			<div className="pt-6 flex gap-[max(2rem,4vmax)] sm:grid sm:grid-cols-[1fr_auto]">
-				<div className="flex flex-col gap-2">
-					<HeadlineWithLine>Legend</HeadlineWithLine>
+				<CollapsableSection
+					title="Legend"
+					storageKey="media-coverage-legend-expanded"
+				>
 					<div className="flex flex-col gap-2">
 						<ul className="grid grid-cols-[repeat(auto-fill,minmax(min(10rem,100%),1fr));] gap-x-8 relative z-20">
 							{[...topics].reverse().map(({ topic, color, sum }) => (
@@ -221,8 +223,9 @@ function MediaCoverageChart({
 							))}
 						</ul>
 					</div>
-				</div>
+				</CollapsableSection>
 				<DataCreditLegend
+					storageKey="media-coverage-data-credits-expanded"
 					sources={[
 						{
 							label: "Media data",

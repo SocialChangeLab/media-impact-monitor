@@ -6,7 +6,7 @@ function HeadlineWithLine({
 	as?: React.ElementType;
 }) {
 	return (
-		<Tag className="text-lg font-bold font-headlines antialiased relative z-10">
+		<Tag className="w-full flex text-lg font-bold font-headlines antialiased relative z-10">
 			<span className="w-fit pr-4 bg-pattern-soft relative z-20">
 				{children}
 			</span>

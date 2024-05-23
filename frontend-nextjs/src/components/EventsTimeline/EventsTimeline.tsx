@@ -12,8 +12,8 @@ import useElementSize from "@custom-react-hooks/use-element-size";
 import { scalePow } from "d3-scale";
 import { startOfDay } from "date-fns";
 import { useCallback, useMemo } from "react";
+import CollapsableSection from "../CollapsableSection";
 import DataCreditLegend from "../DataCreditLegend";
-import HeadlineWithLine from "../HeadlineWithLine";
 import OrgsLegend from "../OrgsLegend";
 import EmptyEventsTimeline from "./EmptyEventsTimeline";
 import EventTimelineItem from "./EventTimelineItem";
@@ -156,8 +156,10 @@ function EventsTimeline({
 				/>
 			</EventsTimelineScrollWrapper>
 			<div className="pt-10 flex gap-[max(2rem,4vmax)] sm:grid sm:grid-cols-[1fr_auto]">
-				<div className="flex flex-col gap-4">
-					<HeadlineWithLine>Legend</HeadlineWithLine>
+				<CollapsableSection
+					title="Legend"
+					storageKey="protest-timeline-legend-expanded"
+				>
 					<div className="grid gap-8 md:gap-12 md:grid-cols-[auto_1fr]">
 						<EventsTimelineSizeLegend
 							sizeScale={sizeScale}
@@ -165,8 +167,9 @@ function EventsTimeline({
 						/>
 						<OrgsLegend organisations={organisations} />
 					</div>
-				</div>
+				</CollapsableSection>
 				<DataCreditLegend
+					storageKey={"protest-timeline-data-credit-expanded"}
 					sources={[
 						{
 							label: "Protest data",

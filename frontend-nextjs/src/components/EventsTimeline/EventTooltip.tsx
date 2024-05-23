@@ -44,7 +44,7 @@ function EventTooltip({
 
 	return (
 		<Tooltip delayDuration={50}>
-			<TooltipTrigger>{children}</TooltipTrigger>
+			<TooltipTrigger asChild>{children}</TooltipTrigger>
 			<TooltipContent>
 				<ul
 					className={cn(

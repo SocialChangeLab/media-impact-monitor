@@ -1,3 +1,4 @@
+from datetime import date
 from time import sleep
 
 import pandas as pd
@@ -7,7 +8,7 @@ from media_impact_monitor.util.cache import cache, get
 
 
 @cache
-def extract_press_releases() -> pd.DataFrame:
+def extract_press_releases(end_date: date) -> pd.DataFrame:
     """Extract press releases from page"""
     html_content = get("https://letztegeneration.org/presse/pressemitteilungen/").text
     soup = BeautifulSoup(html_content, "html.parser")

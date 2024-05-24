@@ -1,3 +1,5 @@
+from datetime import date
+
 import pandas as pd
 
 from media_impact_monitor.events import get_events_by_id
@@ -9,10 +11,10 @@ from media_impact_monitor.types_ import Impact, ImpactSearch, Method, TrendSearc
 from media_impact_monitor.util.cache import cache
 
 
-# @cache
-def get_impact(q: ImpactSearch) -> Impact:
+@cache
+def get_impact(q: ImpactSearch, request_date: date) -> Impact:
     events = get_events_by_id(q.cause)
-    trends = get_trend(TrendSearch(**dict(q.effect)))
+    trends = get_trend(TrendSearch(**dict(q.effect)), request_date=request_date)
     applicabilities = []
     limitations = []
     dfs = dict()

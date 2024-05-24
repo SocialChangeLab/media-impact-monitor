@@ -34,9 +34,10 @@ function TopicChartTooltip({
 						1,
 					)} of `}
 				{aggregationUnit === "day" && format(item.date, "EEEE d MMMM yyyy")}
-				{aggregationUnit === "month"
-					? format(item.date, "MMMM yyyy")
-					: formatDateByAggregationUnit(item.date, aggregationUnit)}
+				{aggregationUnit === "month" && format(item.date, "MMMM yyyy")}
+				{aggregationUnit !== "day" &&
+					aggregationUnit !== "month" &&
+					formatDateByAggregationUnit(item.date, aggregationUnit)}
 			</strong>
 			{topics
 				.map((t) => ({ ...t, value: item[t.topic] }))

@@ -13,11 +13,11 @@ import useAggregationUnit, {
 import { slugifyCssClass } from "@/utility/cssSlugify";
 import { parseErrorMessage } from "@/utility/errorHandlingUtil";
 import useMediaSentimentData from "@/utility/useMediaSentiment";
+import TopicChartTooltip from "../TopicChartTooltip";
 import MediaSentimentChartEmpty from "./MediaSentimentChartEmpty";
 import MediaSentimentChartError from "./MediaSentimentChartError";
 import MediaSentimentChartLegend from "./MediaSentimentChartLegend";
 import MediaSentimentChartLoading from "./MediaSentimentChartLoading";
-import MediaSentimentChartTooltip from "./MediaSentimentChartTooltip";
 
 const MediaSentimentChart = memo(
 	({
@@ -153,7 +153,7 @@ const MediaSentimentChart = memo(
 								const item = payload?.at(0)?.payload;
 								if (!active || !payload || !item) return null;
 								return (
-									<MediaSentimentChartTooltip
+									<TopicChartTooltip
 										topics={topics}
 										aggregationUnit={aggregationUnit}
 										item={item}

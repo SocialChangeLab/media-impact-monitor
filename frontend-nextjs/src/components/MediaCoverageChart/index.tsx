@@ -17,6 +17,7 @@ import {
 import useAggregationUnit, {
 	formatDateByAggregationUnit,
 } from "@/components/EventsTimeline/useAggregationUnit";
+import TopicChartTooltip from "@/components/TopicChartTooltip";
 import { slugifyCssClass } from "@/utility/cssSlugify";
 import { parseErrorMessage } from "@/utility/errorHandlingUtil";
 import useMediaCoverageData from "@/utility/useKeywords";
@@ -25,7 +26,6 @@ import MediaCoverageChartEmpty from "./MediaCoverageChartEmpty";
 import MediaCoverageChartError from "./MediaCoverageChartError";
 import MediaCoverageChartLegend from "./MediaCoverageChartLegend";
 import MediaCoverageChartLoading from "./MediaCoverageChartLoading";
-import MediaCoverageChartTooltip from "./MediaCoverageChartTooltip";
 
 const MediaCoverageChart = memo(
 	({
@@ -166,7 +166,7 @@ const MediaCoverageChart = memo(
 								const item = payload?.at(0)?.payload;
 								if (!active || !payload || !item) return null;
 								return (
-									<MediaCoverageChartTooltip
+									<TopicChartTooltip
 										topics={topics}
 										aggregationUnit={aggregationUnit}
 										item={item}

@@ -24,7 +24,7 @@ function TopicChartTooltip({
 	return (
 		<div
 			className={cn(
-				"bg-bg border border-grayMed p-4 flex flex-col gap-1",
+				"bg-pattern-soft border border-grayMed p-4 flex flex-col gap-1",
 				"shadow-lg shadow-black/5 dark:shadow-black/50",
 			)}
 		>

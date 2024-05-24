@@ -160,7 +160,7 @@ function EventsTimeline({
 					title="Legend"
 					storageKey="protest-timeline-legend-expanded"
 				>
-					<div className="grid gap-8 md:gap-12 md:grid-cols-[auto_1fr]">
+					<div className="grid gap-[max(1rem,2vmax)] md:grid-cols-[auto_1fr]">
 						<EventsTimelineSizeLegend
 							sizeScale={sizeScale}
 							aggragationUnit={aggregationUnit}

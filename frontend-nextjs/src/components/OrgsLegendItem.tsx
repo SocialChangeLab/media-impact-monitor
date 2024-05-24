@@ -29,7 +29,7 @@ function OrgsLegendItem({
 					aria-hidden="true"
 				/>
 				<span className="grid grid-cols-[1fr_auto] gap-4">
-					<div className="truncate">{org.name}</div>
+					<div className="truncate">{org.name.split(":")[0]}</div>
 					<span className="font-mono text-xs text-grayDark">
 						({org.count.toLocaleString("en-GB")})
 					</span>
@@ -37,7 +37,16 @@ function OrgsLegendItem({
 			</li>
 		);
 	}, [org.name, org.color, org.count]);
-	if (org.isMain) return triggerContent;
+	if (org.isMain) {
+		return (
+			<Tooltip key={org.name} delayDuration={50} disableHoverableContent>
+				<TooltipTrigger asChild>{triggerContent}</TooltipTrigger>
+				<Portal>
+					<TooltipContent className="text-sm">{org.name}</TooltipContent>
+				</Portal>
+			</Tooltip>
+		);
+	}
 	return (
 		<Tooltip key={org.name} delayDuration={50}>
 			<TooltipTrigger asChild>{triggerContent}</TooltipTrigger>

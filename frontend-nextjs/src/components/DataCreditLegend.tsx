@@ -18,7 +18,7 @@ function DataCreditLegend({
 			<CollapsableSection
 				title={title}
 				storageKey={storageKey}
-				className="flex flex-col gap-4 w-full sm:w-96"
+				className="flex flex-col gap-4 w-full sm:w-80"
 			>
 				<div className="flex gap-8 justify-stretch flex-wrap">
 					{sources.map(({ label, links }) => (

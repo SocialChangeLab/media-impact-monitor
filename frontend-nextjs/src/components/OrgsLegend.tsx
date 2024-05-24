@@ -1,5 +1,6 @@
 "use client";
 import type { OrganisationType } from "@/utility/eventsUtil";
+import { ArrowRight } from "lucide-react";
 import { useMemo } from "react";
 import OrgsLegendItem from "./OrgsLegendItem";
 
@@ -41,8 +42,12 @@ function OrgsLegend({
 	if (allOrgs.length === 0) return null;
 	return (
 		<div className="flex flex-col gap-2">
-			<h5 className="font-bold">Color</h5>
-			<ul className="grid grid-cols-[repeat(auto-fill,minmax(min(15rem,100%),1fr))] gap-x-6 relative z-20">
+			<h5 className="font-bold flex gap-1 items-center">
+				<span>Color</span>
+				<ArrowRight size={16} className="text-grayDark" />
+				Organizations
+			</h5>
+			<ul className="grid grid-cols-[repeat(auto-fill,minmax(min(13rem,100%),1fr))] gap-x-6 relative z-20">
 				{allOrgs.map((org) => (
 					<OrgsLegendItem key={org.name} org={org} otherOrgs={otherOrgs} />
 				))}

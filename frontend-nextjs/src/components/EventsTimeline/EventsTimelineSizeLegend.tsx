@@ -1,5 +1,6 @@
 import { cn } from "@/utility/classNames";
 import type { ScalePower } from "d3-scale";
+import { ArrowRight } from "lucide-react";
 import { Fragment, memo, useMemo } from "react";
 import type { AggregationUnitType } from "./useAggregationUnit";
 
@@ -24,7 +25,18 @@ function EventsTimelineSizeLegend({
 
 	return (
 		<div className="flex flex-col gap-2">
-			<h5 className="font-bold">Size</h5>
+			<h5 className="font-bold flex gap-1 items-center">
+				<span>Size</span>
+				<ArrowRight size={16} className="text-grayDark" />
+				<span>
+					{aggragationUnit === "day"
+						? "Protest"
+						: `${aggragationUnit
+								.charAt(0)
+								.toUpperCase()}${aggragationUnit.slice(1)}ly`}{" "}
+					participants
+				</span>
+			</h5>
 			<div className="grid grid-cols-[auto_1fr] gap-x-4 gap-y-1 items-center">
 				{exampleSizes.map(({ id, size, height }) => (
 					<Fragment key={id}>
@@ -35,11 +47,7 @@ function EventsTimelineSizeLegend({
 							)}
 							style={{ height }}
 						/>
-						<span>
-							{size ? size.toLocaleString("en-GB") : "0 or unknown"}{" "}
-							{aggragationUnit === "day" ? "protest" : `${aggragationUnit}ly`}{" "}
-							participants
-						</span>
+						<span>{size ? size.toLocaleString("en-GB") : "0 or unknown"} </span>
 					</Fragment>
 				))}
 			</div>

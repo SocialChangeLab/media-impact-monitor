@@ -12,7 +12,8 @@ from datetime import date
 from functools import partial
 
 import pandas as pd
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
+from fastapi.responses import JSONResponse
 from starlette.middleware.cors import CORSMiddleware
 from starlette.responses import RedirectResponse
 from uvicorn.logging import AccessFormatter
@@ -76,6 +77,20 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+
+@app.exception_handler(Exception)
+async def global_exception_handler(request: Request, exc: Exception):
+    # Log the exception details including the stack trace
+    logger = logging.getLogger(__name__)
+    logger.error(exc, exc_info=True)
+
+    # Return a JSON response to the client with the exception details
+    return JSONResponse(
+        status_code=500,
+        content={"message": "Internal server error", "details": str(exc)},
+        media_type="application/json",
+    )
 
 
 @app.get("/", include_in_schema=False)

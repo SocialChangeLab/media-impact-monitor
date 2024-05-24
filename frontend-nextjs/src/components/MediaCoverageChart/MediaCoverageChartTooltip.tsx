@@ -30,19 +30,16 @@ function MediaCoverageChartTooltip({
 			<strong className="font-bold font-headlines text-base leading-tight pb-2 mb-2 border-b border-grayLight min-w-40">
 				{formatDateByAggregationUnit(item.date, aggregationUnit)}
 			</strong>
-			{[...topics]
-				.reverse()
-				.map(({ topic }) => ({ topic, value: item[topic] }))
-				.map(({ topic, value }, idx) => (
+			{topics
+				.map(({ topic, color }) => ({ topic, value: item[topic], color }))
+				.map(({ topic, value, color }, idx) => (
 					<div
 						key={topic}
 						className="grid grid-cols-[auto_1fr_auto] gap-2 items-center text-sm"
 					>
 						<span
 							className="size-3 rounded-full"
-							style={{
-								background: `var(--categorical-color-${topics.length - idx})`,
-							}}
+							style={{ background: color }}
 						/>
 						<strong className="font-bold">
 							{topic.charAt(0).toUpperCase()}

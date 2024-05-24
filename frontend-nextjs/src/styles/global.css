@@ -43,8 +43,8 @@
 		--categorical-color-14: #7EA73F;
 
 		--sentiment-positive: #229E74;
-		--sentiment-negative: #E69F00;
-		--sentiment-neutral: #D55E00;
+		--sentiment-negative: #D55E00;
+		--sentiment-neutral: #E69F00;
 
 		--protest-timeline-height: max(100vh - 32rem, 400px);
 		--media-coverage-chart-height: max(40vh, 440px);

@@ -30,8 +30,7 @@ function MediaCoverageChartTooltip({
 			<strong className="font-bold font-headlines text-base leading-tight pb-2 mb-2 border-b border-grayLight min-w-40">
 				{formatDateByAggregationUnit(item.date, aggregationUnit)}
 			</strong>
-			{[...topics]
-				.reverse()
+			{topics
 				.map(({ topic }) => ({ topic, value: item[topic] }))
 				.map(({ topic, value }, idx) => (
 					<div

@@ -80,8 +80,6 @@ const MediaSentimentChart = memo(
 			};
 		}, [data, intervals, isInSameUnit, aggregationUnit]);
 
-		const reversedTopics = useMemo(() => [...topics].reverse(), [topics]);
-
 		return (
 			<div className="media-sentiment-chart">
 				<style jsx global>{`
@@ -156,7 +154,7 @@ const MediaSentimentChart = memo(
 								if (!active || !payload || !item) return null;
 								return (
 									<MediaSentimentChartTooltip
-										topics={reversedTopics}
+										topics={topics}
 										aggregationUnit={aggregationUnit}
 										item={item}
 									/>
@@ -178,7 +176,7 @@ const MediaSentimentChart = memo(
 						))}
 					</BarChart>
 				</div>
-				<MediaSentimentChartLegend topics={reversedTopics} />
+				<MediaSentimentChartLegend topics={topics} />
 			</div>
 		);
 	},

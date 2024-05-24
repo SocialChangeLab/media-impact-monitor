@@ -88,8 +88,6 @@ const MediaCoverageChart = memo(
 			};
 		}, [data, intervals, isInSameUnit, aggregationUnit]);
 
-		const reversedTopics = useMemo(() => [...topics].reverse(), [topics]);
-
 		const idxsWithTicks = useMemo(
 			() => getIdxsWithTicks(intervals.length, size.width),
 			[intervals.length, size.width],
@@ -169,20 +167,20 @@ const MediaCoverageChart = memo(
 								if (!active || !payload || !item) return null;
 								return (
 									<MediaCoverageChartTooltip
-										topics={reversedTopics}
+										topics={topics}
 										aggregationUnit={aggregationUnit}
 										item={item}
 									/>
 								);
 							}}
 						/>
-						{topics.map(({ topic }, idx) => (
+						{topics.map(({ topic, color }, idx) => (
 							<Line
 								key={topic}
 								type="monotone"
 								dataKey={topic}
-								stroke={`var(--categorical-color-${idx + 1})`}
-								fill={`var(--categorical-color-${idx + 1})`}
+								stroke={color}
+								fill={color}
 								className={`media-coverage-item media-coverage-item-topic-${slugifyCssClass(
 									topic,
 								)} transition-all`}
@@ -191,7 +189,7 @@ const MediaCoverageChart = memo(
 						))}
 					</LineChart>
 				</div>
-				<MediaCoverageChartLegend topics={reversedTopics} />
+				<MediaCoverageChartLegend topics={topics} />
 			</div>
 		);
 	},

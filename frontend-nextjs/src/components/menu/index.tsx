@@ -33,9 +33,12 @@ export const Menu = ({ currentPage }: { currentPage: string }) => {
 			<Link
 				href="/"
 				title="Home"
-				className="opacity-100 motion-safe:transition-opacity hover:opacity-80 focusable"
+				className={cn(
+					"opacity-100 motion-safe:transition-opacity hover:opacity-80 focusable",
+					"flex items-start gap-3",
+				)}
 			>
-				<AppLogo />
+				<AppLogo /> <span className="text-grayDark text-sm">alpha</span>
 			</Link>
 			<ul
 				className={cn(`flex flex-col md:flex-row md:gap-4 items-center`)}

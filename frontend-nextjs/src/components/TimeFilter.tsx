@@ -1,11 +1,10 @@
 "use client";
-import { DatePickerWithRange } from "@/components/ui/date-range-picker";
 import { useFiltersStore } from "@/providers/FiltersStoreProvider";
+import { DatePickerWithRange } from "./ui/date-range-picker";
 
-function CalendarFilter() {
+function TimeFilter() {
 	const { from, to, defaultFrom, defaultTo, setDateRange, resetDateRange } =
-		useFiltersStore((store) => store);
-
+		useFiltersStore((state) => state);
 	return (
 		<DatePickerWithRange
 			defaultDateRange={{ from: defaultFrom, to: defaultTo }}
@@ -16,4 +15,4 @@ function CalendarFilter() {
 	);
 }
 
-export default CalendarFilter;
+export default TimeFilter;

@@ -1,5 +1,8 @@
 cache/
 mim
+backend-python/plots/
+profile.svg
+node_modules/
 
 ### macOS ------------------------------------------------------------------------
 # General
@@ -283,7 +286,7 @@ vignettes/*.pdf
 # .Renviron
 
 # pkgdown site
-docs/
+# docs/
 
 # translation temp files
 po/*~

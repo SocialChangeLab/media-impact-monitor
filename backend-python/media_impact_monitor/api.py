@@ -4,41 +4,68 @@ Run with: `uvicorn media_impact_monitor.api:app --reload`
 Or, if necessary: `poetry run uvicorn media_impact_monitor.api:app --reload`
 """
 
-from fastapi import FastAPI, HTTPException
-from joblib import hash as joblib_hash
+import json
+import logging
+import os
+from contextlib import asynccontextmanager
+
+import pandas as pd
+from fastapi import FastAPI
 from starlette.middleware.cors import CORSMiddleware
 from starlette.responses import RedirectResponse
+from uvicorn.logging import AccessFormatter
 
-from media_impact_monitor.data_loaders.news_online.mediacloud_ import (
-    get_mediacloud_counts,
-)
-from media_impact_monitor.data_loaders.news_print.genios import get_genios_counts
-from media_impact_monitor.data_loaders.protest.acled import get_acled_events
-from media_impact_monitor.data_loaders.protest.climate_groups import acled_keys
+from media_impact_monitor.cron import setup_cron
+from media_impact_monitor.events import get_events
+from media_impact_monitor.impact import get_impact
+from media_impact_monitor.trend import get_trend
 from media_impact_monitor.types_ import (
-    Count,
+    CountTimeSeries,
     Event,
     EventSearch,
     FulltextSearch,
     Impact,
     ImpactSearch,
+    Response,
     TrendSearch,
 )
-from media_impact_monitor.util.date import verify_dates
+
+git_commit = (os.getenv("VCS_REF") or "")[:7]
+build_date = (os.getenv("BUILD_DATE") or "WIP").replace("T", " ")
 
 metadata = dict(
     title="Media Impact Monitor API",
-    version="0.1.2",
+    version=f"0.1.0+{git_commit} ({build_date})",
     contact=dict(
         name="Social Change Lab",
         url="https://github.com/socialchangelab/media-impact-monitor",
     ),
     redoc_url="/docs",
+    # the original Swagger UI does not properly display POST parameters, so we disable it
     docs_url=None,
 )
 
-app = FastAPI(**metadata)
 
+# this is run only once at startup, rather than for every request
+@asynccontextmanager
+async def app_lifespan(app: FastAPI):
+    # setup logging to also include datetime
+    logger = logging.getLogger("uvicorn.access")
+    if logger.handlers:
+        console_formatter = AccessFormatter(
+            "{asctime} {levelprefix} {message}", style="{", use_colors=True
+        )
+        logger.handlers[0].setFormatter(console_formatter)
+    # setup cron to regularly fills the cache
+    setup_cron()
+    yield
+
+
+app = FastAPI(**metadata, lifespan=app_lifespan)
+
+# configure cross-origin resource sharing
+# = which websites are allowed to access the API
+# (enforced by the browsers for "security" reasons)
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -60,94 +87,37 @@ def get_info() -> dict:
 
 
 @app.post("/events")
-def get_events(q: EventSearch) -> tuple[EventSearch, list[Event]]:
+def _get_events(q: EventSearch) -> Response[EventSearch, list[Event]]:
     """Fetch events from the Media Impact Monitor database."""
-    try:
-        assert q.event_type == "protest", "Only protests are supported."
-        assert q.source == "acled", "Only ACLED is supported."
-        assert verify_dates(q.start_date, q.end_date)
-        if q.topic == "climate_change":
-            organizations = q.organizations or acled_keys
-            organizations = [org for org in organizations if org in acled_keys]
-        else:
-            raise ValueError(f"Unsupported topic: {q.topic}")
-        df = get_acled_events(
-            countries=["Germany"], start_date=q.start_date, end_date=q.end_date
-        )
-        if df.empty:
-            return q, []
-        if q.query:
-            assert not any(
-                sym in q.query.lower() for sym in ["or", "and", ",", "'", '"']
-            ), "Query must be a single keyword."
-            df = df[
-                df["organizations"]
-                .astype(str)
-                .str.lower()
-                .str.contains(q.query.lower())
-                | df["notes"].str.lower().str.contains(q.query.lower())
-            ]
-        if q.organizations:
-            df = df[
-                df["organizations"]
-                .astype(str)
-                .str.lower()
-                .str.contains("|".join(q.organizations).lower())
-            ]
-        df["date"] = df["date"].dt.date
-        df["event_type"] = q.event_type
-        df["source"] = q.source
-        df["topic"] = q.topic
-        df["event_id"] = df.apply(joblib_hash, axis=1, raw=True)
-        return q, df.to_dict(orient="records")
-    except Exception as e:
-        raise HTTPException(status_code=400, detail=f"{type(e).__name__}: {str(e)}")
+    df = get_events(q)
+    data = json.loads(df.to_json(orient="records"))  # convert nan to None
+    return Response(query=q, data=data)
 
 
 @app.post("/trend")
-def get_trend(q: TrendSearch) -> tuple[TrendSearch, list[Count]]:
+def _get_trend(q: TrendSearch):  # -> Response[TrendSearch, CountTimeSeries]:
     """Fetch media item counts from the Media Impact Monitor database."""
-    try:
-        assert q.trend_type == "keywords", "Only keywords are supported."
-        assert verify_dates(q.start_date, q.end_date)
-        match q.media_source:
-            case "news_online":
-                df = get_mediacloud_counts(
-                    query=q.query,
-                    start_date=q.start_date,
-                    end_date=q.end_date,
-                )
-                df = df.reset_index()
-                df["date"] = df["date"].dt.date
-                return q, df.to_dict(orient="records")
-            case "news_print":
-                df = get_genios_counts(
-                    query=q.query,
-                    start_date=q.start_date,
-                    end_date=q.end_date,
-                )
-                df = df.reset_index()
-                df["date"] = df["date"].dt.date
-                return q, df.to_dict(orient="records")
-            case _:
-                raise ValueError(f"Unsupported media source: {q.media_source}")
-    except Exception as e:
-        raise HTTPException(status_code=400, detail=f"{type(e).__name__}: {str(e)}")
+    df = get_trend(q)
+    long_df = pd.melt(
+        df.reset_index(), id_vars=["date"], var_name="topic", value_name="n_articles"
+    )
+    return Response(query=q, data=long_df.to_dict(orient="records"))
 
 
 @app.post("/fulltexts")
-def get_fulltexts(q: FulltextSearch) -> tuple[FulltextSearch, list[Event]]:
+def _get_fulltexts(q: FulltextSearch) -> Response[FulltextSearch, list[Event]]:
     """Fetch fulltexts from the Media Impact Monitor database."""
-    try:
-        raise NotImplementedError
-    except Exception as e:
-        raise HTTPException(status_code=400, detail=f"{type(e).__name__}: {str(e)}")
+    raise NotImplementedError
 
 
 @app.post("/impact")
-def get_impact(q: ImpactSearch) -> tuple[ImpactSearch, Impact]:
+def _get_impact(q: ImpactSearch):  # -> Response[ImpactSearch, Impact]:
     """Compute the impact of an event on a media trend."""
-    try:
-        raise NotImplementedError
-    except Exception as e:
-        raise HTTPException(status_code=400, detail=f"{type(e).__name__}: {str(e)}")
+    impact = get_impact(q)
+    return Response(query=q, data=impact)
+
+
+if __name__ == "__main__":
+    import uvicorn
+
+    uvicorn.run(app)

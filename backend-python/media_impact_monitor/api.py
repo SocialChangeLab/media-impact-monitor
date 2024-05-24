@@ -8,7 +8,8 @@ import json
 import logging
 import os
 from contextlib import asynccontextmanager
-from datetime import date, timedelta
+from datetime import date
+from functools import partial
 
 import pandas as pd
 from fastapi import FastAPI
@@ -30,6 +31,7 @@ from media_impact_monitor.types_ import (
     Response,
     TrendSearch,
 )
+from media_impact_monitor.util.date import get_latest_data
 
 git_commit = (os.getenv("VCS_REF") or "")[:7]
 build_date = (os.getenv("BUILD_DATE") or "WIP").replace("T", " ")
@@ -90,7 +92,7 @@ def get_info() -> dict:
 @app.post("/events")
 def _get_events(q: EventSearch) -> Response[EventSearch, list[Event]]:
     """Fetch events from the Media Impact Monitor database."""
-    df = get_events(q, request_date=date.today())
+    df = get_latest_data(partial(get_events, q))
     data = json.loads(df.to_json(orient="records"))  # convert nan to None
     return Response(query=q, data=data)
 

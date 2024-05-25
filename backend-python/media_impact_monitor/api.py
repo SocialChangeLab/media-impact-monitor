@@ -27,7 +27,6 @@ from media_impact_monitor.types_ import (
     FulltextSearch,
     Impact,
     ImpactSearch,
-    Policy,
     PolicySearch,
     Response,
     TrendSearch,

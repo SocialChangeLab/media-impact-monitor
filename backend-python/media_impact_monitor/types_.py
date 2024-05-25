@@ -1,6 +1,7 @@
+import datetime
 from dataclasses import dataclass
 from datetime import date
-from typing import Generic, Literal, TypeVar
+from typing import Generic, Literal, Optional, TypeVar
 
 from pydantic import BaseModel, Field
 
@@ -9,7 +10,6 @@ from pydantic import BaseModel, Field
 Topic = Literal["climate_change"]
 Query = str  # for now, just a single keyword
 MediaSource = Literal["news_online", "news_print", "web_google"]
-
 
 CountTimeSeries = dict[date, int]  # time series with integer values
 TimeSeries = dict[date, float]  # time series with float values
@@ -85,6 +85,51 @@ class TrendSearch(BaseModel):
     aggregation: Aggregation = Field(
         default="daily", description="The time aggregation of the trend."
     )
+
+
+#### Policy types ####
+
+PolicyLevel = Literal["Germany", "EU"]
+PolicyType = Literal[
+    "Gesetzgebung", "Petition", "Kleine Anfrage", "Bericht, Gutachten, Programm"
+]
+
+
+class PolicySearch(BaseModel):
+    policy_level: PolicyLevel = Field(
+        default="Germany",
+        description="Data from which policy level to obtain. German national policy or EU legislation.",
+    )
+    policy_type: PolicyType | None = Field(
+        default="Gesetzgebung",
+        description="What type of policy to obtain (currently only relevant for German national policies, `policy_level` = 'Germany')",
+    )
+    start_date: date = Field(
+        default=date(2023, 10, 31),
+        description="",
+    )
+    end_date: date = Field(
+        default=date(2023, 12, 31),
+        description="",
+    )
+    # institution: # defaults to "BT" for now
+    topic: Optional[Topic] | None = Field(
+        None,
+        description="What policy topic to filter for. Currently only 'climate_change'.",
+    )
+
+
+# @dataclass
+# class Policy(BaseModel):
+#     id: str
+#     datum: datetime.datetime
+#     aktualisiert: datetime.datetime
+#     vorgangstyp: str
+#     titel: str
+#     abstract: str
+#     initiative: list[str]
+#     sachgebiet: list[str]
+#     beratungsstand: str
 
 
 #### Fulltext types ####

@@ -39,7 +39,7 @@ def _call_bundestag_api(endpoint: str, params: Dict) -> list:
 
     # paginate until cursor does not change anymore
     while True:
-        print("Making new request...")
+        # print("Making new request...")
         try:
             # response = requests.get(url, params=params)
             response = get(url, params=params, sleep=DELAY)

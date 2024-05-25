@@ -1,7 +1,7 @@
+# poetry run pytest -k "get_policy" -v
+
 # %load_ext autoreload
 # %autoreload 2
-
-# poetry run pytest -k "get_policy" -v
 
 from datetime import date
 
@@ -15,12 +15,27 @@ from media_impact_monitor.types_ import PolicySearch
 
 
 def test_get_policy_with_defaults():
-    """Test that events can be retrieved by their IDs."""
-    df = get_policy(PolicySearch())
+    with pytest.raises(ValidationError):
+        get_policy(PolicySearch())
 
-    assert df is not None
-    assert isinstance(df, pd.DataFrame)
-    assert all(df["vorgangstyp"] == "Gesetzgebung")
+
+def test_get_policy_dates():
+    start_date = date(2023, 1, 1)
+    end_date = date(2023, 3, 1)
+    policy_type = "Gesetzgebung"
+    topic = "climate_change"
+
+    df = get_policy(
+        PolicySearch(
+            start_date=start_date,
+            end_date=end_date,
+            policy_type=policy_type,
+            topic=topic,
+        )
+    )
+
+    assert all(df["datum"] >= start_date)
+    assert all(df["datum"] <= end_date)
 
 
 def test_get_policy_with_valid_parameters():
@@ -41,7 +56,7 @@ def test_get_policy_with_valid_parameters():
     assert df is not None
     assert isinstance(df, pd.DataFrame)
     assert all(df["vorgangstyp"] == policy_type)
-    assert len(df) > 50
+    assert len(df) == 49
 
 
 def test_get_policy_invalid_policy_type():

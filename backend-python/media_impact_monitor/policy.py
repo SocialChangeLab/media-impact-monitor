@@ -33,6 +33,8 @@ def get_policy(q: PolicySearch) -> pd.DataFrame:
             )
         case "EU":
             raise NotImplementedError()
+        case _:
+            raise ValueError(f"Unsupported policy level: {q.policy_level}")
 
     match q.topic:
         case None:

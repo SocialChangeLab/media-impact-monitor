@@ -105,11 +105,11 @@ class PolicySearch(BaseModel):
         description="What type of policy to obtain (currently only relevant for German national policies, `policy_level` = 'Germany')",
     )
     start_date: date = Field(
-        default=date(2023, 10, 31),
+        # default=date(2023, 10, 31),
         description="",
     )
     end_date: date = Field(
-        default=date(2023, 12, 31),
+        # default=date(2023, 12, 31),
         description="",
     )
     # institution: # defaults to "BT" for now

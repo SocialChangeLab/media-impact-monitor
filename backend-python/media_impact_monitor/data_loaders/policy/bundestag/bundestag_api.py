@@ -142,8 +142,8 @@ def _clean_vorgaenge(df: pd.DataFrame):
 
 @cache
 def get_bundestag_vorgaenge(
-    start_date: date | None = None,
-    end_date: date | None = None,
+    start_date: date,
+    end_date: date,
     vorgangstyp: str | None = None,
     institution: str | None = None,
     # sachgebiet: str | None = None, # only supports AND not OR
@@ -151,14 +151,15 @@ def get_bundestag_vorgaenge(
     """Fetch 'Vorgänge' from the Bundestag DIP API.
     API documentation: https://search.dip.bundestag.de/api/v1/swagger-ui
     """
-    start_date = start_date or date(2024, 1, 1)
-    end_date = end_date or date.today()
+    start_date = start_date
+    end_date = end_date
     institution = institution or "BT"  # defaults to Bundestag
     cursor = None
 
     ## Checks ##
-    assert start_date >= date(2020, 1, 1), "Start date must be after 2020-01-01."
     assert verify_dates(start_date, end_date)
+    assert start_date >= date(2020, 1, 1), "start_date must be after 2020-01-01."
+    assert end_date >= date(2020, 1, 1), "end_date must be after 2020-01-01."
 
     institution_options = ["BT", "BR", "BV", "EK"]
     assert (
@@ -196,4 +197,9 @@ def get_bundestag_vorgaenge(
         return df
 
     df = _clean_vorgaenge(df)
+
+    # fixes API error for date overflow
+    df = df[df["datum"] >= start_date]
+    df = df[df["datum"] <= end_date]
+
     return df

@@ -26,10 +26,10 @@ This is where the _Media Impact Monitor_ comes in: It uses innovative causal inf
 
 ## Team
 
-The project team is constituted from:
+The project team consists of:
 
 - **David Pomerenke** (@davidpomerenke) – Data Science – M.Sc. Artificial Intelligence
-- **Lennard Klein** (@kleinlennart) – Data Science – B.A. Political Science
+- **Lennart Klein** (@kleinlennart) – Data Science – B.A. Political Science
 - **Lucas Vogel** (@vogelino) – Frontend UI/UX Development – B.A. Interface Design
 
 ## Contact

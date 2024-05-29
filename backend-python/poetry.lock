@@ -4196,20 +4196,6 @@ files = [
 diagrams = ["jinja2", "railroad-diagrams"]
 
 [[package]]
-name = "pyprojroot"
-version = "0.3.0"
-description = "Project-oriented workflow in Python"
-optional = false
-python-versions = ">=3.7"
-files = [
-    {file = "pyprojroot-0.3.0-py3-none-any.whl", hash = "sha256:c426b51b17ab4f4d4f95b479cf5b6c22df59bb58fbd4f01b37a6977d29b99888"},
-    {file = "pyprojroot-0.3.0.tar.gz", hash = "sha256:109705bb790968704958efcfc5ccce85d8e3dafa054897cc81371fcbbf56cb10"},
-]
-
-[package.dependencies]
-typing-extensions = "*"
-
-[[package]]
 name = "pytensor"
 version = "2.17.1"
 description = "Optimizing compiler for evaluating mathematical expressions on CPUs and GPUs."
@@ -6256,4 +6242,4 @@ testing = ["big-O", "jaraco.functools", "jaraco.itertools", "more-itertools", "p
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.10"
-content-hash = "b1c46d71b09e2a11fd037042a3f3ada4c32b471afcfdddad412e0cb213d53535"
+content-hash = "c320722ff7a97556136e3cbab6498cc973da8d469bd0dfe00de8b6e8d351be8d"

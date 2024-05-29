@@ -123,7 +123,7 @@ def _get_impact(q: ImpactSearch):  # -> Response[ImpactSearch, Impact]:
 def _get_policy(q: PolicySearch):  # -> Response[PolicySearch, Policy]:
     """Fetch policy data from the Media Impact Monitor database."""
     policy = get_policy(q)
-    return Response(query=q, data=policy)
+    return Response(query=q, data=policy.to_dict(orient="records"))
 
 
 if __name__ == "__main__":

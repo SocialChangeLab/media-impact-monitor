@@ -1,7 +1,7 @@
 """API for the Media Impact Monitor.
 
 Run with: `uvicorn media_impact_monitor.api:app --reload`
-Or, if necessary: `poetry run uvicorn media_impact_monitor.api:app --reload`
+Or, if necessary: `poetry run uvicorn media_impact_monitor.api:app --reload` in "backend-python/"
 """
 
 import json
@@ -21,6 +21,7 @@ from uvicorn.logging import AccessFormatter
 from media_impact_monitor.cron import setup_cron
 from media_impact_monitor.events import get_events
 from media_impact_monitor.impact import get_impact
+from media_impact_monitor.policy import get_policy
 from media_impact_monitor.trend import get_trend
 from media_impact_monitor.types_ import (
     CountTimeSeries,
@@ -29,6 +30,7 @@ from media_impact_monitor.types_ import (
     FulltextSearch,
     Impact,
     ImpactSearch,
+    PolicySearch,
     Response,
     TrendSearch,
 )
@@ -133,6 +135,13 @@ def _get_impact(q: ImpactSearch):  # -> Response[ImpactSearch, Impact]:
     """Compute the impact of an event on a media trend."""
     impact = get_impact(q, request_date=date.today())
     return Response(query=q, data=impact)
+
+
+@app.post("/policy")
+def _get_policy(q: PolicySearch):  # -> Response[PolicySearch, Policy]:
+    """Fetch policy data from the Media Impact Monitor database."""
+    policy = get_policy(q)
+    return Response(query=q, data=policy.to_dict(orient="records"))
 
 
 if __name__ == "__main__":

@@ -8,7 +8,7 @@ const team = [
 		image: portraitDavid,
 		name: "David Pomerenke",
 		title: "Data Science",
-		bio: "M.A. Artificial Intelligence",
+		bio: "M.Sc. Artificial Intelligence",
 		tags: ["causal inference"],
 	},
 	{

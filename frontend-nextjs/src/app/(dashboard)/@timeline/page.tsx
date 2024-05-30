@@ -1,24 +1,18 @@
 import EventsTimeline from "@/components/EventsTimeline/EventsTimeline";
-import { defaultInitState } from "@/stores/filtersStore";
-import { getEventsData } from "@/utility/eventsUtil";
-import { parseSearchParamsFilters } from "@/utility/searchParamsUtil";
+import SectionHeadlineWithExplanation from "@/components/SectionHeadlineWithExplanation";
+import TimeFilter from "@/components/TimeFilter";
 
-async function TimelineRoute({
-	searchParams,
-}: {
-	searchParams?: { [key: string]: string | string[] | undefined };
-}) {
-	const { from, to } = parseSearchParamsFilters(searchParams);
-	const data = await getEventsData(
-		from && to
-			? { from, to }
-			: {
-					from: defaultInitState.from,
-					to: defaultInitState.to,
-				},
+async function TimelineRoute() {
+	return (
+		<SectionHeadlineWithExplanation
+			headline="Protest Timeline"
+			description="See protests over time for each of the selected organisations"
+			help="See protests over time for each of the selected organisations"
+			additionalUi={<TimeFilter />}
+		>
+			<EventsTimeline />
+		</SectionHeadlineWithExplanation>
 	);
-
-	return <EventsTimeline data={data} />;
 }
 
 export default TimelineRoute;

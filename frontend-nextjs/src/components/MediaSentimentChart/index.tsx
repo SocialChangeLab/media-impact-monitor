@@ -13,8 +13,8 @@ import useAggregationUnit, {
 import { slugifyCssClass } from "@/utility/cssSlugify";
 import { parseErrorMessage } from "@/utility/errorHandlingUtil";
 import useMediaSentimentData from "@/utility/useMediaSentiment";
+import EmptyEventsTimeline from "../EventsTimeline/EmptyEventsTimeline";
 import TopicChartTooltip from "../TopicChartTooltip";
-import MediaSentimentChartEmpty from "./MediaSentimentChartEmpty";
 import MediaSentimentChartError from "./MediaSentimentChartError";
 import MediaSentimentChartLegend from "./MediaSentimentChartLegend";
 import MediaSentimentChartLoading from "./MediaSentimentChartLoading";
@@ -182,19 +182,17 @@ const MediaSentimentChart = memo(
 	},
 );
 
-export default function MediaSentimentChartWithData({
-	data: initialData,
-}: {
-	data: MediaSentimentType[];
-}) {
-	const { data, isPending, error } = useMediaSentimentData(initialData);
-	if (error)
+export default function MediaSentimentChartWithData() {
+	const { data, isPending, error, isError, isSuccess } =
+		useMediaSentimentData();
+	if (isPending) return <MediaSentimentChartLoading />;
+	if (isError) {
 		return (
 			<MediaSentimentChartError
 				{...parseErrorMessage(error, "media sentiment data")}
 			/>
 		);
-	if (isPending) return <MediaSentimentChartLoading />;
-	if (!data) return <MediaSentimentChartEmpty />;
-	return <MediaSentimentChart data={data} />;
+	}
+	if (isSuccess && data) return <MediaSentimentChart data={data} />;
+	return <EmptyEventsTimeline />;
 }

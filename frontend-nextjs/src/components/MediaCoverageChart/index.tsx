@@ -195,12 +195,8 @@ const MediaCoverageChart = memo(
 	},
 );
 
-export default function MediaCoverageChartWithData({
-	data: initialData,
-}: {
-	data: MediaCoverageType[];
-}) {
-	const { data, isPending, error } = useMediaCoverageData(initialData);
+export default function MediaCoverageChartWithData() {
+	const { data, isPending, error } = useMediaCoverageData();
 	if (error)
 		return (
 			<MediaCoverageChartError

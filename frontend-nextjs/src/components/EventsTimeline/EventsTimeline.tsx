@@ -1,6 +1,6 @@
 "use client";
-import TimelineRouteError from "@/app/(events)/@timeline/error";
-import TimelineRouteLoading from "@/app/(events)/@timeline/loading";
+import TimelineRouteError from "@/app/(dashboard)/@timeline/error";
+import LoadingEventsTimeline from "@/components/EventsTimeline/LoadingEventsTimeline";
 import { cn } from "@/utility/classNames";
 import type { EventType, OrganisationType } from "@/utility/eventsUtil";
 import useEvents from "@/utility/useEvents";
@@ -187,13 +187,10 @@ function EventsTimeline({
 	);
 }
 
-export default function EventsTimelineWithData({
-	data: initialData,
-}: {
-	data: EventType[];
-}) {
-	const { data, isPending, error } = useEvents(initialData);
-	if (isPending) return <TimelineRouteLoading />;
-	if (error) return <TimelineRouteError error={error} />;
-	return <EventsTimeline data={data} />;
+export default function EventsTimelineWithData() {
+	const { data, isPending, isError, isSuccess, error } = useEvents();
+	if (isPending) return <LoadingEventsTimeline />;
+	if (isError) return <TimelineRouteError error={error} />;
+	if (isSuccess && data) return <EventsTimeline data={data} />;
+	return <EmptyEventsTimeline />;
 }

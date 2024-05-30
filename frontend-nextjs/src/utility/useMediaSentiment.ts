@@ -13,12 +13,13 @@ function useMediaSentimentData(
 	const fromDateString = format(from, "yyyy-MM-dd");
 	const toDateString = format(to, "yyyy-MM-dd");
 	const queryKey = ["mediaSentiment", fromDateString, toDateString];
-	const { data, isPending, error } = useQuery({
+	const query = useQuery({
 		queryKey,
 		queryFn: async () => await getMediaSentimentData({ from, to }),
 		initialData: initialData,
 		staleTime: endOfDay(new Date()).getTime() - new Date().getTime(),
 	});
+	const { error } = query;
 
 	useEffect(() => {
 		if (!error) return;
@@ -29,11 +30,7 @@ function useMediaSentimentData(
 		});
 	}, [error]);
 
-	return {
-		data,
-		isPending,
-		error: error,
-	};
+	return query;
 }
 
 export default useMediaSentimentData;

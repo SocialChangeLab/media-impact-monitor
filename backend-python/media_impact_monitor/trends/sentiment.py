@@ -31,10 +31,43 @@ tools = [
 ]
 
 
-def sentiment(text: str) -> float:
+# classic trinary sentiment classification
+def get_sentiment_classification(text: str) -> float:
     messages = [
         {"role": "system", "content": system_prompt},
         {"role": "user", "content": text},
+    ]
+    try:
+        response = completion(
+            messages=messages,
+            tools=tools,
+            tool_choice={"type": "function", "function": {"name": "score_sentiment"}},
+            temperature=0.0,
+        )
+    except BadRequestError as e:
+        print(e)
+        print(text)
+        print(response)
+        return
+    return json.loads(response.choices[0].message.tool_calls[0].function.arguments)
+
+
+# aspect-based sentiment analysis (ABSA) - see Wang et al. (2024)
+# TODO: needs more extensive validation
+def get_aspect_sentiment(text: str, aspect: str) -> float:
+    assert aspect in [
+        "protest",
+        "climate change",
+        "climate policy",
+        "politicians",
+        "protesters' demands",
+        "protesters' protest actions",
+    ], f"Aspect {aspect} is currently not supported"
+
+    user_prompt = f"What is the sentiment towards the aspect '{aspect}' in this text? Text: {text}"
+    messages = [
+        {"role": "system", "content": system_prompt},
+        {"role": "user", "content": user_prompt},
     ]
     try:
         response = completion(

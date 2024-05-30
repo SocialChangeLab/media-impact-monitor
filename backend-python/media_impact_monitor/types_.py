@@ -1,15 +1,17 @@
 import datetime
 from dataclasses import dataclass
-from datetime import date
+from datetime import date, datetime
 from typing import Generic, Literal, Optional, TypeVar
 
 from pydantic import BaseModel, Field
 
 #### General types ####
 
+# FIXME: consider renaming "Topic" to "Issue" to avoid confusion with topics within the issue (like science or policy)
 Topic = Literal["climate_change"]
 Query = str  # for now, just a single keyword
 MediaSource = Literal["news_online", "news_print", "web_google"]
+Country = Literal["Germany"]
 
 CountTimeSeries = dict[date, int]  # time series with integer values
 TimeSeries = dict[date, float]  # time series with float values
@@ -72,18 +74,26 @@ TrendType = Literal["keywords", "topic", "sentiment"]
 Aggregation = Literal["daily", "weekly", "monthly"]
 
 
+# FIXME: add time range params?
 class TrendSearch(BaseModel):
     trend_type: TrendType = Field(
         description="What type of trend to obtain: the frequency of a keyword, the value of a sentiment, or the frequencies of multiple sub-topics. Depending on the type, you have further configuration options. Currently only keyword frequencies are supported."
     )
     media_source: MediaSource = Field(
-        description="The data source for the media data, i. e. online news, print news, parliamentary speech, etc."
+        description="The data source for the media data (i.e., online news, print news, etc.)."
     )
     topic: Topic | None = Field(
         description="When retrieving keyword frequencies, this automatically sets relevant sets of keywords. Currently only _climate_change_ is supported."
     )
     aggregation: Aggregation = Field(
         default="daily", description="The time aggregation of the trend."
+    )
+    query: Query | None = Field(default=None, description="Custom query.")
+    organizers: list[str] | None = Field(
+        default=None, description="The organizations involved in the event."
+    )
+    countries: list[Country] = Field(
+        default=["Germany"], description="The country where news was published."
     )
 
 
@@ -136,17 +146,36 @@ class PolicySearch(BaseModel):
 
 
 class FulltextSearch(BaseModel):
-    media_source: MediaSource
+    media_source: MediaSource = Field(
+        description="The data source for the media data (i.e., online news, print news, etc.)."
+    )
     start_date: date
-    end_date: date
-    topic: Topic | None = None
-    query: Query | None = None
-    organizers: list[str] | None = None
+    # FIXME: setup coherent interface for API, is set to today in MediaCloud script for now
+    # end_date: date | None = Field(
+    #     default=None,
+    #     description="Date up until when fulltexts are retrieved. Defaults to current date if None.",
+    # )
+    topic: Topic | None = Field(
+        description="This automatically picks a relevant set of keywords. Currently only _climate_change_ is supported."
+    )
+    query: Query | None = Field(default=None, description="Custom query.")
+    organizers: list[str] | None = Field(
+        default=None, description="The organizations involved in the event."
+    )
+    countries: list[Country] = Field(
+        default=["Germany"], description="The country where news was published."
+    )
 
 
 class Fulltext(BaseModel):
-    date: date
+    id: str
+    media_name: str
+    media_url: str
     title: str
+    publish_date: datetime
+    url: str
+    language: str
+    indexed_date: datetime
     text: str
 
 

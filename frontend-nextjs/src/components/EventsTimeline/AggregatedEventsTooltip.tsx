@@ -6,10 +6,10 @@ import {
 import { cn } from "@/utility/classNames";
 import type { EventType, OrganisationType } from "@/utility/eventsUtil";
 import { format } from "date-fns";
-import { memo, useMemo, type ReactNode } from "react";
+import { type ReactNode, memo, useMemo } from "react";
 import {
-	formatDateByAggregationUnit,
 	type AggregationUnitType,
+	formatDateByAggregationUnit,
 } from "./useAggregationUnit";
 
 function AggregatedEventsTooltip({

@@ -1,13 +1,10 @@
 "use client";
 import { useFiltersStore } from "@/providers/FiltersStoreProvider";
 import { useQuery } from "@tanstack/react-query";
-import { format } from "date-fns";
+import { endOfDay, format } from "date-fns";
 import { useEffect } from "react";
 import { toast } from "sonner";
-import {
-	getMediaSentimentData,
-	type MediaSentimentType,
-} from "./mediaSentimentUtil";
+import { getMediaSentimentData } from "./mediaSentimentUtil";
 
 function useMediaSentimentData(
 	initialData?: Awaited<ReturnType<typeof getMediaSentimentData>>,
@@ -16,10 +13,11 @@ function useMediaSentimentData(
 	const fromDateString = format(from, "yyyy-MM-dd");
 	const toDateString = format(to, "yyyy-MM-dd");
 	const queryKey = ["mediaSentiment", fromDateString, toDateString];
-	const { data, isPending, error } = useQuery<MediaSentimentType[], Error>({
+	const { data, isPending, error } = useQuery({
 		queryKey,
 		queryFn: async () => await getMediaSentimentData({ from, to }),
 		initialData: initialData,
+		staleTime: endOfDay(new Date()).getTime() - new Date().getTime(),
 	});
 
 	useEffect(() => {

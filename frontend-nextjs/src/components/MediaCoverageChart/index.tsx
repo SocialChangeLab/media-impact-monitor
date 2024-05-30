@@ -4,7 +4,7 @@ import useTimeIntervals, {
 	isInSameAggregationUnit,
 } from "@/utility/useTimeIntervals";
 import useElementSize from "@custom-react-hooks/use-element-size";
-import { memo, useCallback, useMemo } from "react";
+import { Suspense, memo, useCallback, useMemo } from "react";
 import {
 	CartesianGrid,
 	Line,
@@ -21,6 +21,8 @@ import TopicChartTooltip from "@/components/TopicChartTooltip";
 import { slugifyCssClass } from "@/utility/cssSlugify";
 import { parseErrorMessage } from "@/utility/errorHandlingUtil";
 import useMediaCoverageData from "@/utility/useKeywords";
+import { QueryErrorResetBoundary } from "@tanstack/react-query";
+import { ErrorBoundary } from "next/dist/client/components/error-boundary";
 import { getIdxsWithTicks } from "../EventsTimeline/EventsTimelineAxis";
 import MediaCoverageChartEmpty from "./MediaCoverageChartEmpty";
 import MediaCoverageChartError from "./MediaCoverageChartError";
@@ -195,15 +197,29 @@ const MediaCoverageChart = memo(
 	},
 );
 
-export default function MediaCoverageChartWithData() {
-	const { data, isPending, error } = useMediaCoverageData();
-	if (error)
-		return (
-			<MediaCoverageChartError
-				{...parseErrorMessage(error, "media sentiment data")}
-			/>
-		);
-	if (isPending) return <MediaCoverageChartLoading />;
-	if (!data) return <MediaCoverageChartEmpty />;
-	return <MediaCoverageChart data={data} />;
+function MediaCoverageChartWithData() {
+	const { data, isFetching } = useMediaCoverageData();
+	if (isFetching) return <MediaCoverageChartLoading />;
+	if (data) return <MediaCoverageChart data={data} />;
+	return <MediaCoverageChartEmpty />;
+}
+export default function MediaCoverageChartWithErrorBoundary() {
+	return (
+		<QueryErrorResetBoundary>
+			{({ reset }) => (
+				<ErrorBoundary
+					errorComponent={({ error }) => (
+						<MediaCoverageChartError
+							{...parseErrorMessage(error)}
+							reset={reset}
+						/>
+					)}
+				>
+					<Suspense fallback={<MediaCoverageChartLoading />}>
+						<MediaCoverageChartWithData />
+					</Suspense>
+				</ErrorBoundary>
+			)}
+		</QueryErrorResetBoundary>
+	);
 }

@@ -1,22 +1,19 @@
 "use client";
 import { useFiltersStore } from "@/providers/FiltersStoreProvider";
-import { useQuery } from "@tanstack/react-query";
+import { useSuspenseQuery } from "@tanstack/react-query";
 import { endOfDay, format } from "date-fns";
 import { useEffect } from "react";
 import { toast } from "sonner";
 import { getMediaSentimentData } from "./mediaSentimentUtil";
 
-function useMediaSentimentData(
-	initialData?: Awaited<ReturnType<typeof getMediaSentimentData>>,
-) {
+function useMediaSentimentData() {
 	const { from, to } = useFiltersStore(({ from, to }) => ({ from, to }));
 	const fromDateString = format(from, "yyyy-MM-dd");
 	const toDateString = format(to, "yyyy-MM-dd");
 	const queryKey = ["mediaSentiment", fromDateString, toDateString];
-	const query = useQuery({
+	const query = useSuspenseQuery({
 		queryKey,
 		queryFn: async () => await getMediaSentimentData({ from, to }),
-		initialData: initialData,
 		staleTime: endOfDay(new Date()).getTime() - new Date().getTime(),
 	});
 	const { error } = query;

@@ -1,6 +1,6 @@
 import { cn } from "@/utility/classNames";
 
-function MediaCoverageChartEmpty() {
+function MediaSentimentChartEmpty() {
 	return (
 		<div
 			className={cn(
@@ -14,4 +14,4 @@ function MediaCoverageChartEmpty() {
 	);
 }
 
-export default MediaCoverageChartEmpty;
+export default MediaSentimentChartEmpty;

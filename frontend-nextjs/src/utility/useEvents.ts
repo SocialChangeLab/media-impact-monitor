@@ -1,6 +1,6 @@
 "use client";
 import { useFiltersStore } from "@/providers/FiltersStoreProvider";
-import { useQuery } from "@tanstack/react-query";
+import { useSuspenseQuery } from "@tanstack/react-query";
 import { endOfDay, format, isAfter, isBefore } from "date-fns";
 import { useEffect, useMemo } from "react";
 import { toast } from "sonner";
@@ -10,7 +10,7 @@ import {
 	type OrganisationType,
 } from "./eventsUtil";
 
-function useEvents(initialData?: Awaited<ReturnType<typeof getEventsData>>) {
+function useEvents() {
 	const { from, to } = useFiltersStore(({ from, to }) => ({
 		from,
 		to,
@@ -18,10 +18,9 @@ function useEvents(initialData?: Awaited<ReturnType<typeof getEventsData>>) {
 	const fromDateString = format(from, "yyyy-MM-dd");
 	const toDateString = format(to, "yyyy-MM-dd");
 	const queryKey = ["events", fromDateString, toDateString];
-	const query = useQuery({
+	const query = useSuspenseQuery({
 		queryKey,
 		queryFn: async () => await getEventsData({ from, to }),
-		initialData: initialData,
 		staleTime: endOfDay(new Date()).getTime() - new Date().getTime(),
 	});
 	const { data, isPending, error } = query;

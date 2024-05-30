@@ -5,12 +5,12 @@ import EventsTimelineWrapper from "./EventsTimelinWrapper";
 import EventsTimelineChartWrapper from "./EventsTimelineChartWrapper";
 
 export default function ErrorEventsTimeline({
-	errorMessage,
-	errorDetails,
+	message,
+	details,
 	reset,
 }: {
-	errorMessage: string;
-	errorDetails?: string;
+	message: string;
+	details?: string;
 	reset?: () => void;
 }) {
 	return (
@@ -24,9 +24,9 @@ export default function ErrorEventsTimeline({
 					)}
 				>
 					<ComponentError
-						errorMessage={errorMessage}
+						errorMessage={message}
 						reset={reset}
-						errorDetails={errorDetails}
+						errorDetails={details}
 					/>
 				</div>
 			</EventsTimelineChartWrapper>

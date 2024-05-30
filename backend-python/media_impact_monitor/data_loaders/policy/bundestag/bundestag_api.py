@@ -17,6 +17,7 @@ import requests
 
 from media_impact_monitor.util.cache import cache, get
 from media_impact_monitor.util.date import verify_dates
+from media_impact_monitor.util.env import BUNDESTAG_API_KEY
 
 # TODO: add exponential backoff after rate limit exceeded errors
 
@@ -178,7 +179,7 @@ def get_bundestag_vorgaenge(
     ), f"`Sachgebiet` must be one of {vorgangstyp_options}"
 
     parameters = {
-        "apikey": os.environ["BUNDESTAG_API_KEY"],
+        "apikey": BUNDESTAG_API_KEY,
         "f.datum.start": start_date.strftime("%Y-%m-%d"),
         "f.datum.end": end_date.strftime("%Y-%m-%d"),
         "f.zuordnung": institution,

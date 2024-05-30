@@ -1,6 +1,6 @@
 import { cn } from "@/utility/classNames";
 import { Info } from "lucide-react";
-import type { ReactNode } from "react";
+import { memo, type ReactNode } from "react";
 import { Button } from "./ui/button";
 import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
 
@@ -54,4 +54,4 @@ function SectionHeadlineWithExplanation({
 	);
 }
 
-export default SectionHeadlineWithExplanation;
+export default memo(SectionHeadlineWithExplanation);

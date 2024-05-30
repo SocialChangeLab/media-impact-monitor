@@ -4,7 +4,7 @@ import useTimeIntervals, {
 	isInSameAggregationUnit,
 } from "@/utility/useTimeIntervals";
 import useElementSize from "@custom-react-hooks/use-element-size";
-import { memo, useCallback, useMemo } from "react";
+import { Suspense, memo, useCallback, useMemo } from "react";
 import { Bar, BarChart, CartesianGrid, Tooltip, XAxis, YAxis } from "recharts";
 
 import useAggregationUnit, {
@@ -13,6 +13,8 @@ import useAggregationUnit, {
 import { slugifyCssClass } from "@/utility/cssSlugify";
 import { parseErrorMessage } from "@/utility/errorHandlingUtil";
 import useMediaSentimentData from "@/utility/useMediaSentiment";
+import { QueryErrorResetBoundary } from "@tanstack/react-query";
+import { ErrorBoundary } from "next/dist/client/components/error-boundary";
 import TopicChartTooltip from "../TopicChartTooltip";
 import MediaSentimentChartEmpty from "./MediaSentimentChartEmpty";
 import MediaSentimentChartError from "./MediaSentimentChartError";
@@ -182,19 +184,29 @@ const MediaSentimentChart = memo(
 	},
 );
 
-export default function MediaSentimentChartWithData({
-	data: initialData,
-}: {
-	data: MediaSentimentType[];
-}) {
-	const { data, isPending, error } = useMediaSentimentData(initialData);
-	if (error)
-		return (
-			<MediaSentimentChartError
-				{...parseErrorMessage(error, "media sentiment data")}
-			/>
-		);
-	if (isPending) return <MediaSentimentChartLoading />;
-	if (!data) return <MediaSentimentChartEmpty />;
-	return <MediaSentimentChart data={data} />;
+function MediaSentimentChartWithData() {
+	const { data, isFetching } = useMediaSentimentData();
+	if (isFetching) return <MediaSentimentChartLoading />;
+	if (data) return <MediaSentimentChart data={data} />;
+	return <MediaSentimentChartEmpty />;
+}
+export default function MediaCoverageChartWithErrorBoundary() {
+	return (
+		<QueryErrorResetBoundary>
+			{({ reset }) => (
+				<ErrorBoundary
+					errorComponent={({ error }) => (
+						<MediaSentimentChartError
+							{...parseErrorMessage(error)}
+							reset={reset}
+						/>
+					)}
+				>
+					<Suspense fallback={<MediaSentimentChartLoading />}>
+						<MediaSentimentChartWithData />
+					</Suspense>
+				</ErrorBoundary>
+			)}
+		</QueryErrorResetBoundary>
+	);
 }

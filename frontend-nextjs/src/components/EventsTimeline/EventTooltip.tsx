@@ -3,7 +3,7 @@ import { cn } from "@/utility/classNames";
 import type { EventType, OrganisationType } from "@/utility/eventsUtil";
 import { format } from "date-fns";
 import { Users } from "lucide-react";
-import { useMemo, useState, type PropsWithChildren } from "react";
+import { type PropsWithChildren, useMemo, useState } from "react";
 import { Button } from "../ui/button";
 
 function EventTooltip({

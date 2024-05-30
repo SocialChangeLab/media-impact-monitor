@@ -1,7 +1,7 @@
 "use client";
-import TimelineRouteError from "@/app/(events)/@timeline/error";
-import TimelineRouteLoading from "@/app/(events)/@timeline/loading";
+import LoadingEventsTimeline from "@/components/EventsTimeline/LoadingEventsTimeline";
 import { cn } from "@/utility/classNames";
+import { parseErrorMessage } from "@/utility/errorHandlingUtil";
 import type { EventType, OrganisationType } from "@/utility/eventsUtil";
 import useEvents from "@/utility/useEvents";
 import useTimeIntervals, {
@@ -9,13 +9,16 @@ import useTimeIntervals, {
 } from "@/utility/useTimeIntervals";
 import useTimeScale from "@/utility/useTimeScale";
 import useElementSize from "@custom-react-hooks/use-element-size";
+import { QueryErrorResetBoundary } from "@tanstack/react-query";
 import { scalePow } from "d3-scale";
 import { startOfDay } from "date-fns";
-import { useCallback, useMemo } from "react";
+import { ErrorBoundary } from "next/dist/client/components/error-boundary";
+import { Suspense, useCallback, useMemo } from "react";
 import CollapsableSection from "../CollapsableSection";
 import DataCreditLegend from "../DataCreditLegend";
 import OrgsLegend from "../OrgsLegend";
 import EmptyEventsTimeline from "./EmptyEventsTimeline";
+import ErrorEventsTimeline from "./ErrorEventsTimeline";
 import EventTimelineItem from "./EventTimelineItem";
 import EventsTimelineWrapper from "./EventsTimelinWrapper";
 import EventsTimelineAggregatedItem from "./EventsTimelineAggregatedItem";
@@ -187,13 +190,26 @@ function EventsTimeline({
 	);
 }
 
-export default function EventsTimelineWithData({
-	data: initialData,
-}: {
-	data: EventType[];
-}) {
-	const { data, isPending, error } = useEvents(initialData);
-	if (isPending) return <TimelineRouteLoading />;
-	if (error) return <TimelineRouteError error={error} />;
-	return <EventsTimeline data={data} />;
+function EventsTimelineWithData() {
+	const { data, isFetching } = useEvents();
+	if (isFetching) return <LoadingEventsTimeline />;
+	if (data) return <EventsTimeline data={data} />;
+	return <EmptyEventsTimeline />;
+}
+export default function EventsTimelineWithErrorBoundary() {
+	return (
+		<QueryErrorResetBoundary>
+			{({ reset }) => (
+				<ErrorBoundary
+					errorComponent={({ error }) => (
+						<ErrorEventsTimeline {...parseErrorMessage(error)} reset={reset} />
+					)}
+				>
+					<Suspense fallback={<LoadingEventsTimeline />}>
+						<EventsTimelineWithData />
+					</Suspense>
+				</ErrorBoundary>
+			)}
+		</QueryErrorResetBoundary>
+	);
 }

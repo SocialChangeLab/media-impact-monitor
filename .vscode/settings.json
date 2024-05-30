@@ -1,9 +1,8 @@
 {
-  "workbench.colorCustomizations": {
-    "titleBar.activeBackground": "#042F2D",
-    "titleBar.activeForeground": "#ffffff" // White text
-  },
   "python.defaultInterpreterPath": "${workspaceFolder}/backend-python/.venv",
-  "jupyter.notebookFileRoot": "${workspaceFolder}/backend-python",
+    "workbench.colorCustomizations": {
+      "titleBar.activeBackground": "#042F2D",
+      "titleBar.activeForeground": "#ffffff"
+    },
+    "jupyter.notebookFileRoot": "${workspaceFolder}/backend-python/media_impact_monitor"
 }
-

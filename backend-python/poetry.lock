@@ -1202,6 +1202,20 @@ files = [
 tests = ["asttokens (>=2.1.0)", "coverage", "coverage-enable-subprocess", "ipython", "littleutils", "pytest", "rich"]
 
 [[package]]
+name = "faker"
+version = "25.3.0"
+description = "Faker is a Python package that generates fake data for you."
+optional = false
+python-versions = ">=3.8"
+files = [
+    {file = "Faker-25.3.0-py3-none-any.whl", hash = "sha256:0158d47e955b6ec22134c0a74ebb7ed34fe600896208bafbf1008db831b17f04"},
+    {file = "Faker-25.3.0.tar.gz", hash = "sha256:bcbe31eee5ef4bbf87ce36c4eba53c01e2a1d912fde2a4d3528b430d2beb784f"},
+]
+
+[package.dependencies]
+python-dateutil = ">=2.4"
+
+[[package]]
 name = "fastapi"
 version = "0.110.3"
 description = "FastAPI framework, high performance, easy to learn, fast to code, ready for production"
@@ -5372,6 +5386,25 @@ release = ["build", "twine"]
 testing = ["black", "mypy", "pytest", "pytest-gitignore", "pytest-mock", "responses", "ruff", "syrupy", "tox", "types-filelock", "types-requests"]
 
 [[package]]
+name = "tokencost"
+version = "0.1.8"
+description = "To calculate token and translated USD cost of string and message calls to OpenAI, for example when used by AI agents"
+optional = false
+python-versions = ">=3.7"
+files = [
+    {file = "tokencost-0.1.8-py3-none-any.whl", hash = "sha256:76c57d3a4c7a55f7c4119f7ddb9df82896d8ce6ac7e40bfee1f661de3f06b110"},
+    {file = "tokencost-0.1.8.tar.gz", hash = "sha256:0ff1279d2332811c559a678f38c826e6443f1e00850a945deea4dd9f2e90986e"},
+]
+
+[package.dependencies]
+aiohttp = ">=3.9.3"
+tiktoken = ">=0.7.0"
+
+[package.extras]
+dev = ["coverage[toml] (>=7.4.0)", "flake8 (>=3.1.0)", "pytest (>=7.4.4)"]
+llama-index = ["llama-index (>=0.9.24)"]
+
+[[package]]
 name = "tokenizers"
 version = "0.19.1"
 description = ""
@@ -6242,4 +6275,4 @@ testing = ["big-O", "jaraco.functools", "jaraco.itertools", "more-itertools", "p
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.10"
-content-hash = "c320722ff7a97556136e3cbab6498cc973da8d469bd0dfe00de8b6e8d351be8d"
+content-hash = "9a3f280cc326125a17fde707e5a41ad9a715e6f56aaa2fabc3e3a1fb76ea69a8"

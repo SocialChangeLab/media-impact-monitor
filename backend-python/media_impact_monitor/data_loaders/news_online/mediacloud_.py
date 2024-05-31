@@ -4,6 +4,7 @@ from typing import Literal
 import mediacloud.api
 import pandas as pd
 from mcmetadata import extract
+from mcmetadata.exceptions import BadContentError
 
 from media_impact_monitor.util.cache import cache, get_proxied
 from media_impact_monitor.util.env import MEDIACLOUD_API_TOKEN
@@ -62,7 +63,7 @@ def get_mediacloud_fulltexts(
     end_date: date = end_date,
     countries: list | None = None,
     platform: Platform = "onlinenews-mediacloud",
-) -> pd.DataFrame:
+) -> pd.DataFrame | None:
     """
     Retrieves fulltexts of news articles from MediaCloud based on the given query and params.
 
@@ -82,19 +83,27 @@ def get_mediacloud_fulltexts(
     """
     assert start_date.year >= 2022, "MediaCloud currently only goes back to 2022"
     collection_ids = _resolve_countries(countries)
-    data = search.story_list(
-        query=query,
-        start_date=start_date,
-        end_date=end_date,
-        collection_ids=collection_ids,
-        platform=platform,
-    )
-    pagination_token = data[1]
-    if pagination_token:
-        # FIXME
-        raise NotImplementedError("Pagination not implemented")
-
-    df = pd.DataFrame(data[0])
+    all_stories = []
+    more_stories = True
+    pagination_token = None
+    while more_stories:
+        page, pagination_token = search.story_list(
+            query=query,
+            start_date=start_date,
+            end_date=end_date,
+            collection_ids=collection_ids,
+            platform=platform,
+            pagination_token=pagination_token,
+        )
+        all_stories += page
+        more_stories = pagination_token is not None
+        if more_stories:
+            print(f"{len(all_stories)=} {pagination_token=}")
+        # https://github.com/mediacloud/api-tutorial-notebooks/blob/main/MC02%20-%20attention.ipynb:
+        # > As you may have noted, this can take a while for long time periods. If you look closely you'll notice that it can't be easily parallelized, because it requires content in the results to make the next call. A workaround is to divide you query up by time and query in parallel for something like each day. This can speed up the response. Also just contact us directly if you are trying to do larger data dumps, or hit up against your API quota.
+    if len(all_stories) == 0:
+        return None
+    df = pd.DataFrame(all_stories)
     df["publish_date"] = pd.to_datetime(df["publish_date"])
     df["text"] = parallel_tqdm(
         _retrieve_text, df["url"], n_jobs=4, desc="Retrieving fulltexts"
@@ -106,11 +115,10 @@ def get_mediacloud_fulltexts(
 def _retrieve_text(url: str) -> str | None:
     try:
         html = get_proxied(url, timeout=15).text
-    except ValueError as e:
-        if "RESP002" in str(e):  # zenrows error code for http 404
-            return None
-        raise e
-    data = extract(url=url, html_text=html)
+    try:
+        data = extract(url=url, html_text=html)
+    except BadContentError:
+        return None
     # this also contains additional metadata (title, language, extraction method, ...) that could be used
     return data["text_content"]
 

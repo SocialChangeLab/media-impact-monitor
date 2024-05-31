@@ -16,7 +16,10 @@ export function BaseLayout({
 	const pathname = usePathname();
 	const currentPage = pathname.split("/")[1] || "events";
 	return (
-		<div className="layout min-h-screen grid grid-rows-[auto_1fr_auto] w-screen overflow-x-clip">
+		<div
+			className="layout min-h-screen grid grid-rows-[auto_1fr_auto] w-screen overflow-x-clip"
+			style={{ paddingTop: 75 + 77 }}
+		>
 			<Menu currentPage={currentPage} />
 			<div className="relative">
 				<div

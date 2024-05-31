@@ -1,6 +1,6 @@
 import { cn } from "@/utility/classNames";
 import { Info } from "lucide-react";
-import { memo, type ReactNode } from "react";
+import { type ReactNode, memo } from "react";
 import { Button } from "./ui/button";
 import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
 

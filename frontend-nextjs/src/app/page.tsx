@@ -2,7 +2,6 @@ import EventsTimeline from "@/components/EventsTimeline/EventsTimeline";
 import MediaCoverageChartWithData from "@/components/MediaCoverageChart";
 import MediaSentimentChart from "@/components/MediaSentimentChart";
 import SectionHeadlineWithExplanation from "@/components/SectionHeadlineWithExplanation";
-import TimeFilter from "@/components/TimeFilter";
 
 export default function EventsPageWithSuspense() {
 	return (
@@ -11,7 +10,6 @@ export default function EventsPageWithSuspense() {
 				headline="Protest Timeline"
 				description="See protests over time for each of the selected organisations"
 				help="See protests over time for each of the selected organisations"
-				additionalUi={<TimeFilter />}
 			>
 				<EventsTimeline />
 			</SectionHeadlineWithExplanation>

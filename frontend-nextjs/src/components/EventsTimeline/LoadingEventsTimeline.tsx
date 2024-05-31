@@ -2,7 +2,7 @@
 import useTimeIntervals from "@/utility/useTimeIntervals";
 import useElementSize from "@custom-react-hooks/use-element-size";
 import { scalePow } from "d3-scale";
-import { useMemo } from "react";
+import { memo, useMemo } from "react";
 import seed from "seed-random";
 import EventsTimelineWrapper from "./EventsTimelinWrapper";
 import EventsTimelineAxis from "./EventsTimelineAxis";
@@ -19,7 +19,7 @@ const sizeScale = scalePow(
 	[config.eventMinHeight, config.eventMaxHeight],
 );
 
-export default function LoadingEventsTimeline() {
+const LoadingEventsTimeline = memo(() => {
 	const [parentRef, size] = useElementSize();
 	const aggregationUnit = useAggregationUnit(size.width);
 	const intervals = useTimeIntervals(aggregationUnit);
@@ -27,7 +27,7 @@ export default function LoadingEventsTimeline() {
 	const skeletons = useMemo(() => {
 		return intervals.map((_, i) => ({
 			colId: i,
-			eventsWithSize: Array(randomUntil(11))
+			eventsWithSize: Array(randomUntil(6))
 				.fill(null)
 				.map((_, j) => ({
 					eventId: j,
@@ -65,4 +65,6 @@ export default function LoadingEventsTimeline() {
 			</EventsTimelineScrollWrapper>
 		</EventsTimelineWrapper>
 	);
-}
+});
+
+export default LoadingEventsTimeline;

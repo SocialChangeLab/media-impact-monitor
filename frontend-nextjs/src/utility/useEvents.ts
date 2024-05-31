@@ -14,7 +14,7 @@ function useEvents() {
 	}));
 	const fromDateString = format(from, "yyyy-MM-dd");
 	const toDateString = format(to, "yyyy-MM-dd");
-	const queryKey = ["events", fromDateString, toDateString];
+	const queryKey = ["events"]; //, fromDateString, toDateString];
 	const query = useSuspenseQuery({
 		queryKey,
 		queryFn: async () => await getEventsData({ from, to }),

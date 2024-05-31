@@ -170,7 +170,7 @@ const MediaSentimentChart = memo(
 									);
 								}}
 							/>
-							{topics.map(({ topic, color }, idx) => (
+							{topics.map(({ topic, color }) => (
 								<Bar
 									key={topic}
 									type="monotone"
@@ -194,7 +194,6 @@ const MediaSentimentChart = memo(
 
 function MediaSentimentChartWithData() {
 	const { data } = useMediaSentimentData();
-	console.log(`MediaSentimentChartWithData`, data.length);
 	if (data?.length > 0) return <MediaSentimentChart data={data} />;
 	if (!data || data.length === 0) return <MediaSentimentChartEmpty />;
 	return <MediaSentimentChartLoading />;

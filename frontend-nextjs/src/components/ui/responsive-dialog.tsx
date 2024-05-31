@@ -8,7 +8,7 @@ import {
 	DrawerHeader,
 	DrawerTitle,
 } from "@/components/ui/drawer";
-import { type PropsWithChildren, type ReactNode, useState } from "react";
+import { useState, type PropsWithChildren, type ReactNode } from "react";
 
 export function ResponsiveModal({
 	children,
@@ -24,17 +24,17 @@ export function ResponsiveModal({
 	footer?: ReactNode;
 	onClose?: () => void;
 }>) {
-	const [snap, setSnap] = useState<number | string | null>(0.7);
+	const [snap, setSnap] = useState<number | string | null>(1);
 	return (
 		<Drawer
 			open={open}
 			onOpenChange={(open: unknown) => !open && onClose && onClose()}
 			direction="bottom"
-			snapPoints={[0.45, 0.8]}
+			snapPoints={[1]}
 			activeSnapPoint={snap}
 			setActiveSnapPoint={setSnap}
 		>
-			<DrawerContent tabIndex={-1} className="focusable">
+			<DrawerContent>
 				{(title || description) && (
 					<DrawerHeader className="text-left">
 						{title && <DrawerTitle>{title}</DrawerTitle>}
@@ -43,7 +43,7 @@ export function ResponsiveModal({
 						)}
 					</DrawerHeader>
 				)}
-				{children}
+				<div className="overflow-x-clip overflow-y-auto">{children}</div>
 				{footer && <DrawerFooter>{footer}</DrawerFooter>}
 			</DrawerContent>
 		</Drawer>

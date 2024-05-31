@@ -1,10 +1,10 @@
+"use client";
 import { useFiltersStore } from "@/providers/FiltersStoreProvider";
 import { useQueryClient, useSuspenseQuery } from "@tanstack/react-query";
 import { endOfDay, format, isAfter, isBefore } from "date-fns";
 import { useEffect, useMemo } from "react";
 import { toast } from "sonner";
 import { extractEventOrganisations, getEventsData } from "./eventsUtil";
-("use client");
 
 function useEvents() {
 	const queryClient = useQueryClient();

@@ -1,14 +1,5 @@
 "use client";
-import type * as React from "react";
 
-import {
-	Dialog,
-	DialogContent,
-	DialogDescription,
-	DialogFooter,
-	DialogHeader,
-	DialogTitle,
-} from "@/components/ui/dialog";
 import {
 	Drawer,
 	DrawerContent,
@@ -17,7 +8,7 @@ import {
 	DrawerHeader,
 	DrawerTitle,
 } from "@/components/ui/drawer";
-import useMediaQuery from "@custom-react-hooks/use-media-query";
+import { useState, type PropsWithChildren, type ReactNode } from "react";
 
 export function ResponsiveModal({
 	children,
@@ -26,43 +17,24 @@ export function ResponsiveModal({
 	footer,
 	onClose,
 	open,
-}: React.PropsWithChildren<{
+}: PropsWithChildren<{
 	open: boolean;
-	title?: React.ReactNode;
-	description?: React.ReactNode;
-	footer?: React.ReactNode;
+	title?: ReactNode;
+	description?: ReactNode;
+	footer?: ReactNode;
 	onClose?: () => void;
 }>) {
-	const isDesktop = useMediaQuery("(min-width: 768px)");
-
-	if (isDesktop) {
-		return (
-			<Dialog
-				open={open}
-				onOpenChange={(open: unknown) => !open && onClose && onClose()}
-			>
-				<DialogContent className="sm:max-w-[425px]">
-					{(title || description) && (
-						<DialogHeader>
-							{title && <DialogTitle>{title}</DialogTitle>}
-							{description && (
-								<DialogDescription>{description}</DialogDescription>
-							)}
-						</DialogHeader>
-					)}
-					<div className="p-6">{children}</div>
-					{footer && <DialogFooter>{footer}</DialogFooter>}
-				</DialogContent>
-			</Dialog>
-		);
-	}
-
+	const [snap, setSnap] = useState<number | string | null>(0.7);
 	return (
 		<Drawer
 			open={open}
 			onOpenChange={(open: unknown) => !open && onClose && onClose()}
+			direction="bottom"
+			snapPoints={[0.45, 0.8]}
+			activeSnapPoint={snap}
+			setActiveSnapPoint={setSnap}
 		>
-			<DrawerContent>
+			<DrawerContent tabIndex={-1} className="focusable">
 				{(title || description) && (
 					<DrawerHeader className="text-left">
 						{title && <DrawerTitle>{title}</DrawerTitle>}
@@ -71,7 +43,7 @@ export function ResponsiveModal({
 						)}
 					</DrawerHeader>
 				)}
-				<div className="px-4">{children}</div>
+				{children}
 				{footer && <DrawerFooter>{footer}</DrawerFooter>}
 			</DrawerContent>
 		</Drawer>

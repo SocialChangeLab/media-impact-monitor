@@ -1,12 +1,13 @@
-"use client";
 import { useFiltersStore } from "@/providers/FiltersStoreProvider";
-import { useSuspenseQuery } from "@tanstack/react-query";
+import { useQueryClient, useSuspenseQuery } from "@tanstack/react-query";
 import { endOfDay, format, isAfter, isBefore } from "date-fns";
 import { useEffect, useMemo } from "react";
 import { toast } from "sonner";
 import { extractEventOrganisations, getEventsData } from "./eventsUtil";
+("use client");
 
 function useEvents() {
+	const queryClient = useQueryClient();
 	const { from, to } = useFiltersStore(({ from, to }) => ({
 		from,
 		to,
@@ -44,6 +45,13 @@ function useEvents() {
 		() => extractEventOrganisations(events),
 		[events],
 	);
+
+	useEffect(() => {
+		if (!data) return;
+		for (const event of data) {
+			queryClient.setQueryData(["events", event.event_id], event);
+		}
+	}, [data, queryClient]);
 
 	return {
 		...query,

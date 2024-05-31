@@ -5,9 +5,9 @@ import { endOfDay, format, isAfter, isBefore } from "date-fns";
 import { useEffect, useMemo } from "react";
 import { toast } from "sonner";
 import {
-	getEventsData,
 	type EventType,
 	type OrganisationType,
+	getEventsData,
 } from "./eventsUtil";
 
 function useEvents() {

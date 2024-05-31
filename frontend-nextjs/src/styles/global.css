@@ -189,7 +189,7 @@
 
 @layer components {
 	.focusable {
-		@apply focus:outline-none focus-visible:ring-2 focus-visible:ring-fg;
+		@apply focus:outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-fg;
 		@apply focus-visible:ring-offset-8 focus-visible:ring-offset-bg;
 	}
 

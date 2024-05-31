@@ -1,5 +1,4 @@
 "use client";
-import type * as React from "react";
 
 import {
 	Drawer,
@@ -9,6 +8,7 @@ import {
 	DrawerHeader,
 	DrawerTitle,
 } from "@/components/ui/drawer";
+import { useState, type PropsWithChildren, type ReactNode } from "react";
 
 export function ResponsiveModal({
 	children,
@@ -17,20 +17,24 @@ export function ResponsiveModal({
 	footer,
 	onClose,
 	open,
-}: React.PropsWithChildren<{
+}: PropsWithChildren<{
 	open: boolean;
-	title?: React.ReactNode;
-	description?: React.ReactNode;
-	footer?: React.ReactNode;
+	title?: ReactNode;
+	description?: ReactNode;
+	footer?: ReactNode;
 	onClose?: () => void;
 }>) {
+	const [snap, setSnap] = useState<number | string | null>(0.7);
 	return (
 		<Drawer
 			open={open}
 			onOpenChange={(open: unknown) => !open && onClose && onClose()}
 			direction="bottom"
+			snapPoints={[0.45, 0.8]}
+			activeSnapPoint={snap}
+			setActiveSnapPoint={setSnap}
 		>
-			<DrawerContent>
+			<DrawerContent tabIndex={-1} className="focusable">
 				{(title || description) && (
 					<DrawerHeader className="text-left">
 						{title && <DrawerTitle>{title}</DrawerTitle>}

@@ -1,44 +1,84 @@
 "use client";
 import { cn } from "@/utility/classNames";
 import { parseErrorMessage } from "@/utility/errorHandlingUtil";
-import type { EventType, OrganisationType } from "@/utility/eventsUtil";
+import type { EventType } from "@/utility/eventsUtil";
+import {
+	arrayOfRandomLengthInRange,
+	randomInRange,
+} from "@/utility/randomUtil";
 import useEvent from "@/utility/useEvent";
 import { QueryErrorResetBoundary } from "@tanstack/react-query";
 import { format } from "date-fns";
 import { ErrorBoundary } from "next/dist/client/components/error-boundary";
 import Image from "next/image";
-import { notFound } from "next/navigation";
 import { Suspense, memo, useMemo } from "react";
+import seed from "seed-random";
 import placeholderImage from "../assets/images/placeholder-image.avif";
 import ComponentError from "./ComponentError";
 
-const EventPageContent = memo(
-	({
-		event,
-		organisations,
-	}: { event?: EventType; organisations?: OrganisationType[] }) => {
-		if (!event || !organisations) return notFound();
+const seededRandom = seed("event-page-loading");
+const randomUntil = (max: number) => Math.ceil(seededRandom() * max);
+
+const PlaceholderSkeleton = memo(
+	({ width, height }: { width: number | string; height?: number | string }) => (
+		<span
+			className="h-4 w-32 bg-grayMed rounded animate-pulse inline-block"
+			style={{ width, height }}
+		/>
+	),
+);
+
+const EventPageWithPopulatedData = memo(
+	({ data }: { data?: ReturnType<typeof useEvent>["data"] }) => {
+		const orgsPlaceholders = useMemo(
+			() =>
+				arrayOfRandomLengthInRange(3).map((idx, _i, arr) => (
+					<PlaceholderSkeleton key={idx} width={randomUntil(200)} />
+				)),
+			[],
+		);
+		const descPlaceholderLines = useMemo(
+			() => (
+				<div className="flex flex-col gap-y-1">
+					{arrayOfRandomLengthInRange(10, 5).map((idx, _i, arr) => (
+						<PlaceholderSkeleton
+							key={idx}
+							width={
+								idx === arr.length - 1
+									? `${randomInRange(50, 20)}%`
+									: `${randomInRange(100, 80)}%`
+							}
+						/>
+					))}
+				</div>
+			),
+			[],
+		);
 		const title = useMemo(
 			() =>
-				`Protest on ${format(event.date, "LLLL d, yyyy")} by ${
-					organisations.length > 1
-						? "multiple organisations"
-						: organisations[0].name
-				}`,
-			[event, organisations],
+				data ? (
+					`Protest on ${format(data.event.date, "LLLL d, yyyy")} by ${
+						data.organisations.length > 1
+							? "multiple organisations"
+							: data.organisations[0].name
+					}`
+				) : (
+					<PlaceholderSkeleton width={80} height={20} />
+				),
+			[data],
 		);
 		return (
-			<div className="grid md:grid-cols-[3fr,1fr] lg:grid-cols-[2fr,1fr]">
+			<div className="grid md:grid-cols-[3fr,1fr] lg:grid-cols-[2fr,1fr] border-b border-grayLight -mt-6">
 				<div className="px-[max(1rem,2vmax)] pt-[max(1.25rem,2.5vmax)] pb-[max(1.25rem,4vmax)] flex flex-col gap-4 min-h-full">
 					<h1 className="text-3xl font-bold font-headlines">{title}</h1>
-					<dl className="inline-grid grid-cols-[auto,1fr] gap-x-6 gap-y-2 items-start">
+					<dl className="inline-grid grid-cols-[auto,1fr] gap-x-6 gap-y-2 items-center">
 						<dt className="w-fit">City</dt>
-						<dd>{event.city}</dd>
+						<dd>{data?.event.city ?? <PlaceholderSkeleton width={100} />}</dd>
 						<dt className="w-fit">Country</dt>
-						<dd>{event.country}</dd>
-						<dt className="w-fit">Organisations</dt>
+						<dd>{data?.event.country ?? <PlaceholderSkeleton width={80} />}</dd>
+						<dt className="w-fit self-start">Organisations</dt>
 						<dd className="flex flex-wrap">
-							{organisations.map((org) => (
+							{data?.organisations.map((org) => (
 								<span
 									key={org.name}
 									className={cn(
@@ -58,9 +98,12 @@ const EventPageContent = memo(
 									</span>
 								</span>
 							))}
+							{!data && orgsPlaceholders}
 						</dd>
 					</dl>
-					<p className="max-w-prose">{event.description}</p>
+					<p className="max-w-prose">
+						{data?.event.description ?? descPlaceholderLines}
+					</p>
 				</div>
 				<div className="relative border-l border-grayLight bg-grayUltraLight">
 					<Image
@@ -75,11 +118,14 @@ const EventPageContent = memo(
 	},
 );
 
+const EventPageContent = memo(({ id }: { id: EventType["event_id"] }) => {
+	const { data } = useEvent(id);
+	return <EventPageWithPopulatedData data={data} />;
+});
+
 export default function EventPageContentWithData({
 	id,
 }: { id: EventType["event_id"] }) {
-	const query = useEvent(id);
-
 	return (
 		<div className="min-h-screen">
 			<QueryErrorResetBoundary>
@@ -96,11 +142,8 @@ export default function EventPageContentWithData({
 							);
 						}}
 					>
-						<Suspense fallback={<div>Loading...</div>}>
-							<EventPageContent
-								event={query.data?.event}
-								organisations={query.data?.organisations}
-							/>
+						<Suspense fallback={<EventPageWithPopulatedData />}>
+							<EventPageContent id={id} />
 						</Suspense>
 					</ErrorBoundary>
 				)}

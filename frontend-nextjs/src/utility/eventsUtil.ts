@@ -92,3 +92,55 @@ function validateGetDataResponse(response: unknown): EventType[] {
 		throw new Error(`UnknownError&&&${error}`);
 	}
 }
+
+export const distinctiveColors = [
+	`var(--categorical-color-1)`,
+	`var(--categorical-color-2)`,
+	`var(--categorical-color-3)`,
+	`var(--categorical-color-4)`,
+	`var(--categorical-color-5)`,
+	`var(--categorical-color-6)`,
+	`var(--categorical-color-7)`,
+	`var(--categorical-color-8)`,
+	`var(--categorical-color-9)`,
+	`var(--categorical-color-10)`,
+	`var(--categorical-color-11)`,
+	`var(--categorical-color-12)`,
+	"var(--categorical-color-13)",
+	"var(--categorical-color-14)",
+];
+
+export function extractEventOrganisations(
+	events: EventType[],
+): OrganisationType[] {
+	const organisationStrings = [
+		...events
+			.reduce((acc, event) => {
+				for (const organizer of event.organizers ?? []) acc.add(organizer);
+				return acc;
+			}, new Set<string>())
+			.values(),
+	];
+	return organisationStrings
+		.map((organizer) => ({
+			name: organizer,
+			count: events.filter((x) => x.organizers?.includes(organizer)).length,
+		}))
+		.sort((a, b) => b.count - a.count)
+		.map((organizer, idx) => {
+			if (organizer.name.toLocaleLowerCase().trim() === "") {
+				return {
+					name: "Unknown organisation",
+					color: "var(--grayMed)",
+					count: events.filter((x) => x.organizers?.filter((x) => !x)).length,
+					isMain: false,
+				};
+			}
+			const color = distinctiveColors[idx];
+			return {
+				...organizer,
+				color: color ?? "var(--grayDark)",
+				isMain: idx < distinctiveColors.length,
+			};
+		});
+}

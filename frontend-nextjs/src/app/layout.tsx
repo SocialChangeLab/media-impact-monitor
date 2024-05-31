@@ -1,15 +1,16 @@
-import { inter, neueRegrade } from "@/utility/fonts";
-import type React from "react";
-
 import { BaseLayout } from "@/components/BaseLayout";
 import Providers from "@/provders";
 import "@/styles/global.css";
 import { cn } from "@/utility/classNames";
+import { inter, neueRegrade } from "@/utility/fonts";
+import type { ReactNode } from "react";
 
 export default function RootLayout({
 	children,
+	modal,
 }: Readonly<{
-	children: React.ReactNode;
+	children: ReactNode;
+	modal: ReactNode;
 }>) {
 	return (
 		<html
@@ -20,7 +21,7 @@ export default function RootLayout({
 			<head />
 			<body className="bg-pattern-soft w-screen overflow-x-clip">
 				<Providers>
-					<BaseLayout>{children}</BaseLayout>
+					<BaseLayout modal={modal}>{children}</BaseLayout>
 				</Providers>
 			</body>
 		</html>

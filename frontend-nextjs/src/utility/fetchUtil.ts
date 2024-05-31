@@ -14,13 +14,12 @@ export async function fetchApiData({
 	try {
 		const response = await Promise.race([
 			fetch(`${apiUrl}/${endpoint}`, {
-				cache: "no-store",
 				method: "POST",
-				headers: {
-					"Content-Type": "application/json",
-					"Cache-Control": "no-cache",
-				},
+				headers: { "Content-Type": "application/json" },
 				body: JSON.stringify(body),
+				next: {
+					revalidate: 3600 * 4,
+				},
 			}),
 			new Promise<Error>((resolve) =>
 				setTimeout(() => resolve(new Error("ApiFetchTimeoutError")), 10000),

@@ -9,6 +9,7 @@ import {
 	CartesianGrid,
 	Line,
 	LineChart,
+	ResponsiveContainer,
 	Tooltip,
 	XAxis,
 	YAxis,
@@ -23,7 +24,6 @@ import { parseErrorMessage } from "@/utility/errorHandlingUtil";
 import useMediaCoverageData from "@/utility/useKeywords";
 import { QueryErrorResetBoundary } from "@tanstack/react-query";
 import { ErrorBoundary } from "next/dist/client/components/error-boundary";
-import { getIdxsWithTicks } from "../EventsTimeline/EventsTimelineAxis";
 import MediaCoverageChartEmpty from "./MediaCoverageChartEmpty";
 import MediaCoverageChartError from "./MediaCoverageChartError";
 import MediaCoverageChartLegend from "./MediaCoverageChartLegend";
@@ -90,11 +90,6 @@ const MediaCoverageChart = memo(
 			};
 		}, [data, intervals, isInSameUnit, aggregationUnit]);
 
-		const idxsWithTicks = useMemo(
-			() => getIdxsWithTicks(intervals.length, size.width),
-			[intervals.length, size.width],
-		);
-
 		return (
 			<div className="media-coverage-chart">
 				<style jsx global>{`
@@ -126,70 +121,72 @@ const MediaCoverageChart = memo(
 					className="w-full h-[var(--media-coverage-chart-height)] bg-grayUltraLight"
 					ref={parentRef}
 				>
-					<LineChart
-						width={size.width}
-						height={size.height}
-						data={filteredData}
-						className="bg-pattern-soft"
-						margin={{
-							top: 0,
-							right: 30,
-							left: 0,
-							bottom: 24,
-						}}
-					>
-						<CartesianGrid
-							stroke="var(--grayLight)"
-							fill="var(--grayUltraLight)"
-							horizontal={false}
-						/>
-						<XAxis
-							dataKey="dateFormatted"
-							stroke="var(--grayDark)"
-							strokeWidth={0.25}
-							fontSize="0.875rem"
-							interval="equidistantPreserveStart"
-							tickMargin={12}
-							tickSize={8}
-							tickLine={{
-								strokeOpacity: 1,
-								stroke: "var(--grayDark)",
+					<ResponsiveContainer>
+						<LineChart
+							width={size.width}
+							height={size.height}
+							data={filteredData}
+							className="bg-pattern-soft"
+							margin={{
+								top: 0,
+								right: 30,
+								left: 0,
+								bottom: 24,
 							}}
-						/>
-						<YAxis
-							stroke="var(--grayDark)"
-							strokeWidth={0.25}
-							fontSize="0.875rem"
-						/>
-						<Tooltip
-							formatter={(value) => `${value} articles`}
-							cursor={{ stroke: "var(--grayMed)" }}
-							content={({ payload, active }) => {
-								const item = payload?.at(0)?.payload;
-								if (!active || !payload || !item) return null;
-								return (
-									<TopicChartTooltip
-										topics={topics}
-										aggregationUnit={aggregationUnit}
-										item={item}
-									/>
-								);
-							}}
-						/>
-						{topics.map(({ topic, color }, idx) => (
-							<Line
-								key={topic}
-								type="monotone"
-								dataKey={topic}
-								stroke={color}
-								fill={color}
-								className={`media-coverage-item media-coverage-item-topic-${slugifyCssClass(
-									topic,
-								)} transition-all`}
-								activeDot={{ r: 6, stroke: "var(--grayUltraLight)" }}
+						>
+							<CartesianGrid
+								stroke="var(--grayLight)"
+								fill="var(--grayUltraLight)"
+								horizontal={false}
 							/>
-						))}
-					</LineChart>
+							<XAxis
+								dataKey="dateFormatted"
+								stroke="var(--grayDark)"
+								strokeWidth={0.25}
+								fontSize="0.875rem"
+								interval="equidistantPreserveStart"
+								tickMargin={12}
+								tickSize={8}
+								tickLine={{
+									strokeOpacity: 1,
+									stroke: "var(--grayDark)",
+								}}
+							/>
+							<YAxis
+								stroke="var(--grayDark)"
+								strokeWidth={0.25}
+								fontSize="0.875rem"
+							/>
+							<Tooltip
+								formatter={(value) => `${value} articles`}
+								cursor={{ stroke: "var(--grayMed)" }}
+								content={({ payload, active }) => {
+									const item = payload?.at(0)?.payload;
+									if (!active || !payload || !item) return null;
+									return (
+										<TopicChartTooltip
+											topics={topics}
+											aggregationUnit={aggregationUnit}
+											item={item}
+										/>
+									);
+								}}
+							/>
+							{topics.map(({ topic, color }, idx) => (
+								<Line
+									key={topic}
+									type="monotone"
+									dataKey={topic}
+									stroke={color}
+									fill={color}
+									className={`media-coverage-item media-coverage-item-topic-${slugifyCssClass(
+										topic,
+									)} transition-all`}
+									activeDot={{ r: 6, stroke: "var(--grayUltraLight)" }}
+								/>
+							))}
+						</LineChart>
+					</ResponsiveContainer>
 				</div>
 				<MediaCoverageChartLegend topics={topics} />
 			</div>
@@ -198,10 +195,10 @@ const MediaCoverageChart = memo(
 );
 
 function MediaCoverageChartWithData() {
-	const { data, isFetching } = useMediaCoverageData();
-	if (isFetching) return <MediaCoverageChartLoading />;
-	if (data) return <MediaCoverageChart data={data} />;
-	return <MediaCoverageChartEmpty />;
+	const { data } = useMediaCoverageData();
+	if (data?.length > 0) return <MediaCoverageChart data={data} />;
+	if (!data || data.length === 0) return <MediaCoverageChartEmpty />;
+	return <MediaCoverageChartLoading />;
 }
 export default function MediaCoverageChartWithErrorBoundary() {
 	return (

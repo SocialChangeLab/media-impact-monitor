@@ -54,8 +54,9 @@ def topic_queries(media_source: str) -> dict[str, str]:
         positive=keywords["science"] + keywords["policy"] + keywords["urgency"],
         negative=keywords["activism"],
     )
-    # all_only_activism = f"({all_incl_activism}) AND ({keywords['activism']})"
+    activism = f"({all_incl_activism}) AND ({build_query(media_source=media_source, positive=keywords['activism'])})"
     keywords = {
+        "activism": activism,
         "science": build_query(media_source=media_source, positive=keywords["science"]),
         "policy": build_query(media_source=media_source, positive=keywords["policy"]),
         "urgency": build_query(media_source=media_source, positive=keywords["urgency"]),

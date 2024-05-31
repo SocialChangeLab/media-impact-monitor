@@ -41,6 +41,8 @@ number-parser = "^0.3.2"
 litellm = "^1.37.16"
 mediacloud-metadata = "^1.0.2"
 apscheduler = "^3.10.4"
+tokencost = "^0.1.8"
+faker = "^25.3.0"
 
 [tool.poetry.group.dev.dependencies]
 pytest = "^8.0.2"

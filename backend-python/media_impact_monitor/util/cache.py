@@ -56,9 +56,12 @@ retries = 2
 
 
 @cache
-def get_proxied(url, *args, **kwargs):
+def get_proxied(url, *args, **kwargs) -> str | None:
     client = ZenRowsClient(ZENROWS_API_KEY, retries=retries, concurrency=concurrency)
     response = client.get(url, *args, **kwargs)
-    if '{"code":' in response.text:
-        raise ValueError(f"{url}: {response.text}")
+    if response.text.startswith('{"code":'):
+        if "RESP002" in response.text:  # zenrows error code for http 404
+            pass
+        else:
+            raise ValueError(f"{url}: {response.text}")
     return response

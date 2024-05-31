@@ -43,12 +43,14 @@ const DrawerContent = React.forwardRef<
 		<DrawerPrimitive.Content
 			ref={ref}
 			className={cn(
-				"fixed inset-x-0 bottom-0 z-50 mt-24 flex h-auto flex-col border-t border-grayMed bg-bg",
+				`focusable`,
+				"fixed inset-x-0 bottom-0 z-50 mt-24 flex h-auto max-h-[90vh] flex-col border-t border-grayMed bg-bg",
 				className,
 			)}
+			tabIndex={-1}
 			{...props}
 		>
-			<div className="mx-auto mt-4 h-2 w-[100px] rounded-full bg-grayMed" />
+			<div className="mx-auto mt-4 h-2 w-[100px] rounded-full bg-grayMed cursor-grab active:cursor-grabbing" />
 			{children}
 		</DrawerPrimitive.Content>
 	</DrawerPortal>
@@ -106,13 +108,13 @@ DrawerDescription.displayName = DrawerPrimitive.Description.displayName;
 
 export {
 	Drawer,
-	DrawerPortal,
-	DrawerOverlay,
-	DrawerTrigger,
 	DrawerClose,
 	DrawerContent,
-	DrawerHeader,
-	DrawerFooter,
-	DrawerTitle,
 	DrawerDescription,
+	DrawerFooter,
+	DrawerHeader,
+	DrawerOverlay,
+	DrawerPortal,
+	DrawerTitle,
+	DrawerTrigger,
 };

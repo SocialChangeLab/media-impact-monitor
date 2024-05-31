@@ -19,11 +19,14 @@ export function BaseLayout({
 	const currentPage = pathname.split("/")[1] || "events";
 	return (
 		<div
-			className="layout min-h-screen grid grid-rows-[auto_1fr_auto] w-screen overflow-x-clip transition-all"
-			style={{ paddingTop: 75 + (pathname === "/" ? 77 : 0) }}
+			className="layout grid grid-rows-[auto_1fr_auto] w-screen overflow-x-clip transition-all"
+			style={{
+				paddingTop: 75 + (pathname === "/" ? 77 : 0),
+				minHeight: `calc(100vh - ${75 + (pathname === "/" ? 77 : 0)}px)`,
+			}}
 		>
 			<Menu currentPage={currentPage} />
-			<div className="relative">
+			<div className="relative min-h-full">
 				<div
 					aria-hidden="true"
 					className={cn(
@@ -42,7 +45,9 @@ export function BaseLayout({
 					)}
 				/>
 				<WelcomeMessage currentPage={currentPage} />
-				<div className="min-h-full w-screen overflow-x-clip">{children}</div>
+				<div className="min-h-full w-screen overflow-x-clip relative">
+					{children}
+				</div>
 			</div>
 			<Footer />
 			{modal}

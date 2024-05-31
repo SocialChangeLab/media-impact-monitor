@@ -5,7 +5,15 @@ import useTimeIntervals, {
 } from "@/utility/useTimeIntervals";
 import useElementSize from "@custom-react-hooks/use-element-size";
 import { Suspense, memo, useCallback, useMemo } from "react";
-import { Bar, BarChart, CartesianGrid, Tooltip, XAxis, YAxis } from "recharts";
+import {
+	Bar,
+	BarChart,
+	CartesianGrid,
+	ResponsiveContainer,
+	Tooltip,
+	XAxis,
+	YAxis,
+} from "recharts";
 
 import useAggregationUnit, {
 	formatDateByAggregationUnit,
@@ -113,70 +121,70 @@ const MediaSentimentChart = memo(
 					className="w-full h-[var(--media-sentiment-chart-height)] bg-grayUltraLight"
 					ref={parentRef}
 				>
-					<BarChart
-						width={size.width}
-						height={size.height}
-						data={filteredData}
-						className="bg-pattern-soft"
-						margin={{
-							top: 0,
-							right: 30,
-							left: 0,
-							bottom: 24,
-						}}
-					>
-						<CartesianGrid
-							stroke="var(--grayLight)"
-							fill="var(--grayUltraLight)"
-							horizontal={false}
-						/>
-						<XAxis
-							dataKey="dateFormatted"
-							stroke="var(--grayDark)"
-							strokeWidth={0.25}
-							fontSize="0.875rem"
-							interval="equidistantPreserveStart"
-							tickMargin={12}
-							tickSize={8}
-							tickLine={{
-								strokeOpacity: 1,
-								stroke: "var(--grayDark)",
+					<ResponsiveContainer>
+						<BarChart
+							data={filteredData}
+							className="bg-pattern-soft"
+							margin={{
+								top: 0,
+								right: 30,
+								left: 0,
+								bottom: 24,
 							}}
-						/>
-						<YAxis
-							stroke="var(--grayDark)"
-							strokeWidth={0.25}
-							fontSize="0.875rem"
-						/>
-						<Tooltip
-							formatter={(value) => `${value} articles`}
-							cursor={{ fill: "var(--bgOverlay)", fillOpacity: 0.5 }}
-							content={({ payload, active }) => {
-								const item = payload?.at(0)?.payload;
-								if (!active || !payload || !item) return null;
-								return (
-									<TopicChartTooltip
-										topics={topics}
-										aggregationUnit={aggregationUnit}
-										item={item}
-									/>
-								);
-							}}
-						/>
-						{topics.map(({ topic, color }, idx) => (
-							<Bar
-								key={topic}
-								type="monotone"
-								stackId="1"
-								dataKey={topic}
-								stroke={color}
-								fill={color}
-								className={`media-sentiment-item media-sentiment-item-topic-${slugifyCssClass(
-									topic,
-								)} transition-all`}
+						>
+							<CartesianGrid
+								stroke="var(--grayLight)"
+								fill="var(--grayUltraLight)"
+								horizontal={false}
 							/>
-						))}
-					</BarChart>
+							<XAxis
+								dataKey="dateFormatted"
+								stroke="var(--grayDark)"
+								strokeWidth={0.25}
+								fontSize="0.875rem"
+								interval="equidistantPreserveStart"
+								tickMargin={12}
+								tickSize={8}
+								tickLine={{
+									strokeOpacity: 1,
+									stroke: "var(--grayDark)",
+								}}
+							/>
+							<YAxis
+								stroke="var(--grayDark)"
+								strokeWidth={0.25}
+								fontSize="0.875rem"
+							/>
+							<Tooltip
+								formatter={(value) => `${value} articles`}
+								cursor={{ fill: "var(--bgOverlay)", fillOpacity: 0.5 }}
+								content={({ payload, active }) => {
+									const item = payload?.at(0)?.payload;
+									if (!active || !payload || !item) return null;
+									return (
+										<TopicChartTooltip
+											topics={topics}
+											aggregationUnit={aggregationUnit}
+											item={item}
+										/>
+									);
+								}}
+							/>
+							{topics.map(({ topic, color }) => (
+								<Bar
+									key={topic}
+									type="monotone"
+									stackId="1"
+									dataKey={topic}
+									stroke={color}
+									fill={color}
+									className={`media-sentiment-item media-sentiment-item-topic-${slugifyCssClass(
+										topic,
+									)} transition-all`}
+								/>
+							))}
+						</BarChart>
+					</ResponsiveContainer>
 				</div>
 				<MediaSentimentChartLegend topics={topics} />
 			</div>
@@ -185,10 +193,10 @@ const MediaSentimentChart = memo(
 );
 
 function MediaSentimentChartWithData() {
-	const { data, isFetching } = useMediaSentimentData();
-	if (isFetching) return <MediaSentimentChartLoading />;
-	if (data) return <MediaSentimentChart data={data} />;
-	return <MediaSentimentChartEmpty />;
+	const { data } = useMediaSentimentData();
+	if (data?.length > 0) return <MediaSentimentChart data={data} />;
+	if (!data || data.length === 0) return <MediaSentimentChartEmpty />;
+	return <MediaSentimentChartLoading />;
 }
 export default function MediaCoverageChartWithErrorBoundary() {
 	return (

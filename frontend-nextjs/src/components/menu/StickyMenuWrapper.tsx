@@ -1,6 +1,6 @@
 "use client";
 import type { UiState } from "@/stores/uiStore";
-import { memo, type PropsWithChildren } from "react";
+import { type PropsWithChildren, memo } from "react";
 
 type StickyMenuWrapperProps = PropsWithChildren<
 	Pick<

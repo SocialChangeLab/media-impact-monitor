@@ -1,6 +1,6 @@
 "use client";
 import type { UiState } from "@/stores/uiStore";
-import { type PropsWithChildren, memo } from "react";
+import { memo, type PropsWithChildren } from "react";
 
 type StickyMenuWrapperProps = PropsWithChildren<
 	Pick<
@@ -18,7 +18,7 @@ export const StickyMenuWrapper = memo(
 	}: StickyMenuWrapperProps) => {
 		return (
 			<header
-				className={`sticky top-0 z-50 bg-pattern-soft transition-transform`}
+				className={`fixed top-0 z-50 bg-pattern-soft transition-transform`}
 				style={{
 					transform:
 						!isScrolledToTop && !isScrollingUp

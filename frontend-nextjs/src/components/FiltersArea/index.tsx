@@ -1,15 +1,8 @@
-import { useUiStore } from "@/providers/UiStoreProvider";
 import { cn } from "@/utility/classNames";
 import { memo } from "react";
 import TimeFilter from "../TimeFilter";
 
-function FiltersArea() {
-	const { isScrolledToTop } = useUiStore(
-		({ isScrolledToTop, isScrollingUp }) => ({
-			isScrolledToTop,
-			isScrollingUp,
-		}),
-	);
+function FiltersArea({ isScrolledToTop }: { isScrolledToTop: boolean }) {
 	return (
 		<nav
 			aria-label="Page filters"
@@ -17,7 +10,7 @@ function FiltersArea() {
 				`w-screen flex gap-[max(1rem,2vmax)] flex-wrap justify-between items-center`,
 				`px-[max(1rem,2vmax)]`,
 				`border-b border-grayLight z-50 bg-pattern-soft`,
-				`transition`,
+				`transition-all`,
 				isScrolledToTop ? `py-[max(0.25rem,1vmax)]` : `py-2`,
 			)}
 		>

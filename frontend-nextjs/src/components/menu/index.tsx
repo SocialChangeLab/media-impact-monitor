@@ -15,7 +15,7 @@ export const Menu = ({ currentPage }: { currentPage: string }) => {
 	return (
 		<StickyMenuWrapper {...uiState}>
 			<HeaderMenu currentPage={currentPage} />
-			<FiltersArea />
+			<FiltersArea isScrolledToTop={uiState.isScrolledToTop} />
 		</StickyMenuWrapper>
 	);
 };

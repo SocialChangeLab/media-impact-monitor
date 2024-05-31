@@ -4,13 +4,9 @@
 
 # Media Impact Monitor
 
-<!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
+[![Project Status: WIP – Initial development is in progress, but there has not yet been a stable, usable release suitable for the public.](https://www.repostatus.org/badges/latest/wip.svg)](https://www.repostatus.org/#wip) <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->[![All Contributors](https://img.shields.io/badge/all_contributors-3-orange.svg?style=flat-square)](#contributors-)<!-- ALL-CONTRIBUTORS-BADGE:END -->
 
-[![All Contributors](https://img.shields.io/badge/all_contributors-3-orange.svg?style=flat-square)](#contributors-)
-
-<!-- ALL-CONTRIBUTORS-BADGE:END -->
-
-The _Media Impact Monitor_ is a novel tool for protest groups and NGOs to measure and visualize their impact on public discourse. The tool shows how activist events affect the discourse across various media sources, such as local and national newspapers, social media, parliamentary debates, and more. Protest groups can use it to quantitatively and qualitatively evaluate their actions and adapt them in a targeted manner to draw attention to their issues.
+The _Media Impact Monitor_ is a novel tool for protest groups and NGOs to measure and visualize their impact on public discourse. The tool shows how activist events affect the discourse across various media sources, such as local and national newspapers, social dia, parliamentary debates, and more. Protest groups can use it to quantitatively and qualitatively evaluate their actions and adapt them in a targeted manner to draw attention to their issues.
 
 The _Media Impact Monitor_ project is hosted by [Social Change Lab](http://socialchangelab.org/) and funded by [Prototype Fund](https://prototypefund.de/en/) ([BMBF](https://www.bmbf.de/bmbf/de/home/home_node.html)). Development is primarily taking place from March–August 2024.
 
@@ -26,10 +22,10 @@ This is where the _Media Impact Monitor_ comes in: It uses innovative causal inf
 
 ## Team
 
-The project team is constituted from:
+The project team consists of:
 
 - **David Pomerenke** (@davidpomerenke) – Data Science – M.Sc. Artificial Intelligence
-- **Lennard Klein** (@kleinlennart) – Data Science – B.A. Political Science
+- **Lennart Klein** (@kleinlennart) – Data Science – B.A. Political Science
 - **Lucas Vogel** (@vogelino) – Frontend UI/UX Development – B.A. Interface Design
 
 ## Contact

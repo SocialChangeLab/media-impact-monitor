@@ -10,13 +10,18 @@ import { Menu } from "../menu";
 
 export function BaseLayout({
 	children,
+	modal,
 }: {
 	children: ReactNode;
+	modal: ReactNode;
 }) {
 	const pathname = usePathname();
 	const currentPage = pathname.split("/")[1] || "events";
 	return (
-		<div className="layout min-h-screen grid grid-rows-[auto_1fr_auto] w-screen overflow-x-clip">
+		<div
+			className="layout min-h-screen grid grid-rows-[auto_1fr_auto] w-screen overflow-x-clip transition-all"
+			style={{ paddingTop: 75 + (pathname === "/" ? 77 : 0) }}
+		>
 			<Menu currentPage={currentPage} />
 			<div className="relative">
 				<div
@@ -40,6 +45,7 @@ export function BaseLayout({
 				<div className="min-h-full w-screen overflow-x-clip">{children}</div>
 			</div>
 			<Footer />
+			{modal}
 		</div>
 	);
 }

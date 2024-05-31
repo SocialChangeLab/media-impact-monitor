@@ -10,7 +10,7 @@ function useMediaSentimentData() {
 	const { from, to } = useFiltersStore(({ from, to }) => ({ from, to }));
 	const fromDateString = format(from, "yyyy-MM-dd");
 	const toDateString = format(to, "yyyy-MM-dd");
-	const queryKey = ["mediaSentiment", fromDateString, toDateString];
+	const queryKey = ["mediaSentiment"]; //, fromDateString, toDateString];
 	const query = useSuspenseQuery({
 		queryKey,
 		queryFn: async () => await getMediaSentimentData({ from, to }),

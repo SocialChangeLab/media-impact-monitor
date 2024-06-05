@@ -113,8 +113,7 @@ def get_mediacloud_fulltexts(
 
 
 def _retrieve_text(url: str) -> str | None:
-    try:
-        html = get_proxied(url, timeout=15).text
+    html = get_proxied(url, timeout=15).text
     try:
         data = extract(url=url, html_text=html)
     except BadContentError:

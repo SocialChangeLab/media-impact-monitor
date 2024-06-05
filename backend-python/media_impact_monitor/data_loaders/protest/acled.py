@@ -148,9 +148,3 @@ def rename_org(row):
         orgs = [org.replace("Just Stop Oil", "Just Stop Oil (Norway)") for org in orgs]
     row["organizers"] = orgs
     return row
-
-
-data = get_acled_events(
-    countries=["Germany"],
-    end_date=date(2024, 4, 30),
-)

@@ -57,6 +57,7 @@ def get_mediacloud_counts(
     return df["count"]
 
 
+@cache
 def get_mediacloud_fulltexts(
     query: str,
     start_date: date = date(2022, 1, 1),

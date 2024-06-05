@@ -10,7 +10,8 @@ def verify_dates(start_date: date, end_date: date):
 
 def get_latest_data(func: callable):
     _date = date.today() - timedelta(days=1)
-    while _date >= _date - timedelta(days=14):
+    _stop_date = _date - timedelta(days=14)
+    while _date >= _stop_date:
         try:
             data = func(request_date=_date)
             return data

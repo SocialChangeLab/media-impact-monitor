@@ -1,4 +1,5 @@
 import json
+from datetime import date
 
 import pandas as pd
 
@@ -79,8 +80,8 @@ def code_press_release(text: str) -> float:
 
 
 @cache
-def code_press_releases():
-    press_releases = extract_press_releases()
+def code_press_releases(end_date: date) -> pd.DataFrame:
+    press_releases = extract_press_releases(end_date)
     data = parallel_tqdm(code_press_release, press_releases["content"].tolist())
     df = pd.DataFrame(data)
     df["date"] = pd.to_datetime(df["date"], format="%Y-%m-%d").dt.date

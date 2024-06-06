@@ -8,7 +8,6 @@ import json
 import logging
 import os
 from contextlib import asynccontextmanager
-from datetime import date
 from functools import partial
 
 import pandas as pd
@@ -119,7 +118,7 @@ def _get_events(q: EventSearch) -> Response[EventSearch, list[Event]]:
 @app.post("/trend")
 def _get_trend(q: TrendSearch):  # -> Response[TrendSearch, CountTimeSeries]:
     """Fetch media item counts from the Media Impact Monitor database."""
-    df = get_trend(q, request_date=date.today())
+    df = get_latest_data(partial(get_trend, q))
 
     long_df = pd.melt(
         df.reset_index(), id_vars=["date"], var_name="topic", value_name="n_articles"
@@ -138,7 +137,7 @@ def _get_fulltexts(q: FulltextSearch):
 @app.post("/impact")
 def _get_impact(q: ImpactSearch):  # -> Response[ImpactSearch, Impact]:
     """Compute the impact of an event on a media trend."""
-    impact = get_impact(q, request_date=date.today())
+    impact = get_latest_data(partial(get_impact, q))
     return Response(query=q, data=impact)
 
 

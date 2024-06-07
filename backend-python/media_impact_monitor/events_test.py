@@ -7,13 +7,13 @@ from media_impact_monitor.events import get_events, get_events_by_id
 from media_impact_monitor.types_ import EventSearch
 
 
-@pytest.mark.skip(reason="TODO!")  # TODO FIXME!
 def test_retrieval_by_id():
     """Test that events can be retrieved by their IDs."""
     events = get_events(
         EventSearch(
             source="acled",
             topic="climate_change",
+            end_date=date(2024, 1, 1),
         )
     )
     event_ids = events["event_id"].tolist()

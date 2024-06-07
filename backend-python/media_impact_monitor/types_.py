@@ -157,7 +157,8 @@ class FulltextSearch(BaseModel):
     start_date: date | None = StartDateField
     end_date: date | None = EndDateField
     topic: Topic | None = Field(
-        description="This automatically picks a relevant set of keywords. Currently only _climate_change_ is supported."
+        default=None,
+        description="This automatically picks a relevant set of keywords. Currently only _climate_change_ is supported.",
     )
     query: Query | None = Field(default=None, description="Custom query.")
     organizers: list[str] | None = Field(

@@ -139,7 +139,7 @@ def _get_fulltexts(q: FulltextSearch):
     # -> Response[FulltextSearch, pd.DataFrame[Fulltext]]
     """Fetch media fulltexts from the Media Impact Monitor database."""
     fulltexts = get_latest_data(get_fulltexts, q)
-    return Response(query=q, data=fulltexts)
+    return Response(query=q, data=fulltexts.to_dict(orient="records"))
 
 
 @app.post("/impact")

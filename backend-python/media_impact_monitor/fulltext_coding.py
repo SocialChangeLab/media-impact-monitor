@@ -32,7 +32,7 @@ tools = [
 
 
 # classic trinary sentiment classification
-def get_sentiment_classification(text: str) -> float | None:
+def code_fulltext(text: str) -> float | None:
     messages = [
         {"role": "system", "content": system_prompt},
         {"role": "user", "content": text},

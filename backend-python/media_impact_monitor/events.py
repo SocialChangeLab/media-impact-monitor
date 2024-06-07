@@ -1,14 +1,13 @@
 import math
 from datetime import date
-from itertools import chain
 
 import pandas as pd
 from joblib import hash as joblib_hash
 
 from media_impact_monitor.data_loaders.protest.acled import get_acled_events
 from media_impact_monitor.data_loaders.protest.climate_orgs import (
+    add_aliases,
     climate_orgs,
-    climate_orgs_aliases,
 )
 from media_impact_monitor.data_loaders.protest.press_releases.last_generation.categorize import (
     code_press_releases as get_press_release_events,
@@ -18,14 +17,14 @@ from media_impact_monitor.util.cache import cache
 
 
 @cache
-def get_events(q: EventSearch) -> pd.DataFrame:
+def get_events(q: EventSearch) -> pd.DataFrame | None:
     match q.source:
         case "acled":
             df = get_acled_events(end_date=q.end_date, countries=["Germany"])
         case "press_releases":
             df = get_press_release_events(end_date=q.end_date)
     if df.empty:
-        return q, []
+        return
     match q.topic:
         case None:
             pass
@@ -38,6 +37,10 @@ def get_events(q: EventSearch) -> pd.DataFrame:
             ]
         case _:
             raise ValueError(f"Unsupported topic: {q.topic}")
+    if q.start_date:
+        df = df[df["date"] >= q.start_date]
+    if q.end_date:
+        df = df[df["date"] <= q.end_date]
     df["event_id"] = df.apply(joblib_hash, axis=1, raw=True)
     org_freqs = df["organizers"].str[0].value_counts()
 
@@ -71,11 +74,7 @@ def scale(x):
     return math.sqrt(max(10_000, x))
 
 
-def add_aliases(orgs: list[str]) -> list[str]:
-    return orgs + list(chain(*[climate_orgs_aliases.get(org, []) for org in orgs]))
-
-
 def get_events_by_id(event_ids: list[str]) -> pd.DataFrame:
-    df = get_events(EventSearch(source="acled"))
+    df = get_events(EventSearch(source="acled", end_date=date.today()))
     df = df[df["event_id"].isin(event_ids)]
     return df.reset_index(drop=True)

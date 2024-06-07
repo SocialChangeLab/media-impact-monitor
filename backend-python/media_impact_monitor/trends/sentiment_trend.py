@@ -5,11 +5,7 @@ import pandas as pd
 from media_impact_monitor.data_loaders.news_online.mediacloud_ import (
     get_mediacloud_fulltexts,
 )
-from media_impact_monitor.fulltexts import get_fulltexts
-from media_impact_monitor.trends.sentiment import get_sentiment_classification
-from media_impact_monitor.types_ import FulltextSearch, TrendSearch
 from media_impact_monitor.util.cache import cache
-from media_impact_monitor.util.parallel import parallel_tqdm
 
 
 @cache
@@ -38,19 +34,7 @@ def get_sentiment_trend(
         query=query, start_date=start_date, end_date=end_date, countries=["Germany"]
     )
 
-    # classify sentiment
-    responses = parallel_tqdm(
-        get_sentiment_classification, fulltexts["text"], desc="Sentiment analysis"
-    )
-    fulltexts["sentiment"] = [
-        r["sentiment"] if r is not None else None for r in responses
-    ]
-    fulltexts["sentiment_reasoning"] = [
-        r["reasoning"] if r is not None else None for r in responses
-    ]
-
     # aggregate positive, neutral, negative sentiments by day
-    fulltexts["sentiment"] = fulltexts["sentiment"].astype(float)
     fulltexts = (
         fulltexts.groupby("publish_date")["sentiment"]
         .value_counts()

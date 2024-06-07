@@ -1,3 +1,5 @@
+from itertools import chain
+
 # list of movements
 # keys: as in ACLED (with exceptions, see below)
 # values: other names, e. g. in the original language
@@ -38,3 +40,7 @@ climate_orgs_strings_for_coding = [
     f"{k} [{','.join(vs)}]" if len(vs) > 0 else k
     for k, vs in climate_orgs_aliases.items()
 ]
+
+
+def add_aliases(orgs: list[str]) -> list[str]:
+    return orgs + list(chain(*[climate_orgs_aliases.get(org, []) for org in orgs]))

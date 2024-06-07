@@ -110,7 +110,11 @@ def get_info() -> dict:
 @app.post("/events")
 def _get_events(q: EventSearch) -> Response[EventSearch, list[Event]]:
     """Fetch events from the Media Impact Monitor database."""
-    df = get_latest_data(partial(get_events, q))
+    # df = get_latest_data(get_events, q) TODO
+    from datetime import date
+
+    q.end_date = date(2024, 5, 30)
+    df = get_events(q)
     data = json.loads(df.to_json(orient="records"))  # convert nan to None
     return Response(query=q, data=data)
 
@@ -118,8 +122,11 @@ def _get_events(q: EventSearch) -> Response[EventSearch, list[Event]]:
 @app.post("/trend")
 def _get_trend(q: TrendSearch):  # -> Response[TrendSearch, CountTimeSeries]:
     """Fetch media item counts from the Media Impact Monitor database."""
-    df = get_latest_data(partial(get_trend, q))
+    # df = get_latest_data(get_trend, q) TODO
+    from datetime import date
 
+    q.end_date = date(2024, 5, 30)
+    df = get_trend(q)
     long_df = pd.melt(
         df.reset_index(), id_vars=["date"], var_name="topic", value_name="n_articles"
     )
@@ -130,21 +137,21 @@ def _get_trend(q: TrendSearch):  # -> Response[TrendSearch, CountTimeSeries]:
 def _get_fulltexts(q: FulltextSearch):
     # -> Response[FulltextSearch, pd.DataFrame[Fulltext]]
     """Fetch media fulltexts from the Media Impact Monitor database."""
-    fulltexts = get_fulltexts(q)
+    fulltexts = get_latest_data(get_fulltexts, q)
     return Response(query=q, data=fulltexts)
 
 
 @app.post("/impact")
 def _get_impact(q: ImpactSearch):  # -> Response[ImpactSearch, Impact]:
     """Compute the impact of an event on a media trend."""
-    impact = get_latest_data(partial(get_impact, q))
+    impact = get_latest_data(get_impact, q)
     return Response(query=q, data=impact)
 
 
 @app.post("/policy")
 def _get_policy(q: PolicySearch):  # -> Response[PolicySearch, Policy]:
     """Fetch policy data from the Media Impact Monitor database."""
-    policy = get_policy(q)
+    policy = get_latest_data(get_policy, q)
     return Response(query=q, data=policy.to_dict(orient="records"))
 
 

@@ -3,16 +3,16 @@ from datetime import date
 import pandas as pd
 
 from media_impact_monitor.util.cache import cache, get
-
-end_date = date.today()
+from media_impact_monitor.util.date import verify_dates
 
 
 @cache
 def get_genios_counts(
     query: str,
+    end_date: date,
     start_date: date = date(2010, 1, 1),
-    end_date: date = end_date,
 ) -> pd.Series:
+    assert verify_dates(start_date, end_date)
     response = get(
         "https://www.genios.de/api/searchResult/Alle/Presse",
         params={

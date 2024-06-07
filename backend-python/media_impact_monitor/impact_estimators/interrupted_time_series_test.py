@@ -16,7 +16,7 @@ from media_impact_monitor.impact_estimators.interrupted_time_series import (
 
 def test_estimate_impact():
     article_counts = get_mediacloud_counts(
-        '"Letzte Generation"', date(2023, 1, 1), date(2024, 3, 31)
+        '"Letzte Generation"', start_date=date(2023, 1, 1), end_date=date(2024, 3, 31)
     )
     actual, counterfactual, impact = estimate_impact(
         date(2023, 7, 1),
@@ -48,7 +48,7 @@ def test_estimate_impacts():
         events["organizers"].apply(lambda x: "Last Generation (Germany)" in x)
     ]
     article_counts = get_mediacloud_counts(
-        '"Letzte Generation"', date(2023, 1, 1), date(2024, 3, 31)
+        '"Letzte Generation"', start_date=date(2023, 1, 1), end_date=date(2024, 3, 31)
     )
     actuals, counterfactuals, impacts, warnings = estimate_impacts(
         events,
@@ -75,7 +75,7 @@ def test_mean_impact_estimates():
         events["organizers"].apply(lambda x: "Last Generation (Germany)" in x)
     ]
     article_counts = get_mediacloud_counts(
-        '"Letzte Generation"', date(2023, 1, 1), date(2024, 3, 31)
+        '"Letzte Generation"', start_date=date(2023, 1, 1), end_date=date(2024, 3, 31)
     )
     impacts_df, warnings = estimate_mean_impact(
         events,

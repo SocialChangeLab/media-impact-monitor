@@ -32,7 +32,7 @@ tools = [
 
 
 # classic trinary sentiment classification
-def get_sentiment_classification(text: str) -> float:
+def get_sentiment_classification(text: str) -> float | None:
     messages = [
         {"role": "system", "content": system_prompt},
         {"role": "user", "content": text},
@@ -49,7 +49,11 @@ def get_sentiment_classification(text: str) -> float:
         print(text)
         print(response)
         return
-    return json.loads(response.choices[0].message.tool_calls[0].function.arguments)
+    try:
+        return json.loads(response.choices[0].message.tool_calls[0].function.arguments)
+    except json.JSONDecodeError:
+        print(response)
+        return
 
 
 # aspect-based sentiment analysis (ABSA) - see Wang et al. (2024)

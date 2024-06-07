@@ -10,8 +10,8 @@ from media_impact_monitor.data_loaders.news_print.genios import get_genios_count
 def test_get_counts_genios():
     df = get_genios_counts(
         "Fridays for Future",
-        date(2023, 6, 1),
-        date(2023, 12, 1),
+        start_date=date(2023, 6, 1),
+        end_date=date(2023, 12, 1),
     )
     df.index = pd.to_datetime(df.index)
     assert not df.empty, "The dataframe returned is unexpectedly empty."

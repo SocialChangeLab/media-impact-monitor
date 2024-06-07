@@ -13,7 +13,7 @@ from media_impact_monitor.util.cache import cache
 from media_impact_monitor.util.paths import src
 
 
-def get_keyword_trend(q: TrendSearch, request_date: date) -> pd.DataFrame:
+def get_keyword_trend(q: TrendSearch) -> pd.DataFrame:
     assert q.trend_type == "keywords"
     assert q.topic == "climate_change", "Only climate_change is supported."
     dss = {}
@@ -21,12 +21,12 @@ def get_keyword_trend(q: TrendSearch, request_date: date) -> pd.DataFrame:
         match q.media_source:
             case "news_online":
                 ds = get_mediacloud_counts(
-                    query=query, countries=["Germany"], end_date=request_date
+                    query=query, countries=["Germany"], end_date=q.end_date
                 )
             case "news_print":
-                ds = get_genios_counts(query=query, end_date=request_date)
+                ds = get_genios_counts(query=query, end_date=q.end_date)
             case "web_google":
-                ds = get_google_trends_counts(query=query, end_date=request_date)
+                ds = get_google_trends_counts(query=query, end_date=q.end_date)
             case _:
                 raise ValueError(f"Unsupported media source: {q.media_source}")
         ds.index = pd.to_datetime(ds.index)

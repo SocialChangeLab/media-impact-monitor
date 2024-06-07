@@ -15,11 +15,9 @@ import pandas as pd
 from media_impact_monitor.util.cache import cache, post
 from media_impact_monitor.util.env import DATAFORSEO_EMAIL, DATAFORSEO_PASSWORD
 
-end_date = date.today()
-
 
 @cache
-def get_google_trends_counts(query: str, end_date: date = end_date) -> pd.Series:
+def get_google_trends_counts(query: str, end_date: date) -> pd.Series:
     url = "https://api.dataforseo.com/v3/keywords_data/google_trends/explore/live"
     location_codes = {"Germany": 2276}
     payload = [

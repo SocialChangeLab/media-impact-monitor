@@ -13,7 +13,12 @@ from media_impact_monitor.util.parallel import parallel_tqdm
 
 
 @cache
-def get_sentiment_trend(q: TrendSearch, start_date: date) -> pd.DataFrame:
+def get_sentiment_trend(
+    end_date: date,
+    query: str,
+    start_date: date = date(2024, 5, 1),
+    media_source: str = "news_online",
+) -> pd.DataFrame:
     """
     Retrieves the sentiment trend for a given query and start date.
 
@@ -24,25 +29,28 @@ def get_sentiment_trend(q: TrendSearch, start_date: date) -> pd.DataFrame:
     Returns:
         pd.DataFrame: A DataFrame containing the sentiment trend with columns for negative, neutral, and positive sentiments, indexed by date.
     """
-    assert q.trend_type == "sentiment"
     assert (
-        q.media_source == "news_online"
-    ), "Currently only news_online has fulltexts available, which are necessary for sentiment analysis."
-    start_date = date(2024, 4, 1)
-    query = '"letzte generation"'
+        media_source == "news_online"
+    ), "Only news_online has fulltexts, which are necessary for sentiment analysis."
+    query = '"letzte generation"'  # TODO
+    print(start_date, end_date, query)
     fulltexts = get_mediacloud_fulltexts(
-        query=query, start_date=start_date, countries=["Germany"]
+        query=query, start_date=start_date, end_date=end_date, countries=["Germany"]
     )
 
-    ## classify sentiment
+    # classify sentiment
     responses = parallel_tqdm(
         get_sentiment_classification, fulltexts["text"], desc="Sentiment analysis"
     )
-    fulltexts["sentiment"] = [r["sentiment"] for r in responses]
-    fulltexts["sentiment_reasoning"] = [r["reasoning"] for r in responses]
+    fulltexts["sentiment"] = [
+        r["sentiment"] if r is not None else None for r in responses
+    ]
+    fulltexts["sentiment_reasoning"] = [
+        r["reasoning"] if r is not None else None for r in responses
+    ]
 
-    ## aggregate positive, neutral, negative sentiments by day
-    fulltexts["sentiment"] = fulltexts["sentiment"].astype(int)
+    # aggregate positive, neutral, negative sentiments by day
+    fulltexts["sentiment"] = fulltexts["sentiment"].astype(float)
     fulltexts = (
         fulltexts.groupby("publish_date")["sentiment"]
         .value_counts()

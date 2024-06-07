@@ -15,7 +15,7 @@ from media_impact_monitor.types_ import PolicySearch
 
 
 def test_get_policy_with_defaults():
-    with pytest.raises(ValidationError):
+    with pytest.raises(AssertionError):
         get_policy(PolicySearch())
 
 

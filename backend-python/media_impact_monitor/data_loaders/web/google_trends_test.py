@@ -1,8 +1,10 @@
+from datetime import date
+
 from media_impact_monitor.data_loaders.web.google_trends import get_google_trends_counts
 
 
 def test_get_google_trends_counts():
-    df = get_google_trends_counts("corona")
+    df = get_google_trends_counts("corona", end_date=date(2023, 12, 1))
     assert not df.empty
     assert df.index.name == "date"
     assert df.index.is_monotonic_increasing

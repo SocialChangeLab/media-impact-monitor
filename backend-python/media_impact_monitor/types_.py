@@ -1,6 +1,6 @@
 import datetime
 from dataclasses import dataclass
-from datetime import date, datetime
+from datetime import date
 from typing import Generic, Literal, Optional, TypeVar
 
 from pydantic import BaseModel, Field
@@ -16,6 +16,14 @@ Country = Literal["Germany"]
 CountTimeSeries = dict[date, int]  # time series with integer values
 TimeSeries = dict[date, float]  # time series with float values
 AbstractTimeSeries = dict[int, float]  # time series with float values and without dates
+StartDateField = Field(
+    default=None,
+    description="Filter by start date. By default, the earliest date available is used.",
+)
+EndDateField = Field(
+    default=None,
+    description="Filter by end date. By default, the latest date available is used.",
+)
 
 #### API types ####
 
@@ -41,8 +49,10 @@ class EventSearch(BaseModel):
     )
     topic: Topic | None = Field(
         default=None,
-        description="Filter by topic. This will automatically set filters for query and organizers, which you can further refine with the `query` field. Currently only _Climate Change_ is supported.",
+        description="Filter by topic. This will automatically set filters for query and organizers, which you can further refine with the `query` field. Currently only _climate_change_ is supported.",
     )
+    start_date: date | None = StartDateField
+    end_date: date | None = EndDateField
 
 
 date_ = date
@@ -74,7 +84,6 @@ TrendType = Literal["keywords", "topic", "sentiment"]
 Aggregation = Literal["daily", "weekly", "monthly"]
 
 
-# FIXME: add time range params?
 class TrendSearch(BaseModel):
     trend_type: TrendType = Field(
         description="What type of trend to obtain: the frequency of a keyword, the value of a sentiment, or the frequencies of multiple sub-topics. Depending on the type, you have further configuration options. Currently only keyword frequencies are supported."
@@ -82,6 +91,8 @@ class TrendSearch(BaseModel):
     media_source: MediaSource = Field(
         description="The data source for the media data (i.e., online news, print news, etc.)."
     )
+    start_date: date | None = StartDateField
+    end_date: date | None = EndDateField
     topic: Topic | None = Field(
         description="When retrieving keyword frequencies, this automatically sets relevant sets of keywords. Currently only _climate_change_ is supported."
     )
@@ -114,16 +125,10 @@ class PolicySearch(BaseModel):
         default="Gesetzgebung",
         description="What type of policy to obtain (currently only relevant for German national policies, `policy_level` = 'Germany')",
     )
-    start_date: date = Field(
-        # default=date(2023, 10, 31),
-        description="",
-    )
-    end_date: date = Field(
-        # default=date(2023, 12, 31),
-        description="",
-    )
+    start_date: date | None = StartDateField
+    end_date: date | None = EndDateField
     # institution: # defaults to "BT" for now
-    topic: Optional[Topic] | None = Field(
+    topic: Topic | None = Field(
         None,
         description="What policy topic to filter for. Currently only 'climate_change'.",
     )
@@ -149,12 +154,8 @@ class FulltextSearch(BaseModel):
     media_source: MediaSource = Field(
         description="The data source for the media data (i.e., online news, print news, etc.)."
     )
-    start_date: date
-    # FIXME: setup coherent interface for API, is set to today in MediaCloud script for now
-    # end_date: date | None = Field(
-    #     default=None,
-    #     description="Date up until when fulltexts are retrieved. Defaults to current date if None.",
-    # )
+    start_date: date | None = StartDateField
+    end_date: date | None = EndDateField
     topic: Topic | None = Field(
         description="This automatically picks a relevant set of keywords. Currently only _climate_change_ is supported."
     )
@@ -165,6 +166,10 @@ class FulltextSearch(BaseModel):
     countries: list[Country] = Field(
         default=["Germany"], description="The country where news was published."
     )
+    protest_id: EventId | None = Field(
+        default=None,
+        description="The id of the protest event that the fulltexts should be related to.",
+    )
 
 
 class Fulltext(BaseModel):
@@ -172,10 +177,10 @@ class Fulltext(BaseModel):
     media_name: str
     media_url: str
     title: str
-    publish_date: datetime
+    publish_date: date
     url: str
     language: str
-    indexed_date: datetime
+    indexed_date: date
     text: str
 
 

@@ -34,4 +34,8 @@ def test_get_protests_with_keyword():
 def test_get_protests_fail_with_both_countries_and_regions():
     """Test that the function raises an assertion error when both countries and regions are specified."""
     with pytest.raises(AssertionError):
-        get_acled_events(countries=["United States"], regions=["Western Africa"])
+        get_acled_events(
+            countries=["United States"],
+            regions=["Western Africa"],
+            end_date=date(2022, 12, 31),
+        )

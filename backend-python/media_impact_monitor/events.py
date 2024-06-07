@@ -18,12 +18,12 @@ from media_impact_monitor.util.cache import cache
 
 
 @cache
-def get_events(q: EventSearch, request_date: date) -> pd.DataFrame:
+def get_events(q: EventSearch) -> pd.DataFrame:
     match q.source:
         case "acled":
-            df = get_acled_events(countries=["Germany"], end_date=request_date)
+            df = get_acled_events(end_date=q.end_date, countries=["Germany"])
         case "press_releases":
-            df = get_press_release_events(end_date=request_date)
+            df = get_press_release_events(end_date=q.end_date)
     if df.empty:
         return q, []
     match q.topic:

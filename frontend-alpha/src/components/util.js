@@ -23,3 +23,13 @@ export const queryApi = (endpoint, query) =>
         .then(res => res.json())
         .then(data => data.data)
         .catch(err => console.warn(err))
+
+export const queryApiGet = (endpoint) =>
+    fetch(`${url}/${endpoint}`, {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+    })
+        .then(res => res.json())
+        .catch(err => console.warn(err))

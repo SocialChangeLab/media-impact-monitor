@@ -8,7 +8,6 @@ import json
 import logging
 import os
 from contextlib import asynccontextmanager
-from functools import partial
 
 import pandas as pd
 from fastapi import FastAPI, Request
@@ -18,6 +17,7 @@ from starlette.responses import RedirectResponse
 from uvicorn.logging import AccessFormatter
 
 from media_impact_monitor.cron import setup_cron
+from media_impact_monitor.data_loaders.protest.climate_orgs import climate_orgs
 from media_impact_monitor.events import get_events
 from media_impact_monitor.fulltexts import get_fulltexts
 from media_impact_monitor.impact import get_impact
@@ -31,6 +31,7 @@ from media_impact_monitor.types_ import (
     FulltextSearch,
     Impact,
     ImpactSearch,
+    Organizer,
     PolicySearch,
     Response,
     TrendSearch,
@@ -153,6 +154,11 @@ def _get_policy(q: PolicySearch):  # -> Response[PolicySearch, Policy]:
     """Fetch policy data from the Media Impact Monitor database."""
     policy = get_latest_data(get_policy, q)
     return Response(query=q, data=policy.to_dict(orient="records"))
+
+
+@app.get("/organizers")
+def _get_organizers() -> list[Organizer]:
+    return [Organizer(name=org) for org in climate_orgs]
 
 
 if __name__ == "__main__":

@@ -222,3 +222,10 @@ class Impact(BaseModel):
     # = Field(
     #     description="Impact estimates for each day around the average protest event. Consists of 3 dictinonaries, each one containing a time series -- mean, upper bound, and lower bound of the two-sided 95% confidence interval. The time series are dictionaries of days after event (0 = day of event) and impact estimates for the given days."
     # )
+
+
+#### Organizations ####
+
+
+class Organizer(BaseModel):
+    name: str

@@ -1,9 +1,12 @@
+from datetime import timedelta
+
 import pandas as pd
 import yaml
 
 from media_impact_monitor.data_loaders.news_online.mediacloud_ import (
     get_mediacloud_fulltexts,
 )
+from media_impact_monitor.events import get_events_by_id
 from media_impact_monitor.types_ import Fulltext, FulltextSearch
 from media_impact_monitor.util.paths import src
 
@@ -45,6 +48,19 @@ def get_fulltexts(q: FulltextSearch):  # -> pd.DataFrame[Fulltext]
             )
         case _:
             raise ValueError(f"Unsupported media source: {q.media_source}")
+
+    if q.event_id:
+        # FIXME
+        # this should retrieve all articles about the event
+        # currently it just retrieves articles published after the event
+        events = get_events_by_id(q.event_id)
+        assert len(events) == 1
+        event = events[0]
+        fulltexts = fulltexts[
+            fulltexts["publish_date"].between(
+                event["date"], event["date"] + timedelta(days=7)
+            )
+        ]
 
     return fulltexts
 

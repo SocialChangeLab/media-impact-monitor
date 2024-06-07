@@ -166,7 +166,7 @@ class FulltextSearch(BaseModel):
     countries: list[Country] = Field(
         default=["Germany"], description="The country where news was published."
     )
-    protest_id: EventId | None = Field(
+    event_id: EventId | None = Field(
         default=None,
         description="The id of the protest event that the fulltexts should be related to.",
     )

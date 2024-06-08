@@ -27,11 +27,6 @@ def test_retrieval_by_id():
 
 
 def test_events_basic():
-    df2 = get_events(
-        EventSearch(
-            source="acled",
-        ),
-        request_date=date.today(),
-    )
+    df2 = get_events(EventSearch(source="acled", end_date=date(2024, 1, 1)))
     df2 = df2[df2["organizers"].apply(lambda x: "Last Generation (Germany)" in x)]
     assert len(df2) > 100

@@ -12,9 +12,9 @@ from media_impact_monitor.util.cache import cache
 
 
 @cache
-def get_impact(q: ImpactSearch, request_date: date) -> Impact:
+def get_impact(q: ImpactSearch) -> Impact:
     events = get_events_by_id(q.cause)
-    trends = get_trend(TrendSearch(**dict(q.effect)), request_date=request_date)
+    trends = get_trend(TrendSearch(**dict(q.effect)))  # TODO: simplify?
     applicabilities = []
     limitations = []
     dfs = dict()

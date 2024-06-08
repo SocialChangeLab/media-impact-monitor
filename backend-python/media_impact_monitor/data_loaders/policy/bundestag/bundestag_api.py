@@ -152,8 +152,6 @@ def get_bundestag_vorgaenge(
     """Fetch 'Vorgänge' from the Bundestag DIP API.
     API documentation: https://search.dip.bundestag.de/api/v1/swagger-ui
     """
-    start_date = start_date
-    end_date = end_date
     institution = institution or "BT"  # defaults to Bundestag
     cursor = None
 

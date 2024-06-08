@@ -1,3 +1,4 @@
+import base64
 from datetime import date
 from typing import Literal
 
@@ -7,6 +8,7 @@ from mcmetadata import extract
 from mcmetadata.exceptions import BadContentError
 
 from media_impact_monitor.util.cache import cache, get_proxied
+from media_impact_monitor.util.date import verify_dates
 from media_impact_monitor.util.env import MEDIACLOUD_API_TOKEN
 from media_impact_monitor.util.parallel import parallel_tqdm
 
@@ -16,14 +18,12 @@ search.TIMEOUT_SECS = 10 * 60
 
 Platform = Literal["onlinenews-mediacloud", "onlinenews-waybackmachine"]
 
-end_date = date.today()
-
 
 @cache
 def get_mediacloud_counts(
     query: str,
+    end_date: date,
     start_date: date = date(2022, 1, 1),
-    end_date: date = end_date,
     countries: list | None = None,
     platform: Platform = "onlinenews-mediacloud",
 ) -> pd.Series:
@@ -41,6 +41,7 @@ def get_mediacloud_counts(
         pd.Series: A pandas Series containing the MediaCloud counts for each date in the time range.
     """
     assert start_date.year >= 2022, "MediaCloud currently only goes back to 2022"
+    assert verify_dates(start_date, end_date)
 
     collection_ids = _resolve_countries(countries)
     data = search.story_count_over_time(
@@ -60,8 +61,8 @@ def get_mediacloud_counts(
 @cache
 def get_mediacloud_fulltexts(
     query: str,
-    start_date: date = date(2022, 1, 1),
-    end_date: date = end_date,
+    end_date: date,
+    start_date: date = date(2024, 5, 1),
     countries: list | None = None,
     platform: Platform = "onlinenews-mediacloud",
 ) -> pd.DataFrame | None:
@@ -83,6 +84,7 @@ def get_mediacloud_fulltexts(
         NotImplementedError: If pagination is needed.
     """
     assert start_date.year >= 2022, "MediaCloud currently only goes back to 2022"
+    assert verify_dates(start_date, end_date)
     collection_ids = _resolve_countries(countries)
     all_stories = []
     more_stories = True
@@ -99,7 +101,10 @@ def get_mediacloud_fulltexts(
         all_stories += page
         more_stories = pagination_token is not None
         if more_stories:
-            print(f"{len(all_stories)=} {pagination_token=}")
+            decoded_token = base64.urlsafe_b64decode(pagination_token + "==").decode(
+                "utf-8"
+            )
+            print(f"{len(all_stories)=} {pagination_token=} {decoded_token=}")
         # https://github.com/mediacloud/api-tutorial-notebooks/blob/main/MC02%20-%20attention.ipynb:
         # > As you may have noted, this can take a while for long time periods. If you look closely you'll notice that it can't be easily parallelized, because it requires content in the results to make the next call. A workaround is to divide you query up by time and query in parallel for something like each day. This can speed up the response. Also just contact us directly if you are trying to do larger data dumps, or hit up against your API quota.
     if len(all_stories) == 0:

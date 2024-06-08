@@ -32,7 +32,7 @@ def get_fulltexts(q: FulltextSearch):  # -> pd.DataFrame[Fulltext]
             fulltexts = get_mediacloud_fulltexts(
                 query=query,
                 start_date=q.start_date,
-                # end_date=q.end_date,
+                end_date=q.end_date,
                 countries=q.countries,
             )
         case "news_print":

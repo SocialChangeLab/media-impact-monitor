@@ -43,10 +43,10 @@ acled_region_keys = {
 
 @cache
 def get_acled_events(
+    end_date: date,
+    start_date: date = date(2020, 1, 1),
     countries: list[str] = [],
     regions: list[str] = [],
-    start_date: date = date(2020, 1, 1),
-    end_date: date = date.today(),
 ) -> pd.DataFrame:
     """Fetch protests from the ACLED API.
 
@@ -148,9 +148,3 @@ def rename_org(row):
         orgs = [org.replace("Just Stop Oil", "Just Stop Oil (Norway)") for org in orgs]
     row["organizers"] = orgs
     return row
-
-
-data = get_acled_events(
-    countries=["Germany"],
-    end_date=date(2024, 4, 30),
-)

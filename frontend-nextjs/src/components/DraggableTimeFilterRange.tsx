@@ -196,7 +196,8 @@ function DraggableTimeFilterRange() {
 							`absolute h-full w-full left-0 top-0`,
 							i === 1 &&
 								`ring-[1px] ring-grayMed focusable focus-visible:rounded-sm`,
-							i !== 1 && `bg-grayUltraLight mix-blend-multiply`,
+							i !== 1 &&
+								`bg-grayUltraLight mix-blend-multiply dark:mix-blend-screen`,
 						)}
 						tabIndex={i === 1 ? 0 : -1}
 						onMouseDown={(e) => handleSegmentPress(e)}

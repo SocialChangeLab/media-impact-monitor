@@ -1,5 +1,6 @@
 import { cn } from "@/utility/classNames";
 import { memo } from "react";
+import DraggableTimeFilterRange from "../DraggableTimeFilterRange";
 import TimeFilter from "../TimeFilter";
 
 function FiltersArea({ isScrolledToTop }: { isScrolledToTop: boolean }) {
@@ -7,15 +8,21 @@ function FiltersArea({ isScrolledToTop }: { isScrolledToTop: boolean }) {
 		<nav
 			aria-label="Page filters"
 			className={cn(
-				`w-screen flex gap-[max(1rem,2vmax)] flex-wrap justify-between items-center`,
+				`w-screen flex flex-col`,
 				`px-[max(1rem,2vmax)]`,
 				`border-b border-grayLight z-50 bg-pattern-soft`,
 				`transition-all`,
-				isScrolledToTop ? `py-[max(0.25rem,1vmax)]` : `py-2`,
+				isScrolledToTop ? `pt-[max(0.25rem,1vmax)]` : `pt-2`,
+				isScrolledToTop ? `gap-[max(0.25rem,1vmax)]` : `gap-2`,
 			)}
 		>
-			<ul className="flex gap-6 items-center flex-wrap"></ul>
-			<TimeFilter />
+			<div
+				className={`flex gap-[max(1rem,2vmax)] flex-wrap justify-between items-center`}
+			>
+				<ul className="flex gap-6 items-center flex-wrap"></ul>
+				<TimeFilter />
+			</div>
+			<DraggableTimeFilterRange />
 		</nav>
 	);
 }

@@ -20,8 +20,19 @@ import {
 } from "date-fns";
 import { useMemo } from "react";
 
-function useTimeIntervals(aggregationUnit: AggregationUnitType) {
-	const range = useFiltersStore(({ from, to }) => ({ from, to }));
+function useTimeIntervals({
+	from: inputFrom,
+	to: inputTo,
+	aggregationUnit,
+}: {
+	from?: Date;
+	to?: Date;
+	aggregationUnit: AggregationUnitType;
+}) {
+	const filterStore = useFiltersStore(({ from, to }) => ({ from, to }));
+	const from = inputFrom ?? filterStore.from;
+	const to = inputTo ?? filterStore.to;
+	const range = { from, to };
 
 	const eventColumns = useMemo(() => {
 		const { from, to } = range;

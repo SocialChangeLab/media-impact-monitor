@@ -1,6 +1,8 @@
 import { useFiltersStore } from "@/providers/FiltersStoreProvider";
 import { cn } from "@/utility/classNames";
+import useEvents from "@/utility/useEvents";
 import useDebounce from "@custom-react-hooks/use-debounce";
+import useElementSize from "@custom-react-hooks/use-element-size";
 import { useRanger, type Ranger } from "@tanstack/react-ranger";
 import {
 	addDays,
@@ -22,17 +24,19 @@ import {
 	type MouseEvent as ReactMouseEvent,
 	type TouchEvent as ReactTouchEvent,
 } from "react";
+import useTimelineEvents from "./EventsTimeline/useTimelineEvents";
 
 type BtnMouseEvent = ReactMouseEvent<HTMLButtonElement>;
 type BtnTouchEvent = ReactTouchEvent<HTMLButtonElement>;
 type BtnEvent = BtnMouseEvent | BtnTouchEvent;
 
+const datasetStartDate = parse("01-01-2020", "dd-MM-yyyy", new Date());
+const datasetEndDate = endOfDay(new Date());
 function DraggableTimeFilterRange() {
 	const rangerRef = useRef<HTMLDivElement>(null);
 	const midSegmentRef = useRef<HTMLButtonElement>(null);
-	const datasetStartDate = parse("01-01-2020", "dd-MM-yyyy", new Date());
 	const amountOfDays = Math.ceil(
-		differenceInDays(new Date(), datasetStartDate) + 1,
+		differenceInDays(datasetEndDate, datasetStartDate) + 1,
 	);
 	const intervals = new Array(amountOfDays).fill(null).map((_, i) => {
 		return addDays(datasetStartDate, i);
@@ -170,9 +174,10 @@ function DraggableTimeFilterRange() {
 		<div
 			className={cn(
 				`w-full h-7 border border-b-0 border-grayLight`,
-				`rounded-t-md`,
+				`rounded-t-md relative`,
 			)}
 		>
+			<BackgroundVis />
 			<div
 				ref={rangerRef}
 				className={cn(
@@ -332,5 +337,47 @@ const HandleTooptip = memo(
 		</span>
 	),
 );
+
+const BackgroundVis = memo(() => {
+	const [parentRef, size] = useElementSize();
+	const { data } = useEvents({
+		from: datasetStartDate,
+		to: datasetEndDate,
+	});
+	const { eventColumns, columnsCount, sizeScale } = useTimelineEvents({
+		size,
+		data,
+		aggregationUnit: "week",
+		config: {
+			eventMinHeight: 2,
+			eventMaxHeight: Math.floor(size.height * 0.9),
+			aggregatedEventMaxHeight: Math.floor(size.height * 0.9),
+		},
+		from: datasetStartDate,
+		to: datasetEndDate,
+	});
+	return (
+		<span
+			ref={parentRef}
+			className={cn(
+				`absolute top-0 left-0 h-full w-full pointer-events-none`,
+				`z-0 grid gap-px`,
+			)}
+			style={{ gridTemplateColumns: `repeat(${columnsCount}, 1fr)` }}
+		>
+			{eventColumns.map(({ day, eventsWithSize, sumSize }) => (
+				<span
+					key={day.toISOString()}
+					className="size-full flex flex-col gap-px justify-end"
+				>
+					<span
+						className="w-full h-0.5 bg-grayLight"
+						style={{ height: sizeScale(sumSize) }}
+					/>
+				</span>
+			))}
+		</span>
+	);
+});
 
 export default DraggableTimeFilterRange;

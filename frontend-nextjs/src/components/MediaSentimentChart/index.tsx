@@ -37,7 +37,7 @@ const MediaSentimentChart = memo(
 	}) => {
 		const [parentRef, size] = useElementSize();
 		const aggregationUnit = useAggregationUnit(size.width);
-		const intervals = useTimeIntervals(aggregationUnit);
+		const intervals = useTimeIntervals({ aggregationUnit });
 
 		const isInSameUnit = useCallback(
 			(a: Date, b: Date) => isInSameAggregationUnit(aggregationUnit, a, b),

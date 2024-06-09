@@ -6,12 +6,17 @@ import { useEffect, useMemo } from "react";
 import { toast } from "sonner";
 import { extractEventOrganisations, getEventsData } from "./eventsUtil";
 
-function useEvents() {
+function useEvents({
+	from: inputFrom,
+	to: inputTo,
+}: { from?: Date; to?: Date } = {}) {
 	const queryClient = useQueryClient();
-	const { from, to } = useFiltersStore(({ from, to }) => ({
+	const filterStore = useFiltersStore(({ from, to }) => ({
 		from,
 		to,
 	}));
+	const from = inputFrom ?? filterStore.from;
+	const to = inputTo ?? filterStore.to;
 	const fromDateString = format(from, "yyyy-MM-dd");
 	const toDateString = format(to, "yyyy-MM-dd");
 	const queryKey = ["events"]; //, fromDateString, toDateString];

@@ -1,6 +1,13 @@
 "use client";
 
-import { format, isSameDay } from "date-fns";
+import {
+	endOfDay,
+	format,
+	isSameDay,
+	startOfDay,
+	subDays,
+	subMonths,
+} from "date-fns";
 import type { DateRange } from "react-day-picker";
 
 import { Button } from "@/components/ui/button";
@@ -12,7 +19,15 @@ import {
 } from "@/components/ui/popover";
 import { cn } from "@/utility/classNames";
 import { CalendarDays } from "lucide-react";
-import { memo, useEffect, useMemo, useRef, useState } from "react";
+import {
+	memo,
+	useCallback,
+	useEffect,
+	useMemo,
+	useRef,
+	useState,
+	type ReactNode,
+} from "react";
 
 export const DatePickerWithRange = memo(
 	({
@@ -31,6 +46,7 @@ export const DatePickerWithRange = memo(
 		const [isOpen, setIsOpen] = useState(false);
 		const lastRange = useRef<DateRange | undefined>();
 		const [date, setDate] = useState<DateRange | undefined>(dateRange);
+		const [month, setMonth] = useState<Date | undefined>();
 		const fromDateString = format(date?.from || new Date(), "yyyy-MM-dd");
 		const toDateString = format(date?.to || new Date(), "yyyy-MM-dd");
 
@@ -60,6 +76,16 @@ export const DatePickerWithRange = memo(
 			onChange({ from: date.from, to: date.to });
 			lastRange.current = date;
 		}, [isOpen, fromDateString, toDateString]);
+
+		const onRangeChange = useCallback(
+			(newRange?: DateRange) => {
+				setIsOpen(false);
+				const { from, to } = newRange || {};
+				if (!from || !to) return;
+				onChange({ from, to });
+			},
+			[onChange],
+		);
 
 		return (
 			<div className={cn(className)}>
@@ -96,6 +122,30 @@ export const DatePickerWithRange = memo(
 					</PopoverTrigger>
 					{isOpen && (
 						<PopoverContent className="w-auto p-0" align="end">
+							<div className="flex gap-4 p-3 border-b border-grayUltraLight items-center justify-end">
+								<span className="grow">Presets:</span>
+								<LastTwelveMonthButton
+									currentRange={date}
+									onChange={(range) => {
+										setMonth(range.from);
+										setDate(range);
+									}}
+								/>
+								<LastSixMonthButton
+									currentRange={date}
+									onChange={(range) => {
+										setMonth(range.from);
+										setDate(range);
+									}}
+								/>
+								<LastMonthButton
+									currentRange={date}
+									onChange={(range) => {
+										setMonth(range.from);
+										setDate(range);
+									}}
+								/>
+							</div>
 							<Calendar
 								initialFocus
 								mode="range"
@@ -104,8 +154,10 @@ export const DatePickerWithRange = memo(
 								onSelect={setDate}
 								numberOfMonths={2}
 								disabled={{ after: new Date() }}
+								month={month}
+								onMonthChange={setMonth}
 							/>
-							<div className="p-3 flex justify-end gap-4">
+							<div className="p-3 flex justify-end gap-4 border-t border-grayUltraLight">
 								{onReset && !isDefault && (
 									<Button
 										variant="ghost"
@@ -119,27 +171,107 @@ export const DatePickerWithRange = memo(
 								)}
 								<Button
 									variant="outline"
-									onClick={() => {
-										setIsOpen(false);
-										setDate(lastRange.current || dateRange);
-									}}
+									onClick={() => onRangeChange(lastRange.current || dateRange)}
 								>
 									Cancel
 								</Button>
-								<Button
-									onClick={() => {
-										setIsOpen(false);
-										if (!date?.from || !date?.to) return;
-										onChange({ from: date.from, to: date.to });
-									}}
-								>
-									Apply
-								</Button>
+								<Button onClick={() => onRangeChange(date)}>Apply</Button>
 							</div>
 						</PopoverContent>
 					)}
 				</Popover>
 			</div>
+		);
+	},
+);
+
+const LastSixMonthButton = memo(
+	({
+		onChange,
+		currentRange,
+	}: {
+		onChange: (range: DateRange) => void;
+		currentRange?: DateRange;
+	}) => (
+		<PresetButton
+			currentRange={currentRange}
+			targetRange={{
+				from: startOfDay(subMonths(new Date(), 6)),
+				to: endOfDay(new Date()),
+			}}
+			onChange={onChange}
+		>
+			Last 6 months
+		</PresetButton>
+	),
+);
+
+const LastTwelveMonthButton = memo(
+	({
+		onChange,
+		currentRange,
+	}: {
+		onChange: (range: DateRange) => void;
+		currentRange?: DateRange;
+	}) => (
+		<PresetButton
+			currentRange={currentRange}
+			targetRange={{
+				from: startOfDay(subMonths(new Date(), 12)),
+				to: endOfDay(new Date()),
+			}}
+			onChange={onChange}
+		>
+			Last 12 months
+		</PresetButton>
+	),
+);
+
+const LastMonthButton = memo(
+	({
+		onChange,
+		currentRange,
+	}: {
+		onChange: (range: DateRange) => void;
+		currentRange?: DateRange;
+	}) => (
+		<PresetButton
+			currentRange={currentRange}
+			targetRange={{
+				from: startOfDay(subDays(new Date(), 30)),
+				to: endOfDay(new Date()),
+			}}
+			onChange={onChange}
+		>
+			Last 30 days
+		</PresetButton>
+	),
+);
+
+const PresetButton = memo(
+	({
+		onChange,
+		currentRange,
+		targetRange,
+		children,
+	}: {
+		onChange: (range: DateRange) => void;
+		currentRange?: DateRange;
+		targetRange: { from: Date; to: Date };
+		children: ReactNode;
+	}) => {
+		const isActive =
+			currentRange?.from &&
+			currentRange?.to &&
+			isSameDay(currentRange.from, targetRange.from) &&
+			isSameDay(currentRange.to, targetRange.to);
+		return (
+			<Button
+				variant={isActive ? "default" : "outline"}
+				onClick={() => onChange(targetRange)}
+			>
+				{children}
+			</Button>
 		);
 	},
 );

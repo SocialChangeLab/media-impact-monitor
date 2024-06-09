@@ -169,7 +169,8 @@ function DraggableTimeFilterRange() {
 		[handleSegmentDrag, onValuesChange, values, startDragging],
 	);
 
-	const handles = rangerInstance.handles();
+	const handles = rangerInstance.handles().slice(0, 2);
+	const steps = rangerInstance.getSteps().slice(0, 3);
 	return (
 		<div
 			className={cn(
@@ -185,7 +186,7 @@ function DraggableTimeFilterRange() {
 					"relative select-none h-full",
 				)}
 			>
-				{rangerInstance.getSteps().map(({ left, width }, i) => (
+				{steps.map(({ left, width }, i) => (
 					<button
 						type="button"
 						// biome-ignore lint/suspicious/noArrayIndexKey: <explanation>

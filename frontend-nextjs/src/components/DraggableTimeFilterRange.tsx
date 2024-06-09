@@ -1,19 +1,24 @@
 import { useFiltersStore } from "@/providers/FiltersStoreProvider";
 import { cn } from "@/utility/classNames";
+import useDebounce from "@custom-react-hooks/use-debounce";
 import { useRanger, type Ranger } from "@tanstack/react-ranger";
 import {
 	addDays,
 	differenceInDays,
 	endOfDay,
+	format,
 	isSameDay,
 	parse,
 	startOfDay,
 } from "date-fns";
 import {
+	memo,
 	useCallback,
 	useEffect,
+	useMemo,
 	useRef,
 	useState,
+	type KeyboardEvent as ReactKeyboardEvent,
 	type MouseEvent as ReactMouseEvent,
 	type TouchEvent as ReactTouchEvent,
 } from "react";
@@ -44,6 +49,15 @@ function DraggableTimeFilterRange() {
 	const [tempValues, setTempValues] = useState<
 		ReadonlyArray<number> | undefined
 	>([indexOfFrom, indexOfTo]);
+	const [isDragging, setIsDragging] = useState(false);
+	const [setDebouncedIsDragging] = useDebounce(setIsDragging, 500, {
+		leading: false,
+		trailing: true,
+	});
+	const startDragging = useCallback(() => {
+		setIsDragging(true);
+		setDebouncedIsDragging(false);
+	}, [setDebouncedIsDragging]);
 
 	// biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
 	useEffect(() => {
@@ -82,6 +96,7 @@ function DraggableTimeFilterRange() {
 		onDrag: (instance: Ranger<HTMLDivElement>) => {
 			const [fromIdx, toIdx] = instance.sortedValues;
 			setTempValues([fromIdx, toIdx]);
+			startDragging();
 		},
 	});
 
@@ -130,6 +145,7 @@ function DraggableTimeFilterRange() {
 			const onDrag = (e: MouseEvent | TouchEvent) => {
 				tempVals = handleSegmentDrag(e, clientX, values);
 				setTempValues(tempVals);
+				startDragging();
 			};
 			const handleRelease = (e: MouseEvent | TouchEvent) => {
 				document.removeEventListener("mousemove", onDrag);
@@ -146,7 +162,7 @@ function DraggableTimeFilterRange() {
 			document.addEventListener("mouseup", handleRelease);
 			document.addEventListener("touchend", handleRelease);
 		},
-		[handleSegmentDrag, onValuesChange, values],
+		[handleSegmentDrag, onValuesChange, values, startDragging],
 	);
 
 	const handles = rangerInstance.handles();
@@ -159,11 +175,10 @@ function DraggableTimeFilterRange() {
 		>
 			<div
 				ref={rangerRef}
-				style={{
-					position: "relative",
-					userSelect: "none",
-					height: "100%",
-				}}
+				className={cn(
+					"draggable-time-filter-range",
+					"relative select-none h-full",
+				)}
 			>
 				{rangerInstance.getSteps().map(({ left, width }, i) => (
 					<button
@@ -172,69 +187,150 @@ function DraggableTimeFilterRange() {
 						key={`segment-${i}`}
 						ref={i === 1 ? midSegmentRef : null}
 						className={cn(
+							`draggable-time-filter-range-segment`,
 							`absolute h-full w-full left-0 top-0`,
-							i === 1 && `ring-[1px] ring-grayMed`,
+							i === 1 &&
+								`ring-[1px] ring-grayMed focusable focus-visible:rounded-sm`,
 							i !== 1 && `bg-grayUltraLight mix-blend-multiply`,
 						)}
+						tabIndex={i === 1 ? 0 : -1}
 						onMouseDown={(e) => handleSegmentPress(e)}
 						onTouchStart={(e) => handleSegmentPress(e)}
 						style={{ left: `${left}%`, width: `${width}%` }}
 					/>
 				))}
-				{handles.map(
-					(
-						{
-							value,
-							onKeyDownHandler,
-							onMouseDownHandler,
-							onTouchStart,
-							isActive,
-						},
-						i,
-					) => (
-						<button
-							type="button"
-							// biome-ignore lint/suspicious/noArrayIndexKey: <explanation>
-							key={i}
-							onKeyDown={(e) => {
-								e.preventDefault();
-								onKeyDownHandler(e);
-							}}
-							onMouseDown={(e) => {
-								e.preventDefault();
-								onMouseDownHandler(e);
-							}}
-							onTouchStart={(e) => {
-								e.preventDefault();
-								onTouchStart(e);
-							}}
-							role="slider"
-							aria-valuemin={rangerInstance.options.min}
-							aria-valuemax={rangerInstance.options.max}
-							aria-valuenow={value}
-							className={cn(
-								`w-4 h-[calc(100%+0.5rem+1px)] p-1`,
-								`absolute top-1/2 -translate-x-1/2 -translate-y-1/2`,
-								`focusable transition all`,
-								`cursor-ew-resize`,
-							)}
-							style={{
-								left: `${rangerInstance.getPercentageForValue(value)}%`,
-								zIndex: isActive ? "1" : "0",
-							}}
-						>
-							<span
-								className={cn(
-									`size-full relative bg-fg rounded-full transition hover:bg-grayDark`,
-									`inline-block`,
-								)}
-							/>
-						</button>
-					),
-				)}
+				{handles.map((props, i) => (
+					<Handle
+						{...props}
+						key={`handle-${intervals[props.value].toISOString()}`}
+						date={intervals[props.value]}
+						rangerInstance={rangerInstance}
+						isDragging={isDragging}
+						isStart={i === 0}
+					/>
+				))}
 			</div>
 		</div>
 	);
 }
+
+const Handle = memo(
+	({
+		value,
+		date,
+		onKeyDownHandler,
+		onMouseDownHandler,
+		onTouchStart,
+		isActive,
+		rangerInstance,
+		isDragging = false,
+		isStart = true,
+	}: {
+		value: number;
+		date: Date;
+		onKeyDownHandler: (e: ReactKeyboardEvent) => void;
+		onMouseDownHandler: (e: ReactMouseEvent) => void;
+		onTouchStart: (e: ReactTouchEvent) => void;
+		isActive: boolean;
+		rangerInstance: Ranger<HTMLDivElement>;
+		isDragging?: boolean;
+		isStart?: boolean;
+	}) => {
+		const formattedDate = useMemo(() => format(date, "dd. MMM. yyyy"), [date]);
+
+		const handleKeyDown = useCallback(
+			(e: ReactKeyboardEvent) => {
+				e.preventDefault();
+				onKeyDownHandler(e);
+			},
+			[onKeyDownHandler],
+		);
+
+		const handleMouseDown = useCallback(
+			(e: ReactMouseEvent) => {
+				e.preventDefault();
+				onMouseDownHandler(e);
+			},
+			[onMouseDownHandler],
+		);
+
+		const handleTouchStart = useCallback(
+			(e: ReactTouchEvent) => {
+				e.preventDefault();
+				onTouchStart(e);
+			},
+			[onTouchStart],
+		);
+
+		const left = useMemo(
+			() => `${rangerInstance.getPercentageForValue(value)}%`,
+			[rangerInstance, value],
+		);
+		return (
+			<button
+				type="button"
+				onKeyDown={handleKeyDown}
+				onMouseDown={handleMouseDown}
+				onTouchStart={handleTouchStart}
+				role="slider"
+				aria-valuemin={rangerInstance.options.min}
+				aria-valuemax={rangerInstance.options.max}
+				aria-valuenow={value}
+				className={cn(
+					`w-4 h-[calc(100%+0.5rem+1px)] p-1`,
+					`absolute top-1/2 -translate-x-1/2 -translate-y-1/2`,
+					`focusable transition all rounded-full focus-visible:bg-bg`,
+					`cursor-ew-resize group`,
+				)}
+				style={{ left, zIndex: isActive ? "1" : "0" }}
+			>
+				<HandleTooptip
+					formattedDate={formattedDate}
+					isStart={isStart}
+					isDragging={isDragging}
+				/>
+			</button>
+		);
+	},
+);
+
+const HandleTooptip = memo(
+	({
+		formattedDate,
+		isStart,
+		isDragging,
+	}: { formattedDate: string; isStart: boolean; isDragging: boolean }) => (
+		<span
+			className={cn(
+				`size-full relative bg-fg rounded-full transition hover:bg-grayDark`,
+				`inline-block`,
+			)}
+		>
+			<span
+				className={cn(
+					`absolute`,
+					`bg-fg text-bg opacity-0 px-1 py-0.25 text-sm`,
+					`group-hover:opacity-100  pointer-events-none`,
+					`[.draggable-time-filter-range:has(.draggable-time-filter-range-segment:hover)_&]:opacity-100`,
+					`transition whitespace-nowrap text-center`,
+					`grid grid-cols-[22px_35px_35px]`,
+					isStart && `left-0 bottom-full group-hover:-translate-y-1`,
+					!isStart && `right-0 top-full group-hover:translate-y-1`,
+					isDragging && `opacity-100`,
+					isDragging && isStart && `-translate-y-1`,
+					isStart &&
+						`[.draggable-time-filter-range:has(.draggable-time-filter-range-segment:hover)_&]:-translate-y-1`,
+					isDragging && !isStart && `translate-y-1`,
+					!isStart &&
+						`[.draggable-time-filter-range:has(.draggable-time-filter-range-segment:hover)_&]:translate-y-1`,
+				)}
+			>
+				{formattedDate.split(" ").map((part, i) => (
+					<span key={part}>{part}</span>
+				))}
+			</span>
+		</span>
+	),
+);
 
 export default DraggableTimeFilterRange;

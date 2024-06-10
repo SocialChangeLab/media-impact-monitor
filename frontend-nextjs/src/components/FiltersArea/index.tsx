@@ -1,20 +1,11 @@
 import { cn } from "@/utility/classNames";
-import useEvents from "@/utility/useEvents";
-import { endOfDay, parse, startOfDay } from "date-fns";
 import { memo, type ReactNode } from "react";
-import slugify from "slugify";
 import MediaSourceSelect from "../DataSourceSelect";
 import DraggableTimeFilterRange from "../DraggableTimeFilterRange";
+import { OrganisationsSelect } from "../OrganisationsSelect";
 import TimeFilter from "../TimeFilter";
-import { Combobox } from "../ui/combobox";
 
 function FiltersArea({ isScrolledToTop }: { isScrolledToTop: boolean }) {
-	const {
-		data: { organisations },
-	} = useEvents({
-		from: startOfDay(parse("01-01-2020", "dd-MM-yyyy", new Date())),
-		to: endOfDay(new Date()),
-	});
 	return (
 		<nav
 			aria-label="Page filters"
@@ -41,12 +32,7 @@ function FiltersArea({ isScrolledToTop }: { isScrolledToTop: boolean }) {
 					</li>
 					<li className="flex flex-col gap-1 text-sm">
 						<FilterLabel show={isScrolledToTop}>Organisations:</FilterLabel>
-						<Combobox
-							options={organisations.map((o) => ({
-								label: o.name,
-								value: slugify(o.name, { lower: true }),
-							}))}
-						/>
+						<OrganisationsSelect />
 					</li>
 				</ul>
 				<div className="flex flex-col gap-1 text-sm">

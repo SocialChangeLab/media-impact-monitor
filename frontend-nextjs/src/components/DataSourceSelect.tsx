@@ -85,7 +85,7 @@ const options = [
 const optionsMap = new Map(options.map((o) => [o.value, o]));
 
 export default function MediaSourceSelect() {
-	const [selectedId, setSelectedId] = useState<string | null>(null);
+	const [selectedId, setSelectedId] = useState<string | null>(options[0].value);
 	const selectedValue = useMemo(
 		() => (selectedId && optionsMap.get(selectedId)) || undefined,
 		[selectedId],

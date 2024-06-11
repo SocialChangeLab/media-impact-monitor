@@ -1,5 +1,5 @@
+import Providers from "@/appProviders";
 import { BaseLayout } from "@/components/BaseLayout";
-import Providers from "@/provders";
 import "@/styles/global.css";
 import { cn } from "@/utility/classNames";
 import { inter, neueRegrade } from "@/utility/fonts";

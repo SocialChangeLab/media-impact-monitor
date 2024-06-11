@@ -1,4 +1,5 @@
-import Providers from "@/provders";
+import CommonProviders from "@/commonProviders";
+import ThemeToggle from "@/components/ThemeToggle";
 import "@/styles/global.css";
 import { cn } from "@/utility/classNames";
 import { inter, neueRegrade } from "@/utility/fonts";
@@ -16,8 +17,13 @@ export default function CosmosLayout({
 			suppressHydrationWarning
 		>
 			<head />
-			<body className="bg-pattern-soft w-screen overflow-x-clip">
-				<Providers>{children}</Providers>
+			<body className="bg-grayUltraLight w-screen min-h-screen overflow-x-clip">
+				<CommonProviders>
+					<div className="fixed top-8 right-8 bg-bg z-10">
+						<ThemeToggle />
+					</div>
+					{children}
+				</CommonProviders>
 			</body>
 		</html>
 	);

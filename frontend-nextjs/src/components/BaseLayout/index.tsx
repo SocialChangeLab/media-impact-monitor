@@ -21,7 +21,7 @@ export function BaseLayout({
 		<div
 			className="layout grid grid-rows-[auto_1fr_auto] w-screen overflow-x-clip transition-all"
 			style={{
-				paddingTop: 75 + (pathname === "/" ? 77 : 0),
+				paddingTop: 75 + (pathname === "/" ? 125 : 0),
 				minHeight: `calc(100vh - ${75 + (pathname === "/" ? 77 : 0)}px)`,
 			}}
 		>

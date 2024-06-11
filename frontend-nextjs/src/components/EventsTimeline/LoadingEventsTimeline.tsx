@@ -22,7 +22,7 @@ const sizeScale = scalePow(
 const LoadingEventsTimeline = memo(() => {
 	const [parentRef, size] = useElementSize();
 	const aggregationUnit = useAggregationUnit(size.width);
-	const intervals = useTimeIntervals(aggregationUnit);
+	const intervals = useTimeIntervals({ aggregationUnit });
 
 	const skeletons = useMemo(() => {
 		return intervals.map((_, i) => ({

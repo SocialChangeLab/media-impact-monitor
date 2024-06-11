@@ -24,6 +24,7 @@
 		"@radix-ui/react-tooltip": "1.0.7",
 		"@tanstack/react-query": "5.29.2",
 		"@tanstack/react-query-next-experimental": "5.29.2",
+		"@tanstack/react-ranger": "0.0.4",
 		"@tanstack/react-table": "8.12.0",
 		"@types/bun": "1.1.1",
 		"class-variance-authority": "0.7.0",

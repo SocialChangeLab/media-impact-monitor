@@ -22,10 +22,11 @@ function Calendar({
 			ISOWeek
 			toYear={new Date().getFullYear()}
 			showOutsideDays={showOutsideDays}
-			className={cn("p-3", className)}
+			className={cn("px-3", className)}
 			classNames={{
 				months: "flex flex-col sm:flex-row space-y-4 sm:space-x-4 sm:space-y-0",
-				month: "space-y-4 first:border-r first:pr-4 border-grayLight",
+				month:
+					"space-y-4 first:border-r first:pr-4 border-grayUltraLight pt-1 pb-3",
 				caption:
 					'flex justify-between gap-2 pt-1 relative items-center [&_.rdp-vhidden]:hidden [&:has([name="previous-month"])]:flex-row-reverse',
 				caption_label: "hidden text-sm font-medium",

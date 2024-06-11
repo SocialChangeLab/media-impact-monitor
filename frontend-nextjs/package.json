@@ -6,7 +6,9 @@
 		"dev": "cross-env NODE_OPTIONS=--max_old_space_size=4096 next dev --turbo",
 		"build": "npm run check && next build",
 		"start": "next start",
-		"check": "npx @biomejs/biome check --apply src"
+		"check": "npx @biomejs/biome check --apply src",
+		"cosmos": "cosmos --expose-imports",
+		"cosmos-export": "cosmos-export --expose-imports"
 	},
 	"dependencies": {
 		"@custom-react-hooks/use-debounce": "^1.4.19",
@@ -61,6 +63,8 @@
 		"cross-env": "7.0.3",
 		"postcss": "8.4.35",
 		"prettier": "3.2.5",
+		"react-cosmos": "6.1.1",
+		"react-cosmos-next": "6.1.1",
 		"sharp": "0.33.3",
 		"tailwind-merge": "2.2.1",
 		"tailwindcss": "3.4.1",

@@ -37,3 +37,7 @@ next-env.d.ts
 
 # Fake data for testing
 src/fakeDataForTesting/
+
+# Cosmos
+cosmos.imports.ts
+cosmos-export/

@@ -1,33 +1,33 @@
 import { cn } from "@/utility/classNames";
 import Image from "next/image";
 
-import bmbfHybridLogo from "../../../../public/images/logos/bmbf-hybrid.svg";
-import bmbfNegativeLogo from "../../../../public/images/logos/bmbf-negative.svg";
-import bmbfPositiveLogo from "../../../../public/images/logos/bmbf-positive.svg";
+import bmbfHybridLogo from "../../../../../public/images/logos/bmbf-hybrid.svg";
+import bmbfNegativeLogo from "../../../../../public/images/logos/bmbf-negative.svg";
+import bmbfPositiveLogo from "../../../../../public/images/logos/bmbf-positive.svg";
 
-import prototypeFundHybridLogo from "../../../../public/images/logos/prototypefund-hybrid.svg";
-import prototypeFundNegativeLogo from "../../../../public/images/logos/prototypefund-negative.svg";
-import prototypeFundPositiveLogo from "../../../../public/images/logos/prototypefund-positive.svg";
+import prototypeFundHybridLogo from "../../../../../public/images/logos/prototypefund-hybrid.svg";
+import prototypeFundNegativeLogo from "../../../../../public/images/logos/prototypefund-negative.svg";
+import prototypeFundPositiveLogo from "../../../../../public/images/logos/prototypefund-positive.svg";
 
-import socialChangeLabHybridLogo from "../../../../public/images/logos/socialchangelab-hybrid.svg";
-import socialChangeLabNegativeLogo from "../../../../public/images/logos/socialchangelab-negative.svg";
-import socialChangeLabPositiveLogo from "../../../../public/images/logos/socialchangelab-positive.svg";
+import socialChangeLabHybridLogo from "../../../../../public/images/logos/socialchangelab-hybrid.svg";
+import socialChangeLabNegativeLogo from "../../../../../public/images/logos/socialchangelab-negative.svg";
+import socialChangeLabPositiveLogo from "../../../../../public/images/logos/socialchangelab-positive.svg";
 
-import mimHorizontalHybridLogo from "../../../../public/images/logos/mim-horizontal-hybrid.svg";
-import mimHorizontalNegativeLogo from "../../../../public/images/logos/mim-horizontal-negative.svg";
-import mimHorizontalPositiveLogo from "../../../../public/images/logos/mim-horizontal-positive.svg";
+import mimHorizontalHybridLogo from "../../../../../public/images/logos/mim-horizontal-hybrid.svg";
+import mimHorizontalNegativeLogo from "../../../../../public/images/logos/mim-horizontal-negative.svg";
+import mimHorizontalPositiveLogo from "../../../../../public/images/logos/mim-horizontal-positive.svg";
 
-import mimAlternateHybridLogo from "../../../../public/images/logos/mim-alternate-hybrid.svg";
-import mimAlternateNegativeLogo from "../../../../public/images/logos/mim-alternate-negative.svg";
-import mimAlternatePositiveLogo from "../../../../public/images/logos/mim-alternate-positive.svg";
+import mimAlternateHybridLogo from "../../../../../public/images/logos/mim-alternate-hybrid.svg";
+import mimAlternateNegativeLogo from "../../../../../public/images/logos/mim-alternate-negative.svg";
+import mimAlternatePositiveLogo from "../../../../../public/images/logos/mim-alternate-positive.svg";
 
-import mimStairsHybridLogo from "../../../../public/images/logos/mim-stairs-hybrid.svg";
-import mimStairsNegativeLogo from "../../../../public/images/logos/mim-stairs-negative.svg";
-import mimStairsPositiveLogo from "../../../../public/images/logos/mim-stairs-positive.svg";
+import mimStairsHybridLogo from "../../../../../public/images/logos/mim-stairs-hybrid.svg";
+import mimStairsNegativeLogo from "../../../../../public/images/logos/mim-stairs-negative.svg";
+import mimStairsPositiveLogo from "../../../../../public/images/logos/mim-stairs-positive.svg";
 
-import mimVerticalHybridLogo from "../../../../public/images/logos/mim-vertical-hybrid.svg";
-import mimVerticalNegativeLogo from "../../../../public/images/logos/mim-vertical-negative.svg";
-import mimVerticalPositiveLogo from "../../../../public/images/logos/mim-vertical-positive.svg";
+import mimVerticalHybridLogo from "../../../../../public/images/logos/mim-vertical-hybrid.svg";
+import mimVerticalNegativeLogo from "../../../../../public/images/logos/mim-vertical-negative.svg";
+import mimVerticalPositiveLogo from "../../../../../public/images/logos/mim-vertical-positive.svg";
 
 type LogoType = {
 	src: string;

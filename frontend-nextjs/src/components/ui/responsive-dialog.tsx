@@ -8,7 +8,7 @@ import {
 	DrawerHeader,
 	DrawerTitle,
 } from "@/components/ui/drawer";
-import { useState, type PropsWithChildren, type ReactNode } from "react";
+import { type PropsWithChildren, type ReactNode, useState } from "react";
 
 export function ResponsiveModal({
 	children,

@@ -26,6 +26,11 @@ _Media Impact Monitor_ makes you explore the world of protest and activism, and 
 
 - [ ] **Keep track of your organization.** If you're part of an organization and want to measure your media impact, then we can collect data and compute statistics just for your organization. You can have your own dashboard with your own events, and see your impact on all the media sources that we monitor, or on your own outcome metrics. We collect citations from politicians and journalists about your work, and provide transparent estimates of your reach. Share your dashboard with your members and supporters to motivate them to donate and take action.
 
+## Documentation
+
+- [Backend documentation](backend-python/README.md)
+- [Frontend documentation](frontend-nextjs/README.MD)
+
 ## Team
 
 The project team consists of:

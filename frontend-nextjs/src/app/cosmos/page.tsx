@@ -16,7 +16,7 @@ function CosmosIndex() {
 	);
 	return (
 		<div className="grid grid-cols-[auto_1fr]">
-			<aside className="p-6 border-r border-grayLight min-h-screen">
+			<aside className="p-6 bg-pattern-soft border-r border-grayLight h-screen overflow-y-auto">
 				<nav>
 					<Logo className="w-64" />
 					<h1 className="text-3xl mt-2">UI Library</h1>
@@ -43,7 +43,7 @@ function CosmosIndex() {
 					</ul>
 				</nav>
 			</aside>
-			<main className="h-full flex justify-center items-center">
+			<main className="h-screen flex justify-center items-center">
 				{selected.Component && <selected.Component />}
 			</main>
 		</div>

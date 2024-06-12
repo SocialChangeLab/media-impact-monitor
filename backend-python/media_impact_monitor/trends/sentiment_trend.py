@@ -5,6 +5,7 @@ import pandas as pd
 from media_impact_monitor.data_loaders.news_online.mediacloud_ import (
     get_mediacloud_fulltexts,
 )
+from media_impact_monitor.fulltext_coding import code_fulltext
 from media_impact_monitor.util.cache import cache
 
 
@@ -33,6 +34,8 @@ def get_sentiment_trend(
     fulltexts = get_mediacloud_fulltexts(
         query=query, start_date=start_date, end_date=end_date, countries=["Germany"]
     )
+    coded_df = fulltexts["text"].apply(code_fulltext).apply(pd.Series)
+    fulltexts = pd.concat([fulltexts, coded_df], axis=1)
 
     # aggregate positive, neutral, negative sentiments by day
     fulltexts = (

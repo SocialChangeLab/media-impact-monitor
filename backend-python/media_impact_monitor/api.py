@@ -139,6 +139,8 @@ def _get_fulltexts(q: FulltextSearch):
     # -> Response[FulltextSearch, pd.DataFrame[Fulltext]]
     """Fetch media fulltexts from the Media Impact Monitor database."""
     fulltexts = get_latest_data(get_fulltexts, q)
+    if fulltexts is None:
+        return Response(query=q, data=[])
     return Response(query=q, data=fulltexts.to_dict(orient="records"))
 
 

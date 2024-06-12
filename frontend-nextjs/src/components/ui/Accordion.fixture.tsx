@@ -45,7 +45,7 @@ const accordionItems = [
 export default function AccordionFixture() {
 	const [accordionItem, setAccordionItem] = useState("item-1");
 	return (
-		<div className="w-screen h-screen relative flex justify-center items-center p-8">
+		<div className="w-full h-full min-h-screen relative flex justify-center items-center p-8">
 			<div className="border border-dashed border-grayLight p-8 pt-4 rounded-lg bg-pattern-soft w-full max-w-screen-sm">
 				<Accordion
 					type="single"

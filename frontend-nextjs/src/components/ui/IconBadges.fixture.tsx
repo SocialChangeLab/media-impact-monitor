@@ -16,7 +16,7 @@ const Icon = () => (
 	</svg>
 );
 export default () => (
-	<div className="w-screen h-screen relative flex justify-center items-center p-8">
+	<div className="w-full h-full min-h-screen relative flex justify-center items-center p-8">
 		<div className="border border-dashed border-grayLight p-8 rounded-lg bg-pattern-soft flex gap-8">
 			<IconBadge icon={<Icon />} label="Default" />
 		</div>

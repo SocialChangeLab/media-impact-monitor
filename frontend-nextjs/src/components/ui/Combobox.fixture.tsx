@@ -50,7 +50,7 @@ const fruits = [
 ];
 
 export default () => (
-	<div className="w-screen h-screen relative flex justify-center items-center p-8">
+	<div className="w-full h-full min-h-screen relative flex justify-center items-center p-8">
 		<div className="border border-dashed border-grayLight p-8 pt-6 rounded-lg bg-pattern-soft grid grid-cols-2 gap-8">
 			<div className="flex flex-col gap-1">
 				<span>Default</span>

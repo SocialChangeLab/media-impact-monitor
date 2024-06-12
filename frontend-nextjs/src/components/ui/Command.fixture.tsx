@@ -13,7 +13,7 @@ import Icon from "./icon";
 
 export default function CommandDemo() {
 	return (
-		<div className="w-screen h-screen relative flex justify-center items-center p-8">
+		<div className="w-full h-full min-h-screen relative flex justify-center items-center p-8">
 			<div className="border border-dashed border-grayLight p-8 pt-6 rounded-lg bg-pattern-soft grid grid-cols-1 gap-8">
 				<Command className="rounded-lg border shadow-md">
 					<CommandInput placeholder="Search..." />

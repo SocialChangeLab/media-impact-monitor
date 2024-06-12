@@ -17,7 +17,7 @@ const Icon = () => (
 );
 
 export default () => (
-	<div className="w-screen h-screen relative flex justify-center items-center p-8">
+	<div className="w-full h-full min-h-screen relative flex justify-center items-center p-8">
 		<div className="border border-dashed border-grayLight p-8 rounded-lg bg-pattern-soft grid grid-cols-4 gap-8">
 			<Button variant="default" size="lg">
 				Default large

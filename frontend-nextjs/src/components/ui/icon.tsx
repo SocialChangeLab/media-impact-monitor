@@ -1,4 +1,4 @@
-import { icons, type LucideProps } from "lucide-react";
+import { type LucideProps, icons } from "lucide-react";
 
 const Icon = ({
 	name,

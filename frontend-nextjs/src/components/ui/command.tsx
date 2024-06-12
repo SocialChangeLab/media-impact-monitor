@@ -16,6 +16,7 @@ const Command = React.forwardRef<
 		ref={ref}
 		className={cn(
 			"flex h-full w-full flex-col overflow-hidden bg-bg text-fg",
+			"border-grayMed",
 			className,
 		)}
 		{...props}
@@ -56,13 +57,17 @@ const CommandInput = React.forwardRef<
 	React.ElementRef<typeof CommandPrimitive.Input>,
 	React.ComponentPropsWithoutRef<typeof CommandPrimitive.Input>
 >(({ className, ...props }, ref) => (
-	<div className="flex items-center border-b pl-3" cmdk-input-wrapper="">
-		<SearchIcon className="mr-2 shrink-0 opacity-50" />
+	<div
+		className="flex items-center border-b border-grayLight p-0 pl-3"
+		cmdk-input-wrapper=""
+	>
+		<SearchIcon className="shrink-0 opacity-50" />
 		<CommandPrimitive.Input
 			ref={ref}
 			className={cn(
-				"flex h-10 w-full bg-transparent py-3 text-sm outline-none",
+				"flex h-10 w-full bg-transparent py-3 text-sm outline-none border-none pr-0",
 				"placeholder:text-grayDark disabled:cursor-not-allowed disabled:opacity-50",
+				`focus-visible:ring-inset`,
 				className,
 			)}
 			{...props}
@@ -139,7 +144,7 @@ const CommandItem = React.forwardRef<
 		ref={ref}
 		className={cn(
 			"relative flex cursor-default select-none",
-			"items-center px-4 py-2",
+			"items-center px-4 py-2 gap-2",
 			"outline-none aria-selected:bg-grayLight",
 			"aria-selected:text-fg aria-selected:cursor-pointer",
 			"data-[disabled]:pointer-events-none",
@@ -160,10 +165,7 @@ const CommandShortcut = ({
 }: React.HTMLAttributes<HTMLSpanElement>) => {
 	return (
 		<span
-			className={cn(
-				"ml-auto text-xs tracking-widest text-muted-foreground",
-				className,
-			)}
+			className={cn("ml-auto text-xs tracking-widest text-grayDark", className)}
 			{...props}
 		/>
 	);

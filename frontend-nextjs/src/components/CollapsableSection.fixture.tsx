@@ -4,7 +4,7 @@ import CollapsableSection from "./CollapsableSection";
 export default function CollapsableSectionFixture() {
 	return (
 		<div className="w-screen h-screen relative flex justify-center items-center p-8">
-			<div className="border border-dashed border-grayLight p-8 rounded-lg bg-pattern-soft w-full">
+			<div className="border border-dashed border-grayLight p-8 rounded-lg bg-pattern-soft w-full max-w-screen-sm">
 				<CollapsableSection
 					storageKey="CollapsableSectionFixture"
 					title="This is a collapsable section"

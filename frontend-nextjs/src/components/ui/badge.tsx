@@ -4,7 +4,7 @@ import type * as React from "react";
 import { cn } from "@/utility/classNames";
 
 const badgeVariants = cva(
-	"inline-flex items-center gap-1.5 rounded-full border px-2.5 pt-1 pb-0.5 text-xs transition-colors focusable",
+	"inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-xs transition-colors focusable",
 	{
 		variants: {
 			variant: {
@@ -12,8 +12,6 @@ const badgeVariants = cva(
 					"border-transparent bg-grayLight text-fg hover:bg-fg hover:fg-bg",
 				secondary:
 					"border-transparent bg-grayLight text-grayDark hover:bg-grayDark hover:text-grayLight",
-				destructive:
-					"border-transparent bg-fg text-bg hover:bg-bg hover:border-bg hover:text-fg",
 				outline: "text-grayDark",
 			},
 		},

@@ -33,7 +33,7 @@
 		"d3-time": "3.1.0",
 		"date-fns": "3.6.0",
 		"framer-motion": "11.0.28",
-		"lucide-react": "0.341.0",
+		"lucide-react": "0.263.1",
 		"next": "14.1.0",
 		"next-themes": "0.3.0",
 		"nextjs-toploader": "1.6.11",

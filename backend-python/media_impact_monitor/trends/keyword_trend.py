@@ -41,79 +41,68 @@ def get_keyword_trend(q: TrendSearch) -> pd.DataFrame:
     return df
 
 
-def topic_queries(media_source: str) -> dict[str, str]:
-    with open(src / "media_impact_monitor/trend_keywords.yaml") as f:
+def add_quotes(xs: list[str]) -> list[str]:
+    return [f'"{x}"' if " " in x else x for x in xs]
+
+
+def load_keywords():
+    with open(src / "media_impact_monitor/issue_keywords.yaml") as f:
         keywords = yaml.load(f, Loader=yaml.FullLoader)
-    all_incl_activism = build_query(
-        media_source=media_source,
-        positive=keywords["science"] + keywords["policy"] + keywords["urgency"],
-    )
-    all_excl_activism = build_query(
-        media_source=media_source,
-        positive=keywords["science"] + keywords["policy"] + keywords["urgency"],
-        negative=keywords["activism"],
-    )
-    keywords = {
-        "science": build_query(media_source=media_source, positive=keywords["science"]),
-        "policy": build_query(media_source=media_source, positive=keywords["policy"]),
-        "urgency": build_query(media_source=media_source, positive=keywords["urgency"]),
-        # "all_incl_activism": all_incl_activism,
-        # "all_excl_activism": all_excl_activism,
-    }
-    if media_source == "mediacloud":
-        keywords["activism"] = (
-            f"({all_incl_activism}) AND ({build_query(media_source=media_source, positive=keywords['activism'])})"
-        )
+    for k, v in keywords.items():
+        keywords[k] = add_quotes(v)
     return keywords
 
 
-def build_query(
-    media_source: str,
-    positive: list[str] | None = None,
-    negative: list[str] | None = None,
-) -> str:
-    """
-    Build a boolean query, which works differently for different data sources.
-    This does not support general boolean queries, but only like:
-    - A or B or ... or G
-    - not (A or B or ... or G)
-    - (A or B or ... or G) and not (Q or V or ... or Z)
-    """
-    assert media_source in ["news_online", "news_print", "web_google"]
-    assert positive or negative
+def topic_queries(media_source: str) -> dict[str, str]:
+    keywords = load_keywords()
+    keyword_queries = {
+        "science": xs(keywords["climate_science"], media_source),
+        "policy": xs(keywords["climate_policy"], media_source),
+        "urgency": xs(keywords["climate_urgency"], media_source),
+        "all_excl_activism": xs_without_ys(
+            keywords["climate_science"]
+            + keywords["climate_policy"]
+            + keywords["climate_urgency"],
+            keywords["activism"],
+            media_source,
+        ),
+    }
+    if media_source != "web_google":
+        keyword_queries["activism"] = xs_with_ys(
+            keywords["climate_science"]
+            + keywords["climate_policy"]
+            + keywords["climate_urgency"],
+            keywords["activism"],
+            media_source,
+        )
+    return keyword_queries
+
+
+def xs(xs: list[str], media_source: str) -> str:
+    # x1 OR x2 OR ... OR xN
     match media_source:
         case "news_online" | "news_print":
-            # for print news see: https://www.gbi-genios.de/de/hilfe/genios/verknuepfung-von-suchworten
-            if positive:
-                q_positive = [f'"{a}"' if len(a.split()) > 1 else a for a in positive]
-                q_positive = " OR ".join(q_positive)
-            if negative:
-                q_negative = [f'"{a}"' if len(a.split()) > 1 else a for a in negative]
-                q_negative = " OR ".join(q_negative)
-            if positive and negative:
-                query = f"({q_positive}) AND NOT ({q_negative})"
-            elif positive:
-                query = q_positive
-            elif negative:
-                query = f"NOT ({q_negative})"
+            return " OR ".join(xs)
         case "web_google":
-            # see https://newsinitiative.withgoogle.com/resources/trainings/advanced-google-trends/
-            # and https://support.google.com/trends/answer/4359582?hl=en
-            q_positive = (
-                [f'+"{a}"' if len(a.split()) > 1 else f"+{a}" for a in positive]
-                if positive
-                else []
+            return " ".join([f"+{x}" for x in xs])
+
+
+def xs_with_ys(xs: list[str], ys: list[str], media_source: str) -> str:
+    # (x1 OR x2 OR ... OR xN) AND (y1 OR y2 OR ... OR yN)
+    match media_source:
+        case "news_online" | "news_print":
+            return f"({' OR '.join(xs)}) AND ({' OR '.join(ys)})"
+        case "web_google":
+            # could be worked around by doing multiple queries
+            raise ValueError("Not supported for web_google")
+
+
+def xs_without_ys(xs: list[str], ys: list[str], media_source: str) -> str:
+    # (x1 OR x2 OR ... OR xN) AND NOT (y1 OR y2 OR ... OR yN)
+    match media_source:
+        case "news_online" | "news_print":
+            return f"({' OR '.join(xs)}) AND NOT ({' OR '.join(ys)})"
+        case "web_google":
+            return (
+                f"{' '.join([f'+{x}' for x in xs])} {' '.join([f'-{y}' for y in ys])}"
             )
-            q_negative = (
-                [f'-"{a}"' if len(a.split()) > 1 else f"-{a}" for a in negative]
-                if negative
-                else []
-            )
-            if positive and negative:
-                query = " ".join(q_positive[:4] + q_negative[:4])
-            elif positive:
-                query = " ".join(q_positive[:4])
-            elif negative:
-                query = " ".join(q_negative[:4])
-            query = query.replace("*", "")
-    return query

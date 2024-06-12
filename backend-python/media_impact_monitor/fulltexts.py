@@ -19,10 +19,12 @@ from media_impact_monitor.trends.keyword_trend import (
     xs_with_ys,
 )
 from media_impact_monitor.types_ import Fulltext, FulltextSearch
+from media_impact_monitor.util.cache import cache
 from media_impact_monitor.util.parallel import parallel_tqdm
 from media_impact_monitor.util.paths import src
 
 
+@cache
 def get_fulltexts(q: FulltextSearch) -> pd.DataFrame | None:
     assert q.countries == ["Germany"], 'Only ["Germany"] is currently supported.'
     assert q.topic or q.query or q.event_id

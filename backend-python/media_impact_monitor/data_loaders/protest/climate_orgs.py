@@ -4,14 +4,14 @@ from itertools import chain
 # keys: as in ACLED (with exceptions, see below)
 # values: other names, e. g. in the original language
 climate_orgs_aliases = {
-    "Animal Rebellion": ["AR"],  # was renamed to "Animal Rising"
-    "Animal Rising": ["AR"],
+    "Animal Rebellion": [],  # was renamed to "Animal Rising"
+    "Animal Rising": [],
     "Alternatiba": [],
     "Attac": [],
     "BUND": ["Bund für Umwelt und Naturschutz Deutschland"],
     "Declare Emergency": [],
     "DGUB: The Green Youth Movement": ["Den Grønne Ungdomsbevægelse"],
-    "Ende Gelaende": [],
+    "Ende Gelaende": ["Ende Gelände"],
     "Extinction Rebellion": ["XR"],
     "Fridays for Future": [],
     "Friends of the Earth": [],

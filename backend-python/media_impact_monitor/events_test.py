@@ -13,7 +13,7 @@ def test_retrieval_by_id():
         EventSearch(
             source="acled",
             topic="climate_change",
-            end_date=date(2024, 1, 1),
+            end_date=date(2024, 5, 25),
         )
     )
     event_ids = events["event_id"].tolist()

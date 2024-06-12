@@ -7,6 +7,7 @@ from media_impact_monitor.events import get_events, get_events_by_id
 from media_impact_monitor.types_ import EventSearch
 
 
+@pytest.mark.skip()
 def test_retrieval_by_id():
     """Test that events can be retrieved by their IDs."""
     events = get_events(

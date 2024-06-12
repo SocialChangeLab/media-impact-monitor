@@ -10,6 +10,7 @@ import os
 from contextlib import asynccontextmanager
 
 import pandas as pd
+import sentry_sdk
 from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse
 from starlette.middleware.cors import CORSMiddleware
@@ -37,6 +38,7 @@ from media_impact_monitor.types_ import (
     TrendSearch,
 )
 from media_impact_monitor.util.date import get_latest_data
+from media_impact_monitor.util.env import SENTRY_DSN
 
 git_commit = (os.getenv("VCS_REF") or "")[:7]
 build_date = (os.getenv("BUILD_DATE") or "WIP").replace("T", " ")
@@ -67,6 +69,9 @@ async def app_lifespan(app: FastAPI):
     # setup cron to regularly fills the cache
     setup_cron()
     yield
+
+
+sentry_sdk.init(dsn=SENTRY_DSN, traces_sample_rate=1.0, profiles_sample_rate=1.0)
 
 
 app = FastAPI(**metadata, lifespan=app_lifespan)

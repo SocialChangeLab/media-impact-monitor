@@ -19,8 +19,8 @@ function CosmosIndex() {
 			<aside className="p-6 bg-pattern-soft border-r border-grayLight h-screen overflow-y-auto">
 				<nav>
 					<Logo className="w-64" />
-					<h1 className="text-3xl mt-2">UI Library</h1>
-					<h2 className="mt-8 font-bold text-xl pb-1 border-b border-grayLight mb-4">
+					<h1 className="text-3xl mt-2 font-headlines font-bold">UI Library</h1>
+					<h2 className="mt-16 font-bold text-grayDark pb-1 border-b border-grayLight mb-4">
 						Components
 					</h2>
 					<ul className="mt-2 flex flex-col gap-1">

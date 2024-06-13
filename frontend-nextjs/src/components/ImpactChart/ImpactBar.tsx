@@ -16,25 +16,75 @@ type ImpactBarHeadProps = ImpactBarProps & {
 
 function ImpactBar(props: ImpactBarProps) {
 	const [parentRef, size] = useElementSize();
-	const { impact } = props;
+	const { impact, uncertainy } = props;
 	if (impact === null) return null;
+	const parentHeight = size.height - 32;
 	const impactHeight = Math.ceil(
-		(Math.max(0, Math.min(100, impact * 100)) * size.height) / 100,
+		(Math.max(0, Math.min(100, Math.abs(impact) * 100)) * parentHeight) / 100,
 	);
+	const uncertaintyHeight = Math.ceil(parentHeight * (uncertainy ?? 1));
+	const negativeImpact = impact < 0;
 	return (
-		<div ref={parentRef} className="flex items-end w-full h-56">
+		<div
+			ref={parentRef}
+			className={cn(
+				"flex items-end w-full h-56",
+				negativeImpact && "-scale-y-100",
+			)}
+		>
 			<div
-				className={cn("size-full grid grid-cols-1 grid-rows-[auto_1fr]")}
+				className={cn(
+					"size-full grid grid-cols-1 grid-rows-[auto_1fr] relative",
+				)}
 				style={{ height: props.uncertainy === null ? 4 : `${impactHeight}px` }}
 			>
 				<ImpactBarHead
 					{...props}
 					impactHeight={props.uncertainy === null ? 4 : impactHeight}
-					parentHeight={size.height}
+					parentHeight={parentHeight}
 				/>
+				{props.uncertainy && (
+					<span
+						className={cn(
+							"absolute left-1/2 -translate-x-1/2 bottom-full -translate-y-2 text-sm",
+							"transition-opacity opacity-100 group-hover:opacity-0 duration-1000 ease-smooth-in-out",
+						)}
+					>
+						<div className={cn(negativeImpact && `-scale-y-100`)}>
+							{props.impact?.toFixed(2)}
+						</div>
+					</span>
+				)}
+				<span
+					className={cn(
+						"absolute left-1/2 text-sm text-center ",
+						"transition-opacity opacity-0 group-hover:opacity-100 duration-1000 ease-smooth-in-out",
+						"leading-tight",
+						uncertainy === null || impactHeight < 80 ? "bottom-full" : "top-0",
+					)}
+					style={{
+						transform:
+							uncertainy === null
+								? `translate(-50%, -8px)`
+								: impactHeight < 80
+									? `translate(-50%, -${uncertaintyHeight / 2}px)`
+									: `translate(-50%, ${uncertaintyHeight / 2 + 8}px)`,
+					}}
+				>
+					<div className={cn(negativeImpact && `-scale-y-100`)}>
+						{getUncertaintyLabel(uncertainy)}
+					</div>
+				</span>
 			</div>
 		</div>
 	);
+}
+
+function getUncertaintyLabel(uncertainty: number | null) {
+	if (uncertainty === null) return "Too Uncertain";
+	if (uncertainty < 0.5) return "Low Uncertainty";
+	if (uncertainty < 0.75) return "Moderate Uncertainty";
+	return "High Uncertainty";
 }
 
 function ImpactBarHead(props: ImpactBarHeadProps) {
@@ -84,7 +134,7 @@ function UncertaintyBar({
 							width="4"
 							height="4"
 							patternUnits="userSpaceOnUse"
-							patternTransform="rotate(45) scale(2)"
+							patternTransform="rotate(45) scale(4)"
 						>
 							<rect
 								width="2"
@@ -100,7 +150,11 @@ function UncertaintyBar({
 							stopColor="white"
 							stopOpacity={tooUncertain ? 0 : 0.3}
 						/>
-						<stop offset="0.5" stopColor="white" stopOpacity="1" />
+						<stop
+							offset="0.5"
+							stopColor="white"
+							stopOpacity={tooUncertain ? 0.5 : 1}
+						/>
 						<stop
 							offset="1"
 							stopColor="white"
@@ -194,6 +248,10 @@ function ImpactArrow({
 				strokeWidth="4"
 				fill="none"
 				vectorEffect="non-scaling-stroke"
+				className={cn(
+					uncertainy === null &&
+						"opacity-0 group-hover:opacity-100 transition-opacity duration-1000 ease-smooth-in-out",
+				)}
 			/>
 		</svg>
 	);

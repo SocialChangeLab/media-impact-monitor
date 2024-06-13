@@ -1,13 +1,15 @@
 "use client";
 import { cn } from "@/utility/classNames";
-import useElementSize from "@custom-react-hooks/use-element-size";
 import { memo } from "react";
 
 type ImpactBarProps = {
 	uniqueId: string;
 	impact: number | null;
 	color?: string;
-	uncertainy: number | null;
+	uncertainty: number | null;
+	impactLabel?: string;
+	totalHeight: number;
+	padding: number;
 };
 type ImpactBarHeadProps = ImpactBarProps & {
 	impactHeight: number;
@@ -15,35 +17,38 @@ type ImpactBarHeadProps = ImpactBarProps & {
 };
 
 function ImpactBar(props: ImpactBarProps) {
-	const [parentRef, size] = useElementSize();
-	const { impact, uncertainy } = props;
+	const { impact, padding, uncertainty, totalHeight } = props;
 	if (impact === null) return null;
-	const parentHeight = size.height - 32;
-	const impactHeight = Math.ceil(
-		(Math.max(0, Math.min(100, Math.abs(impact) * 100)) * parentHeight) / 100,
+	const parentHeight = Math.max(totalHeight, 16);
+	const impactHeight = Math.floor(parentHeight * (Math.abs(impact) ?? 0));
+	const maxUncertaintyHeight =
+		(parentHeight + padding * 1.25 - impactHeight) * 2;
+	const uncertaintyHeight = Math.min(
+		maxUncertaintyHeight,
+		Math.max(16, Math.ceil(parentHeight * (uncertainty ?? 1))),
 	);
-	const uncertaintyHeight = Math.ceil(parentHeight * (uncertainy ?? 1));
 	const negativeImpact = impact < 0;
 	return (
 		<div
-			ref={parentRef}
 			className={cn(
-				"flex items-end w-full h-56",
+				"flex items-end w-full h-full relative",
+				uncertainty === null && "translate-y-0.5",
 				negativeImpact && "-scale-y-100",
 			)}
 		>
 			<div
 				className={cn(
+					"absolute inset-0 w-full h-full",
 					"size-full grid grid-cols-1 grid-rows-[auto_1fr] relative",
 				)}
-				style={{ height: props.uncertainy === null ? 4 : `${impactHeight}px` }}
+				style={{ height: props.uncertainty === null ? 4 : `${impactHeight}px` }}
 			>
 				<ImpactBarHead
 					{...props}
-					impactHeight={props.uncertainy === null ? 4 : impactHeight}
+					impactHeight={props.uncertainty === null ? 4 : impactHeight}
 					parentHeight={parentHeight}
 				/>
-				{props.uncertainy && (
+				{props.uncertainty && (
 					<span
 						className={cn(
 							"absolute left-1/2 -translate-x-1/2 bottom-full -translate-y-2 text-sm",
@@ -51,7 +56,7 @@ function ImpactBar(props: ImpactBarProps) {
 						)}
 					>
 						<div className={cn(negativeImpact && `-scale-y-100`)}>
-							{props.impact?.toFixed(2)}
+							{props.impactLabel || props.impact?.toFixed(2)}
 						</div>
 					</span>
 				)}
@@ -60,19 +65,21 @@ function ImpactBar(props: ImpactBarProps) {
 						"absolute left-1/2 text-sm text-center ",
 						"transition-opacity opacity-0 group-hover:opacity-100 duration-1000 ease-smooth-in-out",
 						"leading-tight",
-						uncertainy === null || impactHeight < 80 ? "bottom-full" : "top-0",
+						uncertainty === null || impactHeight < 80 ? "bottom-full" : "top-0",
 					)}
 					style={{
 						transform:
-							uncertainy === null
+							uncertainty === null
 								? `translate(-50%, -8px)`
 								: impactHeight < 80
 									? `translate(-50%, -${uncertaintyHeight / 2}px)`
-									: `translate(-50%, ${uncertaintyHeight / 2 + 8}px)`,
+									: `translate(-50%, ${
+											uncertaintyHeight / 2 + (impact >= 0 ? 6 : 14)
+										}px)`,
 					}}
 				>
 					<div className={cn(negativeImpact && `-scale-y-100`)}>
-						{getUncertaintyLabel(uncertainy)}
+						{getUncertaintyLabel(uncertainty)}
 					</div>
 				</span>
 			</div>
@@ -97,13 +104,20 @@ function ImpactBarHead(props: ImpactBarHeadProps) {
 }
 
 function UncertaintyBar({
-	uncertainy,
+	uncertainty,
 	parentHeight,
 	uniqueId,
+	impactHeight,
+	padding,
 	color = "bg-grayMed",
 }: ImpactBarHeadProps) {
-	const tooUncertain = uncertainy === null;
-	const height = Math.ceil(parentHeight * (uncertainy ?? 1));
+	const tooUncertain = uncertainty === null;
+	const maxUncertaintyHeight =
+		(parentHeight + padding * 1.25 - impactHeight) * 2;
+	const height = Math.min(
+		maxUncertaintyHeight,
+		Math.max(16, Math.ceil(parentHeight * (uncertainty ?? 1))),
+	);
 	const pathNoCertainty = `M0 0 L100 0 L100 ${height} L0 ${height}`;
 	const pathWithUncertainty = `M-10 13 L50 0 L110 13 L100 ${height} L50 ${
 		height - 11
@@ -189,7 +203,7 @@ function UncertaintyBar({
 					</mask>
 				</defs>
 				<path
-					d={uncertainy === null ? pathNoCertainty : pathWithUncertainty}
+					d={uncertainty === null ? pathNoCertainty : pathWithUncertainty}
 					fill="currentColor"
 					fillOpacity={0.3}
 					strokeWidth="0"
@@ -202,7 +216,7 @@ function UncertaintyBar({
 
 function ImpactArrow({
 	color,
-	uncertainy,
+	uncertainty,
 	impactHeight,
 	uniqueId,
 }: ImpactBarHeadProps) {
@@ -214,13 +228,13 @@ function ImpactArrow({
 	return (
 		<svg
 			viewBox={`0 0 100 ${impactHeight}`}
-			height={uncertainy === null ? 4 : impactHeight}
+			height={uncertainty === null ? 4 : impactHeight}
 			preserveAspectRatio="none"
 			className={cn("w-full shrink-0 grow-0")}
 			style={{ color }}
 			aria-hidden="true"
 			data-impactheight={impactHeight}
-			data-uncertainy={uncertainy}
+			data-uncertainty={uncertainty}
 		>
 			<defs>
 				<linearGradient id={`fadeGradBar-${uniqueId}`} y2="1" x2="0">
@@ -233,7 +247,7 @@ function ImpactArrow({
 				</mask>
 			</defs>
 			<path
-				d={uncertainy === null ? pathNoCertainty : pathWithUncertainty}
+				d={uncertainty === null ? pathNoCertainty : pathWithUncertainty}
 				fill="currentColor"
 				fillOpacity={0.3}
 				strokeWidth="0"
@@ -242,14 +256,14 @@ function ImpactArrow({
 			/>
 			<polyline
 				points={
-					uncertainy === null ? polylineNoCertainty : polylineWithUncertainty
+					uncertainty === null ? polylineNoCertainty : polylineWithUncertainty
 				}
 				stroke="currentColor"
 				strokeWidth="4"
 				fill="none"
 				vectorEffect="non-scaling-stroke"
 				className={cn(
-					uncertainy === null &&
+					uncertainty === null &&
 						"opacity-0 group-hover:opacity-100 transition-opacity duration-1000 ease-smooth-in-out",
 				)}
 			/>

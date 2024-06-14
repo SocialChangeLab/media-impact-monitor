@@ -15,7 +15,6 @@ const eventZodSchema = z.object({
 	size_text: z.string().nullable(),
 	size_number: z.number().nullable(),
 	description: z.string(),
-	chart_position: z.number(),
 });
 export type EventType = z.infer<typeof eventZodSchema>;
 

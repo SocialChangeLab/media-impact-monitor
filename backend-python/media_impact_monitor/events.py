@@ -48,9 +48,6 @@ def get_events(q: EventSearch) -> pd.DataFrame | None:
         return sorted(organizers, key=lambda x: org_freqs.get(x, 0), reverse=True)
 
     df["organizers"] = df["organizers"].apply(sort_organizers)
-    df = df[
-        df["organizers"].str[0].isin(org_freqs.index[:8])
-    ]  # TODO: remove this, or do it in the frontend
     df["organizer_aliases"] = df["organizers"].apply(add_aliases)
 
     def get_chart_position(row: pd.Series) -> int:

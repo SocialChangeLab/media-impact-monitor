@@ -2,7 +2,7 @@
 
 ```js
 import { embed, queryApi } from './components/util.js'
-let events = await queryApi('events', {
+const events = await queryApi('events', {
   source: 'acled',
   topic: 'climate_change',
   start_date: '2024-05-01',
@@ -17,9 +17,14 @@ const event_id = await view(
 ```
 
 ```js
+const event = events.find(a => a.event_id === event_id)
+for (const k in event) {
+  display(`${k}: ${event[k]}`)
+}
 const fulltexts = await queryApi('fulltexts', {
   media_source: 'news_online',
   event_id: event_id
 })
+display(fulltexts.map(a => a.publish_date))
 display(Inputs.table(fulltexts))
 ```

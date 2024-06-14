@@ -51,7 +51,7 @@ def get_fulltexts(q: FulltextSearch) -> pd.DataFrame | None:
         assert len(events) == 1
         event = events.iloc[0]
         # TODO: handle start_date and end_date
-        q.start_date = event["date"] - timedelta(days=7)
+        q.start_date = event["date"]
         q.end_date = event["date"] + timedelta(days=7)
         orgs = add_quotes(add_aliases(event["organizers"]))
         query = xs_with_ys(orgs, keywords["activism"], q.media_source)

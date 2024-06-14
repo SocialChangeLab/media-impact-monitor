@@ -9,10 +9,6 @@
             "type": "debugpy",
             "request": "launch",
             "module": "pytest",
-            // "args": [
-            //     "-k",
-            //     "topic_queries"
-            // ],
         },
         {
             "name": "Python Debugger: FastAPI",

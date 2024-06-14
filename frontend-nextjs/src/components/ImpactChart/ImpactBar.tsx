@@ -31,16 +31,14 @@ function ImpactBar(props: ImpactBarProps) {
 	return (
 		<div
 			className={cn(
+				"pointer-events-none",
 				"flex items-end w-full h-full relative",
 				uncertainty === null && "translate-y-0.5",
 				negativeImpact && "-scale-y-100",
 			)}
 		>
 			<div
-				className={cn(
-					"absolute inset-0 w-full h-full",
-					"size-full grid grid-cols-1 grid-rows-[auto_1fr] relative",
-				)}
+				className={cn("size-full relative")}
 				style={{ height: props.uncertainty === null ? 4 : `${impactHeight}px` }}
 			>
 				<ImpactBarHead
@@ -88,10 +86,11 @@ function ImpactBar(props: ImpactBarProps) {
 }
 
 function getUncertaintyLabel(uncertainty: number | null) {
-	if (uncertainty === null) return "Too Uncertain";
-	if (uncertainty < 0.5) return "Low Uncertainty";
-	if (uncertainty < 0.75) return "Moderate Uncertainty";
-	return "High Uncertainty";
+	if (uncertainty === null) return `Too Uncertain`;
+	if (uncertainty < 0.75) return `Low Uncertainty (${uncertainty.toFixed(2)})`;
+	if (uncertainty < 0.9)
+		return `Moderate Uncertainty (${uncertainty.toFixed(2)})`;
+	return `High Uncertainty (${uncertainty.toFixed(2)})`;
 }
 
 function ImpactBarHead(props: ImpactBarHeadProps) {
@@ -114,9 +113,9 @@ function UncertaintyBar({
 	const tooUncertain = uncertainty === null;
 	const maxUncertaintyHeight =
 		(parentHeight + padding * 1.25 - impactHeight) * 2;
-	const height = Math.min(
-		maxUncertaintyHeight,
-		Math.max(16, Math.ceil(parentHeight * (uncertainty ?? 1))),
+	const rawUncertaintyHeight = Math.ceil(parentHeight * (uncertainty ?? 1));
+	const height = Math.abs(
+		Math.min(maxUncertaintyHeight, Math.max(16, rawUncertaintyHeight)),
 	);
 	const pathNoCertainty = `M0 0 L100 0 L100 ${height} L0 ${height}`;
 	const pathWithUncertainty = `M-10 13 L50 0 L110 13 L100 ${height} L50 ${
@@ -125,12 +124,13 @@ function UncertaintyBar({
 	return (
 		<div
 			className={cn(
-				"size-full",
+				"size-full pointer-events-none",
 				"absolute top-0 left-0 opacity-0 transition-opacity duration-1000 ease-smooth-in-out group-hover:opacity-100",
 			)}
 			style={{
 				height,
-				transform: `translateY(-${Math.ceil(height / 2) - 9}px)`,
+				transform:
+					height > 16 ? `translateY(-${Math.ceil(height / 2) - 9}px)` : "",
 			}}
 		>
 			<svg

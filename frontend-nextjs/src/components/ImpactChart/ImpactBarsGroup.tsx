@@ -1,13 +1,10 @@
 import { cn } from "@/utility/classNames";
-import type { icons } from "lucide-react";
 import { Fragment, memo } from "react";
 import slugify from "slugify";
 import ImpactBar from "./ImpactBar";
 
 type ImpactBarsGroupProps = {
 	total: number;
-	unitLabel: string;
-	icon: keyof typeof icons;
 	highestImpact: number;
 	lowestImpact: number;
 	impacts: Array<{
@@ -20,8 +17,6 @@ type ImpactBarsGroupProps = {
 
 function ImpactBarsGroup({
 	total,
-	unitLabel,
-	icon,
 	lowestImpact,
 	highestImpact,
 	impacts,
@@ -52,6 +47,7 @@ function ImpactBarsGroup({
 				{impacts.map(({ impact, uncertainty, label, color }) => {
 					const impactAsPercentageOfTotal = Math.abs(impact) / total;
 					const impactShare = positiveImpactShare / impactAsPercentageOfTotal;
+					console.log(negativeImpactHeight);
 					return (
 						<Fragment key={label}>
 							{impact > 0 ? (

@@ -42,33 +42,21 @@ def get_events(q: EventSearch) -> pd.DataFrame | None:
     if q.end_date:
         df = df[df["date"] <= q.end_date]
     df["event_id"] = df.apply(joblib_hash, axis=1, raw=True)
-    org_freqs = df["organizers"].str[0].value_counts()
+    _org_freqs = org_freqs()
 
     def sort_organizers(organizers: list[str]) -> list[str]:
-        return sorted(organizers, key=lambda x: org_freqs.get(x, 0), reverse=True)
+        return sorted(organizers, key=lambda x: _org_freqs.get(x, 0), reverse=True)
 
     df["organizers"] = df["organizers"].apply(sort_organizers)
     df["organizer_aliases"] = df["organizers"].apply(add_aliases)
-
-    def get_chart_position(row: pd.Series) -> int:
-        protests_on_same_day = df[df["date"] == row["date"]].sort_values(
-            by=["size_number", "description"], ascending=False
-        )
-        current_row_index = protests_on_same_day.index.get_loc(row.name)
-        position = (
-            protests_on_same_day.iloc[:current_row_index]["size_number"]
-            .apply(scale)
-            .sum()
-        )
-        position += scale(row["size_number"]) / 2
-        return position
-
-    df["chart_position"] = df.apply(get_chart_position, axis=1)
     return df.reset_index(drop=True)
 
 
-def scale(x):
-    return math.sqrt(max(10_000, x))
+@cache
+def org_freqs():
+    # hacky solution to get the frequency of organizers, in a stable way
+    df = get_acled_events(end_date=date(2024, 1, 1), countries=["Germany"])
+    return df["organizers"].str[0].value_counts()
 
 
 def get_events_by_id(event_ids: list[str]) -> pd.DataFrame:

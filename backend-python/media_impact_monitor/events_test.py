@@ -25,16 +25,19 @@ def test_events_topic():
     ids1 = set(df1["event_id"])
     ids2 = set(df2["event_id"])
     assert ids1.issuperset(ids2)
+    strs1 = set(df1.astype(str).itertuples(index=False))
+    strs2 = set(df2.astype(str).itertuples(index=False))
+    assert strs1.issuperset(strs2)
 
 
-@pytest.mark.skip()
 def test_retrieval_by_id():
     """Test that events can be retrieved by their IDs."""
     events = get_events(
         EventSearch(
             source="acled",
             topic="climate_change",
-            end_date=date(2024, 5, 25),
+            start_date=date(2024, 1, 1),
+            end_date=date(2024, 4, 1),
         )
     )
     event_ids = events["event_id"].tolist()

@@ -116,11 +116,7 @@ def get_info() -> dict:
 @app.post("/events")
 def _get_events(q: EventSearch) -> Response[EventSearch, list[Event]]:
     """Fetch events from the Media Impact Monitor database."""
-    # df = get_latest_data(get_events, q) TODO
-    from datetime import date
-
-    q.end_date = date(2024, 5, 30)
-    df = get_events(q)
+    df = get_latest_data(get_events, q)
     data = json.loads(df.to_json(orient="records"))  # convert nan to None
     return Response(query=q, data=data)
 
@@ -128,11 +124,7 @@ def _get_events(q: EventSearch) -> Response[EventSearch, list[Event]]:
 @app.post("/trend")
 def _get_trend(q: TrendSearch):  # -> Response[TrendSearch, CountTimeSeries]:
     """Fetch media item counts from the Media Impact Monitor database."""
-    # df = get_latest_data(get_trend, q) TODO
-    from datetime import date
-
-    q.end_date = date(2024, 5, 30)
-    df = get_trend(q)
+    df = get_latest_data(get_trend, q)
     long_df = pd.melt(
         df.reset_index(), id_vars=["date"], var_name="topic", value_name="n_articles"
     )

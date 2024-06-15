@@ -4,7 +4,7 @@ import useTimeIntervals, {
 	isInSameAggregationUnit,
 } from "@/utility/useTimeIntervals";
 import useElementSize from "@custom-react-hooks/use-element-size";
-import { Suspense, memo, useCallback, useMemo } from "react";
+import { memo, useCallback, useMemo } from "react";
 import {
 	Bar,
 	BarChart,
@@ -192,11 +192,15 @@ const MediaSentimentChart = memo(
 	},
 );
 
-function MediaSentimentChartWithData() {
-	const { data } = useMediaSentimentData();
-	if (data?.length > 0) return <MediaSentimentChart data={data} />;
-	if (!data || data.length === 0) return <MediaSentimentChartEmpty />;
-	return <MediaSentimentChartLoading />;
+function MediaSentimentChartWithData({ reset }: { reset?: () => void }) {
+	const { data, isError, isSuccess, isPending } = useMediaSentimentData();
+	if (isPending) return <MediaSentimentChartLoading />;
+	if (isError)
+		return (
+			<MediaSentimentChartError {...parseErrorMessage(isError)} reset={reset} />
+		);
+	if (isSuccess && data.length > 0) return <MediaSentimentChart data={data} />;
+	return <MediaSentimentChartEmpty />;
 }
 export default function MediaCoverageChartWithErrorBoundary() {
 	return (
@@ -210,9 +214,7 @@ export default function MediaCoverageChartWithErrorBoundary() {
 						/>
 					)}
 				>
-					<Suspense fallback={<MediaSentimentChartLoading />}>
-						<MediaSentimentChartWithData />
-					</Suspense>
+					<MediaSentimentChartWithData reset={reset} />
 				</ErrorBoundary>
 			)}
 		</QueryErrorResetBoundary>

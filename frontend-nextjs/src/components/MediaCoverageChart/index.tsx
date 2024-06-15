@@ -4,7 +4,7 @@ import useTimeIntervals, {
 	isInSameAggregationUnit,
 } from "@/utility/useTimeIntervals";
 import useElementSize from "@custom-react-hooks/use-element-size";
-import { Suspense, memo, useCallback, useMemo } from "react";
+import { memo, useCallback, useMemo } from "react";
 import {
 	CartesianGrid,
 	Line,
@@ -194,11 +194,15 @@ const MediaCoverageChart = memo(
 	},
 );
 
-function MediaCoverageChartWithData() {
-	const { data } = useMediaCoverageData();
-	if (data?.length > 0) return <MediaCoverageChart data={data} />;
-	if (!data || data.length === 0) return <MediaCoverageChartEmpty />;
-	return <MediaCoverageChartLoading />;
+function MediaCoverageChartWithData({ reset }: { reset?: () => void }) {
+	const { data, isError, isSuccess, isPending } = useMediaCoverageData();
+	if (isPending) return <MediaCoverageChartLoading />;
+	if (isError)
+		return (
+			<MediaCoverageChartError {...parseErrorMessage(isError)} reset={reset} />
+		);
+	if (isSuccess && data.length > 0) return <MediaCoverageChart data={data} />;
+	return <MediaCoverageChartEmpty />;
 }
 export default function MediaCoverageChartWithErrorBoundary() {
 	return (
@@ -212,9 +216,7 @@ export default function MediaCoverageChartWithErrorBoundary() {
 						/>
 					)}
 				>
-					<Suspense fallback={<MediaCoverageChartLoading />}>
-						<MediaCoverageChartWithData />
-					</Suspense>
+					<MediaCoverageChartWithData reset={reset} />
 				</ErrorBoundary>
 			)}
 		</QueryErrorResetBoundary>

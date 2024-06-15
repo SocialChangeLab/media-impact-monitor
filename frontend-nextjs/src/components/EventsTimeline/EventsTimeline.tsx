@@ -7,7 +7,6 @@ import useEvents from "@/utility/useEvents";
 import useElementSize from "@custom-react-hooks/use-element-size";
 import { QueryErrorResetBoundary } from "@tanstack/react-query";
 import { ErrorBoundary } from "next/dist/client/components/error-boundary";
-import { Suspense } from "react";
 import CollapsableSection from "../CollapsableSection";
 import DataCreditLegend from "../DataCreditLegend";
 import OrgsLegend from "../OrgsLegend";
@@ -121,10 +120,12 @@ function EventsTimeline({
 	);
 }
 
-function EventsTimelineWithData() {
-	const { data, isFetching } = useEvents();
-	if (isFetching) return <LoadingEventsTimeline />;
-	if (data) return <EventsTimeline data={data} />;
+function EventsTimelineWithData({ reset }: { reset?: () => void }) {
+	const { data, isFetching, isPending, error, isError } = useEvents();
+	if (isFetching || isPending) return <LoadingEventsTimeline />;
+	if (isError)
+		return <ErrorEventsTimeline {...parseErrorMessage(error)} reset={reset} />;
+	if (data?.events.length > 0) return <EventsTimeline data={data} />;
 	return <EmptyEventsTimeline />;
 }
 export default function EventsTimelineWithErrorBoundary() {
@@ -136,9 +137,7 @@ export default function EventsTimelineWithErrorBoundary() {
 						<ErrorEventsTimeline {...parseErrorMessage(error)} reset={reset} />
 					)}
 				>
-					<Suspense fallback={<LoadingEventsTimeline />}>
-						<EventsTimelineWithData />
-					</Suspense>
+					<EventsTimelineWithData reset={reset} />
 				</ErrorBoundary>
 			)}
 		</QueryErrorResetBoundary>

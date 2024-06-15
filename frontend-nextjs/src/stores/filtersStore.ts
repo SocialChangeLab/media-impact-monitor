@@ -1,4 +1,4 @@
-import { endOfDay, startOfDay, subMonths } from "date-fns";
+import { endOfDay, format, startOfDay, subMonths } from "date-fns";
 import { create } from "zustand";
 import {
 	createJSONStorage,
@@ -14,6 +14,8 @@ export type FiltersState = {
 	to: Date;
 	defaultFrom: Date;
 	defaultTo: Date;
+	fromDateString: string;
+	toDateString: string;
 	isDefaultTimeRange: boolean;
 };
 
@@ -30,6 +32,8 @@ export const defaultInitState: FiltersState = {
 	to: defaultTo,
 	defaultFrom: defaultFrom,
 	defaultTo: defaultTo,
+	fromDateString: format(defaultFrom, "yyyy-MM-dd"),
+	toDateString: format(defaultTo, "yyyy-MM-dd"),
 	isDefaultTimeRange: true,
 };
 
@@ -73,12 +77,16 @@ export const createFiltersStore = (
 					set(() => ({
 						from: startOfDay(from),
 						to: endOfDay(to),
+						fromDateString: format(from, "yyyy-MM-dd"),
+						toDateString: format(to, "yyyy-MM-dd"),
 					})),
 				resetAllFilters: () => set(() => defaultInitState),
 				resetDateRange: () =>
 					set(() => ({
 						from: defaultInitState.from,
 						to: defaultInitState.to,
+						fromDateString: defaultInitState.fromDateString,
+						toDateString: defaultInitState.toDateString,
 					})),
 			}),
 			storageOptions,

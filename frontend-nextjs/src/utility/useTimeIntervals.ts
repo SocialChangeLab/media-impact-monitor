@@ -9,9 +9,9 @@ import {
 	differenceInCalendarMonths,
 	differenceInDays,
 	differenceInYears,
+	format,
 	isSameDay,
 	isSameMonth,
-	isSameWeek,
 	isSameYear,
 	startOfDay,
 	startOfMonth,
@@ -29,11 +29,25 @@ function useTimeIntervals({
 	to?: Date;
 	aggregationUnit: AggregationUnitType;
 }) {
-	const filterStore = useFiltersStore(({ from, to }) => ({ from, to }));
+	const filterStore = useFiltersStore(
+		({ from, to, fromDateString, toDateString }) => ({
+			from,
+			to,
+			fromDateString,
+			toDateString,
+		}),
+	);
 	const from = inputFrom ?? filterStore.from;
 	const to = inputTo ?? filterStore.to;
+	const fromDateString = inputFrom
+		? format(inputFrom, "yyyy-MM-dd")
+		: filterStore.fromDateString;
+	const toDateString = inputTo
+		? format(inputTo, "yyyy-MM-dd")
+		: filterStore.toDateString;
 	const range = { from, to };
 
+	// biome-ignore lint/correctness/useExhaustiveDependencies: Using the fromDateString and toDateString to avoid the exact date (which changes on each render) to be used as dependencies of the useEffect
 	const eventColumns = useMemo(() => {
 		const { from, to } = range;
 		if (!from || !to) return [];
@@ -46,7 +60,7 @@ function useTimeIntervals({
 		return new Array(timeDiff)
 			.fill(null)
 			.map((_, idx) => timeStartFn(timeIncrementerFn(from, idx)));
-	}, [range, aggregationUnit]);
+	}, [fromDateString, toDateString, aggregationUnit]);
 	return eventColumns;
 }
 
@@ -84,8 +98,21 @@ export function isInSameAggregationUnit(
 	d2: Date,
 ) {
 	if (aggregationUnit === "day") return isSameDay(d1, d2);
-	if (aggregationUnit === "week")
-		return isSameWeek(d1, d2, { weekStartsOn: 1 });
+	if (aggregationUnit === "week") return perfIsSameWeek(d1, d2);
 	if (aggregationUnit === "month") return isSameMonth(d1, d2);
 	return isSameYear(d1, d2);
+}
+
+function getStartOfWeek(date: Date) {
+	const day = date.getUTCDay();
+	const diff = (day === 0 ? -6 : 1) - day;
+	date.setUTCDate(date.getUTCDate() + diff);
+	date.setUTCHours(0, 0, 0, 0);
+	return date;
+}
+
+function perfIsSameWeek(d1: Date, d2: Date) {
+	const startOfWeek1 = getStartOfWeek(d1);
+	const startOfWeek2 = getStartOfWeek(d2);
+	return startOfWeek1.getTime() === startOfWeek2.getTime();
 }

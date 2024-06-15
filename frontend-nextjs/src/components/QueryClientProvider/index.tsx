@@ -1,6 +1,5 @@
 "use client";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { ReactQueryStreamedHydration } from "@tanstack/react-query-next-experimental";
 import { useRef } from "react";
 
 function makeQueryClient() {
@@ -36,7 +35,7 @@ function CustomQueryClientProvider({
 	const queryClient = useRef(getQueryClient());
 	return (
 		<QueryClientProvider client={queryClient.current}>
-			<ReactQueryStreamedHydration>{children}</ReactQueryStreamedHydration>
+			{children}
 		</QueryClientProvider>
 	);
 }

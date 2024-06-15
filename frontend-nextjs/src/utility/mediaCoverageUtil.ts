@@ -36,9 +36,9 @@ export async function getMediaCoverageData(params?: {
 					}
 				: {}),
 		},
-		fallbackFilePathContent: (
-			await import("../data/fallbackMediaCoverage.json")
-		).default,
+		// fallbackFilePathContent: (
+		// 	await import("../data/fallbackMediaCoverage.json")
+		// ).default,
 	});
 	return validateGetDataResponse(json);
 }

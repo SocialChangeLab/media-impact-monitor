@@ -1,12 +1,12 @@
 "use client";
-import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
+import { queryOptions, useQuery } from "@tanstack/react-query";
 import { endOfDay } from "date-fns";
 import { useEffect, useMemo } from "react";
 import { toast } from "sonner";
 import {
-	type EventType,
 	extractEventOrganisations,
 	getEventData,
+	type EventType,
 } from "./eventsUtil";
 
 export function getEventQueryOptions(id?: EventType["event_id"]) {
@@ -19,7 +19,7 @@ export function getEventQueryOptions(id?: EventType["event_id"]) {
 }
 
 function useEvent(id?: EventType["event_id"]) {
-	const query = useSuspenseQuery(getEventQueryOptions(id));
+	const query = useQuery(getEventQueryOptions(id));
 
 	useEffect(() => {
 		if (!query.error) return;

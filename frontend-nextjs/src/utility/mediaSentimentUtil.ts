@@ -36,9 +36,9 @@ export async function getMediaSentimentData(params?: {
 					}
 				: {}),
 		},
-		fallbackFilePathContent: (
-			await import("../data/fallbackMediaSentiment.json")
-		).default,
+		// fallbackFilePathContent: (
+		// 	await import("../data/fallbackMediaSentiment.json")
+		// ).default,
 	});
 	return validateGetDataResponse(json);
 }

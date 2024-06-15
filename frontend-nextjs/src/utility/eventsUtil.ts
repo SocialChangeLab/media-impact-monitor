@@ -54,8 +54,8 @@ export async function getEventsData(params?: {
 					}
 				: {}),
 		},
-		fallbackFilePathContent: (await import("../data/fallbackProtests.json"))
-			.default,
+		// fallbackFilePathContent: (await import("../data/fallbackProtests.json"))
+		// 	.default,
 	});
 	return validateGetDataResponse(json);
 }

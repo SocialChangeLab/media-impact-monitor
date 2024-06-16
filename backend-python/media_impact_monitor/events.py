@@ -3,6 +3,7 @@ from datetime import date
 
 import pandas as pd
 from joblib import hash as joblib_hash
+from slugify import slugify
 
 from media_impact_monitor.data_loaders.protest.acled import get_acled_events
 from media_impact_monitor.data_loaders.protest.climate_orgs import (
@@ -12,7 +13,7 @@ from media_impact_monitor.data_loaders.protest.climate_orgs import (
 from media_impact_monitor.data_loaders.protest.press_releases.last_generation.categorize import (
     code_press_releases as get_press_release_events,
 )
-from media_impact_monitor.types_ import EventSearch
+from media_impact_monitor.types_ import EventSearch, Organizer
 from media_impact_monitor.util.cache import cache
 
 
@@ -29,12 +30,7 @@ def get_events(q: EventSearch) -> pd.DataFrame | None:
         case None:
             pass
         case "climate_change":
-            df = df[
-                df["description"].str.lower().str.contains("climate")
-                | df["organizers"].apply(
-                    lambda x: any(org in climate_orgs for org in x)
-                )
-            ]
+            df = filter_climate_orgs(df)
         case _:
             raise ValueError(f"Unsupported topic: {q.topic}")
     if q.start_date:
@@ -52,11 +48,24 @@ def get_events(q: EventSearch) -> pd.DataFrame | None:
     return df.reset_index(drop=True)
 
 
+def filter_climate_orgs(df: pd.DataFrame) -> pd.DataFrame:
+    return df[
+        df["description"].str.lower().str.contains("climate")
+        | df["organizers"].apply(lambda x: any(org in climate_orgs for org in x))
+    ]
+
+
 @cache
 def org_freqs():
     # hacky solution to get the frequency of organizers, in a stable way
     df = get_acled_events(end_date=date(2024, 1, 1), countries=["Germany"])
+    df = filter_climate_orgs(df)
     return df["organizers"].str[0].value_counts()
+
+
+def organizers_with_id():
+    orgs = org_freqs().index.tolist()
+    return [Organizer(organizer_id=slugify(org), name=org) for org in orgs]
 
 
 def get_events_by_id(event_ids: list[str]) -> pd.DataFrame:

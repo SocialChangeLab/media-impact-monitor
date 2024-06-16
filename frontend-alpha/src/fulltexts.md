@@ -25,6 +25,5 @@ const fulltexts = await queryApi('fulltexts', {
   media_source: 'news_online',
   event_id: event_id
 })
-display(fulltexts.map(a => a.publish_date))
 display(Inputs.table(fulltexts))
 ```

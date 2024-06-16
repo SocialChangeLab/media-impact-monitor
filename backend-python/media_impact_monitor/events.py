@@ -33,6 +33,8 @@ def get_events(q: EventSearch) -> pd.DataFrame | None:
             df = filter_climate_orgs(df)
         case _:
             raise ValueError(f"Unsupported topic: {q.topic}")
+    if q.organizers:
+        df = df[df["organizers"].apply(lambda x: any(org in q.organizers for org in x))]
     if q.start_date:
         df = df[df["date"] >= q.start_date]
     if q.end_date:

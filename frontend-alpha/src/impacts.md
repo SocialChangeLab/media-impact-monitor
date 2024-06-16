@@ -5,25 +5,18 @@
 ```js
 import { embed, queryApi } from './components/util.js'
 
-let events = await queryApi('events', {
-  source: 'acled',
-  topic: 'climate_change'
-})
-events = events
-  .filter(a => a.organizers.includes('Last Generation (Germany)'))
-  .slice(-100)
-
-const event_ids = events.map(a => a.event_id)
 let impact = await queryApi('impact', {
-  cause: event_ids,
-  effect: {
+  method: 'interrupted_time_series',
+  impacted_trend: {
     trend_type: 'keywords',
-    media_source: 'news_online',
+    media_source: 'news_print',
     topic: 'climate_change'
   },
-  method: 'interrupted_time_series'
+  organizer: 'Last Generation (Germany)',
+  end_date: '2022-04-30'
 })
-display(html`${impact.method_applicability_reason}`)
+// display(html`${impact.method_applicability_reason}`)
+display(impact)
 ```
 
 ```js
@@ -66,7 +59,7 @@ for (const topic in impact.time_series) {
 }
 ```
 
-## Weekly
+<!-- ## Weekly
 
 ```js
 let impact_weekly = await queryApi('impact', {
@@ -90,4 +83,4 @@ for (const topic in impact_weekly.time_series) {
     .sort((a, b) => a.day - b.day)
   display(await embed(spec_(topic, data)))
 }
-```
+``` -->

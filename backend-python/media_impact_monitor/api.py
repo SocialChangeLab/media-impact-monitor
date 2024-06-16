@@ -8,6 +8,7 @@ import json
 import logging
 import os
 from contextlib import asynccontextmanager
+from datetime import date
 
 import pandas as pd
 import sentry_sdk
@@ -141,7 +142,7 @@ def _get_fulltexts(q: FulltextSearch) -> Response[FulltextSearch, list[Fulltext]
 
 
 @app.post("/impact")
-def _get_impact(q: ImpactSearch):  # -> Response[ImpactSearch, Impact]:
+def _get_impact(q: ImpactSearch) -> Response[ImpactSearch, Impact]:
     """Compute the impact of an event on a media trend."""
     impact = get_latest_data(get_impact, q)
     return Response(query=q, data=impact)

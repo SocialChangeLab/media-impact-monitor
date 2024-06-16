@@ -52,6 +52,9 @@ class EventSearch(BaseModel):
     )
     start_date: date | None = StartDateField
     end_date: date | None = EndDateField
+    organizers: list[str] | None = Field(
+        default=None, description="Filter by the organizations involved in the event."
+    )
 
 
 date_ = date
@@ -186,34 +189,44 @@ class Fulltext(BaseModel):
 #### Impact types ####
 
 
-Method = Literal["time_series_regression", "synthetic_control"]
+Method = Literal[
+    "interrupted_time_series", "synthetic_control", "time_series_regression"
+]
 
 
 class ImpactSearch(BaseModel):
-    organizer: str | None = Field()
-    # protest_type: str | None
-    impacted_trend: TrendSearch = Field(
-        description="The trend on which the impact should be estimated. See the `/trends/` endpoint for details."
-    )
     method: Method = Field(
         default="time_series_regression",
         description="The causal inference method to use for estimating the impact. Currently supports _time_series_regression_.",
     )
+    impacted_trend: TrendSearch = Field(
+        description="The trend on which the impact should be estimated. See the `/trends/` endpoint for details."
+    )
+    organizer: str | None = Field()
+    # protest_type: str | None
+    start_date: date | None = StartDateField
+    end_date: date | None = EndDateField
 
 
 class MeanWithUncertainty(BaseModel):
-    mean: float
-    ci_upper: float
-    ci_lower: float
+    mean: float = Field(description="Mean estimate.")
+    ci_upper: float = Field(description="Upper bound of the 95% confidence interval.")
+    ci_lower: float = Field(description="Lower bound of the 95% confidence interval.")
+
+
+class ImpactEstimate(BaseModel):
+    absolute_impact: MeanWithUncertainty
+    relative_impact: MeanWithUncertainty
+    # absolute_impact_time_series: ...
+    # relative_impact_time_series: ...
 
 
 class Impact(BaseModel):
-    absolute_impact: MeanWithUncertainty  # used for visualization and text
-    relative_impact: (
-        MeanWithUncertainty  # used for text (upper and lower bound can be ignored)
+    method_applicability: bool
+    method_limitations: list[str]
+    impact_estimates: dict[str, ImpactEstimate] | None = Field(
+        description='Impact estimates for each trend. The keys are the trend names -- e. g. "positive" / "neutral" / "negative" for sentiment trends, or "activism" / "science" / "policy" / ... for topic trends. The values are the impact estimates for each trend.'
     )
-    # absolute_impact_time_series: ...
-    # limitations: ...
 
 
 #### Organizations ####

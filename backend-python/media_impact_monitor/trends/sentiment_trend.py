@@ -39,10 +39,7 @@ def get_sentiment_trend(
 
     # aggregate positive, neutral, negative sentiments by day
     fulltexts = (
-        fulltexts.groupby("publish_date")["sentiment"]
-        .value_counts()
-        .unstack()
-        .fillna(0)
+        fulltexts.groupby("date")["sentiment"].value_counts().unstack().fillna(0)
     )
     fulltexts.columns = ["negative", "neutral", "positive"]
     fulltexts.index = pd.to_datetime(fulltexts.index).date

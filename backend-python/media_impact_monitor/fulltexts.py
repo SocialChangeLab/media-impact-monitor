@@ -26,7 +26,6 @@ from media_impact_monitor.util.paths import src
 
 @cache
 def get_fulltexts(q: FulltextSearch) -> pd.DataFrame | None:
-    assert q.countries == ["Germany"], 'Only ["Germany"] is currently supported.'
     assert q.topic or q.query or q.event_id
     keywords = load_keywords()
     if q.topic:
@@ -64,7 +63,7 @@ def get_fulltexts(q: FulltextSearch) -> pd.DataFrame | None:
                 query=query,
                 start_date=q.start_date,
                 end_date=q.end_date,
-                countries=q.countries,
+                countries=["Germany"],
             )
         case _:
             raise ValueError(
@@ -76,6 +75,7 @@ def get_fulltexts(q: FulltextSearch) -> pd.DataFrame | None:
 
     responses = parallel_tqdm(code_fulltext, df["text"], desc="Processing fulltexts")
     df = pd.concat([df, pd.DataFrame(responses)], axis=1)
+    df = df.drop(columns=["sentiment_reasoning"])
 
     if q.event_id:
         # TODO filter by only those articles that refer to the event

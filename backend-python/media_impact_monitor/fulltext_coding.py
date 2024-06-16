@@ -15,7 +15,7 @@ tools = [
             "parameters": {
                 "type": "object",
                 "properties": {
-                    "reasoning": {
+                    "sentiment_reasoning": {
                         "type": "string",
                         "description": "The reasoning for the sentiment",
                     },
@@ -24,7 +24,7 @@ tools = [
                         "description": "The sentiment: -1 for negative, 0 for neutral, 1 for positive",
                     },
                 },
-                "required": ["reasoning", "sentiment"],
+                "required": ["sentiment_reasoning", "sentiment"],
             },
         },
     }

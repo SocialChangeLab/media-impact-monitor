@@ -25,6 +25,7 @@ from media_impact_monitor.impact import get_impact
 from media_impact_monitor.policy import get_policy
 from media_impact_monitor.trend import get_trend
 from media_impact_monitor.types_ import (
+    CategoryCount,
     CountTimeSeries,
     Event,
     EventSearch,
@@ -122,7 +123,7 @@ def _get_events(q: EventSearch) -> Response[EventSearch, list[Event]]:
 
 
 @app.post("/trend")
-def _get_trend(q: TrendSearch):  # -> Response[TrendSearch, CountTimeSeries]:
+def _get_trend(q: TrendSearch) -> Response[TrendSearch, list[CategoryCount]]:
     """Fetch media item counts from the Media Impact Monitor database."""
     df = get_latest_data(get_trend, q)
     long_df = pd.melt(
@@ -132,8 +133,7 @@ def _get_trend(q: TrendSearch):  # -> Response[TrendSearch, CountTimeSeries]:
 
 
 @app.post("/fulltexts")
-def _get_fulltexts(q: FulltextSearch):
-    # -> Response[FulltextSearch, pd.DataFrame[Fulltext]]
+def _get_fulltexts(q: FulltextSearch) -> Response[FulltextSearch, list[Fulltext]]:
     """Fetch media fulltexts from the Media Impact Monitor database."""
     fulltexts = get_latest_data(get_fulltexts, q)
     if fulltexts is None:

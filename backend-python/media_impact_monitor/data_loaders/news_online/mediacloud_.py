@@ -14,7 +14,7 @@ from media_impact_monitor.util.parallel import parallel_tqdm
 
 search = mediacloud.api.SearchApi(MEDIACLOUD_API_TOKEN)
 directory = mediacloud.api.DirectoryApi(MEDIACLOUD_API_TOKEN)
-search.TIMEOUT_SECS = 10 * 60
+search.TIMEOUT_SECS = 10
 
 Platform = Literal["onlinenews-mediacloud", "onlinenews-waybackmachine"]
 
@@ -114,7 +114,20 @@ def get_mediacloud_fulltexts(
     df["text"] = parallel_tqdm(
         _retrieve_text, df["url"], n_jobs=4, desc="Retrieving fulltexts"
     )
-    df = df.dropna(subset=["text"])
+    df = df.dropna(subset=["text"]).rename(columns={"publish_date": "date"})
+    df = df[
+        [
+            # "id",
+            # "media_name",
+            # "media_url",
+            "title",
+            "date",
+            "url",
+            # "language",
+            # "indexed_date",
+            "text",
+        ]
+    ]
     return df
 
 
@@ -129,6 +142,7 @@ def _retrieve_text(url: str) -> str | None:
 
 
 def _resolve_countries(countries: list | None) -> list | None:
+    assert isinstance(countries, list) or countries is None
     collection_ids: list[int] = []
     collection_ids = []
     for country in countries or []:

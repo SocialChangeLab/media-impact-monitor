@@ -11,7 +11,6 @@ from pydantic import BaseModel, Field
 Topic = Literal["climate_change"]
 Query = str  # for now, just a single keyword
 MediaSource = Literal["news_online", "news_print", "web_google"]
-Country = Literal["Germany"]
 
 CountTimeSeries = dict[date, int]  # time series with integer values
 TimeSeries = dict[date, float]  # time series with float values
@@ -75,7 +74,6 @@ class Event:
         description="Size of the event, quantified if possible."
     )
     description: str = Field(description="Description of the event.")
-    chart_position: float | None = Field("Index of protest on given day.")
 
 
 #### Trend types ####
@@ -103,9 +101,16 @@ class TrendSearch(BaseModel):
     organizers: list[str] | None = Field(
         default=None, description="The organizations involved in the event."
     )
-    countries: list[Country] = Field(
-        default=["Germany"], description="The country where news was published."
-    )
+    event_ids: list[EventId] | None = Field(
+        default=None,
+        description="The ids of the protest events that the trend should be related to.",
+    )  # TODO: this is not compatible with "keyword"
+
+
+class CategoryCount(BaseModel):
+    date: date
+    topic: str
+    n_articles: int
 
 
 #### Policy types ####
@@ -164,9 +169,6 @@ class FulltextSearch(BaseModel):
     organizers: list[str] | None = Field(
         default=None, description="The organizations involved in the event."
     )
-    countries: list[Country] = Field(
-        default=["Germany"], description="The country where news was published."
-    )
     event_id: EventId | None = Field(
         default=None,
         description="The id of the protest event that the fulltexts should be related to.",
@@ -174,32 +176,28 @@ class FulltextSearch(BaseModel):
 
 
 class Fulltext(BaseModel):
-    id: str
-    media_name: str
-    media_url: str
     title: str
-    publish_date: date
+    date: date
     url: str
-    language: str
-    indexed_date: date
     text: str
+    sentiment: float | None
 
 
 #### Impact types ####
 
 
-Method = Literal["synthetic_control", "interrupted_time_series"]
+Method = Literal["time_series_regression", "synthetic_control"]
 
 
 class ImpactSearch(BaseModel):
-    cause: list[EventId] = Field(
-        description="List of `event_id`s for events whose impact should be estimated. The ids can be obtained from the `/events/` endpoint."
-    )
-    effect: TrendSearch = Field(
+    organizer: str | None = Field()
+    # protest_type: str | None
+    impacted_trend: TrendSearch = Field(
         description="The trend on which the impact should be estimated. See the `/trends/` endpoint for details."
     )
     method: Method = Field(
-        description="The causal inference method to use for estimating the impact. Currently supports _Synthetic Control_ and _Interrupted Time Series_."
+        default="time_series_regression",
+        description="The causal inference method to use for estimating the impact. Currently supports _time_series_regression_.",
     )
 
 
@@ -209,24 +207,18 @@ class MeanWithUncertainty(BaseModel):
     ci_lower: float
 
 
-AbstractTimeSeriesWithUncertainty = dict[int, MeanWithUncertainty]
-
-
 class Impact(BaseModel):
-    method_applicability: Literal["no", "maybe"] = Field(
-        description="Whether the causal inference method is applicable for the given data."
+    absolute_impact: MeanWithUncertainty  # used for visualization and text
+    relative_impact: (
+        MeanWithUncertainty  # used for text (upper and lower bound can be ignored)
     )
-    method_applicability_reason: str | None = Field(
-        description="Reason why the causal inference method is (not) applicable."
-    )
-    time_series: AbstractTimeSeriesWithUncertainty
-    # = Field(
-    #     description="Impact estimates for each day around the average protest event. Consists of 3 dictinonaries, each one containing a time series -- mean, upper bound, and lower bound of the two-sided 95% confidence interval. The time series are dictionaries of days after event (0 = day of event) and impact estimates for the given days."
-    # )
+    # absolute_impact_time_series: ...
+    # limitations: ...
 
 
 #### Organizations ####
 
 
 class Organizer(BaseModel):
+    organizer_id: str
     name: str

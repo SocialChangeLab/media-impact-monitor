@@ -8,7 +8,6 @@ import json
 import logging
 import os
 from contextlib import asynccontextmanager
-from datetime import date
 
 import pandas as pd
 import sentry_sdk

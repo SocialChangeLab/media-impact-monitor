@@ -2,7 +2,7 @@
 Cron job to be run every day to populate the cache.
 """
 
-import logging
+from datetime import date
 from functools import partial
 
 from apscheduler.schedulers.background import BackgroundScheduler
@@ -26,31 +26,34 @@ def setup_cron():
     scheduler.add_job(
         func=partial(fill_cache),
         trigger=CronTrigger(hour=3, minute=15, second=0, timezone="UTC"),
-    )
+    )  # Berlin is UTC + 2
     scheduler.start()
 
 
 def fill_cache():
-    logging.info("Filling cache...")
+    print("Filling cache...")
     for data_source in ["acled", "press_releases"]:
-        try:
-            get_events(EventSearch(source=data_source, topic="climate_change"))
-        except Exception as e:
-            logging.error(f"Error fetching events: {e}")
+        get_events(
+            EventSearch(
+                source=data_source, topic="climate_change", end_date=date.today()
+            )
+        )
     for trend_type in ["keywords", "sentiment"]:
         for media_source in ["news_online", "news_print", "web_google"]:
             for aggregation in ["daily", "weekly"]:
-                try:
-                    get_trend(
-                        TrendSearch(
-                            trend_type=trend_type,
-                            media_source=media_source,
-                            topic="climate_change",
-                            aggregation=aggregation,
-                        )
+                if aggregation == "daily" and media_source == "web_google":
+                    continue
+                if trend_type == "sentiment" and media_source != "news_online":
+                    continue
+                get_trend(
+                    TrendSearch(
+                        trend_type=trend_type,
+                        media_source=media_source,
+                        topic="climate_change",
+                        aggregation=aggregation,
+                        end_date=date.today(),
                     )
-                except Exception as e:
-                    logging.error(f"Error fetching trend: {e}")
+                )
     # TODO: compute impacts
-    logging.info("Successfully filled cache!")
+    print("Successfully filled cache!")
     return

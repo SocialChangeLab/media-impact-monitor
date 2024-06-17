@@ -84,6 +84,10 @@ def xs(xs: list[str], media_source: str) -> str:
         case "news_online" | "news_print":
             return " OR ".join(xs)
         case "web_google":
+            # max query length is 100 characters (?)
+            # HACK
+            while sum(len(x) for x in xs) + 2 * len(xs) > 100:
+                xs.pop()
             return " ".join([f"+{x}" for x in xs])
 
 
@@ -103,6 +107,12 @@ def xs_without_ys(xs: list[str], ys: list[str], media_source: str) -> str:
         case "news_online" | "news_print":
             return f"({' OR '.join(xs)}) AND NOT ({' OR '.join(ys)})"
         case "web_google":
+            # max query length is 100 characters
+            # HACK
+            while sum(len(x) for x in xs) + 2 * len(xs) > 50:
+                xs.pop()
+            while sum(len(y) for y in ys) + 2 * len(ys) > 50:
+                ys.pop()
             return (
                 f"{' '.join([f'+{x}' for x in xs])} {' '.join([f'-{y}' for y in ys])}"
             )

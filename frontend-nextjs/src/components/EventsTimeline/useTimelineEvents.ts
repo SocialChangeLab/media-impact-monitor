@@ -1,4 +1,4 @@
-import type { EventType, OrganisationType } from "@/utility/eventsUtil";
+import type { OrganisationType, ParsedEventType } from "@/utility/eventsUtil";
 import useTimeIntervals, {
 	isInSameAggregationUnit,
 } from "@/utility/useTimeIntervals";
@@ -19,7 +19,7 @@ function useTimelineEvents({
 }: {
 	size: { width: number; height: number };
 	data: {
-		events: EventType[];
+		events: ParsedEventType[];
 		organisations: OrganisationType[];
 	} | null;
 	aggregationUnit: AggregationUnitType;
@@ -35,16 +35,15 @@ function useTimelineEvents({
 	const timeScale = useTimeScale(size.width);
 	const columnsCount = intervals.length;
 	const isInSameUnit = useCallback(
-		(a: Date, b: Date) => isInSameAggregationUnit(aggregationUnit, a, b),
+		(event: ParsedEventType, b: Date) =>
+			isInSameAggregationUnit(aggregationUnit, event, b),
 		[aggregationUnit],
 	);
 
 	const eventColumns = useMemo(() => {
 		if (!timeScale || !data?.events || !data?.organisations) return [];
 		return intervals.map((d) => {
-			const columnEvents = data.events.filter((evt) =>
-				isInSameUnit(new Date(evt.date), d),
-			);
+			const columnEvents = data.events.filter((evt) => isInSameUnit(evt, d));
 			const eventsWithSize = columnEvents.sort((a, b) => {
 				const aSize = a.size_number ?? 0;
 				const bSize = b.size_number ?? 0;
@@ -80,7 +79,7 @@ function useTimelineEvents({
 	const sizeScale = useMemo(() => {
 		const displayedEvents = eventColumns.reduce((acc, day) => {
 			return acc.concat(day.eventsWithSize);
-		}, [] as EventType[]);
+		}, [] as ParsedEventType[]);
 		const max =
 			displayedEvents.length === 0
 				? Math.floor(size.height / 3)

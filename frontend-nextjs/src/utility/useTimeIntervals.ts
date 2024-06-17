@@ -10,15 +10,13 @@ import {
 	differenceInDays,
 	differenceInYears,
 	format,
-	isSameDay,
-	isSameMonth,
-	isSameYear,
 	startOfDay,
 	startOfMonth,
 	startOfWeek,
 	startOfYear,
 } from "date-fns";
 import { useMemo } from "react";
+import type { ParsedEventType } from "./eventsUtil";
 
 function useTimeIntervals({
 	from: inputFrom,
@@ -94,25 +92,11 @@ function getTimeIncrementerByAggregationUnit(
 
 export function isInSameAggregationUnit(
 	aggregationUnit: AggregationUnitType,
-	d1: Date,
-	d2: Date,
+	event: ParsedEventType,
+	date: Date,
 ) {
-	if (aggregationUnit === "day") return isSameDay(d1, d2);
-	if (aggregationUnit === "week") return perfIsSameWeek(d1, d2);
-	if (aggregationUnit === "month") return isSameMonth(d1, d2);
-	return isSameYear(d1, d2);
-}
-
-function getStartOfWeek(date: Date) {
-	const day = date.getUTCDay();
-	const diff = (day === 0 ? -6 : 1) - day;
-	date.setUTCDate(date.getUTCDate() + diff);
-	date.setUTCHours(0, 0, 0, 0);
-	return date;
-}
-
-function perfIsSameWeek(d1: Date, d2: Date) {
-	const startOfWeek1 = getStartOfWeek(d1);
-	const startOfWeek2 = getStartOfWeek(d2);
-	return startOfWeek1.getTime() === startOfWeek2.getTime();
+	if (aggregationUnit === "day") return event.time === date.getTime();
+	if (aggregationUnit === "week") return event.week === date.getTime();
+	if (aggregationUnit === "month") return event.month === date.getUTCMonth();
+	return event.year === date.getUTCFullYear();
 }

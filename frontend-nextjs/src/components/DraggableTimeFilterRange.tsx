@@ -13,6 +13,7 @@ import {
 	parse,
 	startOfDay,
 } from "date-fns";
+import debounce from "debounce";
 import {
 	type KeyboardEvent as ReactKeyboardEvent,
 	type MouseEvent as ReactMouseEvent,
@@ -32,20 +33,32 @@ type BtnEvent = BtnMouseEvent | BtnTouchEvent;
 
 const datasetStartDate = parse("01-01-2020", "dd-MM-yyyy", new Date());
 const datasetEndDate = endOfDay(new Date());
+const amountOfDays = differenceInDays(datasetEndDate, datasetStartDate) + 1;
+const intervals = new Array(amountOfDays)
+	.fill(null)
+	.map((_, i) => addDays(datasetStartDate, i));
+
+const rangerSteps = intervals.map((_, i) => i);
+const rangerTicks = intervals.map((d) => d.getTime());
 function DraggableTimeFilterRange() {
 	const rangerRef = useRef<HTMLDivElement>(null);
 	const midSegmentRef = useRef<HTMLButtonElement>(null);
-	const amountOfDays = Math.ceil(
-		differenceInDays(datasetEndDate, datasetStartDate) + 1,
+	const { from, to, fromDateString, toDateString, setDateRange } =
+		useFiltersStore((state) => ({
+			from: state.from,
+			to: state.to,
+			fromDateString: state.fromDateString,
+			toDateString: state.toDateString,
+			setDateRange: state.setDateRange,
+		}));
+	const indexOfFrom = useMemo(
+		() => intervals.findIndex((d) => isSameDay(d, from)),
+		[from],
 	);
-	const intervals = new Array(amountOfDays).fill(null).map((_, i) => {
-		return addDays(datasetStartDate, i);
-	});
-	const { from, to, setDateRange } = useFiltersStore(
-		({ from, to, setDateRange }) => ({ from, to, setDateRange }),
+	const indexOfTo = useMemo(
+		() => intervals.findIndex((d) => isSameDay(d, to)),
+		[to],
 	);
-	const indexOfFrom = intervals.findIndex((d) => isSameDay(d, from));
-	const indexOfTo = intervals.findIndex((d) => isSameDay(d, to));
 	const [values, setValues] = useState<ReadonlyArray<number>>([
 		indexOfFrom,
 		indexOfTo,
@@ -58,32 +71,41 @@ function DraggableTimeFilterRange() {
 		leading: false,
 		trailing: true,
 	});
+	// biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
 	const startDragging = useCallback(() => {
 		setIsDragging(true);
 		setDebouncedIsDragging(false);
-	}, [setDebouncedIsDragging]);
+	}, []);
 
-	// biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
 	useEffect(() => {
-		const indexOfFrom = intervals.findIndex((d) => isSameDay(d, from));
-		const indexOfTo = intervals.findIndex((d) => isSameDay(d, to));
 		setValues([indexOfFrom, indexOfTo]);
 		setTempValues([indexOfFrom, indexOfTo]);
-	}, [from, to]);
+	}, [indexOfFrom, indexOfTo]);
 
-	const onValuesChange = useCallback(
-		(vals: [number, number]) => {
-			const [from, to] = [intervals[vals[0]], intervals[vals[1]]]
-				.sort((a, b) => {
-					return a.getTime() - b.getTime();
-				})
-				.map((d) => d.getTime());
+	// biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
+	const onValuesChange = useCallback((vals: [number, number]) => {
+		const [from, to] = [intervals[vals[0]], intervals[vals[1]]]
+			.sort((a, b) => a.getTime() - b.getTime())
+			.map((d) => d.getTime());
 
-			setTempValues(vals);
-			setDateRange({ from: startOfDay(from), to: endOfDay(to) });
+		setTempValues(vals);
+		setDateRange({ from: startOfDay(from), to: endOfDay(to) });
+	}, []);
+
+	const onChange = useCallback(
+		(instance: Ranger<HTMLDivElement>) => {
+			const [fromIdx, toIdx] = instance.sortedValues;
+			onValuesChange([fromIdx, toIdx]);
 		},
-		[intervals, setDateRange],
+		[onValuesChange],
 	);
+
+	// biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
+	const onDrag = useCallback((instance: Ranger<HTMLDivElement>) => {
+		const [fromIdx, toIdx] = instance.sortedValues;
+		setTempValues([fromIdx, toIdx]);
+		startDragging();
+	}, []);
 
 	const rangerInstance = useRanger<HTMLDivElement>({
 		getRangerElement: () => rangerRef.current,
@@ -91,17 +113,10 @@ function DraggableTimeFilterRange() {
 		min: 0,
 		max: intervals.length - 1,
 		stepSize: 1,
-		steps: intervals.map((_, i) => i),
-		ticks: intervals.map((d) => d.getTime()),
-		onChange: (instance: Ranger<HTMLDivElement>) => {
-			const [fromIdx, toIdx] = instance.sortedValues;
-			onValuesChange([fromIdx, toIdx]);
-		},
-		onDrag: (instance: Ranger<HTMLDivElement>) => {
-			const [fromIdx, toIdx] = instance.sortedValues;
-			setTempValues([fromIdx, toIdx]);
-			startDragging();
-		},
+		steps: rangerSteps,
+		ticks: rangerTicks,
+		onChange,
+		onDrag,
 	});
 
 	const handleSegmentDrag = useCallback(
@@ -146,19 +161,19 @@ function DraggableTimeFilterRange() {
 					? (e as BtnTouchEvent).changedTouches[0].clientX
 					: (e as BtnMouseEvent).clientX;
 			let tempVals = values;
-			const onDrag = (e: MouseEvent | TouchEvent) => {
+			const onDrag = debounce((e: MouseEvent | TouchEvent) => {
 				tempVals = handleSegmentDrag(e, clientX, values);
 				setTempValues(tempVals);
 				startDragging();
-			};
+			}, 5);
 			const handleRelease = (e: MouseEvent | TouchEvent) => {
+				const [fromIdx, toIdx] = tempVals || values;
+				onValuesChange([fromIdx, toIdx]);
+				onDrag(e);
 				document.removeEventListener("mousemove", onDrag);
 				document.removeEventListener("touchmove", onDrag);
 				document.removeEventListener("mouseup", handleRelease);
 				document.removeEventListener("touchend", handleRelease);
-				const [fromIdx, toIdx] = tempVals || values;
-				onValuesChange([fromIdx, toIdx]);
-				onDrag(e);
 			};
 
 			document.addEventListener("mousemove", onDrag);
@@ -174,8 +189,8 @@ function DraggableTimeFilterRange() {
 	return (
 		<div
 			className={cn(
-				`w-full h-7 border border-b-0 border-grayLight`,
-				`rounded-t-md relative`,
+				`w-full h-7 border border-grayLight`,
+				`rounded-md relative`,
 			)}
 		>
 			<BackgroundVis />
@@ -363,7 +378,7 @@ const BackgroundVis = memo(() => {
 			ref={parentRef}
 			className={cn(
 				`absolute top-0 left-0 h-full w-full pointer-events-none`,
-				`z-0 grid gap-px`,
+				`z-0 grid gap-px rounded-md overflow-clip`,
 			)}
 			style={{ gridTemplateColumns: `repeat(${columnsCount}, 1fr)` }}
 		>

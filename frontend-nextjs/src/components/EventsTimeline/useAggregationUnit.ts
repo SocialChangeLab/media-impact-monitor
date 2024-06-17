@@ -26,7 +26,14 @@ function useAggregationUnit(parentWidth: number): AggregationUnitType {
 
 	// biome-ignore lint/correctness/useExhaustiveDependencies: using the fromDateString and toDateString to avoid the exact date (which changes on each render) to be used as dependencies of the useMemo
 	const aggregationUnit = useMemo(
-		() => getAggregationUnitByRange(range, parentWidth),
+		() =>
+			getAggregationUnitByRange(
+				{
+					from: range.from,
+					to: range.to,
+				},
+				parentWidth,
+			),
 		[parentWidth, range.fromDateString, range.toDateString],
 	);
 

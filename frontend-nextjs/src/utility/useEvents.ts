@@ -1,7 +1,7 @@
 "use client";
 import { useFiltersStore } from "@/providers/FiltersStoreProvider";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { endOfDay, isAfter, isBefore } from "date-fns";
+import { endOfDay } from "date-fns";
 import { useEffect, useMemo } from "react";
 import { toast } from "sonner";
 import { extractEventOrganisations, getEventsData } from "./eventsUtil";
@@ -11,9 +11,14 @@ function useEvents({
 	to: inputTo,
 }: { from?: Date; to?: Date } = {}) {
 	const queryClient = useQueryClient();
-	const filterStore = useFiltersStore(({ from, to }) => ({ from, to }));
-	const from = inputFrom ?? filterStore.from;
-	const to = inputTo ?? filterStore.to;
+	const filterStore = useFiltersStore((state) => ({
+		from: state.from,
+		to: state.to,
+		fromDateString: state.fromDateString,
+		toDateString: state.toDateString,
+	}));
+	const fromTime = new Date(inputFrom ?? filterStore.from).getTime();
+	const toTime = new Date(inputTo ?? filterStore.to).getTime();
 	const queryKey = ["events"];
 	const query = useQuery({
 		queryKey,
@@ -35,12 +40,12 @@ function useEvents({
 	const events = useMemo(() => {
 		return (data ?? []).filter((e) => {
 			if (!e.date) return false;
-			const beforeFrom = isBefore(e.date, from);
-			const afterTo = isAfter(e.date, to);
+			const beforeFrom = e.time < fromTime;
+			const afterTo = e.time > toTime;
 			if (beforeFrom || afterTo) return false;
 			return true;
 		});
-	}, [data, query.isSuccess]);
+	}, [data, filterStore.fromDateString, filterStore.toDateString]);
 
 	const organisations = useMemo(
 		() => extractEventOrganisations(events),

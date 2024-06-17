@@ -2,7 +2,7 @@
 import LoadingEventsTimeline from "@/components/EventsTimeline/LoadingEventsTimeline";
 import { cn } from "@/utility/classNames";
 import { parseErrorMessage } from "@/utility/errorHandlingUtil";
-import type { EventType, OrganisationType } from "@/utility/eventsUtil";
+import type { OrganisationType, ParsedEventType } from "@/utility/eventsUtil";
 import useEvents from "@/utility/useEvents";
 import useElementSize from "@custom-react-hooks/use-element-size";
 import { QueryErrorResetBoundary } from "@tanstack/react-query";
@@ -26,7 +26,7 @@ function EventsTimeline({
 	data,
 }: {
 	data: {
-		events: EventType[];
+		events: ParsedEventType[];
 		organisations: OrganisationType[];
 	};
 }) {

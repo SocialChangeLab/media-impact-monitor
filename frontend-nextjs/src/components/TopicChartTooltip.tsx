@@ -3,8 +3,8 @@ import type { ComparableDateItemType } from "@/utility/comparableDateItemSchema"
 import { format } from "date-fns";
 import { memo } from "react";
 import {
-	formatDateByAggregationUnit,
 	type AggregationUnitType,
+	formatDateByAggregationUnit,
 } from "./EventsTimeline/useAggregationUnit";
 
 function TopicChartTooltip({

@@ -1,4 +1,5 @@
 import { cn } from "@/utility/classNames";
+import type { ComparableDateItemType } from "@/utility/comparableDateItemSchema";
 import { memo, useMemo } from "react";
 import {
 	type AggregationUnitType,
@@ -10,9 +11,7 @@ function EventsTimelineAxis({
 	aggregationUnit,
 	width,
 }: {
-	eventColumns: {
-		day: Date;
-	}[];
+	eventColumns: ComparableDateItemType[];
 	aggregationUnit: AggregationUnitType;
 	width: number;
 }) {
@@ -33,11 +32,11 @@ function EventsTimelineAxis({
 				)}
 				style={{ width: `max(${eventColumns.length + 1}rem, 100%)` }}
 			>
-				{eventColumns.map(({ day }, idx) => {
+				{eventColumns.map(({ date, time }, idx) => {
 					const showLabel = idxsWithTicks.includes(idx);
 					return (
 						<li
-							key={day.toISOString()}
+							key={time}
 							className="flex min-w-4 bg-pattern-soft h-14 justify-center relative shrink-0 grow border-t border-grayMed"
 							aria-label="X Axis Tick"
 						>
@@ -55,7 +54,8 @@ function EventsTimelineAxis({
 									idx === eventColumns.length - 1 && "-translate-x-full",
 								)}
 							>
-								{showLabel && formatDateByAggregationUnit(day, aggregationUnit)}
+								{showLabel &&
+									formatDateByAggregationUnit(date, aggregationUnit)}
 							</span>
 						</li>
 					);

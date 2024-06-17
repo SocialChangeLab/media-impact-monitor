@@ -1,9 +1,9 @@
-import { endOfDay, format, startOfDay, subMonths } from "date-fns";
+import { format, startOfDay, subMonths } from "date-fns";
 import { create } from "zustand";
 import {
-	type StateStorage,
 	createJSONStorage,
 	persist,
+	type StateStorage,
 } from "zustand/middleware";
 
 const defaultTo = startOfDay(new Date());
@@ -46,7 +46,8 @@ const persistentStorage: StateStorage = {
 	getItem: (key: string): string => {
 		const searchParams = new URLSearchParams(getUrlSearch());
 		const storedValue = searchParams.get(key);
-		return JSON.parse(storedValue as string);
+		const json = JSON.parse(storedValue as string);
+		return json;
 	},
 	setItem: (key, newValue): void => {
 		const searchParams = new URLSearchParams(getUrlSearch());
@@ -76,7 +77,7 @@ export const createFiltersStore = (
 				setDateRange: ({ from, to }) =>
 					set(() => ({
 						from: startOfDay(from),
-						to: endOfDay(to),
+						to: startOfDay(to),
 						fromDateString: format(from, "yyyy-MM-dd"),
 						toDateString: format(to, "yyyy-MM-dd"),
 					})),

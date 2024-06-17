@@ -1,11 +1,11 @@
-import type { EventType, OrganisationType } from "@/utility/eventsUtil";
+import type { OrganisationType, ParsedEventType } from "@/utility/eventsUtil";
 import { memo, useMemo } from "react";
 import EventBubbleLink from "./EventBubbleLink";
 import EventTooltip from "./EventTooltip";
 import EventsBar from "./EventsBar";
 
 type EventTimelineItemProps = {
-	event: EventType;
+	event: ParsedEventType;
 	organisations: OrganisationType[];
 	height: number;
 };

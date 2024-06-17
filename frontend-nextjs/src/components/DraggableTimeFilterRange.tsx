@@ -1,29 +1,25 @@
 import { useFiltersStore } from "@/providers/FiltersStoreProvider";
 import { cn } from "@/utility/classNames";
+import {
+	dateToComparableDateItem,
+	type ComparableDateItemType,
+} from "@/utility/comparableDateItemSchema";
 import useEvents from "@/utility/useEvents";
+import { isInSameAggregationUnit } from "@/utility/useTimeIntervals";
 import useDebounce from "@custom-react-hooks/use-debounce";
 import useElementSize from "@custom-react-hooks/use-element-size";
-import { type Ranger, useRanger } from "@tanstack/react-ranger";
+import { useRanger, type Ranger } from "@tanstack/react-ranger";
+import { addDays, differenceInDays, format, parse, startOfDay } from "date-fns";
 import {
-	addDays,
-	differenceInDays,
-	endOfDay,
-	format,
-	isSameDay,
-	parse,
-	startOfDay,
-} from "date-fns";
-import debounce from "debounce";
-import {
-	type KeyboardEvent as ReactKeyboardEvent,
-	type MouseEvent as ReactMouseEvent,
-	type TouchEvent as ReactTouchEvent,
 	memo,
 	useCallback,
 	useEffect,
 	useMemo,
 	useRef,
 	useState,
+	type KeyboardEvent as ReactKeyboardEvent,
+	type MouseEvent as ReactMouseEvent,
+	type TouchEvent as ReactTouchEvent,
 } from "react";
 import useTimelineEvents from "./EventsTimeline/useTimelineEvents";
 
@@ -31,32 +27,37 @@ type BtnMouseEvent = ReactMouseEvent<HTMLButtonElement>;
 type BtnTouchEvent = ReactTouchEvent<HTMLButtonElement>;
 type BtnEvent = BtnMouseEvent | BtnTouchEvent;
 
-const datasetStartDate = parse("01-01-2020", "dd-MM-yyyy", new Date());
-const datasetEndDate = endOfDay(new Date());
+const datasetStartDate = startOfDay(
+	parse("01-01-2020", "dd-MM-yyyy", new Date()),
+);
+const datasetEndDate = startOfDay(new Date());
 const amountOfDays = differenceInDays(datasetEndDate, datasetStartDate) + 1;
 const intervals = new Array(amountOfDays)
 	.fill(null)
-	.map((_, i) => addDays(datasetStartDate, i));
+	.map((_, i) => dateToComparableDateItem(addDays(datasetStartDate, i)));
 
 const rangerSteps = intervals.map((_, i) => i);
-const rangerTicks = intervals.map((d) => d.getTime());
+const rangerTicks = intervals.map((d) => d.time);
 function DraggableTimeFilterRange() {
 	const rangerRef = useRef<HTMLDivElement>(null);
 	const midSegmentRef = useRef<HTMLButtonElement>(null);
-	const { from, to, fromDateString, toDateString, setDateRange } =
-		useFiltersStore((state) => ({
-			from: state.from,
-			to: state.to,
-			fromDateString: state.fromDateString,
-			toDateString: state.toDateString,
-			setDateRange: state.setDateRange,
-		}));
+	const { from, to, setDateRange } = useFiltersStore((state) => ({
+		from: state.from,
+		to: state.to,
+		setDateRange: state.setDateRange,
+	}));
 	const indexOfFrom = useMemo(
-		() => intervals.findIndex((d) => isSameDay(d, from)),
+		() =>
+			intervals.findIndex((d) =>
+				isInSameAggregationUnit("day", d, startOfDay(from)),
+			),
 		[from],
 	);
 	const indexOfTo = useMemo(
-		() => intervals.findIndex((d) => isSameDay(d, to)),
+		() =>
+			intervals.findIndex((d) =>
+				isInSameAggregationUnit("day", d, startOfDay(to)),
+			),
 		[to],
 	);
 	const [values, setValues] = useState<ReadonlyArray<number>>([
@@ -84,18 +85,24 @@ function DraggableTimeFilterRange() {
 
 	// biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
 	const onValuesChange = useCallback((vals: [number, number]) => {
-		const [from, to] = [intervals[vals[0]], intervals[vals[1]]]
-			.sort((a, b) => a.getTime() - b.getTime())
-			.map((d) => d.getTime());
+		const [from, to] = [
+			intervals[vals[0]] ?? intervals[0],
+			intervals[vals[1]] ?? intervals[intervals.length - 1],
+		]
+			.map((d) => d.time)
+			.sort();
 
 		setTempValues(vals);
-		setDateRange({ from: startOfDay(from), to: endOfDay(to) });
+		setDateRange({ from: new Date(from), to: new Date(to) });
 	}, []);
 
 	const onChange = useCallback(
 		(instance: Ranger<HTMLDivElement>) => {
 			const [fromIdx, toIdx] = instance.sortedValues;
-			onValuesChange([fromIdx, toIdx]);
+			onValuesChange([
+				Math.max(0, fromIdx),
+				Math.min(intervals.length - 1, toIdx),
+			]);
 		},
 		[onValuesChange],
 	);
@@ -146,7 +153,7 @@ function DraggableTimeFilterRange() {
 				}
 
 				if (actualDiff) {
-					return values.map((v) => v + actualDiff);
+					return values.map((v) => v + actualDiff).sort();
 				}
 			}
 			return values;
@@ -161,13 +168,13 @@ function DraggableTimeFilterRange() {
 					? (e as BtnTouchEvent).changedTouches[0].clientX
 					: (e as BtnMouseEvent).clientX;
 			let tempVals = values;
-			const onDrag = debounce((e: MouseEvent | TouchEvent) => {
+			const onDrag = (e: MouseEvent | TouchEvent) => {
 				tempVals = handleSegmentDrag(e, clientX, values);
 				setTempValues(tempVals);
 				startDragging();
-			}, 5);
+			};
 			const handleRelease = (e: MouseEvent | TouchEvent) => {
-				const [fromIdx, toIdx] = tempVals || values;
+				const [fromIdx, toIdx] = [...(tempVals || values)].sort();
 				onValuesChange([fromIdx, toIdx]);
 				onDrag(e);
 				document.removeEventListener("mousemove", onDrag);
@@ -221,16 +228,19 @@ function DraggableTimeFilterRange() {
 						style={{ left: `${left}%`, width: `${width}%` }}
 					/>
 				))}
-				{handles.map((props, i) => (
-					<Handle
-						{...props}
-						key={`handle-${intervals[props.value].toISOString()}`}
-						date={intervals[props.value]}
-						rangerInstance={rangerInstance}
-						isDragging={isDragging}
-						isStart={i === 0}
-					/>
-				))}
+				{handles.map((props, i) => {
+					const val = intervals[props.value];
+					return (
+						<Handle
+							{...props}
+							key={`handle-${val?.time ?? ""}`}
+							comparableDateObject={val}
+							rangerInstance={rangerInstance}
+							isDragging={isDragging}
+							isStart={i === 0}
+						/>
+					);
+				})}
 			</div>
 		</div>
 	);
@@ -239,7 +249,7 @@ function DraggableTimeFilterRange() {
 const Handle = memo(
 	({
 		value,
-		date,
+		comparableDateObject,
 		onKeyDownHandler,
 		onMouseDownHandler,
 		onTouchStart,
@@ -249,7 +259,7 @@ const Handle = memo(
 		isStart = true,
 	}: {
 		value: number;
-		date: Date;
+		comparableDateObject: ComparableDateItemType;
 		onKeyDownHandler: (e: ReactKeyboardEvent) => void;
 		onMouseDownHandler: (e: ReactMouseEvent) => void;
 		onTouchStart: (e: ReactTouchEvent) => void;
@@ -258,6 +268,8 @@ const Handle = memo(
 		isDragging?: boolean;
 		isStart?: boolean;
 	}) => {
+		if (!comparableDateObject) return null;
+		const { date } = comparableDateObject;
 		const formattedDate = useMemo(() => format(date, "dd. MMM. yyyy"), [date]);
 
 		const handleKeyDown = useCallback(
@@ -382,11 +394,8 @@ const BackgroundVis = memo(() => {
 			)}
 			style={{ gridTemplateColumns: `repeat(${columnsCount}, 1fr)` }}
 		>
-			{eventColumns.map(({ day, eventsWithSize, sumSize }) => (
-				<span
-					key={day.toISOString()}
-					className="size-full flex flex-col gap-px justify-end"
-				>
+			{eventColumns.map(({ time, sumSize }) => (
+				<span key={time} className="size-full flex flex-col gap-px justify-end">
 					<span
 						className="w-full h-0.5 bg-grayLight"
 						style={{ height: sizeScale(sumSize) }}

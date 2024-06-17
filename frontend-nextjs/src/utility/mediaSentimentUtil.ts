@@ -1,5 +1,9 @@
-import { format, parse, startOfDay } from "date-fns";
+import { format } from "date-fns";
 import { ZodError, z } from "zod";
+import {
+	comparableDateItemSchema,
+	dateToComparableDateItem,
+} from "./comparableDateItemSchema";
 import { dateSortCompare, isValidISODateString } from "./dateUtil";
 import { fetchApiData } from "./fetchUtil";
 
@@ -10,11 +14,18 @@ const mediaSentimentZodSchema = z.object({
 });
 export type MediaSentimentType = z.infer<typeof mediaSentimentZodSchema>;
 
-const mediaDataTypeZodSchema = z.array(mediaSentimentZodSchema);
+const parsedMediaSentimentZodSchema = mediaSentimentZodSchema
+	.omit({ date: true })
+	.merge(comparableDateItemSchema);
+export type ParsedMediaSentimentType = z.infer<
+	typeof parsedMediaSentimentZodSchema
+>;
+
+const mediaDataTypeZodSchema = z.array(parsedMediaSentimentZodSchema);
 export type MediaDataType = z.infer<typeof mediaDataTypeZodSchema>;
 
 const mediaSentimentDataResponseTypeZodSchema = z.object({
-	data: mediaDataTypeZodSchema,
+	data: mediaSentimentZodSchema.array(),
 	isPending: z.boolean().optional(),
 	error: z.union([z.string(), z.null()]).optional(),
 });
@@ -43,7 +54,9 @@ export async function getMediaSentimentData(params?: {
 	return validateGetDataResponse(json);
 }
 
-function validateGetDataResponse(response: unknown): MediaSentimentType[] {
+function validateGetDataResponse(
+	response: unknown,
+): ParsedMediaSentimentType[] {
 	try {
 		const parsedResponse =
 			mediaSentimentDataResponseTypeZodSchema.parse(response);
@@ -51,10 +64,10 @@ function validateGetDataResponse(response: unknown): MediaSentimentType[] {
 			.filter((x) => isValidISODateString(x.date))
 			.map((x) => ({
 				...x,
-				date: parse(x.date, "yyyy-MM-dd", startOfDay(new Date())).toISOString(),
+				...dateToComparableDateItem(x.date),
 			}))
 			.sort((a, b) => dateSortCompare(a.date, b.date));
-		return sortedMedia;
+		return parsedMediaSentimentZodSchema.array().parse(sortedMedia);
 	} catch (error) {
 		if (error instanceof ZodError) {
 			const errorMessage = (error.issues ?? [])

@@ -1,5 +1,9 @@
-import { format, parse, startOfDay } from "date-fns";
+import { format } from "date-fns";
 import { ZodError, z } from "zod";
+import {
+	comparableDateItemSchema,
+	dateToComparableDateItem,
+} from "./comparableDateItemSchema";
 import { dateSortCompare, isValidISODateString } from "./dateUtil";
 import { fetchApiData } from "./fetchUtil";
 
@@ -10,11 +14,17 @@ const mediaCoverageZodSchema = z.object({
 });
 export type MediaCoverageType = z.infer<typeof mediaCoverageZodSchema>;
 
-const mediaDataTypeZodSchema = z.array(mediaCoverageZodSchema);
-export type MediaDataType = z.infer<typeof mediaDataTypeZodSchema>;
+const parsedMediaCoverageZodSchema = mediaCoverageZodSchema
+	.omit({ date: true })
+	.merge(comparableDateItemSchema);
+export type ParsedMediaCoverageType = z.infer<
+	typeof parsedMediaCoverageZodSchema
+>;
+
+const mediaDataTypeZodSchema = z.array(parsedMediaCoverageZodSchema);
 
 const mediaCoverageDataResponseTypeZodSchema = z.object({
-	data: mediaDataTypeZodSchema,
+	data: mediaCoverageZodSchema.array(),
 	isPending: z.boolean().optional(),
 	error: z.union([z.string(), z.null()]).optional(),
 });
@@ -22,7 +32,7 @@ const mediaCoverageDataResponseTypeZodSchema = z.object({
 export async function getMediaCoverageData(params?: {
 	from?: Date;
 	to?: Date;
-}): Promise<MediaDataType> {
+}): Promise<ParsedMediaCoverageType[]> {
 	const json = await fetchApiData({
 		endpoint: "trend",
 		body: {
@@ -43,7 +53,7 @@ export async function getMediaCoverageData(params?: {
 	return validateGetDataResponse(json);
 }
 
-function validateGetDataResponse(response: unknown): MediaCoverageType[] {
+function validateGetDataResponse(response: unknown): ParsedMediaCoverageType[] {
 	try {
 		const parsedResponse =
 			mediaCoverageDataResponseTypeZodSchema.parse(response);
@@ -51,10 +61,10 @@ function validateGetDataResponse(response: unknown): MediaCoverageType[] {
 			.filter((x) => isValidISODateString(x.date))
 			.map((x) => ({
 				...x,
-				date: parse(x.date, "yyyy-MM-dd", startOfDay(new Date())).toISOString(),
+				...dateToComparableDateItem(x.date),
 			}))
 			.sort((a, b) => dateSortCompare(a.date, b.date));
-		return sortedMedia;
+		return mediaDataTypeZodSchema.parse(sortedMedia);
 	} catch (error) {
 		if (error instanceof ZodError) {
 			const errorMessage = (error.issues ?? [])

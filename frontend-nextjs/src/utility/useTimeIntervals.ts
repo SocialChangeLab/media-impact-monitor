@@ -16,7 +16,10 @@ import {
 	startOfYear,
 } from "date-fns";
 import { useMemo } from "react";
-import type { ParsedEventType } from "./eventsUtil";
+import {
+	dateToComparableDateItem,
+	type ComparableDateItemType,
+} from "./comparableDateItemSchema";
 
 function useTimeIntervals({
 	from: inputFrom,
@@ -57,8 +60,11 @@ function useTimeIntervals({
 		const timeDiff = Math.abs(timeComparatorFn(to, from)) + 1;
 		return new Array(timeDiff)
 			.fill(null)
-			.map((_, idx) => timeStartFn(timeIncrementerFn(from, idx)));
+			.map((_, idx) =>
+				dateToComparableDateItem(timeStartFn(timeIncrementerFn(from, idx))),
+			);
 	}, [fromDateString, toDateString, aggregationUnit]);
+
 	return eventColumns;
 }
 
@@ -92,11 +98,17 @@ function getTimeIncrementerByAggregationUnit(
 
 export function isInSameAggregationUnit(
 	aggregationUnit: AggregationUnitType,
-	event: ParsedEventType,
+	comparableDateItem: ComparableDateItemType,
 	date: Date,
 ) {
-	if (aggregationUnit === "day") return event.time === date.getTime();
-	if (aggregationUnit === "week") return event.week === date.getTime();
-	if (aggregationUnit === "month") return event.month === date.getUTCMonth();
-	return event.year === date.getUTCFullYear();
+	if (aggregationUnit === "day")
+		return comparableDateItem.time === date.getTime();
+	if (aggregationUnit === "week")
+		return comparableDateItem.week === date.getTime();
+	if (aggregationUnit === "month")
+		return (
+			comparableDateItem.month === date.getUTCMonth() &&
+			comparableDateItem.year === date.getUTCFullYear()
+		);
+	return comparableDateItem.year === date.getUTCFullYear();
 }

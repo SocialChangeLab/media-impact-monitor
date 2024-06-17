@@ -1,5 +1,9 @@
-import { endOfToday, format, parse, startOfDay, startOfWeek } from "date-fns";
+import { endOfToday, format } from "date-fns";
 import { ZodError, z } from "zod";
+import {
+	comparableDateItemSchema,
+	dateToComparableDateItem,
+} from "./comparableDateItemSchema";
 import { dateSortCompare, isValidISODateString } from "./dateUtil";
 import { fetchApiData } from "./fetchUtil";
 
@@ -18,14 +22,9 @@ const eventZodSchema = z.object({
 });
 export type EventType = z.infer<typeof eventZodSchema>;
 
-const parsedEventZodSchema = eventZodSchema.omit({ date: true }).extend({
-	date: z.date(),
-	year: z.number(),
-	month: z.number(),
-	week: z.number(),
-	day: z.number(),
-	time: z.number(),
-});
+const parsedEventZodSchema = eventZodSchema
+	.omit({ date: true })
+	.merge(comparableDateItemSchema);
 export type ParsedEventType = z.infer<typeof parsedEventZodSchema>;
 
 const colorTypeZodSchema = z.string();
@@ -80,23 +79,16 @@ export async function getEventData(
 	return allEvents.find((x) => x.event_id === id);
 }
 
-const today = new Date();
 function validateGetDataResponse(response: unknown): ParsedEventType[] {
 	try {
 		const parsedResponse = eventDataResponseTypeZodSchema.parse(response);
 		const eventsWithFixedOrgs = parsedResponse.data
 			.filter((x) => isValidISODateString(x.date))
 			.map((x) => {
-				const date = startOfDay(parse(x.date, "yyyy-MM-dd", today));
 				return {
 					...x,
-					date,
 					organizers: x.organizers ?? [],
-					year: date.getUTCFullYear(),
-					month: date.getUTCMonth(),
-					week: startOfWeek(date, { weekStartsOn: 1 }).getTime(),
-					day: date.getUTCDate(),
-					time: date.getTime(),
+					...dateToComparableDateItem(x.date),
 				};
 			})
 			.sort((a, b) => dateSortCompare(a.date, b.date));

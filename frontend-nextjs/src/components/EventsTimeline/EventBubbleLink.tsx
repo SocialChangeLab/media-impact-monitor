@@ -1,11 +1,11 @@
 import { cn } from "@/utility/classNames";
-import type { EventType, OrganisationType } from "@/utility/eventsUtil";
+import type { OrganisationType, ParsedEventType } from "@/utility/eventsUtil";
 import Link from "next/link";
 import { memo } from "react";
 import { TooltipTrigger } from "../ui/tooltip";
 
 type EventBubbleLinkProps = {
-	event: EventType;
+	event: ParsedEventType;
 	organisations: OrganisationType[];
 };
 

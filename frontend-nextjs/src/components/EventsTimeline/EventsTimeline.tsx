@@ -45,9 +45,9 @@ function EventsTimeline({
 			<EventsTimelineScrollWrapper>
 				<EventsTimelineChartWrapper columnsCount={columnsCount + 1}>
 					{eventColumns.map(
-						({ day, eventsWithSize, sumSize, combinedOrganizers }) => (
+						({ time, date, eventsWithSize, sumSize, combinedOrganizers }) => (
 							<li
-								key={`event-day-${day.toISOString()}`}
+								key={`event-day-${time}`}
 								className="grid grid-rows-subgrid row-span-3 relative w-4 grow shrink-0 h-full py-4"
 							>
 								<div className="flex flex-col justify-end items-center gap-0.5">
@@ -69,7 +69,7 @@ function EventsTimeline({
 										))}
 									{aggregationUnit !== "day" && eventsWithSize.length > 0 && (
 										<EventsTimelineAggregatedItem
-											date={day}
+											date={date}
 											sumSize={sumSize}
 											height={Math.ceil(sizeScale(sumSize))}
 											organisations={combinedOrganizers}

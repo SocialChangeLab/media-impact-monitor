@@ -4,7 +4,6 @@ import useTimeIntervals, {
 } from "@/utility/useTimeIntervals";
 import useTimeScale from "@/utility/useTimeScale";
 import { scalePow } from "d3-scale";
-import { startOfDay } from "date-fns";
 import { useCallback, useMemo } from "react";
 import defaultConfig from "./eventsTimelineConfig";
 import type { AggregationUnitType } from "./useAggregationUnit";
@@ -42,8 +41,10 @@ function useTimelineEvents({
 
 	const eventColumns = useMemo(() => {
 		if (!timeScale || !data?.events || !data?.organisations) return [];
-		return intervals.map((d) => {
-			const columnEvents = data.events.filter((evt) => isInSameUnit(evt, d));
+		return intervals.map((comparableDateObject) => {
+			const columnEvents = data.events.filter((evt) =>
+				isInSameUnit(evt, comparableDateObject.date),
+			);
 			const eventsWithSize = columnEvents.sort((a, b) => {
 				const aSize = a.size_number ?? 0;
 				const bSize = b.size_number ?? 0;
@@ -54,7 +55,7 @@ function useTimelineEvents({
 			});
 
 			return {
-				day: startOfDay(d),
+				...comparableDateObject,
 				eventsWithSize,
 				sumSize: columnEvents.reduce((acc, evt) => {
 					return acc + (evt.size_number ?? 0);

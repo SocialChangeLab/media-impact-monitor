@@ -1,7 +1,7 @@
 "use client";
 import { cn } from "@/utility/classNames";
 import { parseErrorMessage } from "@/utility/errorHandlingUtil";
-import type { EventType } from "@/utility/eventsUtil";
+import type { ParsedEventType } from "@/utility/eventsUtil";
 import {
 	arrayOfRandomLengthInRange,
 	randomInRange,
@@ -118,14 +118,14 @@ const EventPageWithPopulatedData = memo(
 	},
 );
 
-const EventPageContent = memo(({ id }: { id: EventType["event_id"] }) => {
+const EventPageContent = memo(({ id }: { id: ParsedEventType["event_id"] }) => {
 	const { data } = useEvent(id);
 	return <EventPageWithPopulatedData data={data} />;
 });
 
 export default function EventPageContentWithData({
 	id,
-}: { id: EventType["event_id"] }) {
+}: { id: ParsedEventType["event_id"] }) {
 	return (
 		<QueryErrorResetBoundary>
 			{({ reset }) => (

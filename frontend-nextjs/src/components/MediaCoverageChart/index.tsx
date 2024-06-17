@@ -1,5 +1,5 @@
 "use client";
-import type { MediaCoverageType } from "@/utility/mediaCoverageUtil";
+import type { ParsedMediaCoverageType } from "@/utility/mediaCoverageUtil";
 import useTimeIntervals, {
 	isInSameAggregationUnit,
 } from "@/utility/useTimeIntervals";
@@ -19,6 +19,7 @@ import useAggregationUnit, {
 	formatDateByAggregationUnit,
 } from "@/components/EventsTimeline/useAggregationUnit";
 import TopicChartTooltip from "@/components/TopicChartTooltip";
+import type { ComparableDateItemType } from "@/utility/comparableDateItemSchema";
 import { slugifyCssClass } from "@/utility/cssSlugify";
 import { parseErrorMessage } from "@/utility/errorHandlingUtil";
 import useMediaCoverageData from "@/utility/useKeywords";
@@ -33,14 +34,15 @@ const MediaCoverageChart = memo(
 	({
 		data,
 	}: {
-		data: MediaCoverageType[];
+		data: ParsedMediaCoverageType[];
 	}) => {
 		const [parentRef, size] = useElementSize();
 		const aggregationUnit = useAggregationUnit(size.width);
 		const intervals = useTimeIntervals({ aggregationUnit });
 
 		const isInSameUnit = useCallback(
-			(a: Date, b: Date) => isInSameAggregationUnit(aggregationUnit, a, b),
+			(comparableDateItem: ComparableDateItemType, date: Date) =>
+				isInSameAggregationUnit(aggregationUnit, comparableDateItem, date),
 			[aggregationUnit],
 		);
 
@@ -53,9 +55,9 @@ const MediaCoverageChart = memo(
 					}, new Set<string>())
 					.values(),
 			);
-			const filteredData = intervals.map((d) => {
+			const filteredData = intervals.map((comparableDateObject) => {
 				const daysInUnit = data.filter((day) =>
-					isInSameUnit(new Date(day.date), d),
+					isInSameUnit(comparableDateObject, new Date(day.date)),
 				);
 				return allTopics.reduce(
 					(acc, topic) => {
@@ -70,10 +72,13 @@ const MediaCoverageChart = memo(
 						return acc;
 					},
 					{
-						date: d,
-						dateFormatted: formatDateByAggregationUnit(d, aggregationUnit),
+						comparableDateObject: comparableDateObject,
+						dateFormatted: formatDateByAggregationUnit(
+							comparableDateObject.date,
+							aggregationUnit,
+						),
 					} as {
-						date: Date;
+						comparableDateObject: ComparableDateItemType;
 						dateFormatted: string;
 					} & {
 						[key: string]: number;

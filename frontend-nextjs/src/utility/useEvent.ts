@@ -4,12 +4,12 @@ import { endOfDay } from "date-fns";
 import { useEffect, useMemo } from "react";
 import { toast } from "sonner";
 import {
-	type EventType,
+	type ParsedEventType,
 	extractEventOrganisations,
 	getEventData,
 } from "./eventsUtil";
 
-export function getEventQueryOptions(id?: EventType["event_id"]) {
+export function getEventQueryOptions(id?: ParsedEventType["event_id"]) {
 	return queryOptions({
 		queryKey: ["events", id],
 		queryFn: () => (id ? getEventData(id) : null),
@@ -18,7 +18,7 @@ export function getEventQueryOptions(id?: EventType["event_id"]) {
 	});
 }
 
-function useEvent(id?: EventType["event_id"]) {
+function useEvent(id?: ParsedEventType["event_id"]) {
 	const query = useQuery(getEventQueryOptions(id));
 
 	useEffect(() => {

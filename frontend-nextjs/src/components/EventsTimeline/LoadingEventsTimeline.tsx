@@ -1,4 +1,8 @@
 "use client";
+import {
+	type ComparableDateItemType,
+	dateToComparableDateItem,
+} from "@/utility/comparableDateItemSchema";
 import { randomUntil } from "@/utility/randomUtil";
 import useElementSize from "@custom-react-hooks/use-element-size";
 import { scalePow } from "d3-scale";
@@ -19,8 +23,8 @@ const LoadingEventsTimeline = memo(() => {
 	const [parentRef, size] = useElementSize();
 	const startDate = new Date("2023-01-01T00:00:00.000Z");
 	const intervals = Array.from({ length: 30 }, (_, idx) => idx + 1).reduce(
-		(acc, idx) => acc.concat(addDays(startDate, idx)),
-		[] as Date[],
+		(acc, idx) => acc.concat(dateToComparableDateItem(addDays(startDate, idx))),
+		[] as ComparableDateItemType[],
 	);
 
 	const skeletons = useMemo(() => {
@@ -59,7 +63,7 @@ const LoadingEventsTimeline = memo(() => {
 					))}
 				</EventsTimelineChartWrapper>
 				<EventsTimelineAxis
-					eventColumns={intervals.map((d) => ({ day: d, eventsWithSize: [] }))}
+					eventColumns={intervals.map((d) => ({ ...d, eventsWithSize: [] }))}
 					aggregationUnit="day"
 					width={size.width}
 				/>

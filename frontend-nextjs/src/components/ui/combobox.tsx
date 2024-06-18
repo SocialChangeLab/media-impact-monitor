@@ -65,11 +65,17 @@ export function Combobox({
 					/>
 				</Button>
 			</PopoverTrigger>
-			<PopoverContent className="w-fit p-0">
+			<PopoverContent
+				className="w-fit max-w-96 p-0 max-h-[70vh] overflow-y-auto"
+				align="start"
+			>
 				<Command>
 					{searchable && (
 						<>
-							<CommandInput placeholder="Search..." />
+							<CommandInput
+								placeholder="Search..."
+								className="focus-visible:ring-inset focus-visible:ring-offset-0 outline-offset-0 border-0 border-l"
+							/>
 							<CommandEmpty>Nothing found.</CommandEmpty>
 						</>
 					)}
@@ -87,7 +93,7 @@ export function Combobox({
 							>
 								<Check
 									className={cn(
-										"mr-2 h-4 w-4",
+										"mr-2 h-4 w-4 shrink-0",
 										value === option.value ? "opacity-100" : "opacity-0",
 									)}
 								/>

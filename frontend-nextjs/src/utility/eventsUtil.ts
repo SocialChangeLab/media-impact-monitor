@@ -1,5 +1,9 @@
-import { format, parse, startOfDay } from "date-fns";
+import { endOfToday, format } from "date-fns";
 import { ZodError, z } from "zod";
+import {
+	comparableDateItemSchema,
+	dateToComparableDateItem,
+} from "./comparableDateItemSchema";
 import { dateSortCompare, isValidISODateString } from "./dateUtil";
 import { fetchApiData } from "./fetchUtil";
 
@@ -15,9 +19,13 @@ const eventZodSchema = z.object({
 	size_text: z.string().nullable(),
 	size_number: z.number().nullable(),
 	description: z.string(),
-	chart_position: z.number(),
 });
 export type EventType = z.infer<typeof eventZodSchema>;
+
+const parsedEventZodSchema = eventZodSchema
+	.omit({ date: true })
+	.merge(comparableDateItemSchema);
+export type ParsedEventType = z.infer<typeof parsedEventZodSchema>;
 
 const colorTypeZodSchema = z.string();
 export type ColorType = z.infer<typeof colorTypeZodSchema>;
@@ -30,11 +38,11 @@ const organisationZodSchema = z.object({
 });
 export type OrganisationType = z.infer<typeof organisationZodSchema>;
 
-const eventDataTypeZodSchema = z.array(eventZodSchema);
+const eventDataTypeZodSchema = z.array(parsedEventZodSchema);
 export type EventsDataType = z.infer<typeof eventDataTypeZodSchema>;
 
 const eventDataResponseTypeZodSchema = z.object({
-	data: eventDataTypeZodSchema,
+	data: z.array(eventZodSchema),
 	isPending: z.boolean().optional(),
 	error: z.union([z.string(), z.null()]).optional(),
 });
@@ -53,31 +61,38 @@ export async function getEventsData(params?: {
 						start_date: format(params?.from, "yyyy-MM-dd"),
 						end_date: format(params?.to, "yyyy-MM-dd"),
 					}
-				: {}),
+				: {
+						start_date: "2020-01-01",
+						end_date: format(endOfToday(), "yyyy-MM-dd"),
+					}),
 		},
-		fallbackFilePathContent: (await import("../data/fallbackProtests.json"))
-			.default,
+		// fallbackFilePathContent: (await import("../data/fallbackProtests.json"))
+		// 	.default,
 	});
 	return validateGetDataResponse(json);
 }
 
-export async function getEventData(id: string): Promise<EventType | undefined> {
+export async function getEventData(
+	id: string,
+): Promise<ParsedEventType | undefined> {
 	const allEvents = await getEventsData();
 	return allEvents.find((x) => x.event_id === id);
 }
 
-function validateGetDataResponse(response: unknown): EventType[] {
+function validateGetDataResponse(response: unknown): ParsedEventType[] {
 	try {
 		const parsedResponse = eventDataResponseTypeZodSchema.parse(response);
 		const eventsWithFixedOrgs = parsedResponse.data
 			.filter((x) => isValidISODateString(x.date))
-			.map((x) => ({
-				...x,
-				date: parse(x.date, "yyyy-MM-dd", startOfDay(new Date())).toISOString(),
-				organizers: x.organizers ?? [],
-			}))
+			.map((x) => {
+				return {
+					...x,
+					organizers: x.organizers ?? [],
+					...dateToComparableDateItem(x.date),
+				};
+			})
 			.sort((a, b) => dateSortCompare(a.date, b.date));
-		return eventsWithFixedOrgs;
+		return parsedEventZodSchema.array().parse(eventsWithFixedOrgs);
 	} catch (error) {
 		if (error instanceof ZodError) {
 			const errorMessage = (error.issues ?? [])
@@ -111,7 +126,7 @@ export const distinctiveColors = [
 ];
 
 export function extractEventOrganisations(
-	events: EventType[],
+	events: ParsedEventType[],
 ): OrganisationType[] {
 	const organisationStrings = [
 		...events

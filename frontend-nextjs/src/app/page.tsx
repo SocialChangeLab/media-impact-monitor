@@ -3,8 +3,6 @@ import MediaCoverageChartWithData from "@/components/MediaCoverageChart";
 import MediaSentimentChart from "@/components/MediaSentimentChart";
 import SectionHeadlineWithExplanation from "@/components/SectionHeadlineWithExplanation";
 
-export const dynamic = "force-dynamic";
-
 export default function EventsPageWithSuspense() {
 	return (
 		<>

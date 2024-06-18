@@ -1,4 +1,5 @@
 import { cn } from "@/utility/classNames";
+import type { ComparableDateItemType } from "@/utility/comparableDateItemSchema";
 import { format } from "date-fns";
 import { memo } from "react";
 import {
@@ -18,9 +19,10 @@ function TopicChartTooltip({
 		sum: number;
 	}[];
 	item: Record<string, number> & {
-		date: Date;
+		comparableDateObject: ComparableDateItemType;
 	};
 }) {
+	const { date } = item.comparableDateObject;
 	return (
 		<div
 			className={cn(
@@ -33,11 +35,11 @@ function TopicChartTooltip({
 					`${aggregationUnit.charAt(0).toUpperCase()}${aggregationUnit.slice(
 						1,
 					)} of `}
-				{aggregationUnit === "day" && format(item.date, "EEEE d MMMM yyyy")}
-				{aggregationUnit === "month" && format(item.date, "MMMM yyyy")}
+				{aggregationUnit === "day" && format(date, "EEEE d MMMM yyyy")}
+				{aggregationUnit === "month" && format(date, "MMMM yyyy")}
 				{aggregationUnit !== "day" &&
 					aggregationUnit !== "month" &&
-					formatDateByAggregationUnit(item.date, aggregationUnit)}
+					formatDateByAggregationUnit(date, aggregationUnit)}
 			</strong>
 			{topics
 				.map((t) => ({ ...t, value: item[t.topic] }))

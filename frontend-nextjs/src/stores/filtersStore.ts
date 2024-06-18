@@ -1,4 +1,4 @@
-import { endOfDay, startOfDay, subMonths } from "date-fns";
+import { format, startOfDay, subMonths } from "date-fns";
 import { create } from "zustand";
 import {
 	type StateStorage,
@@ -14,6 +14,8 @@ export type FiltersState = {
 	to: Date;
 	defaultFrom: Date;
 	defaultTo: Date;
+	fromDateString: string;
+	toDateString: string;
 	isDefaultTimeRange: boolean;
 };
 
@@ -30,6 +32,8 @@ export const defaultInitState: FiltersState = {
 	to: defaultTo,
 	defaultFrom: defaultFrom,
 	defaultTo: defaultTo,
+	fromDateString: format(defaultFrom, "yyyy-MM-dd"),
+	toDateString: format(defaultTo, "yyyy-MM-dd"),
 	isDefaultTimeRange: true,
 };
 
@@ -42,7 +46,8 @@ const persistentStorage: StateStorage = {
 	getItem: (key: string): string => {
 		const searchParams = new URLSearchParams(getUrlSearch());
 		const storedValue = searchParams.get(key);
-		return JSON.parse(storedValue as string);
+		const json = JSON.parse(storedValue as string);
+		return json;
 	},
 	setItem: (key, newValue): void => {
 		const searchParams = new URLSearchParams(getUrlSearch());
@@ -72,13 +77,17 @@ export const createFiltersStore = (
 				setDateRange: ({ from, to }) =>
 					set(() => ({
 						from: startOfDay(from),
-						to: endOfDay(to),
+						to: startOfDay(to),
+						fromDateString: format(from, "yyyy-MM-dd"),
+						toDateString: format(to, "yyyy-MM-dd"),
 					})),
 				resetAllFilters: () => set(() => defaultInitState),
 				resetDateRange: () =>
 					set(() => ({
 						from: defaultInitState.from,
 						to: defaultInitState.to,
+						fromDateString: defaultInitState.fromDateString,
+						toDateString: defaultInitState.toDateString,
 					})),
 			}),
 			storageOptions,

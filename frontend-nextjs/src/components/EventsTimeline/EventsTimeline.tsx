@@ -2,18 +2,11 @@
 import LoadingEventsTimeline from "@/components/EventsTimeline/LoadingEventsTimeline";
 import { cn } from "@/utility/classNames";
 import { parseErrorMessage } from "@/utility/errorHandlingUtil";
-import type { EventType, OrganisationType } from "@/utility/eventsUtil";
+import type { OrganisationType, ParsedEventType } from "@/utility/eventsUtil";
 import useEvents from "@/utility/useEvents";
-import useTimeIntervals, {
-	isInSameAggregationUnit,
-} from "@/utility/useTimeIntervals";
-import useTimeScale from "@/utility/useTimeScale";
 import useElementSize from "@custom-react-hooks/use-element-size";
 import { QueryErrorResetBoundary } from "@tanstack/react-query";
-import { scalePow } from "d3-scale";
-import { startOfDay } from "date-fns";
 import { ErrorBoundary } from "next/dist/client/components/error-boundary";
-import { Suspense, useCallback, useMemo } from "react";
 import CollapsableSection from "../CollapsableSection";
 import DataCreditLegend from "../DataCreditLegend";
 import OrgsLegend from "../OrgsLegend";
@@ -26,88 +19,25 @@ import EventsTimelineAxis from "./EventsTimelineAxis";
 import EventsTimelineChartWrapper from "./EventsTimelineChartWrapper";
 import EventsTimelineScrollWrapper from "./EventsTimelineScrollWrapper";
 import EventsTimelineSizeLegend from "./EventsTimelineSizeLegend";
-import config from "./eventsTimelineConfig";
 import useAggregationUnit from "./useAggregationUnit";
+import useTimelineEvents from "./useTimelineEvents";
 
 function EventsTimeline({
 	data,
 }: {
 	data: {
-		events: EventType[];
+		events: ParsedEventType[];
 		organisations: OrganisationType[];
 	};
 }) {
 	const [parentRef, size] = useElementSize();
-	const aggregationUnit = useAggregationUnit(size.width);
-	const intervals = useTimeIntervals(aggregationUnit);
 	const { events, organisations } = data;
-
-	const timeScale = useTimeScale(size.width);
-
-	const columnsCount = intervals.length;
-
-	const isInSameUnit = useCallback(
-		(a: Date, b: Date) => isInSameAggregationUnit(aggregationUnit, a, b),
-		[aggregationUnit],
-	);
-
-	const eventColumns = useMemo(() => {
-		if (!timeScale) return [];
-		return intervals.map((d) => {
-			const columnEvents = events.filter((evt) =>
-				isInSameUnit(new Date(evt.date), d),
-			);
-			const eventsWithSize = columnEvents.sort((a, b) => {
-				const aSize = a.size_number ?? 0;
-				const bSize = b.size_number ?? 0;
-				if (aSize < bSize ?? 0) return -1;
-				if (aSize > bSize ?? 0) return 1;
-				return a.organizers[0].localeCompare(b.organizers[0]);
-			});
-
-			return {
-				day: startOfDay(d),
-				eventsWithSize,
-				sumSize: columnEvents.reduce((acc, evt) => {
-					return acc + (evt.size_number ?? 0);
-				}, 0),
-				combinedOrganizers: Array.from(
-					columnEvents
-						.reduce((acc, evt) => {
-							for (const orgName of evt.organizers) {
-								const organisation = organisations.find(
-									(o) => o.name === orgName,
-								);
-								if (organisation) acc.set(orgName, organisation);
-							}
-							return acc;
-						}, new Map<string, OrganisationType>())
-						.values(),
-				),
-			};
-		});
-	}, [events, timeScale, intervals, isInSameUnit, organisations]);
-
-	const sizeScale = useMemo(() => {
-		const displayedEvents = eventColumns.reduce((acc, day) => {
-			return acc.concat(day.eventsWithSize);
-		}, [] as EventType[]);
-		const max =
-			displayedEvents.length === 0
-				? 100
-				: Math.max(
-						...(aggregationUnit === "day"
-							? displayedEvents.map((e) => e.size_number ?? 0)
-							: eventColumns.map((e) => e.sumSize ?? 0)),
-					);
-
-		const maxHeight =
-			aggregationUnit === "day"
-				? config.eventMaxHeight
-				: config.aggregatedEventMaxHeight;
-		return scalePow([0, max], [config.eventMinHeight, maxHeight]);
-	}, [eventColumns, aggregationUnit]);
-
+	const aggregationUnit = useAggregationUnit(size.width);
+	const { eventColumns, columnsCount, sizeScale } = useTimelineEvents({
+		size,
+		data,
+		aggregationUnit,
+	});
 	if (events.length === 0) return <EmptyEventsTimeline />;
 
 	return (
@@ -115,9 +45,9 @@ function EventsTimeline({
 			<EventsTimelineScrollWrapper>
 				<EventsTimelineChartWrapper columnsCount={columnsCount + 1}>
 					{eventColumns.map(
-						({ day, eventsWithSize, sumSize, combinedOrganizers }) => (
+						({ time, date, eventsWithSize, sumSize, combinedOrganizers }) => (
 							<li
-								key={`event-day-${day.toISOString()}`}
+								key={`event-day-${time}`}
 								className="grid grid-rows-subgrid row-span-3 relative w-4 grow shrink-0 h-full py-4"
 							>
 								<div className="flex flex-col justify-end items-center gap-0.5">
@@ -139,7 +69,7 @@ function EventsTimeline({
 										))}
 									{aggregationUnit !== "day" && eventsWithSize.length > 0 && (
 										<EventsTimelineAggregatedItem
-											date={day}
+											date={date}
 											sumSize={sumSize}
 											height={Math.ceil(sizeScale(sumSize))}
 											organisations={combinedOrganizers}
@@ -190,10 +120,12 @@ function EventsTimeline({
 	);
 }
 
-function EventsTimelineWithData() {
-	const { data, isFetching } = useEvents();
-	if (isFetching) return <LoadingEventsTimeline />;
-	if (data) return <EventsTimeline data={data} />;
+function EventsTimelineWithData({ reset }: { reset?: () => void }) {
+	const { data, isFetching, isPending, error, isError } = useEvents();
+	if (isFetching || isPending) return <LoadingEventsTimeline />;
+	if (isError)
+		return <ErrorEventsTimeline {...parseErrorMessage(error)} reset={reset} />;
+	if (data?.events.length > 0) return <EventsTimeline data={data} />;
 	return <EmptyEventsTimeline />;
 }
 export default function EventsTimelineWithErrorBoundary() {
@@ -205,9 +137,7 @@ export default function EventsTimelineWithErrorBoundary() {
 						<ErrorEventsTimeline {...parseErrorMessage(error)} reset={reset} />
 					)}
 				>
-					<Suspense fallback={<LoadingEventsTimeline />}>
-						<EventsTimelineWithData />
-					</Suspense>
+					<EventsTimelineWithData reset={reset} />
 				</ErrorBoundary>
 			)}
 		</QueryErrorResetBoundary>

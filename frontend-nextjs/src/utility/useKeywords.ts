@@ -1,6 +1,6 @@
 "use client";
 import { useFiltersStore } from "@/providers/FiltersStoreProvider";
-import { useSuspenseQuery } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { endOfDay, format } from "date-fns";
 import { useEffect } from "react";
 import { toast } from "sonner";
@@ -11,7 +11,7 @@ function useMediaCoverageData() {
 	const fromDateString = format(from, "yyyy-MM-dd");
 	const toDateString = format(to, "yyyy-MM-dd");
 	const queryKey = ["mediaCoverage"]; //, fromDateString, toDateString];
-	const query = useSuspenseQuery({
+	const query = useQuery({
 		queryKey,
 		queryFn: async () => await getMediaCoverageData({ from, to }),
 		staleTime: endOfDay(new Date()).getTime() - new Date().getTime(),

@@ -116,7 +116,7 @@ function EventsTimelineScrollWrapper({
 	);
 
 	return (
-		<div className="w-[calc(100vw-3rem)] overflow-clip relative group">
+		<div className="w-[calc(100vw-max(2rem,4vmax))] overflow-clip relative group">
 			{arrowButtons.map(({ direction, Icon, onClick, visible, className }) => (
 				<Button
 					key={direction}
@@ -142,7 +142,7 @@ function EventsTimelineScrollWrapper({
 			<div
 				aria-hidden="true"
 				className={cn(
-					"w-[calc(100vw-3rem)] overflow-auto grid grid-cols-1 grid-rows-[1fr_3.5rem] relative",
+					"w-[calc(100vw-max(2rem,4vmax))] overflow-auto grid grid-cols-1 grid-rows-[1fr_3.5rem] relative",
 					"h-[var(--protest-timeline-height)] bg-grayUltraLight",
 				)}
 				ref={parentRef}
@@ -151,7 +151,7 @@ function EventsTimelineScrollWrapper({
 			</div>
 			<div
 				className={cn(
-					"absolute w-[calc(100vw-3rem)]",
+					"absolute w-[calc(100vw-max(2rem,4vmax))]",
 					"left-0 top-0 bottom-14",
 					"border border-grayLight border-b-0",
 					"pointer-events-none",

@@ -2,6 +2,7 @@ import { cn } from "@/utility/classNames";
 import { slugifyCssClass } from "@/utility/cssSlugify";
 import type { OrganisationType } from "@/utility/eventsUtil";
 import { memo, useMemo } from "react";
+import RoundedColorPill from "./RoundedColorPill";
 import { Portal, Tooltip, TooltipContent, TooltipTrigger } from "./ui/tooltip";
 
 function OrgsLegendItem({
@@ -21,13 +22,7 @@ function OrgsLegendItem({
 					`cursor-pointer`,
 				)}
 			>
-				<span
-					className={cn(
-						"size-4 rounded-full shadow-[inset_0_0_0_1px_rgba(0,0,0,0.1)] bg-grayDark",
-					)}
-					style={{ backgroundColor: org.color }}
-					aria-hidden="true"
-				/>
+				<RoundedColorPill color={org.color} />
 				<span className="grid grid-cols-[1fr_auto] gap-4">
 					<div className="truncate">{org.name.split(":")[0]}</div>
 					<span className="font-mono text-xs text-grayDark">

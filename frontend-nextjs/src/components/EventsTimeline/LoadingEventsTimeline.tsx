@@ -1,18 +1,18 @@
 "use client";
-import useTimeIntervals from "@/utility/useTimeIntervals";
+import {
+	type ComparableDateItemType,
+	dateToComparableDateItem,
+} from "@/utility/comparableDateItemSchema";
+import { randomUntil } from "@/utility/randomUtil";
 import useElementSize from "@custom-react-hooks/use-element-size";
 import { scalePow } from "d3-scale";
+import { addDays } from "date-fns";
 import { memo, useMemo } from "react";
-import seed from "seed-random";
 import EventsTimelineWrapper from "./EventsTimelinWrapper";
 import EventsTimelineAxis from "./EventsTimelineAxis";
 import EventsTimelineChartWrapper from "./EventsTimelineChartWrapper";
 import EventsTimelineScrollWrapper from "./EventsTimelineScrollWrapper";
 import config from "./eventsTimelineConfig";
-import useAggregationUnit from "./useAggregationUnit";
-
-const seededRandom = seed("loading-screen");
-const randomUntil = (max: number) => Math.ceil(seededRandom() * max);
 
 const sizeScale = scalePow(
 	[0, 100],
@@ -21,17 +21,22 @@ const sizeScale = scalePow(
 
 const LoadingEventsTimeline = memo(() => {
 	const [parentRef, size] = useElementSize();
-	const aggregationUnit = useAggregationUnit(size.width);
-	const intervals = useTimeIntervals(aggregationUnit);
+	const startDate = new Date("2023-01-01T00:00:00.000Z");
+	const intervals = Array.from({ length: 30 }, (_, idx) => idx + 1).reduce(
+		(acc, idx) => acc.concat(dateToComparableDateItem(addDays(startDate, idx))),
+		[] as ComparableDateItemType[],
+	);
 
 	const skeletons = useMemo(() => {
 		return intervals.map((_, i) => ({
 			colId: i,
-			eventsWithSize: Array(randomUntil(6))
+			eventsWithSize: Array(randomUntil(6, "skeletons"))
 				.fill(null)
 				.map((_, j) => ({
 					eventId: j,
-					height: `${Math.ceil(sizeScale(randomUntil(60)))}px`,
+					height: `${Math.ceil(
+						sizeScale(randomUntil(60, `skeletons-${i}`)),
+					)}px`,
 				})),
 		}));
 	}, [intervals]);
@@ -58,8 +63,8 @@ const LoadingEventsTimeline = memo(() => {
 					))}
 				</EventsTimelineChartWrapper>
 				<EventsTimelineAxis
-					eventColumns={intervals.map((d) => ({ day: d, eventsWithSize: [] }))}
-					aggregationUnit={aggregationUnit}
+					eventColumns={intervals.map((d) => ({ ...d, eventsWithSize: [] }))}
+					aggregationUnit="day"
 					width={size.width}
 				/>
 			</EventsTimelineScrollWrapper>

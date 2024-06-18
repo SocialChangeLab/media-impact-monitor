@@ -10,7 +10,10 @@ const EventsTimelineWrapper = forwardRef<
 	}>
 >(({ children, organisations = [] }, ref) => {
 	return (
-		<div className="events-timeline w-full relative" ref={ref}>
+		<div
+			className="events-timeline w-full relative pt-[w-[max(1rem,2vmax)]"
+			ref={ref}
+		>
 			<style jsx global>{`
 				.events-timeline:has(.legend-org:hover) .event-item {
 					opacity: 0.2 !important;

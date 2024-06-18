@@ -1,4 +1,4 @@
-import type { EventType, OrganisationType } from "@/utility/eventsUtil";
+import type { OrganisationType, ParsedEventType } from "@/utility/eventsUtil";
 import { memo } from "react";
 import AggregatedEventsTooltip from "./AggregatedEventsTooltip";
 import { AggregatedEventsBubble } from "./EventBubbleLink";
@@ -16,7 +16,7 @@ function EventsTimelineAggregatedItem({
 	date: Date;
 	height: number;
 	organisations: OrganisationType[];
-	events: EventType[];
+	events: ParsedEventType[];
 	sumSize: number | undefined;
 	aggregationUnit: AggregationUnitType;
 }) {

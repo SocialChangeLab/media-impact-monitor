@@ -65,3 +65,4 @@ jobs:
         DATAFORSEO_EMAIL: ${{ secrets.DATAFORSEO_EMAIL }}
         DATAFORSEO_PASSWORD: ${{ secrets.DATAFORSEO_PASSWORD }}
         BUNDESTAG_API_KEY: ${{ secrets.BUNDESTAG_API_KEY }}
+        SENTRY_DSN: ${{ secrets.SENTRY_DSN }}

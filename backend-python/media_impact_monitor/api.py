@@ -8,9 +8,9 @@ import json
 import logging
 import os
 from contextlib import asynccontextmanager
-from functools import partial
 
 import pandas as pd
+import sentry_sdk
 from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse
 from starlette.middleware.cors import CORSMiddleware
@@ -18,12 +18,13 @@ from starlette.responses import RedirectResponse
 from uvicorn.logging import AccessFormatter
 
 from media_impact_monitor.cron import setup_cron
-from media_impact_monitor.events import get_events
+from media_impact_monitor.events import get_events, organizers_with_id
 from media_impact_monitor.fulltexts import get_fulltexts
 from media_impact_monitor.impact import get_impact
 from media_impact_monitor.policy import get_policy
 from media_impact_monitor.trend import get_trend
 from media_impact_monitor.types_ import (
+    CategoryCount,
     CountTimeSeries,
     Event,
     EventSearch,
@@ -31,11 +32,13 @@ from media_impact_monitor.types_ import (
     FulltextSearch,
     Impact,
     ImpactSearch,
+    Organizer,
     PolicySearch,
     Response,
     TrendSearch,
 )
 from media_impact_monitor.util.date import get_latest_data
+from media_impact_monitor.util.env import SENTRY_DSN
 
 git_commit = (os.getenv("VCS_REF") or "")[:7]
 build_date = (os.getenv("BUILD_DATE") or "WIP").replace("T", " ")
@@ -66,6 +69,9 @@ async def app_lifespan(app: FastAPI):
     # setup cron to regularly fills the cache
     setup_cron()
     yield
+
+
+sentry_sdk.init(dsn=SENTRY_DSN, traces_sample_rate=1.0, profiles_sample_rate=1.0)
 
 
 app = FastAPI(**metadata, lifespan=app_lifespan)
@@ -110,23 +116,15 @@ def get_info() -> dict:
 @app.post("/events")
 def _get_events(q: EventSearch) -> Response[EventSearch, list[Event]]:
     """Fetch events from the Media Impact Monitor database."""
-    # df = get_latest_data(get_events, q) TODO
-    from datetime import date
-
-    q.end_date = date(2024, 5, 30)
-    df = get_events(q)
+    df = get_latest_data(get_events, q)
     data = json.loads(df.to_json(orient="records"))  # convert nan to None
     return Response(query=q, data=data)
 
 
 @app.post("/trend")
-def _get_trend(q: TrendSearch):  # -> Response[TrendSearch, CountTimeSeries]:
+def _get_trend(q: TrendSearch) -> Response[TrendSearch, list[CategoryCount]]:
     """Fetch media item counts from the Media Impact Monitor database."""
-    # df = get_latest_data(get_trend, q) TODO
-    from datetime import date
-
-    q.end_date = date(2024, 5, 30)
-    df = get_trend(q)
+    df = get_latest_data(get_trend, q)
     long_df = pd.melt(
         df.reset_index(), id_vars=["date"], var_name="topic", value_name="n_articles"
     )
@@ -134,15 +132,16 @@ def _get_trend(q: TrendSearch):  # -> Response[TrendSearch, CountTimeSeries]:
 
 
 @app.post("/fulltexts")
-def _get_fulltexts(q: FulltextSearch):
-    # -> Response[FulltextSearch, pd.DataFrame[Fulltext]]
+def _get_fulltexts(q: FulltextSearch) -> Response[FulltextSearch, list[Fulltext]]:
     """Fetch media fulltexts from the Media Impact Monitor database."""
     fulltexts = get_latest_data(get_fulltexts, q)
-    return Response(query=q, data=fulltexts)
+    if fulltexts is None:
+        return Response(query=q, data=[])
+    return Response(query=q, data=fulltexts.to_dict(orient="records"))
 
 
 @app.post("/impact")
-def _get_impact(q: ImpactSearch):  # -> Response[ImpactSearch, Impact]:
+def _get_impact(q: ImpactSearch) -> Response[ImpactSearch, Impact]:
     """Compute the impact of an event on a media trend."""
     impact = get_latest_data(get_impact, q)
     return Response(query=q, data=impact)
@@ -153,6 +152,11 @@ def _get_policy(q: PolicySearch):  # -> Response[PolicySearch, Policy]:
     """Fetch policy data from the Media Impact Monitor database."""
     policy = get_latest_data(get_policy, q)
     return Response(query=q, data=policy.to_dict(orient="records"))
+
+
+@app.get("/organizers")
+def _get_organizers() -> list[Organizer]:
+    return organizers_with_id()
 
 
 if __name__ == "__main__":

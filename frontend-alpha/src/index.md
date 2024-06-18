@@ -29,10 +29,18 @@ let events = await queryApi('events', {
   topic: 'climate_change'
 })
 
+function gaussianRandom(mean = 0, stdev = 1) {
+  const u = 1 - Math.random() // Converting [0,1) to (0,1]
+  const v = Math.random()
+  const z = Math.sqrt(-2.0 * Math.log(u)) * Math.cos(2.0 * Math.PI * v)
+  return z * stdev + mean
+}
+
 events = events.map(a => ({
   ...a,
   organizer: a.organizers[0],
-  organizers_text: a.organizers.join(', ')
+  organizers_text: a.organizers.join(', '),
+  chart_position: gaussianRandom()
 }))
 // display(Inputs.table(events))
 ```

@@ -11,7 +11,6 @@ from pydantic import BaseModel, Field
 Topic = Literal["climate_change"]
 Query = str  # for now, just a single keyword
 MediaSource = Literal["news_online", "news_print", "web_google"]
-Country = Literal["Germany"]
 
 CountTimeSeries = dict[date, int]  # time series with integer values
 TimeSeries = dict[date, float]  # time series with float values
@@ -53,6 +52,9 @@ class EventSearch(BaseModel):
     )
     start_date: date | None = StartDateField
     end_date: date | None = EndDateField
+    organizers: list[str] | None = Field(
+        default=None, description="Filter by the organizations involved in the event."
+    )
 
 
 date_ = date
@@ -75,7 +77,6 @@ class Event:
         description="Size of the event, quantified if possible."
     )
     description: str = Field(description="Description of the event.")
-    chart_position: float | None = Field("Index of protest on given day.")
 
 
 #### Trend types ####
@@ -103,9 +104,16 @@ class TrendSearch(BaseModel):
     organizers: list[str] | None = Field(
         default=None, description="The organizations involved in the event."
     )
-    countries: list[Country] = Field(
-        default=["Germany"], description="The country where news was published."
-    )
+    event_ids: list[EventId] | None = Field(
+        default=None,
+        description="The ids of the protest events that the trend should be related to.",
+    )  # TODO: this is not compatible with "keyword"
+
+
+class CategoryCount(BaseModel):
+    date: date
+    topic: str
+    n_articles: int
 
 
 #### Policy types ####
@@ -157,68 +165,73 @@ class FulltextSearch(BaseModel):
     start_date: date | None = StartDateField
     end_date: date | None = EndDateField
     topic: Topic | None = Field(
-        description="This automatically picks a relevant set of keywords. Currently only _climate_change_ is supported."
+        default=None,
+        description="This automatically picks a relevant set of keywords. Currently only _climate_change_ is supported.",
     )
     query: Query | None = Field(default=None, description="Custom query.")
     organizers: list[str] | None = Field(
         default=None, description="The organizations involved in the event."
     )
-    countries: list[Country] = Field(
-        default=["Germany"], description="The country where news was published."
-    )
-    protest_id: EventId | None = Field(
+    event_id: EventId | None = Field(
         default=None,
         description="The id of the protest event that the fulltexts should be related to.",
     )
 
 
 class Fulltext(BaseModel):
-    id: str
-    media_name: str
-    media_url: str
     title: str
-    publish_date: date
+    date: date
     url: str
-    language: str
-    indexed_date: date
     text: str
+    sentiment: float | None
 
 
 #### Impact types ####
 
 
-Method = Literal["synthetic_control", "interrupted_time_series"]
+Method = Literal[
+    "interrupted_time_series", "synthetic_control", "time_series_regression"
+]
 
 
 class ImpactSearch(BaseModel):
-    cause: list[EventId] = Field(
-        description="List of `event_id`s for events whose impact should be estimated. The ids can be obtained from the `/events/` endpoint."
+    method: Method = Field(
+        default="time_series_regression",
+        description="The causal inference method to use for estimating the impact. Currently supports _time_series_regression_.",
     )
-    effect: TrendSearch = Field(
+    impacted_trend: TrendSearch = Field(
         description="The trend on which the impact should be estimated. See the `/trends/` endpoint for details."
     )
-    method: Method = Field(
-        description="The causal inference method to use for estimating the impact. Currently supports _Synthetic Control_ and _Interrupted Time Series_."
-    )
+    organizer: str | None = Field()
+    # protest_type: str | None
+    start_date: date | None = StartDateField
+    end_date: date | None = EndDateField
 
 
 class MeanWithUncertainty(BaseModel):
-    mean: float
-    ci_upper: float
-    ci_lower: float
+    mean: float = Field(description="Mean estimate.")
+    ci_upper: float = Field(description="Upper bound of the 95% confidence interval.")
+    ci_lower: float = Field(description="Lower bound of the 95% confidence interval.")
 
 
-AbstractTimeSeriesWithUncertainty = dict[int, MeanWithUncertainty]
+class ImpactEstimate(BaseModel):
+    absolute_impact: MeanWithUncertainty
+    relative_impact: MeanWithUncertainty
+    # absolute_impact_time_series: ...
+    # relative_impact_time_series: ...
 
 
 class Impact(BaseModel):
-    method_applicability: Literal["no", "maybe"] = Field(
-        description="Whether the causal inference method is applicable for the given data."
+    method_applicability: bool
+    method_limitations: list[str]
+    impact_estimates: dict[str, ImpactEstimate] | None = Field(
+        description='Impact estimates for each trend. The keys are the trend names -- e. g. "positive" / "neutral" / "negative" for sentiment trends, or "activism" / "science" / "policy" / ... for topic trends. The values are the impact estimates for each trend.'
     )
-    method_applicability_reason: str | None = Field(
-        description="Reason why the causal inference method is (not) applicable."
-    )
-    time_series: AbstractTimeSeriesWithUncertainty
-    # = Field(
-    #     description="Impact estimates for each day around the average protest event. Consists of 3 dictinonaries, each one containing a time series -- mean, upper bound, and lower bound of the two-sided 95% confidence interval. The time series are dictionaries of days after event (0 = day of event) and impact estimates for the given days."
-    # )
+
+
+#### Organizations ####
+
+
+class Organizer(BaseModel):
+    organizer_id: str
+    name: str

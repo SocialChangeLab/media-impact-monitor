@@ -88,9 +88,10 @@ def get_acled_events(
     df["size_text"] = df["tags"].apply(get_size_text)
     df["size_number"] = df["size_text"].apply(get_size_number)
     df["description"] = df["notes"]
-    df["source"] = (
-        "adapted from: Armed Conflict Location & Event Data Project (ACLED); www.acleddata.com"
-    )
+    # df["source"] = (
+    #     "adapted from: Armed Conflict Location & Event Data Project (ACLED); www.acleddata.com"
+    # )
+    df["source"] = "acled"
     return df[
         [
             "date",

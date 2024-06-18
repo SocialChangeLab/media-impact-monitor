@@ -4,7 +4,7 @@ import useTimeIntervals, {
 	isInSameAggregationUnit,
 } from "@/utility/useTimeIntervals";
 import useElementSize from "@custom-react-hooks/use-element-size";
-import { memo, useCallback, useMemo } from "react";
+import { Suspense, memo, useCallback, useMemo } from "react";
 import {
 	Bar,
 	BarChart,
@@ -219,7 +219,9 @@ export default function MediaCoverageChartWithErrorBoundary() {
 						/>
 					)}
 				>
-					<MediaSentimentChartWithData reset={reset} />
+					<Suspense fallback={<MediaSentimentChartLoading />}>
+						<MediaSentimentChartWithData reset={reset} />
+					</Suspense>
 				</ErrorBoundary>
 			)}
 		</QueryErrorResetBoundary>

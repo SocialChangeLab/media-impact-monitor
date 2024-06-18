@@ -4,7 +4,7 @@ import useTimeIntervals, {
 	isInSameAggregationUnit,
 } from "@/utility/useTimeIntervals";
 import useElementSize from "@custom-react-hooks/use-element-size";
-import { memo, useCallback, useMemo } from "react";
+import { Suspense, memo, useCallback, useMemo } from "react";
 import {
 	CartesianGrid,
 	Line,
@@ -221,7 +221,9 @@ export default function MediaCoverageChartWithErrorBoundary() {
 						/>
 					)}
 				>
-					<MediaCoverageChartWithData reset={reset} />
+					<Suspense fallback={<MediaCoverageChartLoading />}>
+						<MediaCoverageChartWithData reset={reset} />
+					</Suspense>
 				</ErrorBoundary>
 			)}
 		</QueryErrorResetBoundary>

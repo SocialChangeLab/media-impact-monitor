@@ -7,6 +7,7 @@ import useEvents from "@/utility/useEvents";
 import useElementSize from "@custom-react-hooks/use-element-size";
 import { QueryErrorResetBoundary } from "@tanstack/react-query";
 import { ErrorBoundary } from "next/dist/client/components/error-boundary";
+import { Suspense } from "react";
 import CollapsableSection from "../CollapsableSection";
 import DataCreditLegend from "../DataCreditLegend";
 import OrgsLegend from "../OrgsLegend";
@@ -137,7 +138,9 @@ export default function EventsTimelineWithErrorBoundary() {
 						<ErrorEventsTimeline {...parseErrorMessage(error)} reset={reset} />
 					)}
 				>
-					<EventsTimelineWithData reset={reset} />
+					<Suspense fallback={<LoadingEventsTimeline />}>
+						<EventsTimelineWithData reset={reset} />
+					</Suspense>
 				</ErrorBoundary>
 			)}
 		</QueryErrorResetBoundary>

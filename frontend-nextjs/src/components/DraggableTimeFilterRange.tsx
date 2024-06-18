@@ -1,25 +1,25 @@
 import { useFiltersStore } from "@/providers/FiltersStoreProvider";
 import { cn } from "@/utility/classNames";
 import {
-	type ComparableDateItemType,
 	dateToComparableDateItem,
+	type ComparableDateItemType,
 } from "@/utility/comparableDateItemSchema";
 import useEvents from "@/utility/useEvents";
 import { isInSameAggregationUnit } from "@/utility/useTimeIntervals";
 import useDebounce from "@custom-react-hooks/use-debounce";
 import useElementSize from "@custom-react-hooks/use-element-size";
-import { type Ranger, useRanger } from "@tanstack/react-ranger";
+import { useRanger, type Ranger } from "@tanstack/react-ranger";
 import { addDays, differenceInDays, format, parse, startOfDay } from "date-fns";
 import {
-	type KeyboardEvent as ReactKeyboardEvent,
-	type MouseEvent as ReactMouseEvent,
-	type TouchEvent as ReactTouchEvent,
 	memo,
 	useCallback,
 	useEffect,
 	useMemo,
 	useRef,
 	useState,
+	type KeyboardEvent as ReactKeyboardEvent,
+	type MouseEvent as ReactMouseEvent,
+	type TouchEvent as ReactTouchEvent,
 } from "react";
 import useTimelineEvents from "./EventsTimeline/useTimelineEvents";
 
@@ -133,7 +133,7 @@ function DraggableTimeFilterRange() {
 			values: ReadonlyArray<number>,
 		) => {
 			let clientX = e instanceof MouseEvent ? e.clientX : 0;
-			if (e instanceof TouchEvent) {
+			if (window.TouchEvent && e instanceof window.TouchEvent) {
 				clientX = e.changedTouches[0].clientX;
 			}
 			const initial = rangerInstance.getValueForClientX(initialX);

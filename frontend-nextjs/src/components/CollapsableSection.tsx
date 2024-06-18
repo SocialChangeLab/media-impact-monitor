@@ -1,5 +1,5 @@
 "use client";
-import { type ReactNode, useEffect, useState } from "react";
+import { useEffect, useState, type ReactNode } from "react";
 import HeadlineWithLine from "./HeadlineWithLine";
 import {
 	Accordion,
@@ -25,7 +25,8 @@ function CollapsableSection({
 
 	useEffect(() => {
 		if (!storageType || typeof window === "undefined") return;
-		const storage = storageType === "local" ? localStorage : sessionStorage;
+		const storage =
+			storageType === "local" ? window.localStorage : window.sessionStorage;
 		const value = storage.getItem(storageKey);
 		setExpanded(value === null || value === "true");
 	}, [storageKey, storageType]);
@@ -37,7 +38,8 @@ function CollapsableSection({
 			className={className || ""}
 			onValueChange={(value) => {
 				if (!storageType || typeof window === "undefined") return;
-				const storage = storageType === "local" ? localStorage : sessionStorage;
+				const storage =
+					storageType === "local" ? window.localStorage : window.sessionStorage;
 				storage.setItem(storageKey, value === title ? "true" : "false");
 				setExpanded(value === title);
 			}}

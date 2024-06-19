@@ -25,7 +25,6 @@ from media_impact_monitor.policy import get_policy
 from media_impact_monitor.trend import get_trend
 from media_impact_monitor.types_ import (
     CategoryCount,
-    CountTimeSeries,
     Event,
     EventSearch,
     Fulltext,

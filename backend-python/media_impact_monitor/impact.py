@@ -8,6 +8,7 @@ from media_impact_monitor.impact_estimators.interrupted_time_series import (
 )
 from media_impact_monitor.trend import get_trend
 from media_impact_monitor.types_ import (
+    DatedMeanWithUncertainty,
     EventSearch,
     Impact,
     ImpactEstimate,
@@ -44,7 +45,7 @@ def get_impact(q: ImpactSearch) -> Impact:
             method=q.method,
             aggregation=q.impacted_trend.aggregation,
         )
-        dfs[topic] = impact  # .reset_index().to_dict(orient="records")
+        dfs[topic] = impact
         applicabilities.append(appl)
         lims_list.append(limitations)
     assert len(set(applicabilities)) == 1, "All topics should have same applicability."
@@ -61,11 +62,16 @@ def get_impact(q: ImpactSearch) -> Impact:
                     ci_upper=impact["ci_upper"].loc[14],
                     ci_lower=impact["ci_lower"].loc[14],
                 ),
-                relative_impact=MeanWithUncertainty(  # TODO: calculate relative impact
-                    mean=1.0,
-                    ci_upper=1.0,
-                    ci_lower=1.0,
-                ),
+                absolute_impact_time_series=[
+                    DatedMeanWithUncertainty(**d)
+                    for d in dfs[topic].reset_index().to_dict(orient="records")
+                ],
+                # relative_impact=MeanWithUncertainty(  # TODO: calculate relative impact
+                #     mean=1.0,
+                #     ci_upper=1.0,
+                #     ci_lower=1.0,
+                # ),
+                # relative_impact_time_series=[],
             )
             for topic, impact in dfs.items()
         },

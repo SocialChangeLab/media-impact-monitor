@@ -12,9 +12,6 @@ Topic = Literal["climate_change"]
 Query = str  # for now, just a single keyword
 MediaSource = Literal["news_online", "news_print", "web_google"]
 
-CountTimeSeries = dict[date, int]  # time series with integer values
-TimeSeries = dict[date, float]  # time series with float values
-AbstractTimeSeries = dict[int, float]  # time series with float values and without dates
 StartDateField = Field(
     default=None,
     description="Filter by start date. By default, the earliest date available is used.",
@@ -214,11 +211,18 @@ class MeanWithUncertainty(BaseModel):
     ci_lower: float = Field(description="Lower bound of the 95% confidence interval.")
 
 
+class DatedMeanWithUncertainty(BaseModel):
+    date: int | date
+    mean: float
+    ci_upper: float
+    ci_lower: float
+
+
 class ImpactEstimate(BaseModel):
     absolute_impact: MeanWithUncertainty
-    relative_impact: MeanWithUncertainty
-    # absolute_impact_time_series: ...
-    # relative_impact_time_series: ...
+    # relative_impact: MeanWithUncertainty
+    absolute_impact_time_series: list[DatedMeanWithUncertainty]
+    # relative_impact_time_series: list[DatedMeanWithUncertainty]
 
 
 class Impact(BaseModel):

@@ -6,7 +6,7 @@
 import { embed, queryApi } from './components/util.js'
 
 let impact = await queryApi('impact', {
-  method: 'interrupted_time_series',
+  method: 'time_series_regression',
   impacted_trend: {
     trend_type: 'keywords',
     media_source: 'news_print',
@@ -15,8 +15,41 @@ let impact = await queryApi('impact', {
   organizer: 'Last Generation (Germany)',
   end_date: '2022-04-30'
 })
-// display(html`${impact.method_applicability_reason}`)
 display(impact)
+```
+
+```js
+const impacts = Object.entries(impact.impact_estimates).map(([k, v]) => ({
+  topic: k,
+  ...v.absolute_impact
+}))
+const spec = {
+  data: { values: impacts },
+  layer: [
+    {
+      mark: 'errorbar',
+      encoding: {
+        x: { field: 'topic', type: 'nominal' },
+        y: { field: 'ci_lower', type: 'quantitative', title: '' },
+        y2: { field: 'ci_upper', type: 'quantitative' }
+      }
+    },
+    {
+      mark: { type: 'circle', color: 'black' },
+      encoding: {
+        x: { field: 'topic', type: 'nominal' },
+        y: {
+          field: 'mean',
+          type: 'quantitative',
+          title: 'Number of additional articles'
+        }
+      }
+    }
+  ],
+  title: 'Impact on all topics',
+  width: 200
+}
+display(await embed(spec))
 ```
 
 ```js
@@ -50,8 +83,8 @@ const spec_ = (topic, data_) => ({
   ],
   title: `Impact on ${topic}`
 })
-for (const topic in impact.time_series) {
-  let data = impact.time_series[topic]
+for (const topic in impact.impact_estimates) {
+  let data = impact.impact_estimates[topic].absolute_impact_time_series
   data = Object.keys(data)
     .map(k => ({ day: parseInt(k), ...data[k] }))
     .sort((a, b) => a.day - b.day)

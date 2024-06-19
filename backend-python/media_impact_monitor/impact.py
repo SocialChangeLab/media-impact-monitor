@@ -4,10 +4,14 @@ import pandas as pd
 
 from media_impact_monitor.events import get_events
 from media_impact_monitor.impact_estimators.interrupted_time_series import (
-    estimate_mean_impact,
+    estimate_mean_impact as interrupted_time_series,
+)
+from media_impact_monitor.impact_estimators.time_series_regression import (
+    estimate_impact as time_series_regression,
 )
 from media_impact_monitor.trend import get_trend
 from media_impact_monitor.types_ import (
+    DatedMeanWithUncertainty,
     EventSearch,
     Impact,
     ImpactEstimate,
@@ -44,28 +48,34 @@ def get_impact(q: ImpactSearch) -> Impact:
             method=q.method,
             aggregation=q.impacted_trend.aggregation,
         )
-        dfs[topic] = impact  # .reset_index().to_dict(orient="records")
+        dfs[topic] = impact
         applicabilities.append(appl)
         lims_list.append(limitations)
     assert len(set(applicabilities)) == 1, "All topics should have same applicability."
     assert (
         len(set([str(lims) for lims in lims_list])) == 1
     ), "All topics should have same limitations."
+    n_days = 14 - 1
     return Impact(
         method_applicability=applicabilities[0],
         method_limitations=lims_list[0],
         impact_estimates={
             topic: ImpactEstimate(
                 absolute_impact=MeanWithUncertainty(
-                    mean=impact["mean"].loc[14],
-                    ci_upper=impact["ci_upper"].loc[14],
-                    ci_lower=impact["ci_lower"].loc[14],
+                    mean=impact["mean"].loc[n_days],
+                    ci_upper=impact["ci_upper"].loc[n_days],
+                    ci_lower=impact["ci_lower"].loc[n_days],
                 ),
-                relative_impact=MeanWithUncertainty(  # TODO: calculate relative impact
-                    mean=1.0,
-                    ci_upper=1.0,
-                    ci_lower=1.0,
-                ),
+                absolute_impact_time_series=[
+                    DatedMeanWithUncertainty(**d)
+                    for d in dfs[topic].reset_index().to_dict(orient="records")
+                ],
+                # relative_impact=MeanWithUncertainty(  # TODO: calculate relative impact
+                #     mean=1.0,
+                #     ci_upper=1.0,
+                #     ci_lower=1.0,
+                # ),
+                # relative_impact_time_series=[],
             )
             for topic, impact in dfs.items()
         },
@@ -82,7 +92,7 @@ def get_impact_for_single_trend(
     horizon = 28
     match method:
         case "interrupted_time_series":
-            mean_impact, limitations = estimate_mean_impact(
+            mean_impact, limitations = interrupted_time_series(
                 events=events,
                 article_counts=trend,
                 horizon=horizon,
@@ -92,7 +102,11 @@ def get_impact_for_single_trend(
         case "synthetic_control":
             raise NotImplementedError("Synthetic control is not yet implemented.")
         case "time_series_regression":
-            raise NotImplementedError("Time series regression is not yet implemented.")
+            mean_impact, limitations = time_series_regression(
+                events=events,
+                article_counts=trend,
+                aggregation=aggregation,
+            )
         case _:
             raise ValueError(f"Unsupported method: {method}")
     return True, limitations, mean_impact

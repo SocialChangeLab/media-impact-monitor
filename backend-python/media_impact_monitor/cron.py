@@ -12,7 +12,6 @@ from media_impact_monitor.events import get_events
 from media_impact_monitor.impact import get_impact
 from media_impact_monitor.trend import get_trend
 from media_impact_monitor.types_ import (
-    CountTimeSeries,
     EventSearch,
     Impact,
     ImpactSearch,

@@ -1,13 +1,6 @@
 "use client";
 
-import {
-	endOfDay,
-	format,
-	isSameDay,
-	startOfDay,
-	subDays,
-	subMonths,
-} from "date-fns";
+import { format, isSameDay, startOfDay, subDays, subMonths } from "date-fns";
 import type { DateRange } from "react-day-picker";
 
 import { Button } from "@/components/ui/button";
@@ -197,7 +190,7 @@ const LastSixMonthButton = memo(
 			currentRange={currentRange}
 			targetRange={{
 				from: startOfDay(subMonths(new Date(), 6)),
-				to: endOfDay(new Date()),
+				to: startOfDay(new Date()),
 			}}
 			onChange={onChange}
 		>
@@ -218,7 +211,7 @@ const LastTwelveMonthButton = memo(
 			currentRange={currentRange}
 			targetRange={{
 				from: startOfDay(subMonths(new Date(), 12)),
-				to: endOfDay(new Date()),
+				to: startOfDay(new Date()),
 			}}
 			onChange={onChange}
 		>
@@ -239,7 +232,7 @@ const LastMonthButton = memo(
 			currentRange={currentRange}
 			targetRange={{
 				from: startOfDay(subDays(new Date(), 30)),
-				to: endOfDay(new Date()),
+				to: startOfDay(new Date()),
 			}}
 			onChange={onChange}
 		>

@@ -9,16 +9,17 @@ import {
 	differenceInCalendarMonths,
 	differenceInDays,
 	differenceInYears,
-	isSameDay,
-	isSameMonth,
-	isSameWeek,
-	isSameYear,
+	format,
 	startOfDay,
 	startOfMonth,
 	startOfWeek,
 	startOfYear,
 } from "date-fns";
 import { useMemo } from "react";
+import {
+	type ComparableDateItemType,
+	dateToComparableDateItem,
+} from "./comparableDateItemSchema";
 
 function useTimeIntervals({
 	from: inputFrom,
@@ -29,11 +30,25 @@ function useTimeIntervals({
 	to?: Date;
 	aggregationUnit: AggregationUnitType;
 }) {
-	const filterStore = useFiltersStore(({ from, to }) => ({ from, to }));
+	const filterStore = useFiltersStore(
+		({ from, to, fromDateString, toDateString }) => ({
+			from,
+			to,
+			fromDateString,
+			toDateString,
+		}),
+	);
 	const from = inputFrom ?? filterStore.from;
 	const to = inputTo ?? filterStore.to;
+	const fromDateString = inputFrom
+		? format(inputFrom, "yyyy-MM-dd")
+		: filterStore.fromDateString;
+	const toDateString = inputTo
+		? format(inputTo, "yyyy-MM-dd")
+		: filterStore.toDateString;
 	const range = { from, to };
 
+	// biome-ignore lint/correctness/useExhaustiveDependencies: Using the fromDateString and toDateString to avoid the exact date (which changes on each render) to be used as dependencies of the useEffect
 	const eventColumns = useMemo(() => {
 		const { from, to } = range;
 		if (!from || !to) return [];
@@ -45,8 +60,11 @@ function useTimeIntervals({
 		const timeDiff = Math.abs(timeComparatorFn(to, from)) + 1;
 		return new Array(timeDiff)
 			.fill(null)
-			.map((_, idx) => timeStartFn(timeIncrementerFn(from, idx)));
-	}, [range, aggregationUnit]);
+			.map((_, idx) =>
+				dateToComparableDateItem(timeStartFn(timeIncrementerFn(from, idx))),
+			);
+	}, [fromDateString, toDateString, aggregationUnit]);
+
 	return eventColumns;
 }
 
@@ -80,12 +98,17 @@ function getTimeIncrementerByAggregationUnit(
 
 export function isInSameAggregationUnit(
 	aggregationUnit: AggregationUnitType,
-	d1: Date,
-	d2: Date,
+	comparableDateItem: ComparableDateItemType,
+	date: Date,
 ) {
-	if (aggregationUnit === "day") return isSameDay(d1, d2);
+	if (aggregationUnit === "day")
+		return comparableDateItem.time === date.getTime();
 	if (aggregationUnit === "week")
-		return isSameWeek(d1, d2, { weekStartsOn: 1 });
-	if (aggregationUnit === "month") return isSameMonth(d1, d2);
-	return isSameYear(d1, d2);
+		return comparableDateItem.week === date.getTime();
+	if (aggregationUnit === "month")
+		return (
+			comparableDateItem.month === date.getUTCMonth() &&
+			comparableDateItem.year === date.getUTCFullYear()
+		);
+	return comparableDateItem.year === date.getUTCFullYear();
 }

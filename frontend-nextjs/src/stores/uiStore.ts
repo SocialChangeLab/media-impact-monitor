@@ -17,4 +17,4 @@ export type UiState = {
 export type UiStore = UiState; // & UiActions;
 
 export const createUiStore = (initState: UiState = defaultInitState) =>
-	create<UiStore>((set) => initState);
+	create<UiStore>(() => initState);

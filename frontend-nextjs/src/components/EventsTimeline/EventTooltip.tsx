@@ -1,6 +1,6 @@
 import { Tooltip, TooltipContent } from "@/components/ui/tooltip";
 import { cn } from "@/utility/classNames";
-import type { EventType, OrganisationType } from "@/utility/eventsUtil";
+import type { OrganisationType, ParsedEventType } from "@/utility/eventsUtil";
 import { format } from "date-fns";
 import { Users } from "lucide-react";
 import { type PropsWithChildren, useMemo, useState } from "react";
@@ -10,7 +10,10 @@ function EventTooltip({
 	event,
 	organisations,
 	children,
-}: PropsWithChildren<{ event: EventType; organisations: OrganisationType[] }>) {
+}: PropsWithChildren<{
+	event: ParsedEventType;
+	organisations: OrganisationType[];
+}>) {
 	const [descriptionExpanded, setDescriptionExpanded] = useState(false);
 	const orgs = useMemo(() => {
 		const unknownOrgName = "Unknown organisation";

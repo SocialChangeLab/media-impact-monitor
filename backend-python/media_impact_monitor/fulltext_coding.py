@@ -15,7 +15,7 @@ tools = [
             "parameters": {
                 "type": "object",
                 "properties": {
-                    "reasoning": {
+                    "sentiment_reasoning": {
                         "type": "string",
                         "description": "The reasoning for the sentiment",
                     },
@@ -24,7 +24,7 @@ tools = [
                         "description": "The sentiment: -1 for negative, 0 for neutral, 1 for positive",
                     },
                 },
-                "required": ["reasoning", "sentiment"],
+                "required": ["sentiment_reasoning", "sentiment"],
             },
         },
     }
@@ -32,7 +32,7 @@ tools = [
 
 
 # classic trinary sentiment classification
-def get_sentiment_classification(text: str) -> float | None:
+def code_fulltext(text: str) -> float | None:
     messages = [
         {"role": "system", "content": system_prompt},
         {"role": "user", "content": text},

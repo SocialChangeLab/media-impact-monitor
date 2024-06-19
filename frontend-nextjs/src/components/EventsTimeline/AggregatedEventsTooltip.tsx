@@ -4,7 +4,7 @@ import {
 	TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { cn } from "@/utility/classNames";
-import type { EventType, OrganisationType } from "@/utility/eventsUtil";
+import type { OrganisationType, ParsedEventType } from "@/utility/eventsUtil";
 import { format } from "date-fns";
 import { type ReactNode, memo, useMemo } from "react";
 import {
@@ -23,7 +23,7 @@ function AggregatedEventsTooltip({
 	date: Date;
 	sumSize: number | undefined;
 	aggregationUnit: AggregationUnitType;
-	events: EventType[];
+	events: ParsedEventType[];
 	organisations: OrganisationType[];
 	children: ReactNode;
 }) {

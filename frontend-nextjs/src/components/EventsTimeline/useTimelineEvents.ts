@@ -1,10 +1,9 @@
-import type { EventType, OrganisationType } from "@/utility/eventsUtil";
+import type { OrganisationType, ParsedEventType } from "@/utility/eventsUtil";
 import useTimeIntervals, {
 	isInSameAggregationUnit,
 } from "@/utility/useTimeIntervals";
 import useTimeScale from "@/utility/useTimeScale";
 import { scalePow } from "d3-scale";
-import { startOfDay } from "date-fns";
 import { useCallback, useMemo } from "react";
 import defaultConfig from "./eventsTimelineConfig";
 import type { AggregationUnitType } from "./useAggregationUnit";
@@ -19,9 +18,9 @@ function useTimelineEvents({
 }: {
 	size: { width: number; height: number };
 	data: {
-		events: EventType[];
+		events: ParsedEventType[];
 		organisations: OrganisationType[];
-	};
+	} | null;
 	aggregationUnit: AggregationUnitType;
 	from?: Date;
 	to?: Date;
@@ -32,30 +31,31 @@ function useTimelineEvents({
 	};
 }) {
 	const intervals = useTimeIntervals({ aggregationUnit, from, to });
-	const { events, organisations } = data;
 	const timeScale = useTimeScale(size.width);
 	const columnsCount = intervals.length;
 	const isInSameUnit = useCallback(
-		(a: Date, b: Date) => isInSameAggregationUnit(aggregationUnit, a, b),
+		(event: ParsedEventType, b: Date) =>
+			isInSameAggregationUnit(aggregationUnit, event, b),
 		[aggregationUnit],
 	);
 
 	const eventColumns = useMemo(() => {
-		if (!timeScale) return [];
-		return intervals.map((d) => {
-			const columnEvents = events.filter((evt) =>
-				isInSameUnit(new Date(evt.date), d),
+		if (!timeScale || !data?.events || !data?.organisations) return [];
+		return intervals.map((comparableDateObject) => {
+			const columnEvents = data.events.filter((evt) =>
+				isInSameUnit(evt, comparableDateObject.date),
 			);
 			const eventsWithSize = columnEvents.sort((a, b) => {
 				const aSize = a.size_number ?? 0;
 				const bSize = b.size_number ?? 0;
 				if (aSize < bSize ?? 0) return -1;
 				if (aSize > bSize ?? 0) return 1;
+				if (!a.organizers[0] || !b.organizers[0]) return 0;
 				return a.organizers[0].localeCompare(b.organizers[0]);
 			});
 
 			return {
-				day: startOfDay(d),
+				...comparableDateObject,
 				eventsWithSize,
 				sumSize: columnEvents.reduce((acc, evt) => {
 					return acc + (evt.size_number ?? 0);
@@ -64,7 +64,7 @@ function useTimelineEvents({
 					columnEvents
 						.reduce((acc, evt) => {
 							for (const orgName of evt.organizers) {
-								const organisation = organisations.find(
+								const organisation = data.organisations.find(
 									(o) => o.name === orgName,
 								);
 								if (organisation) acc.set(orgName, organisation);
@@ -75,12 +75,12 @@ function useTimelineEvents({
 				),
 			};
 		});
-	}, [events, timeScale, intervals, isInSameUnit, organisations]);
+	}, [data?.events, timeScale, intervals, isInSameUnit, data?.organisations]);
 
 	const sizeScale = useMemo(() => {
 		const displayedEvents = eventColumns.reduce((acc, day) => {
 			return acc.concat(day.eventsWithSize);
-		}, [] as EventType[]);
+		}, [] as ParsedEventType[]);
 		const max =
 			displayedEvents.length === 0
 				? Math.floor(size.height / 3)

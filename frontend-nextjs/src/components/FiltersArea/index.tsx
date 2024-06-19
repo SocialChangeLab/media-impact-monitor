@@ -14,8 +14,8 @@ function FiltersArea({ isScrolledToTop }: { isScrolledToTop: boolean }) {
 				`px-[max(1rem,2vmax)]`,
 				`border-b z-50 bg-pattern-soft`,
 				`transition-all`,
-				isScrolledToTop ? `pt-[max(0.25rem,1vmax)]` : `pt-2`,
-				isScrolledToTop ? `gap-[max(0.25rem,1vmax)]` : `gap-2`,
+				isScrolledToTop ? `py-[max(0.25rem,1vmax)]` : `py-2`,
+				isScrolledToTop ? `gap-[max(0.25rem,0.75vmax)]` : `gap-2`,
 				isScrolledToTop
 					? `border-grayLight`
 					: `border-grayMed dark:border-grayLight`,

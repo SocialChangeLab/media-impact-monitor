@@ -1,23 +1,22 @@
 "use client";
-import { randomInRange, randomUntil } from "@/utility/randomUtil";
 import { useState } from "react";
 import { Button } from "../ui/button";
 import ImpactChartRow from "./ImpactChartRow";
 const getImpacts = () => [
 	{
-		impact: randomUntil(100, false),
+		impact: Math.random() * 100,
 		uncertainty: Math.random(),
 		label: "Climate science",
 		color: "var(--categorical-color-1)",
 	},
 	{
-		impact: randomUntil(100, false),
+		impact: Math.random() * 100,
 		uncertainty: Math.random(),
 		label: "Climate urgency",
 		color: "var(--categorical-color-2)",
 	},
 	{
-		impact: -1 * randomUntil(100, false),
+		impact: -1 * Math.random() * 100,
 		uncertainty: Math.random(),
 		label: "Climate policy",
 		color: "var(--categorical-color-3)",
@@ -33,7 +32,7 @@ function ImpactChartRowFixture() {
 					<ImpactChartRow
 						impacts={impacts.map((i) => ({
 							...i,
-							totalBefore: randomInRange(400, 1000, false) + i.impact,
+							totalBefore: Math.random() * 1000 + 400 + i.impact,
 							uncertainty: i.uncertainty > 0.5 ? null : i.uncertainty,
 						}))}
 						unitLabel="articles and media"

@@ -1,7 +1,7 @@
-import type { EventType } from "@/utility/eventsUtil";
+import type { ParsedEventType } from "@/utility/eventsUtil";
 import { createColumnHelper } from "@tanstack/react-table";
 
-const columnHelper = createColumnHelper<EventType>();
+const columnHelper = createColumnHelper<ParsedEventType>();
 
 export const getColumns = () => [
 	columnHelper.accessor("description", {
@@ -22,7 +22,7 @@ export const getColumns = () => [
 		header: "Date",
 		sortingFn: "datetime",
 		cell: function render({ getValue }) {
-			return new Date(getValue() as string).toLocaleDateString("en-GB", {
+			return getValue().toLocaleDateString("en-GB", {
 				day: "numeric",
 				month: "short",
 				year: "numeric",

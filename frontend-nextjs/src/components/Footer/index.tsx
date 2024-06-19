@@ -59,7 +59,7 @@ function Footer() {
 					<div className="flex flex-wrap gap-x-8">
 						<a
 							className="h-fit focusable flex flex-col gap-6 group"
-							href="https://prototypefund.org/"
+							href="https://prototypefund.de/"
 							target="_blank"
 							rel="noopener noreferrer"
 							title="Bundesministerium für Bildung und Forschung"
@@ -76,7 +76,7 @@ function Footer() {
 						</a>
 						<a
 							className="focusable flex flex-col gap-6 group w-fit h-fit"
-							href="https://prototypefund.org/"
+							href="https://prototypefund.de/"
 							target="_blank"
 							rel="noopener noreferrer"
 							title="Prototype Fund"
@@ -103,6 +103,7 @@ function Footer() {
 								`focusable hover:border-grayLight`,
 							)}
 							onClick={() => {
+								if (typeof window === "undefined") return;
 								window.scrollTo({ top: 0, behavior: "smooth" });
 							}}
 						>

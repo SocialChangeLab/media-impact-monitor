@@ -5,26 +5,21 @@ export async function fetchApiData({
 }: {
 	endpoint: string;
 	body: Record<string, unknown>;
-	fallbackFilePathContent: unknown;
+	fallbackFilePathContent?: unknown;
 }) {
 	const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 	if (!apiUrl)
 		throw new Error("NEXT_PUBLIC_API_URL env variable is not defined");
 	let json: unknown = { query: {}, data: [] };
 	try {
-		const response = await Promise.race([
-			fetch(`${apiUrl}/${endpoint}`, {
-				method: "POST",
-				headers: { "Content-Type": "application/json" },
-				body: JSON.stringify(body),
-				next: {
-					revalidate: 3600 * 4,
-				},
-			}),
-			new Promise<Error>((resolve) =>
-				setTimeout(() => resolve(new Error("ApiFetchTimeoutError")), 10000),
-			),
-		]);
+		const response = await fetch(`${apiUrl}/${endpoint}`, {
+			method: "POST",
+			headers: { "Content-Type": "application/json" },
+			body: JSON.stringify(body),
+			next: {
+				revalidate: 3600 * 4,
+			},
+		});
 
 		if (response instanceof Error) {
 			throw new Error(`ApiFetchTimeoutError`);
@@ -40,7 +35,7 @@ export async function fetchApiData({
 		console.warn(
 			`Failed fetching from endpoint "${endpoint}", now using Fallback Data: ${error}`,
 		);
-		json = fallbackFilePathContent;
+		json = fallbackFilePathContent ?? json;
 	}
 	return json;
 }

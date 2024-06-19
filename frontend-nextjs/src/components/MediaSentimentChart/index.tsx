@@ -1,5 +1,5 @@
 "use client";
-import type { MediaSentimentType } from "@/utility/mediaSentimentUtil";
+import type { ParsedMediaSentimentType } from "@/utility/mediaSentimentUtil";
 import useTimeIntervals, {
 	isInSameAggregationUnit,
 } from "@/utility/useTimeIntervals";
@@ -18,6 +18,7 @@ import {
 import useAggregationUnit, {
 	formatDateByAggregationUnit,
 } from "@/components/EventsTimeline/useAggregationUnit";
+import type { ComparableDateItemType } from "@/utility/comparableDateItemSchema";
 import { slugifyCssClass } from "@/utility/cssSlugify";
 import { parseErrorMessage } from "@/utility/errorHandlingUtil";
 import useMediaSentimentData from "@/utility/useMediaSentiment";
@@ -33,14 +34,15 @@ const MediaSentimentChart = memo(
 	({
 		data,
 	}: {
-		data: MediaSentimentType[];
+		data: ParsedMediaSentimentType[];
 	}) => {
 		const [parentRef, size] = useElementSize();
 		const aggregationUnit = useAggregationUnit(size.width);
 		const intervals = useTimeIntervals({ aggregationUnit });
 
 		const isInSameUnit = useCallback(
-			(a: Date, b: Date) => isInSameAggregationUnit(aggregationUnit, a, b),
+			(comparableDateObject: ComparableDateItemType, b: Date) =>
+				isInSameAggregationUnit(aggregationUnit, comparableDateObject, b),
 			[aggregationUnit],
 		);
 
@@ -53,9 +55,9 @@ const MediaSentimentChart = memo(
 					}, new Set<string>())
 					.values(),
 			);
-			const filteredData = intervals.map((d) => {
+			const filteredData = intervals.map((comparableDateObject) => {
 				const daysInUnit = data.filter((day) =>
-					isInSameUnit(new Date(day.date), d),
+					isInSameUnit(comparableDateObject, new Date(day.date)),
 				);
 				return allTopics.reduce(
 					(acc, topic) => {
@@ -70,10 +72,13 @@ const MediaSentimentChart = memo(
 						return acc;
 					},
 					{
-						date: d,
-						dateFormatted: formatDateByAggregationUnit(d, aggregationUnit),
+						comparableDateObject,
+						dateFormatted: formatDateByAggregationUnit(
+							comparableDateObject.date,
+							aggregationUnit,
+						),
 					} as {
-						date: Date;
+						comparableDateObject: ComparableDateItemType;
 						dateFormatted: string;
 					} & {
 						[key: string]: number;
@@ -192,11 +197,15 @@ const MediaSentimentChart = memo(
 	},
 );
 
-function MediaSentimentChartWithData() {
-	const { data } = useMediaSentimentData();
-	if (data?.length > 0) return <MediaSentimentChart data={data} />;
-	if (!data || data.length === 0) return <MediaSentimentChartEmpty />;
-	return <MediaSentimentChartLoading />;
+function MediaSentimentChartWithData({ reset }: { reset?: () => void }) {
+	const { data, isError, isSuccess, isPending } = useMediaSentimentData();
+	if (isPending) return <MediaSentimentChartLoading />;
+	if (isError)
+		return (
+			<MediaSentimentChartError {...parseErrorMessage(isError)} reset={reset} />
+		);
+	if (isSuccess && data.length > 0) return <MediaSentimentChart data={data} />;
+	return <MediaSentimentChartEmpty />;
 }
 export default function MediaCoverageChartWithErrorBoundary() {
 	return (
@@ -211,7 +220,7 @@ export default function MediaCoverageChartWithErrorBoundary() {
 					)}
 				>
 					<Suspense fallback={<MediaSentimentChartLoading />}>
-						<MediaSentimentChartWithData />
+						<MediaSentimentChartWithData reset={reset} />
 					</Suspense>
 				</ErrorBoundary>
 			)}

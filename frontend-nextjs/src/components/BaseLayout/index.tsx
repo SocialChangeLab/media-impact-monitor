@@ -1,7 +1,6 @@
 "use client";
 
 import Footer from "@/components/Footer";
-import WelcomeMessage from "@/components/WelcomeMessage";
 import "@/styles/global.css";
 import { cn } from "@/utility/classNames";
 import { usePathname } from "next/navigation";
@@ -44,7 +43,7 @@ export function BaseLayout({
 						`pointer-events-none`,
 					)}
 				/>
-				<WelcomeMessage currentPage={currentPage} />
+				{/* <WelcomeMessage currentPage={currentPage} /> */}
 				<div className="min-h-full w-screen overflow-x-clip relative">
 					{children}
 				</div>

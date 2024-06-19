@@ -1,15 +1,17 @@
+from itertools import chain
+
 # list of movements
 # keys: as in ACLED (with exceptions, see below)
 # values: other names, e. g. in the original language
 climate_orgs_aliases = {
-    "Animal Rebellion": ["AR"],  # was renamed to "Animal Rising"
-    "Animal Rising": ["AR"],
+    "Animal Rebellion": [],  # was renamed to "Animal Rising"
+    "Animal Rising": [],
     "Alternatiba": [],
     "Attac": [],
     "BUND": ["Bund für Umwelt und Naturschutz Deutschland"],
     "Declare Emergency": [],
     "DGUB: The Green Youth Movement": ["Den Grønne Ungdomsbevægelse"],
-    "Ende Gelaende": [],
+    "Ende Gelaende": ["Ende Gelände"],
     "Extinction Rebellion": ["XR"],
     "Fridays for Future": [],
     "Friends of the Earth": [],
@@ -38,3 +40,7 @@ climate_orgs_strings_for_coding = [
     f"{k} [{','.join(vs)}]" if len(vs) > 0 else k
     for k, vs in climate_orgs_aliases.items()
 ]
+
+
+def add_aliases(orgs: list[str]) -> list[str]:
+    return orgs + list(chain(*[climate_orgs_aliases.get(org, []) for org in orgs]))

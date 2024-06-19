@@ -3,9 +3,9 @@ from datetime import date
 import pandas as pd
 import pytest
 
-from media_impact_monitor.trends.sentiment import (
+from media_impact_monitor.fulltext_coding import (
+    code_fulltext,
     get_aspect_sentiment,
-    get_sentiment_classification,
 )
 from media_impact_monitor.trends.sentiment_trend import get_sentiment_trend
 from media_impact_monitor.types_ import TrendSearch

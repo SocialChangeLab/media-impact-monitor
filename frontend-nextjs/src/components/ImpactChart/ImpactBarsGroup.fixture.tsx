@@ -1,24 +1,23 @@
 "use client";
-import { randomUntil } from "@/utility/randomUtil";
 import { useState } from "react";
 import { Button } from "../ui/button";
 import ImpactBarsGroup from "./ImpactBarsGroup";
 
 const getImpacts = () => [
 	{
-		impact: randomUntil(100, false),
+		impact: Math.random() * 100,
 		uncertainty: Math.random(),
 		label: "Climate science",
 		color: "var(--categorical-color-1)",
 	},
 	{
-		impact: randomUntil(100, false),
+		impact: Math.random() * 100,
 		uncertainty: null,
 		label: "Climate urgency",
 		color: "var(--categorical-color-2)",
 	},
 	{
-		impact: -1 * randomUntil(100, false),
+		impact: Math.random() * -100,
 		uncertainty: Math.random(),
 		label: "Climate policy",
 		color: "var(--categorical-color-3)",

@@ -2,7 +2,7 @@
 import LoadingEventsTimeline from "@/components/EventsTimeline/LoadingEventsTimeline";
 import { cn } from "@/utility/classNames";
 import { parseErrorMessage } from "@/utility/errorHandlingUtil";
-import type { EventType, OrganisationType } from "@/utility/eventsUtil";
+import type { OrganisationType, ParsedEventType } from "@/utility/eventsUtil";
 import useEvents from "@/utility/useEvents";
 import useElementSize from "@custom-react-hooks/use-element-size";
 import { QueryErrorResetBoundary } from "@tanstack/react-query";
@@ -27,7 +27,7 @@ function EventsTimeline({
 	data,
 }: {
 	data: {
-		events: EventType[];
+		events: ParsedEventType[];
 		organisations: OrganisationType[];
 	};
 }) {
@@ -46,9 +46,9 @@ function EventsTimeline({
 			<EventsTimelineScrollWrapper>
 				<EventsTimelineChartWrapper columnsCount={columnsCount + 1}>
 					{eventColumns.map(
-						({ day, eventsWithSize, sumSize, combinedOrganizers }) => (
+						({ time, date, eventsWithSize, sumSize, combinedOrganizers }) => (
 							<li
-								key={`event-day-${day.toISOString()}`}
+								key={`event-day-${time}`}
 								className="grid grid-rows-subgrid row-span-3 relative w-4 grow shrink-0 h-full py-4"
 							>
 								<div className="flex flex-col justify-end items-center gap-0.5">
@@ -70,7 +70,7 @@ function EventsTimeline({
 										))}
 									{aggregationUnit !== "day" && eventsWithSize.length > 0 && (
 										<EventsTimelineAggregatedItem
-											date={day}
+											date={date}
 											sumSize={sumSize}
 											height={Math.ceil(sizeScale(sumSize))}
 											organisations={combinedOrganizers}
@@ -121,10 +121,12 @@ function EventsTimeline({
 	);
 }
 
-function EventsTimelineWithData() {
-	const { data, isFetching } = useEvents();
-	if (isFetching) return <LoadingEventsTimeline />;
-	if (data) return <EventsTimeline data={data} />;
+function EventsTimelineWithData({ reset }: { reset?: () => void }) {
+	const { data, isFetching, isPending, error, isError } = useEvents();
+	if (isFetching || isPending) return <LoadingEventsTimeline />;
+	if (isError)
+		return <ErrorEventsTimeline {...parseErrorMessage(error)} reset={reset} />;
+	if (data?.events.length > 0) return <EventsTimeline data={data} />;
 	return <EmptyEventsTimeline />;
 }
 export default function EventsTimelineWithErrorBoundary() {
@@ -137,7 +139,7 @@ export default function EventsTimelineWithErrorBoundary() {
 					)}
 				>
 					<Suspense fallback={<LoadingEventsTimeline />}>
-						<EventsTimelineWithData />
+						<EventsTimelineWithData reset={reset} />
 					</Suspense>
 				</ErrorBoundary>
 			)}

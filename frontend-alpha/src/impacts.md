@@ -6,7 +6,7 @@
 import { embed, queryApi } from './components/util.js'
 
 let impact = await queryApi('impact', {
-  method: 'interrupted_time_series',
+  method: 'time_series_regression',
   impacted_trend: {
     trend_type: 'keywords',
     media_source: 'news_print',

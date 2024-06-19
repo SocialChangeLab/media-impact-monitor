@@ -9,23 +9,21 @@ type ImpactBarProps = {
 	uncertainty: number | null;
 	impactLabel?: string;
 	totalHeight: number;
-	padding: number;
+	barHeight: number;
 };
 type ImpactBarHeadProps = ImpactBarProps & {
 	impactHeight: number;
-	parentHeight: number;
+	uncertaintyHeight: number;
 };
 
 function ImpactBar(props: ImpactBarProps) {
-	const { impact, padding, uncertainty, totalHeight } = props;
-	if (impact === null) return null;
-	const parentHeight = Math.max(totalHeight, 16);
-	const impactHeight = Math.floor(parentHeight * (Math.abs(impact) ?? 0));
-	const maxUncertaintyHeight =
-		(parentHeight + padding * 1.25 - impactHeight) * 2;
-	const uncertaintyHeight = Math.min(
-		maxUncertaintyHeight,
-		Math.max(16, Math.ceil(parentHeight * (uncertainty ?? 1))),
+	const { uncertainty, totalHeight, barHeight, uniqueId } = props;
+	if (props.impact === null) return null;
+	const impact = props.impact / 100;
+	const impactHeight = Math.max(barHeight, 16);
+	const uncertaintyHeight = Math.max(
+		16,
+		Math.ceil(totalHeight * (uncertainty ?? 1)),
 	);
 	const negativeImpact = impact < 0;
 	return (
@@ -34,7 +32,6 @@ function ImpactBar(props: ImpactBarProps) {
 				"pointer-events-none",
 				"flex items-end w-full h-full relative",
 				uncertainty === null && "translate-y-0.5",
-				negativeImpact && "-scale-y-100",
 			)}
 		>
 			<div
@@ -44,13 +41,14 @@ function ImpactBar(props: ImpactBarProps) {
 				<ImpactBarHead
 					{...props}
 					impactHeight={props.uncertainty === null ? 4 : impactHeight}
-					parentHeight={parentHeight}
+					uncertaintyHeight={uncertaintyHeight}
 				/>
 				{props.uncertainty && (
 					<span
 						className={cn(
 							"absolute left-1/2 -translate-x-1/2 bottom-full -translate-y-2 text-sm",
 							"transition-opacity opacity-100 group-hover:opacity-0 duration-1000 ease-smooth-in-out",
+							`${uniqueId}-hide`,
 						)}
 					>
 						<div className={cn(negativeImpact && `-scale-y-100`)}>
@@ -62,6 +60,7 @@ function ImpactBar(props: ImpactBarProps) {
 					className={cn(
 						"absolute left-1/2 text-sm text-center ",
 						"transition-opacity opacity-0 group-hover:opacity-100 duration-1000 ease-smooth-in-out",
+						`${uniqueId}-show`,
 						"leading-tight",
 						uncertainty === null || impactHeight < 80 ? "bottom-full" : "top-0",
 					)}
@@ -87,8 +86,8 @@ function ImpactBar(props: ImpactBarProps) {
 
 function getUncertaintyLabel(uncertainty: number | null) {
 	if (uncertainty === null) return `Too Uncertain`;
-	if (uncertainty < 0.75) return `Low Uncertainty (${uncertainty.toFixed(2)})`;
-	if (uncertainty < 0.9)
+	if (uncertainty < 0.2) return `Low Uncertainty (${uncertainty.toFixed(2)})`;
+	if (uncertainty < 0.4)
 		return `Moderate Uncertainty (${uncertainty.toFixed(2)})`;
 	return `High Uncertainty (${uncertainty.toFixed(2)})`;
 }
@@ -104,19 +103,18 @@ function ImpactBarHead(props: ImpactBarHeadProps) {
 
 function UncertaintyBar({
 	uncertainty,
-	parentHeight,
+	totalHeight,
+	barHeight,
 	uniqueId,
-	impactHeight,
-	padding,
 	color = "bg-grayMed",
 }: ImpactBarHeadProps) {
 	const tooUncertain = uncertainty === null;
-	const maxUncertaintyHeight =
-		(parentHeight + padding * 1.25 - impactHeight) * 2;
-	const rawUncertaintyHeight = Math.ceil(parentHeight * (uncertainty ?? 1));
+	const maxUncertaintyHeight = (totalHeight * 1.25 - barHeight) * 2;
+	const rawUncertaintyHeight = Math.ceil(totalHeight * (uncertainty ?? 1));
 	const height = Math.abs(
 		Math.min(maxUncertaintyHeight, Math.max(16, rawUncertaintyHeight)),
 	);
+
 	const pathNoCertainty = `M0 0 L100 0 L100 ${height} L0 ${height}`;
 	const pathWithUncertainty = `M-10 13 L50 0 L110 13 L100 ${height} L50 ${
 		height - 11
@@ -126,6 +124,7 @@ function UncertaintyBar({
 			className={cn(
 				"size-full pointer-events-none",
 				"absolute top-0 left-0 opacity-0 transition-opacity duration-1000 ease-smooth-in-out group-hover:opacity-100",
+				`${uniqueId}-show`,
 			)}
 			style={{
 				height,
@@ -251,7 +250,10 @@ function ImpactArrow({
 				fill="currentColor"
 				fillOpacity={0.3}
 				strokeWidth="0"
-				className="transition-opacity duration-1000 ease-smooth-in-out group-hover:opacity-0"
+				className={cn(
+					"transition-opacity duration-1000 ease-smooth-in-out group-hover:opacity-0",
+					`${uniqueId}-hide`,
+				)}
 				mask={`url(#fade-bar-${uniqueId})`}
 			/>
 			<polyline
@@ -263,6 +265,7 @@ function ImpactArrow({
 				fill="none"
 				vectorEffect="non-scaling-stroke"
 				className={cn(
+					`${uniqueId}-show`,
 					uncertainty === null &&
 						"opacity-0 group-hover:opacity-100 transition-opacity duration-1000 ease-smooth-in-out",
 				)}

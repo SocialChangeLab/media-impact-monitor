@@ -43,7 +43,9 @@ function ImpactChartRow({ impacts, unitLabel, icon }: ImpactChartRowProps) {
 								causes <strong className="font-bold">{`${incdeclabel}`}</strong>
 								{` of `}
 								<strong className="font-bold">
-									{`${Math.abs(i.impact)} ${unitLabel} (${impactShare})`}
+									{`${Math.round(Math.abs(i.impact)).toLocaleString(
+										"en-GB",
+									)} ${unitLabel} (${impactShare})`}
 								</strong>{" "}
 								about
 							</p>

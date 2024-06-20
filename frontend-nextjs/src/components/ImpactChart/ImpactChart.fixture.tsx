@@ -12,35 +12,38 @@ const getUncertainty = () => {
 	const uncertainty = Math.random();
 	return uncertainty > 0.8 ? null : uncertainty;
 };
-const getImpactColumn = (maxImpact: number) => [
-	{
-		impact: getImpact(maxImpact),
-		uncertainty: getUncertainty(),
-		label: "Climate science",
-		color: "var(--categorical-color-1)",
-		uniqueId: `impact-${idInc++}`,
-	},
-	{
-		impact: getImpact(maxImpact),
-		uncertainty: getUncertainty(),
-		label: "Climate urgency",
-		color: "var(--categorical-color-2)",
-		uniqueId: `impact-${idInc++}`,
-	},
-	{
-		impact: getImpact(maxImpact),
-		uncertainty: getUncertainty(),
-		label: "Climate policy",
-		color: "var(--categorical-color-3)",
-		uniqueId: `impact-${idInc++}`,
-	},
-];
+const getImpactColumn = (maxImpact: number, id: string) => ({
+	id,
+	data: [
+		{
+			impact: getImpact(maxImpact),
+			uncertainty: getUncertainty(),
+			label: "Climate science",
+			color: "var(--categorical-color-1)",
+			uniqueId: `impact-${idInc++}`,
+		},
+		{
+			impact: getImpact(maxImpact),
+			uncertainty: getUncertainty(),
+			label: "Climate urgency",
+			color: "var(--categorical-color-2)",
+			uniqueId: `impact-${idInc++}`,
+		},
+		{
+			impact: getImpact(maxImpact),
+			uncertainty: getUncertainty(),
+			label: "Climate policy",
+			color: "var(--categorical-color-3)",
+			uniqueId: `impact-${idInc++}`,
+		},
+	],
+});
 
 const getImpactColumns = (maxImpact: number) => [
-	getImpactColumn(maxImpact),
-	getImpactColumn(maxImpact),
-	getImpactColumn(maxImpact),
-	getImpactColumn(maxImpact),
+	getImpactColumn(maxImpact, `column-1`),
+	getImpactColumn(maxImpact, `column-2`),
+	getImpactColumn(maxImpact, `column-3`),
+	getImpactColumn(maxImpact, `column-4`),
 ];
 
 function ImpactChartFixture() {
@@ -79,7 +82,11 @@ function ImpactChartFixture() {
 						/>
 					</label>
 				</div>
-				<ImpactChart columns={columns} />
+				<ImpactChart
+					columns={columns}
+					unitLabel="articles and media"
+					icon="LineChart"
+				/>
 			</div>
 		</div>
 	);

@@ -1,6 +1,8 @@
 import { cn } from "@/utility/classNames";
+import type { icons } from "lucide-react";
 import { Fragment, useCallback, useMemo } from "react";
 import ImpactBar from "./ImpactBar";
+import ImpactChartRow from "./ImpactChartRow";
 
 type ImpactChartColumnItem = {
 	impact: number;
@@ -10,10 +12,15 @@ type ImpactChartColumnItem = {
 	uniqueId: string;
 };
 
-type ImpactChartColumn = ImpactChartColumnItem[];
+type ImpactChartColumn = {
+	data: ImpactChartColumnItem[];
+	id: string;
+};
 
 type ImpactChartProps = {
 	columns: ImpactChartColumn[];
+	unitLabel: string;
+	icon: keyof typeof icons;
 };
 
 function ImpactChart(props: ImpactChartProps) {
@@ -21,7 +28,7 @@ function ImpactChart(props: ImpactChartProps) {
 	const padding = 32;
 
 	const columnItems = useMemo(
-		() => props.columns.flatMap((columnItem) => columnItem),
+		() => props.columns.flatMap((columnItem) => columnItem.data),
 		[props.columns],
 	);
 
@@ -51,7 +58,7 @@ function ImpactChart(props: ImpactChartProps) {
 	);
 
 	const items = useMemo(() => {
-		const itemsPerGroup = props.columns[0].length;
+		const itemsPerGroup = props.columns[0].data.length;
 		const separatorsCount = Math.floor(columnItems.length / itemsPerGroup) - 2;
 		let separatorsAdded = 0;
 		return Array.from(
@@ -74,7 +81,7 @@ function ImpactChart(props: ImpactChartProps) {
 	}, [props.columns, columnItems]);
 
 	return (
-		<Fragment>
+		<div className="flex flex-col">
 			<style jsx global>{`
 				${columnItems
 					.map(
@@ -107,9 +114,6 @@ function ImpactChart(props: ImpactChartProps) {
 					if (type === "separator" || typeof item === "number") {
 						return (
 							<Fragment key={key}>
-								<div className={cn(commonCSSClasses, "shrink-0 relative")}>
-									<div className="absolute top-0 left-1/2 w-px h-full bg-grayMed" />
-								</div>
 								<div
 									className={cn(
 										commonCSSClasses,
@@ -117,7 +121,10 @@ function ImpactChart(props: ImpactChartProps) {
 										"shrink-0 relative",
 									)}
 								>
-									<div className="absolute top-0 left-1/2 w-px h-full bg-grayMed" />
+									<div className="absolute top-0 left-1/2 w-px h-full bg-grayLight" />
+								</div>
+								<div className={cn(commonCSSClasses, "shrink-0 relative")}>
+									<div className="absolute top-0 left-1/2 w-px h-full bg-grayLight" />
 								</div>
 							</Fragment>
 						);
@@ -156,7 +163,23 @@ function ImpactChart(props: ImpactChartProps) {
 					);
 				})}
 			</div>
-		</Fragment>
+			<div
+				className="grid"
+				style={{ gridTemplateColumns: `repeat(${props.columns.length}, 1fr)` }}
+			>
+				{props.columns.map(({ id, data }) => {
+					return (
+						<div key={`column-${id}`} className="p-4">
+							<ImpactChartRow
+								icon={props.icon}
+								impacts={data}
+								unitLabel={props.unitLabel}
+							/>
+						</div>
+					);
+				})}
+			</div>
+		</div>
 	);
 }
 

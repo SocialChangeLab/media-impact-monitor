@@ -1,14 +1,12 @@
 "use client";
 import type { icons } from "lucide-react";
 import Icon from "../ui/icon";
-import ImpactBarsGroup from "./ImpactBarsGroup";
 
 type ImpactType = {
 	label: string;
 	impact: number;
 	uncertainty: number | null;
 	color: string;
-	totalBefore: number;
 };
 
 type ImpactChartRowProps = {
@@ -19,22 +17,12 @@ type ImpactChartRowProps = {
 
 function ImpactChartRow({ impacts, unitLabel, icon }: ImpactChartRowProps) {
 	const impactsWithUncertainty = impacts.filter((i) => i.uncertainty !== null);
-	const validImpacts = impactsWithUncertainty.map((i) => i.impact);
-	const highestImpact = Math.max(...validImpacts, 0);
-	const lowestImpact = Math.min(...validImpacts, 0);
-	const total = 1000;
 	return (
 		<div className="flex flex-col gap-6">
-			<ImpactBarsGroup
-				impacts={impacts}
-				highestImpact={highestImpact}
-				lowestImpact={lowestImpact}
-				total={total}
-			/>
 			<div className="flex flex-col gap-6">
 				{impactsWithUncertainty.map((i) => {
 					const impactShare = `${i.impact > 0 ? "+" : "-"}${Math.round(
-						Math.abs((i.impact / i.totalBefore) * 100),
+						Math.abs((i.impact / 1) * 100),
 					)}%`;
 					const incdeclabel = i.impact > 0 ? "an increase" : "a decrease";
 					return (

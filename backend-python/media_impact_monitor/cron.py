@@ -7,6 +7,7 @@ from functools import partial
 
 from apscheduler.schedulers.background import BackgroundScheduler
 from apscheduler.triggers.cron import CronTrigger
+from sentry_sdk.crons import monitor
 
 from media_impact_monitor.events import get_events
 from media_impact_monitor.impact import get_impact
@@ -21,14 +22,18 @@ from media_impact_monitor.types_ import (
 
 def setup_cron():
     # register cron job that regularly fills the cache
+    # Berlin is UTC + 2, thus UTC 01.00 = Berlin 03.00
     scheduler = BackgroundScheduler()
-    scheduler.add_job(
-        func=partial(fill_cache),
-        trigger=CronTrigger(hour=3, minute=15, second=0, timezone="UTC"),
-    )  # Berlin is UTC + 2
+    # run multiple times, because MediaCloud might not work on first try
+    for delay in [0, 15, 45, 60]:
+        scheduler.add_job(
+            func=partial(fill_cache),
+            trigger=CronTrigger(hour=1, minute=delay, second=0, timezone="UTC"),
+        )
     scheduler.start()
 
 
+@monitor(monitor_slug="data-processing-cron-job")
 def fill_cache():
     print("Filling cache...")
     for data_source in ["acled", "press_releases"]:

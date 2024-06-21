@@ -25,7 +25,7 @@ def setup_cron():
     # Berlin is UTC + 2, thus UTC 01.00 = Berlin 03.00
     scheduler = BackgroundScheduler()
     # run multiple times, because MediaCloud might not work on first try
-    for delay in [0, 15, 45, 60]:
+    for delay in [0, 15, 30, 45]:
         scheduler.add_job(
             func=partial(fill_cache),
             trigger=CronTrigger(hour=1, minute=delay, second=0, timezone="UTC"),

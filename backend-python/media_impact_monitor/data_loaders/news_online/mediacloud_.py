@@ -85,7 +85,8 @@ def get_mediacloud_fulltexts(
     """
     assert start_date.year >= 2022, "MediaCloud currently only goes back to 2022"
     assert verify_dates(start_date, end_date)
-    collection_ids = _resolve_countries(countries)
+    assert isinstance(countries, list) or countries is None
+    collection_ids = [_resolve_country(c) for c in countries] if countries else None
     all_stories = []
     more_stories = True
     pagination_token = None
@@ -141,15 +142,11 @@ def _retrieve_text(url: str) -> str | None:
     return data["text_content"]
 
 
-def _resolve_countries(countries: list | None) -> list | None:
-    assert isinstance(countries, list) or countries is None
-    collection_ids: list[int] = []
-    collection_ids = []
-    for country in countries or []:
-        # get national newspapers (regional newspapers are also available)
-        results = directory.collection_list(name=f"{country} - national")["results"]
-        # ignore research collections
-        results = [r for r in results if "(Research Only)" not in r["name"]]
-        assert len(results) == 1, f"Expected 1 result, got {len(results)} for {country}"
-        collection_ids.append(results[0]["id"])
-    return collection_ids
+@cache
+def _resolve_country(country: str) -> int:
+    # get national newspapers (regional newspapers are also available)
+    results = directory.collection_list(name=f"{country} - national")["results"]
+    # ignore research collections
+    results = [r for r in results if "(Research Only)" not in r["name"]]
+    assert len(results) == 1, f"Expected 1 result, got {len(results)} for {country}"
+    return results[0]["id"]

@@ -1,5 +1,5 @@
 import EventsTimeline from "@/components/EventsTimeline/EventsTimeline";
-import ImpactChartWithData from "@/components/ImpactChart";
+// import ImpactChartWithData from "@/components/ImpactChart";
 import MediaCoverageChartWithData from "@/components/MediaCoverageChart";
 import MediaSentimentChart from "@/components/MediaSentimentChart";
 import SectionHeadlineWithExplanation from "@/components/SectionHeadlineWithExplanation";
@@ -27,7 +27,7 @@ export default function EventsPageWithSuspense() {
 				help="See the media sentiment of climate-related topics in germany over time"
 			>
 				<MediaSentimentChart />
-				<ImpactChartWithData />
+				{/* <ImpactChartWithData /> */}
 			</SectionHeadlineWithExplanation>
 		</>
 	);

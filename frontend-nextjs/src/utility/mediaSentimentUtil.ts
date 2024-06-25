@@ -45,7 +45,10 @@ export function getMediaSentimentQuery(params: {
 					end_date: format(params?.to, "yyyy-MM-dd"),
 				}
 			: {}),
-		organizers: params?.organizers,
+		organizers:
+			params?.organizers && params.organizers.length > 0
+				? params.organizers
+				: undefined,
 	};
 }
 

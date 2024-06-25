@@ -31,7 +31,7 @@ function useMediaSentimentImpactData(organizer: string | undefined) {
 		if (!error) return;
 		toast.error(`Error fetching media sentiment impact data: ${error}`, {
 			important: true,
-			dismissible: false,
+			dismissible: true,
 			duration: 1000000,
 		});
 	}, [error]);

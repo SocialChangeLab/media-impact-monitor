@@ -58,6 +58,7 @@ function ImpactChart(props: ImpactChartProps) {
 	);
 
 	const items = useMemo(() => {
+		if (props.columns.length === 0) return [];
 		const itemsPerGroup = props.columns[0].data.length;
 		const separatorsCount = Math.floor(columnItems.length / itemsPerGroup) - 2;
 		let separatorsAdded = 0;

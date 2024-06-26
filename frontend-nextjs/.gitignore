@@ -39,3 +39,6 @@ next-env.d.ts
 src/fakeDataForTesting/
 # Sentry Config File
 .env.sentry-build-plugin
+
+# Contentlayer
+.contentlayer

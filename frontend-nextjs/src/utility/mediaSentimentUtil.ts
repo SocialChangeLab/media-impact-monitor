@@ -7,7 +7,7 @@ import {
 import { dateSortCompare, isValidISODateString } from "./dateUtil";
 import { fetchApiData } from "./fetchUtil";
 
-const mediaSentimentZodSchema = z.object({
+export const mediaSentimentZodSchema = z.object({
 	date: z.string(),
 	topic: z.string(),
 	n_articles: z.number().nullable(),
@@ -30,23 +30,36 @@ const mediaSentimentDataResponseTypeZodSchema = z.object({
 	error: z.union([z.string(), z.null()]).optional(),
 });
 
-export async function getMediaSentimentData(params?: {
+export function getMediaSentimentQuery(params: {
 	from?: Date;
 	to?: Date;
+	organizers: string[];
+}) {
+	return {
+		media_source: "news_online",
+		topic: "climate_change",
+		trend_type: "sentiment",
+		...(params?.from && params?.to
+			? {
+					start_date: format(params?.from, "yyyy-MM-dd"),
+					end_date: format(params?.to, "yyyy-MM-dd"),
+				}
+			: {}),
+		organizers:
+			params?.organizers && params.organizers.length > 0
+				? params.organizers
+				: undefined,
+	};
+}
+
+export async function getMediaSentimentData(params: {
+	from?: Date;
+	to?: Date;
+	organizers: string[];
 }): Promise<MediaDataType> {
 	const json = await fetchApiData({
 		endpoint: "trend",
-		body: {
-			media_source: "news_online",
-			topic: "climate_change",
-			trend_type: "sentiment",
-			...(params?.from && params?.to
-				? {
-						start_date: format(params?.from, "yyyy-MM-dd"),
-						end_date: format(params?.to, "yyyy-MM-dd"),
-					}
-				: {}),
-		},
+		body: getMediaSentimentQuery(params),
 		// fallbackFilePathContent: (
 		// 	await import("../data/fallbackMediaSentiment.json")
 		// ).default,

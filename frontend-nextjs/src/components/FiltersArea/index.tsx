@@ -1,11 +1,19 @@
+"use client";
+import { useFiltersStore } from "@/providers/FiltersStoreProvider";
 import { cn } from "@/utility/classNames";
-import { type ReactNode, memo } from "react";
+import { memo, type ReactNode } from "react";
 import MediaSourceSelect from "../DataSourceSelect";
 import DraggableTimeFilterRange from "../DraggableTimeFilterRange";
 import { OrganisationsSelect } from "../OrganisationsSelect";
 import TimeFilter from "../TimeFilter";
 
 function FiltersArea({ isScrolledToTop }: { isScrolledToTop: boolean }) {
+	const { organizers, setOrganizers } = useFiltersStore(
+		({ organizers, setOrganizers }) => ({
+			setOrganizers,
+			organizers,
+		}),
+	);
 	return (
 		<nav
 			aria-label="Page filters"
@@ -32,7 +40,10 @@ function FiltersArea({ isScrolledToTop }: { isScrolledToTop: boolean }) {
 					</li>
 					<li className="flex flex-col gap-1 text-sm">
 						<FilterLabel show={isScrolledToTop}>Organisations:</FilterLabel>
-						<OrganisationsSelect />
+						<OrganisationsSelect
+							onChange={setOrganizers}
+							initialValues={organizers}
+						/>
 					</li>
 				</ul>
 				<div className="flex flex-col gap-1 text-sm">

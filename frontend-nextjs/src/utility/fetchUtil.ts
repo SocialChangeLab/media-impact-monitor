@@ -10,32 +10,24 @@ export async function fetchApiData({
 	const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 	if (!apiUrl)
 		throw new Error("NEXT_PUBLIC_API_URL env variable is not defined");
-	let json: unknown = { query: {}, data: [] };
-	try {
-		const response = await fetch(`${apiUrl}/${endpoint}`, {
-			method: "POST",
-			headers: { "Content-Type": "application/json" },
-			body: JSON.stringify(body),
-			next: {
-				revalidate: 3600 * 4,
-			},
-		});
+	const response = await fetch(`${apiUrl}/${endpoint}`, {
+		method: "POST",
+		headers: { "Content-Type": "application/json" },
+		body: JSON.stringify(body),
+		next: {
+			revalidate: 3600 * 4,
+		},
+	});
 
-		if (response instanceof Error) {
-			throw new Error(`ApiFetchTimeoutError`);
-		}
-
-		if (!response.ok) {
-			const message = `An error has occured: ${response.statusText} ${response.status}`;
-			throw new Error(`ApiFetchError&&&${message}`);
-		}
-
-		json = await response.json();
-	} catch (error) {
-		console.warn(
-			`Failed fetching from endpoint "${endpoint}", now using Fallback Data: ${error}`,
-		);
-		json = fallbackFilePathContent ?? json;
+	if (!response.ok) {
+		const message = `An error has occured: ${response.statusText} ${response.status}`;
+		throw new Error(`ApiFetchError&&&${message}`);
 	}
-	return json;
+
+	// Check if the response is a success
+	if (response.status >= 200 && response.status < 300) {
+		return await response.json();
+	}
+
+	throw new Error(`ApiFetchError&&&${response.statusText}`);
 }

@@ -18,6 +18,9 @@ function OrgsLegend({
 			else mainOrgs.push(org);
 		}
 
+		if (organisations.length < 16) {
+			return { allOrgs: [...mainOrgs, ...otherOrgs], otherOrgs: [] };
+		}
 		if (otherOrgs.length === 0) return { allOrgs: mainOrgs, otherOrgs: [] };
 		return {
 			allOrgs: [
@@ -35,7 +38,6 @@ function OrgsLegend({
 				},
 			],
 			otherOrgs,
-			mainOrgs,
 		};
 	}, [organisations]);
 

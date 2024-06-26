@@ -2,8 +2,7 @@
 import LoadingEventsTimeline from "@/components/EventsTimeline/LoadingEventsTimeline";
 import { cn } from "@/utility/classNames";
 import { parseErrorMessage } from "@/utility/errorHandlingUtil";
-import type { OrganisationType, ParsedEventType } from "@/utility/eventsUtil";
-import useEvents from "@/utility/useEvents";
+import useEvents, { type UseEventsReturnType } from "@/utility/useEvents";
 import useElementSize from "@custom-react-hooks/use-element-size";
 import { QueryErrorResetBoundary } from "@tanstack/react-query";
 import { ErrorBoundary } from "next/dist/client/components/error-boundary";
@@ -26,20 +25,17 @@ import useTimelineEvents from "./useTimelineEvents";
 function EventsTimeline({
 	data,
 }: {
-	data: {
-		events: ParsedEventType[];
-		organisations: OrganisationType[];
-	};
+	data: UseEventsReturnType["data"];
 }) {
 	const [parentRef, size] = useElementSize();
-	const { events, organisations } = data;
+	const { organisations, eventsByOrgs, selectedOrganisations } = data;
 	const aggregationUnit = useAggregationUnit(size.width);
 	const { eventColumns, columnsCount, sizeScale } = useTimelineEvents({
 		size,
 		data,
 		aggregationUnit,
 	});
-	if (events.length === 0) return <EmptyEventsTimeline />;
+	if (eventsByOrgs.length === 0) return <EmptyEventsTimeline />;
 
 	return (
 		<EventsTimelineWrapper organisations={organisations} ref={parentRef}>
@@ -99,7 +95,7 @@ function EventsTimeline({
 							sizeScale={sizeScale}
 							aggragationUnit={aggregationUnit}
 						/>
-						<OrgsLegend organisations={organisations} />
+						<OrgsLegend organisations={selectedOrganisations} />
 					</div>
 				</CollapsableSection>
 				<DataCreditLegend

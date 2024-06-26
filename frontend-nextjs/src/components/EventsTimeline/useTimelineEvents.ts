@@ -1,4 +1,5 @@
 import type { OrganisationType, ParsedEventType } from "@/utility/eventsUtil";
+import type { UseEventsReturnType } from "@/utility/useEvents";
 import useTimeIntervals, {
 	isInSameAggregationUnit,
 } from "@/utility/useTimeIntervals";
@@ -17,10 +18,7 @@ function useTimelineEvents({
 	to,
 }: {
 	size: { width: number; height: number };
-	data: {
-		events: ParsedEventType[];
-		organisations: OrganisationType[];
-	} | null;
+	data: UseEventsReturnType["data"];
 	aggregationUnit: AggregationUnitType;
 	from?: Date;
 	to?: Date;
@@ -40,9 +38,9 @@ function useTimelineEvents({
 	);
 
 	const eventColumns = useMemo(() => {
-		if (!timeScale || !data?.events || !data?.organisations) return [];
+		if (!timeScale || !data?.eventsByOrgs || !data?.organisations) return [];
 		return intervals.map((comparableDateObject) => {
-			const columnEvents = data.events.filter((evt) =>
+			const columnEvents = data.eventsByOrgs.filter((evt) =>
 				isInSameUnit(evt, comparableDateObject.date),
 			);
 			const eventsWithSize = columnEvents.sort((a, b) => {
@@ -75,7 +73,13 @@ function useTimelineEvents({
 				),
 			};
 		});
-	}, [data?.events, timeScale, intervals, isInSameUnit, data?.organisations]);
+	}, [
+		data?.eventsByOrgs,
+		timeScale,
+		intervals,
+		isInSameUnit,
+		data?.organisations,
+	]);
 
 	const sizeScale = useMemo(() => {
 		const displayedEvents = eventColumns.reduce((acc, day) => {

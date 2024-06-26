@@ -5,6 +5,7 @@ import {
 	dateToComparableDateItem,
 } from "./comparableDateItemSchema";
 import { dateSortCompare, isValidISODateString } from "./dateUtil";
+import type { OrganisationType } from "./eventsUtil";
 import { fetchApiData } from "./fetchUtil";
 
 const mediaCoverageZodSchema = z.object({
@@ -32,6 +33,7 @@ const mediaCoverageDataResponseTypeZodSchema = z.object({
 export async function getMediaCoverageData(params?: {
 	from?: Date;
 	to?: Date;
+	organizers: OrganisationType["name"][];
 }): Promise<ParsedMediaCoverageType[]> {
 	const json = await fetchApiData({
 		endpoint: "trend",
@@ -45,6 +47,10 @@ export async function getMediaCoverageData(params?: {
 						end_date: format(params?.to, "yyyy-MM-dd"),
 					}
 				: {}),
+			organizers:
+				params?.organizers && params.organizers.length > 0
+					? params.organizers
+					: undefined,
 		},
 		// fallbackFilePathContent: (
 		// 	await import("../data/fallbackMediaCoverage.json")

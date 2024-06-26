@@ -2,36 +2,34 @@
 import { useFiltersStore } from "@/providers/FiltersStoreProvider";
 import { useQuery } from "@tanstack/react-query";
 import { endOfDay, format } from "date-fns";
-import { useEffect, useMemo } from "react";
+import { useEffect } from "react";
 import { toast } from "sonner";
-import { getMediaSentimentData } from "./mediaSentimentUtil";
+import { getMediaSentimentImpactData } from "./mediaSentimentImpactUtil";
 
-function useMediaSentimentData() {
-	const { from, to, organizers } = useFiltersStore(
-		({ from, to, organizers }) => ({ from, to, organizers }),
-	);
+function useMediaSentimentImpactData(organizer: string | undefined) {
+	const { from, to } = useFiltersStore(({ from, to }) => ({ from, to }));
 	const fromDateString = format(from, "yyyy-MM-dd");
 	const toDateString = format(to, "yyyy-MM-dd");
-	const organizersKey = useMemo(
-		() => organizers.sort().join("-"),
-		[organizers],
-	);
 	const queryKey = [
-		"mediaSentiment",
+		"mediaSentimentImpact",
+		organizer,
 		fromDateString,
 		toDateString,
-		organizersKey,
 	];
 	const query = useQuery({
 		queryKey,
-		queryFn: async () => await getMediaSentimentData({ from, to, organizers }),
+		queryFn: async () => {
+			if (organizer === undefined) return undefined;
+			return await getMediaSentimentImpactData({ from, to, organizer });
+		},
 		staleTime: endOfDay(new Date()).getTime() - new Date().getTime(),
+		enabled: organizer !== undefined,
 	});
 	const { error } = query;
 
 	useEffect(() => {
 		if (!error) return;
-		toast.error(`Error fetching media sentiment data: ${error}`, {
+		toast.error(`Error fetching media sentiment impact data: ${error}`, {
 			important: true,
 			dismissible: true,
 			duration: 1000000,
@@ -41,4 +39,4 @@ function useMediaSentimentData() {
 	return query;
 }
 
-export default useMediaSentimentData;
+export default useMediaSentimentImpactData;

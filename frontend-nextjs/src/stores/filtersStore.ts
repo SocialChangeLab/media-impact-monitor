@@ -1,9 +1,10 @@
+import type { OrganisationType } from "@/utility/eventsUtil";
 import { format, startOfDay, subMonths } from "date-fns";
 import { create } from "zustand";
 import {
-	type StateStorage,
 	createJSONStorage,
 	persist,
+	type StateStorage,
 } from "zustand/middleware";
 
 const defaultTo = startOfDay(new Date());
@@ -17,12 +18,14 @@ export type FiltersState = {
 	fromDateString: string;
 	toDateString: string;
 	isDefaultTimeRange: boolean;
+	organizers: OrganisationType["name"][];
 };
 
 export type FiltersActions = {
 	setDateRange: (props: { from: Date; to: Date }) => void;
 	resetAllFilters: () => void;
 	resetDateRange: () => void;
+	setOrganizers: (organizers: OrganisationType["name"][]) => void;
 };
 
 export type FiltersStore = FiltersState & FiltersActions;
@@ -35,6 +38,7 @@ export const defaultInitState: FiltersState = {
 	fromDateString: format(defaultFrom, "yyyy-MM-dd"),
 	toDateString: format(defaultTo, "yyyy-MM-dd"),
 	isDefaultTimeRange: true,
+	organizers: ["Fridays for Future", "Extinction Rebellion"],
 };
 
 const getUrlSearch = () => {
@@ -89,6 +93,8 @@ export const createFiltersStore = (
 						fromDateString: defaultInitState.fromDateString,
 						toDateString: defaultInitState.toDateString,
 					})),
+				setOrganizers: (organizers: OrganisationType["name"][]) =>
+					set(() => ({ organizers })),
 			}),
 			storageOptions,
 		),

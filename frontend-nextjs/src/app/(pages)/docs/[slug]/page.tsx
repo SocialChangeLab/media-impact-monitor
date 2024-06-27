@@ -1,6 +1,6 @@
 import { Mdx } from "@/components/Mdx";
 import { getDocsPage } from "@/utility/docsUtil";
-import { allDocsPages, type DocsPage } from "contentlayer/generated";
+import { type DocsPage, allDocsPages } from "contentlayer/generated";
 import { notFound } from "next/navigation";
 
 export const generateStaticParams = async () =>

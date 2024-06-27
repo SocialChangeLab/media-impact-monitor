@@ -1,7 +1,7 @@
 "use client";
 import { useFiltersStore } from "@/providers/FiltersStoreProvider";
 import { cn } from "@/utility/classNames";
-import { memo, type ReactNode } from "react";
+import { type ReactNode, memo } from "react";
 import MediaSourceSelect from "../DataSourceSelect";
 import DraggableTimeFilterRange from "../DraggableTimeFilterRange";
 import { OrganisationsSelect } from "../OrganisationsSelect";

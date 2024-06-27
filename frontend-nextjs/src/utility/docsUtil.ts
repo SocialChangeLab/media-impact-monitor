@@ -1,4 +1,4 @@
-import { allDocsPages, type DocsPage } from "contentlayer/generated";
+import { type DocsPage, allDocsPages } from "contentlayer/generated";
 
 export type ChartDocsPage = {
 	slug: string;

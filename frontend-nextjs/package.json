@@ -6,7 +6,7 @@
 		"dev": "cross-env NODE_OPTIONS=--max_old_space_size=4096 next dev",
 		"build": "npm run check && npm run cosmos-export && next build",
 		"start": "next start",
-		"check": "npx @biomejs/biome check --apply src",
+		"check": "biome check --apply src",
 		"cosmos": "cosmos --expose-imports",
 		"cosmos-export": "cosmos-export --expose-imports"
 	},

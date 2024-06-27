@@ -89,6 +89,7 @@ function EventsTimeline({
 				<CollapsableSection
 					title="Legend"
 					storageKey="protest-timeline-legend-expanded"
+					storageType="session"
 				>
 					<div className="grid gap-[max(1rem,2vmax)] md:grid-cols-[auto_1fr]">
 						<EventsTimelineSizeLegend

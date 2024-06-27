@@ -30,7 +30,7 @@ import MediaSentimentChartError from "./MediaSentimentChartError";
 import MediaSentimentChartLegend from "./MediaSentimentChartLegend";
 import MediaSentimentChartLoading from "./MediaSentimentChartLoading";
 
-const MediaSentimentChart = memo(
+export const MediaSentimentChart = memo(
 	({
 		data,
 	}: {

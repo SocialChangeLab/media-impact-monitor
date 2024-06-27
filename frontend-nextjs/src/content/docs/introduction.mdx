@@ -10,24 +10,83 @@ This is intended as a quick reference and showcase. For more complete info, see 
 
 Note that there is also a [Cheatsheet specific to Markdown Here](./Markdown-Here-Cheatsheet) if that's what you're looking for. You can also check out [more Markdown tools](./Other-Markdown-Tools).
 
-##### Table of Contents  
-[Headers](#headers)  
-[Emphasis](#emphasis)  
-[Lists](#lists)  
-[Links](#links)  
-[Images](#images)  
-[Code and Syntax Highlighting](#code)  
-[Footnotes](#footnotes)  
-[Tables](#tables)  
-[Blockquotes](#blockquotes)  
-[Inline HTML](#html)  
-[Horizontal Rule](#hr)  
-[Line Breaks](#lines)  
-[YouTube Videos](#videos)  
+<a name="react-components"/>
+
+# React Components
+
+You can use react components in your markdown files, which allow for more complex layouts and interactive pages.
+Note that the React context is not available in the markdown file, so you cannot use components that rely on the React context.
+
+Components must be imported from the `@/components` directory directly in the markdown file before they can be used. However, some components are always available without the need to import them. Those components are:
+- Image (from `next/image`): Used to display optimized images in the markdown file (preferred over the `img` tag).
+- CollapsableSection: Used to create collapsable sections in the markdown file.
+
+For example, you can use the `Button` component to create an interactive button in your markdown file. Here's an example: 
+
+```
+import { Button } from "@/components/ui/button";
+
+<div className="w-full relative flex justify-center items-center">
+  <div className="w-full border border-dashed border-grayLight p-8 rounded-lg bg-pattern-soft grid md:grid-cols-3 gap-8">
+    <Button variant="default" size="lg">
+      Default large
+    </Button>
+    <Button variant="outline" size="lg">
+      Outline large
+    </Button>
+    <Button variant="ghost" size="lg">
+      Ghost large
+    </Button>
+    <Button variant="default">Default</Button>
+    <Button variant="outline">Outline</Button>
+    <Button variant="ghost">Ghost</Button>
+    <Button variant="default" size="sm">
+      Default small
+    </Button>
+    <Button variant="outline" size="sm">
+      Outline small
+    </Button>
+    <Button variant="ghost" size="sm">
+      Ghost small
+    </Button>
+  </div>
+</div>
+```
+
+
+**Result:**
+
+import { Button } from "@/components/ui/button";
+
+<div className="w-full relative flex justify-center items-center">
+  <div className="w-full border border-dashed border-grayLight p-8 rounded-lg bg-pattern-soft grid md:grid-cols-3 gap-8">
+    <Button variant="default" size="lg">
+      Default large
+    </Button>
+    <Button variant="outline" size="lg">
+      Outline large
+    </Button>
+    <Button variant="ghost" size="lg">
+      Ghost large
+    </Button>
+    <Button variant="default">Default</Button>
+    <Button variant="outline">Outline</Button>
+    <Button variant="ghost">Ghost</Button>
+    <Button variant="default" size="sm">
+      Default small
+    </Button>
+    <Button variant="outline" size="sm">
+      Outline small
+    </Button>
+    <Button variant="ghost" size="sm">
+      Ghost small
+    </Button>
+  </div>
+</div>
 
 <a name="headers"/>
 
-## Headers
+# Headers
 
 ```no-highlight
 # H1
@@ -46,24 +105,23 @@ Alt-H2
 ------
 ```
 
-# H1
-## H2
-### H3
-#### H4
-##### H5
-###### H6
+# H2
+## H3
+### H4
+### H5
+##### H6
 
 Alternatively, for H1 and H2, an underline-ish style:
 
-Alt-H1
+Alt-H2
 ======
 
-Alt-H2
+Alt-H3
 ------
 
 <a name="emphasis"/>
 
-## Emphasis
+# Emphasis
 
 ```no-highlight
 Emphasis, aka italics, with *asterisks* or _underscores_.
@@ -86,7 +144,7 @@ Strikethrough uses two tildes. ~~Scratch this.~~
 
 <a name="lists"/>
 
-## Lists
+# Lists
 
 (In this example, leading and trailing spaces are shown with with dots: ⋅)
 
@@ -128,7 +186,7 @@ Strikethrough uses two tildes. ~~Scratch this.~~
 
 <a name="links"/>
 
-## Links
+# Links
 
 There are two ways to create links.
 
@@ -180,7 +238,7 @@ Some text to show that the reference links can follow later.
 
 <a name="images"/>
 
-## Images
+# Images
 
 ```no-highlight
 Here's our logo (hover to see the title text):
@@ -206,7 +264,7 @@ Reference-style:
 
 <a name="code"/>
 
-## Code and Syntax Highlighting
+# Code and Syntax Highlighting
 
 Code blocks are part of the Markdown spec, but syntax highlighting isn't. However, many renderers -- like Github's and *Markdown Here* -- support syntax highlighting. Which languages are supported and how those language names should be written will vary from renderer to renderer. *Markdown Here* supports highlighting for dozens of languages (and not-really-languages, like diffs and HTTP headers); to see the complete list, and how to write the language names, see the [highlight.js demo page](http://softwaremaniacs.org/media/soft/highlight/test.html).
 
@@ -255,7 +313,7 @@ But let's throw in a <b>tag</b>.
 
 <a name="footnotes"/>
 
-## Footnotes
+# Footnotes
 
 Footnotes aren't part of the core Markdown spec, but they [supported by GFM](https://docs.github.com/en/get-started/writing-on-github/getting-started-with-writing-and-formatting-on-github/basic-writing-and-formatting-syntax#footnotes).
 
@@ -280,7 +338,7 @@ Renders to:
 
 <a name="tables"/>
 
-## Tables
+# Tables
 
 Tables aren't part of the core Markdown spec, but they are part of GFM and *Markdown Here* supports them. They are an easy way of adding tables to your email -- a task that would otherwise require copy-pasting from another application.
 
@@ -320,7 +378,7 @@ Markdown | Less | Pretty
 
 <a name="blockquotes"/>
 
-## Blockquotes
+# Blockquotes
 
 ```no-highlight
 > Blockquotes are very handy in email to emulate reply text.
@@ -340,7 +398,7 @@ Quote break.
 
 <a name="html"/>
 
-## Inline HTML
+# Inline HTML
 
 You can also use raw HTML in your Markdown, and it'll mostly work pretty well. 
 
@@ -364,7 +422,7 @@ You can also use raw HTML in your Markdown, and it'll mostly work pretty well.
 
 <a name="hr"/>
 
-## Horizontal Rule
+# Horizontal Rule
 
 ```
 Three or more...
@@ -398,7 +456,7 @@ Underscores
 
 <a name="lines"/>
 
-## Line Breaks
+# Line Breaks
 
 My basic recommendation for learning how line breaks work is to experiment and discover -- hit &lt;Enter&gt; once (i.e., insert one newline), then hit it twice (i.e., insert two newlines), see what happens. You'll soon learn to get what you want. "Markdown Toggle" is your friend. 
 
@@ -424,9 +482,16 @@ This line is only separated by a single newline, so it's a separate line in the 
 
 <a name="videos"/>
 
-## YouTube Videos
+# YouTube Videos
 
-They can't be added directly but you can add an image with a link to the video like this:
+This is how you embed a YouTube video:
+```no-highlight
+<iframe className="aspect-video w-full" src="https://www.youtube.com/embed/VIDEO_ID" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+```
+
+<iframe className="aspect-video w-full" src="https://www.youtube.com/embed/_PPWWRV6gbA" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+
+They can be added directly but you can also add an image with a link to the video like this:
 
 ```no-highlight
 <a href="http://www.youtube.com/watch?feature=player_embedded&v=YOUTUBE_VIDEO_ID_HERE

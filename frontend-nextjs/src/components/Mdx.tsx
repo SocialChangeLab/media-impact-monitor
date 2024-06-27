@@ -1,3 +1,4 @@
+import CollapsableSection from "@/components/CollapsableSection";
 import { useMDXComponent } from "next-contentlayer/hooks";
 import Image from "next/image";
 
@@ -26,6 +27,24 @@ export function Mdx({ code }: MdxProps) {
 		>
 			<Component
 				components={{
+					h1: ({ className, ...props }) => (
+						<h2 className={cn("scroll-m-32", className)} {...props} />
+					),
+					h2: ({ className, ...props }) => (
+						<h3 className={cn("scroll-m-32", className)} {...props} />
+					),
+					h3: ({ className, ...props }) => (
+						<h4 className={cn("scroll-m-32", className)} {...props} />
+					),
+					h4: ({ className, ...props }) => (
+						<h5 className={cn("scroll-m-32", className)} {...props} />
+					),
+					h5: ({ className, ...props }) => (
+						<h6 className={cn("scroll-m-32", className)} {...props} />
+					),
+					h6: ({ className, ...props }) => (
+						<h6 className={cn("scroll-m-32", className)} {...props} />
+					),
 					blockquote: ({ className, ...props }) => (
 						<blockquote
 							className={cn(
@@ -84,6 +103,12 @@ export function Mdx({ code }: MdxProps) {
 						/>
 					),
 					Image,
+					CollapsableSection: ({ className, ...props }) => (
+						<CollapsableSection
+							className={cn("not-prose", className)}
+							{...props}
+						/>
+					),
 				}}
 			/>
 		</div>

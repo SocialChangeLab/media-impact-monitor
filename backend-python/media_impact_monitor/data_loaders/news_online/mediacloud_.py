@@ -43,7 +43,7 @@ def get_mediacloud_counts(
     assert start_date.year >= 2022, "MediaCloud currently only goes back to 2022"
     assert verify_dates(start_date, end_date)
 
-    collection_ids = [_resolve_country(c) for c in countries] if countries else None
+    collection_ids = [_resolve_country(c) for c in countries] if countries else []
     data = search.story_count_over_time(
         query=query,
         start_date=start_date,

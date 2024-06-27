@@ -12,11 +12,11 @@ def test_xr():
             end_date="2024-06-25",
             impacted_trend=TrendSearch(
                 end_date="2024-06-25",
-                media_source="news_online",
+                media_source="news_print",  # news_online is too slow to retrieve during testing
                 organizers=["Extinction Rebellion"],
                 start_date="2020-01-01",
                 topic="climate_change",
-                trend_type="sentiment",
+                trend_type="keywords",  # sentiment is too expensive to retrieve during testing
             ),
             method="time_series_regression",
             organizer="Extinction Rebellion",
@@ -31,11 +31,11 @@ def test_xr_api():
             end_date="2024-06-25",
             impacted_trend=TrendSearch(
                 end_date="2024-06-25",
-                media_source="news_online",
+                media_source="news_print",
                 organizers=["Extinction Rebellion"],
                 start_date="2020-01-01",
                 topic="climate_change",
-                trend_type="sentiment",
+                trend_type="keywords",
             ),
             method="time_series_regression",
             organizer="Extinction Rebellion",
@@ -51,7 +51,7 @@ def test_fff_api():
             end_date="2023-02-19",
             impacted_trend=TrendSearch(
                 end_date="2023-02-19",
-                media_source="news_online",
+                media_source="news_print",
                 organizers=["Fridays for Future"],
                 start_date="2022-09-14",
                 topic="climate_change",

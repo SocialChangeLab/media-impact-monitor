@@ -24,7 +24,7 @@ function useMediaCoverageData() {
 	];
 	const query = useQuery({
 		queryKey,
-		queryFn: async () => await getMediaCoverageData({ from, to }),
+		queryFn: async () => await getMediaCoverageData({ from, to, organizers }),
 		staleTime: endOfDay(new Date()).getTime() - new Date().getTime(),
 	});
 

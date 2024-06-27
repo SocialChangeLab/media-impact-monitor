@@ -1,10 +1,12 @@
 import { Mdx } from "@/components/Mdx";
-import { getDocsPage } from "@/utility/docsUtil";
-import { type DocsPage, allDocsPages } from "contentlayer/generated";
+import { getAllDocsPages, getDocsPage } from "@/utility/docsUtil";
+import type { DocsPage } from "contentlayer/generated";
 import { notFound } from "next/navigation";
 
-export const generateStaticParams = async () =>
-	allDocsPages.map(({ slug }) => ({ slug }));
+export const generateStaticParams = () => {
+	const allDocsPages = getAllDocsPages();
+	return allDocsPages.map(({ slug }) => ({ slug }));
+};
 
 export const generateMetadata = ({ params }: { params: { slug: string } }) => {
 	const docsPage = getDocsPage(params.slug);

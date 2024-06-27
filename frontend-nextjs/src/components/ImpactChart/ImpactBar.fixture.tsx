@@ -49,6 +49,7 @@ export default function ImpactBarFixture() {
 			>
 				{impacts.map(({ impact, color, uncertainty, label }) => (
 					<ImpactBar
+						barHeight={240}
 						key={label}
 						impact={impact}
 						color={color}

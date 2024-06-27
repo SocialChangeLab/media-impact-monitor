@@ -12,7 +12,7 @@ import slugify from "slugify";
 const computedFields: ComputedFields = {
 	slug: {
 		type: "string",
-		resolve: (doc) => slugify(doc.title, { lower: true }),
+		resolve: (doc) => slugify(doc.title, { lower: true, strict: true }),
 	},
 };
 

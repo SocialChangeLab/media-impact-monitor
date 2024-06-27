@@ -9,20 +9,34 @@ from media_impact_monitor.fulltexts import get_fulltexts
 from media_impact_monitor.types_ import Fulltext, FulltextSearch
 
 
-@pytest.mark.skip(reason="TODO!")  # TODO FIXME!
-def test_get_fulltexts():
+def test_get_fulltexts_for_org():
     texts = get_fulltexts(
         FulltextSearch(
             media_source="news_online",
-            start_date=date.today(),  # today -> limits to only a few for quick testing
-            # end_date=date.today(),
-            # start_date=date.today() - timedelta(days=1), # yesterday
-            topic="climate_change",
+            start_date=date(2024, 5, 1),
+            end_date=date(2024, 5, 2),
+            organizers=["Last Generation (Germany)"],
         )
     )
-
     assert texts is not None
-    # assert class Fulltext
+    assert len(texts) > 0
+
+
+def test_get_fulltexts_for_event():
+    for event_id in [
+        "f25981c7511ef5fcf091e43c8ccd1fe6",
+        "d77d63eab7282efe7f7ce0e57b43c9ff",
+    ]:
+        texts = get_fulltexts(
+            FulltextSearch(
+                media_source="news_online",
+                event_id=event_id,
+                end_date=date(2024, 5, 18),
+            )
+        )
+        assert texts is not None
+        assert len(texts) > 0
+        assert (texts["date"] <= date(2024, 5, 18)).all()
 
 
 # def test_get_mediacloud_fulltexts():

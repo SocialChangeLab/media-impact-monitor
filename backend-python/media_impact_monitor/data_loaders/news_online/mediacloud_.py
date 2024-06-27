@@ -7,10 +7,9 @@ import pandas as pd
 from mcmetadata import extract
 from mcmetadata.exceptions import BadContentError
 
-from media_impact_monitor.util.cache import cache, get_proxied
+from media_impact_monitor.util.cache import cache, get_proxied_many
 from media_impact_monitor.util.date import verify_dates
 from media_impact_monitor.util.env import MEDIACLOUD_API_TOKEN
-from media_impact_monitor.util.parallel import parallel_tqdm
 
 search = mediacloud.api.SearchApi(MEDIACLOUD_API_TOKEN)
 directory = mediacloud.api.DirectoryApi(MEDIACLOUD_API_TOKEN)
@@ -111,10 +110,12 @@ def get_mediacloud_fulltexts(
     if len(all_stories) == 0:
         return None
     df = pd.DataFrame(all_stories)
-    df["publish_date"] = pd.to_datetime(df["publish_date"])
-    df["text"] = parallel_tqdm(
-        _retrieve_text, df["url"], n_jobs=4, desc="Retrieving fulltexts"
-    )
+    df["publish_date"] = pd.to_datetime(df["publish_date"]).dt.date
+    responses = get_proxied_many(df["url"], desc="Retrieving fulltexts")
+    df["text"] = [
+        _extract(url, response.text) if response else None
+        for url, response in zip(df["url"], responses)
+    ]
     df = df.dropna(subset=["text"]).rename(columns={"publish_date": "date"})
     df = df[
         [
@@ -132,14 +133,12 @@ def get_mediacloud_fulltexts(
     return df
 
 
-def _retrieve_text(url: str) -> str | None:
-    html = get_proxied(url, timeout=15).text
+def _extract(url, html):
     try:
-        data = extract(url=url, html_text=html)
+        # this also contains additional metadata (title, language, extraction method, ...) that could be used
+        return extract(url, html)["text_content"]
     except BadContentError:
         return None
-    # this also contains additional metadata (title, language, extraction method, ...) that could be used
-    return data["text_content"]
 
 
 @cache

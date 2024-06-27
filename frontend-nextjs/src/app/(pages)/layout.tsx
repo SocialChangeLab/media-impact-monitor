@@ -19,7 +19,12 @@ export default function RootLayout({
 			suppressHydrationWarning
 		>
 			<head />
-			<body className="bg-pattern-soft w-screen overflow-x-clip">
+			<body
+				className={cn(
+					"bg-pattern-soft min-h-screen",
+					"w-screen overflow-x-clip max-w-page 2xl:border-x border-grayLight mx-auto",
+				)}
+			>
 				<Providers>
 					<BaseLayout modal={modal}>{children}</BaseLayout>
 				</Providers>

@@ -1,18 +1,18 @@
 "use client";
 import { useFiltersStore } from "@/providers/FiltersStoreProvider";
 import {
+	type UseQueryResult,
 	useQuery,
 	useQueryClient,
-	type UseQueryResult,
 } from "@tanstack/react-query";
 import { endOfDay } from "date-fns";
 import { useEffect, useMemo } from "react";
 import { toast } from "sonner";
 import {
-	extractEventOrganisations,
-	getEventsData,
 	type OrganisationType,
 	type ParsedEventType,
+	extractEventOrganisations,
+	getEventsData,
 } from "./eventsUtil";
 
 export type UseEventsReturnType = Omit<

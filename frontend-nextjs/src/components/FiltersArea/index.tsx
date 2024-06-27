@@ -19,8 +19,8 @@ function FiltersArea({ isScrolledToTop }: { isScrolledToTop: boolean }) {
 			aria-label="Page filters"
 			className={cn(
 				`w-screen flex flex-col`,
-				`px-[max(1rem,2vmax)]`,
-				`border-b z-50 bg-pattern-soft`,
+				`px-[clamp(2rem,2vmax,4rem)] mx-auto 2xl:border-x border-grayLight`,
+				`border-b z-50 bg-pattern-soft max-w-page 2xl:border-x border-grayLight`,
 				`transition-all`,
 				isScrolledToTop ? `py-[max(0.25rem,1vmax)]` : `py-2`,
 				isScrolledToTop ? `gap-[max(0.25rem,0.75vmax)]` : `gap-2`,

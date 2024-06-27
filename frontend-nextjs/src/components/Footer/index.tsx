@@ -12,7 +12,7 @@ const year = new Date().getFullYear();
 
 function Footer() {
 	return (
-		<footer className="relative" aria-label="Main page footer">
+		<footer className="mx-auto w-full relative" aria-label="Main page footer">
 			<div className="flex justify-between w-full px-6 py-8 relative border-y border-grayLight">
 				<div className="flex flex-col gap-4 justify-between">
 					<Link

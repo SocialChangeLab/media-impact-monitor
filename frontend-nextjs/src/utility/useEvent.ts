@@ -4,9 +4,9 @@ import { endOfDay } from "date-fns";
 import { useEffect, useMemo } from "react";
 import { toast } from "sonner";
 import {
+	type ParsedEventType,
 	extractEventOrganisations,
 	getEventData,
-	type ParsedEventType,
 } from "./eventsUtil";
 
 export function getEventQueryOptions(id?: ParsedEventType["event_id"]) {

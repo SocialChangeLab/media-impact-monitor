@@ -40,10 +40,12 @@ export function OrganisationsSelect({
 		to: endOfToday(),
 	});
 	const [open, setOpen] = useState(false);
-	const initial = initialValues ?? organisations.reduce(
-		(acc, org) => (org.isMain ? acc.concat([org.name]) : acc),
-		[] as string[],
-	);
+	const initial =
+		initialValues ??
+		organisations.reduce(
+			(acc, org) => (org.isMain ? acc.concat([org.name]) : acc),
+			[] as string[],
+		);
 	const [selectedOrgs, setSelectedOrgs] = useState<OrganisationType["name"][]>(
 		multiple ? initial : [initial[0]],
 	);

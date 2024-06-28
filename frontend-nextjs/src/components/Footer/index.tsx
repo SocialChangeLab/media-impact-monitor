@@ -1,5 +1,6 @@
 "use client";
 
+import UptimeStatusLink from "@/components/UptimeStatusLink";
 import Logo from "@/components/logos/AppLogo";
 import BMBFLogo from "@/components/logos/BMBFLogo";
 import PrototypeFundLogo from "@/components/logos/PrototypeFundLogo";
@@ -31,6 +32,7 @@ function Footer() {
 						>
 							Logo assets
 						</Link>
+						<UptimeStatusLink />
 						<span aria-label={`Copyright ${year}`}>
 							© {year} - Social Change Lab
 						</span>

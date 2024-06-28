@@ -13,8 +13,9 @@ function EventsTimelineSizeLegend({
 }) {
 	const exampleSizes = useMemo(() => {
 		const max = roundLegendNumber(Math.max(sizeScale.domain()[1], 30));
-		const min = getLegendMinNumber(max);
-		const mid = roundLegendNumber(Math.floor((min + max) / 2));
+		let min = getLegendMinNumber(max);
+		min = min === max ? max / 2 : min;
+		const mid = Math.floor((min + max) / 2);
 		return [undefined, min, mid, max].map((x, idx) => ({
 			id: idx,
 			size: x,

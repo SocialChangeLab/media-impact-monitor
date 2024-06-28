@@ -5,15 +5,7 @@ import { AggregatedEventsBubble } from "./EventBubbleLink";
 import EventsBar from "./EventsBar";
 import type { AggregationUnitType } from "./useAggregationUnit";
 
-function EventsTimelineAggregatedItem({
-	date,
-	height,
-	organisations,
-	selectedOrganisations,
-	events,
-	sumSize,
-	aggregationUnit,
-}: {
+export type AggregatedItemType = {
 	date: Date;
 	height: number;
 	organisations: OrganisationType[];
@@ -21,18 +13,13 @@ function EventsTimelineAggregatedItem({
 	events: ParsedEventType[];
 	sumSize: number | undefined;
 	aggregationUnit: AggregationUnitType;
-}) {
+};
+
+function EventsTimelineAggregatedItem(aggregatedItem: AggregatedItemType) {
 	return (
-		<AggregatedEventsTooltip
-			date={date}
-			events={events}
-			sumSize={sumSize}
-			aggregationUnit={aggregationUnit}
-			organisations={organisations}
-			selectedOrganisations={selectedOrganisations}
-		>
-			<EventsBar height={height} organisations={organisations}>
-				<AggregatedEventsBubble organisations={selectedOrganisations} />
+		<AggregatedEventsTooltip {...aggregatedItem}>
+			<EventsBar {...aggregatedItem}>
+				<AggregatedEventsBubble {...aggregatedItem} />
 			</EventsBar>
 		</AggregatedEventsTooltip>
 	);

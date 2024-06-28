@@ -1,8 +1,11 @@
+import { useFiltersStore } from "@/providers/FiltersStoreProvider";
 import { cn } from "@/utility/classNames";
 import type { OrganisationType, ParsedEventType } from "@/utility/eventsUtil";
+import { getDateRangeByAggregationUnit } from "@/utility/useTimeIntervals";
 import Link from "next/link";
 import { memo } from "react";
 import { TooltipTrigger } from "../ui/tooltip";
+import { AggregatedItemType } from "./EventsTimelineAggregatedItem";
 
 type EventBubbleLinkProps = {
 	event: ParsedEventType;
@@ -47,16 +50,24 @@ function EventBubbleLink({
 }
 
 export function AggregatedEventsBubble({
-	organisations,
-}: {
-	organisations: OrganisationType[];
-}) {
+	selectedOrganisations,
+	date,
+	aggregationUnit,
+}: AggregatedItemType) {
+	const { setDateRange } = useFiltersStore(({ setDateRange }) => ({
+		setDateRange,
+	}));
+
 	return (
-		<span
+		<button
+			type="button"
+			onClick={() =>
+				setDateRange(getDateRangeByAggregationUnit({ aggregationUnit, date }))
+			}
 			className={cn(bubbleClasses, "rounded-sm")}
 			style={{
 				background: getCSSStyleGradient(
-					organisations
+					selectedOrganisations
 						.sort((a, b) => {
 							if (a.color > b.color) return 1;
 							if (a.color < b.color) return -1;

@@ -109,12 +109,7 @@ const fallbackMonitors: MonitorType[] = [
 // Utility functions –––––––––––––––––––––––––––––––––
 
 function getBadgeUrl(monitorId: number) {
-	const config = {
-		style: "flat-square",
-		prefixLabel: "Impact",
-		upColor: "#229E74",
-		downColor: "#D55E00",
-	};
+	const config = { style: "flat-square" };
 	const query = new URLSearchParams(config).toString();
 	return `${UPTIME_KUMA_BASE_URL}/api/badge/${monitorId}/status?${query}`;
 }

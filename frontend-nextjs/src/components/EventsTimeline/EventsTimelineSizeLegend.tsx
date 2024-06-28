@@ -15,8 +15,7 @@ function EventsTimelineSizeLegend({
 		const max = roundLegendNumber(Math.max(sizeScale.domain()[1], 30));
 		let min = getLegendMinNumber(max);
 		min = min === max ? max / 2 : min;
-		const mid = Math.floor((min + max) / 2);
-		return [undefined, min, mid, max].map((x, idx) => ({
+		return [undefined, min, max].map((x, idx) => ({
 			id: idx,
 			size: x,
 			height: sizeScale(x ?? 0),

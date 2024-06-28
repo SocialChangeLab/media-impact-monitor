@@ -9,6 +9,10 @@ import {
 	differenceInCalendarMonths,
 	differenceInDays,
 	differenceInYears,
+	endOfDay,
+	endOfMonth,
+	endOfWeek,
+	endOfYear,
 	format,
 	startOfDay,
 	startOfMonth,
@@ -17,8 +21,8 @@ import {
 } from "date-fns";
 import { useMemo } from "react";
 import {
-	type ComparableDateItemType,
 	dateToComparableDateItem,
+	type ComparableDateItemType,
 } from "./comparableDateItemSchema";
 
 function useTimeIntervals({
@@ -94,6 +98,25 @@ function getTimeIncrementerByAggregationUnit(
 	if (aggregationUnit === "week") return addWeeks;
 	if (aggregationUnit === "month") return addMonths;
 	return addYears;
+}
+
+export function getDateRangeByAggregationUnit({
+	aggregationUnit,
+	date,
+}: {
+	aggregationUnit: AggregationUnitType;
+	date: Date;
+}) {
+	if (aggregationUnit === "week")
+		return {
+			from: startOfWeek(date, { weekStartsOn: 1 }),
+			to: endOfWeek(date, { weekStartsOn: 1 }),
+		};
+	if (aggregationUnit === "month")
+		return { from: startOfMonth(date), to: endOfMonth(date) };
+	if (aggregationUnit === "year")
+		return { from: startOfYear(date), to: endOfYear(date) };
+	return { from: startOfDay(date), to: endOfDay(date) };
 }
 
 export function isInSameAggregationUnit(

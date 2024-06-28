@@ -1,4 +1,4 @@
-import { allDocsPages } from "contentlayer/generated";
+import { type DocsPage, allDocsPages } from "contentlayer/generated";
 
 export type ChartDocsPage = {
 	slug: string;
@@ -62,8 +62,12 @@ export function getDocsToc(): (
 	  }
 )[] {
 	const docsPages = getAllDocsPages();
-	const chartPages = docsPages.filter((docsPage) => docsPage.isChartPage);
-	const nonChartPages = docsPages.filter((docsPage) => !docsPage.isChartPage);
+	const chartPages = docsPages.filter(
+		(docsPage) => docsPage.isChartPage,
+	) as ChartDocsPage[];
+	const nonChartPages = docsPages.filter(
+		(docsPage) => !docsPage.isChartPage,
+	) as NonChartDocsPage[];
 	return [
 		...nonChartPages,
 		{

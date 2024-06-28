@@ -6,7 +6,7 @@ import { DocsTocLink } from "@/components/DocsTocLink";
 import { useUiStore } from "@/providers/UiStoreProvider";
 import { cn } from "@/utility/classNames";
 import { getDocsToc } from "@/utility/docsUtil";
-import { Suspense } from "react";
+import { type ReactNode, Suspense } from "react";
 
 function DocsLayout({ children }: { children: ReactNode }) {
 	const docsPagesToc = getDocsToc();

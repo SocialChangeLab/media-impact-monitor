@@ -14,16 +14,21 @@ export const generateMetadata = ({ params }: { params: { slug: string } }) => {
 	return { title: docsPage.title };
 };
 
-function ChartContentSection(doc: DocsPage) {
+function ChartContentSection({
+	noTitle = false,
+	...doc
+}: DocsPage & { noTitle?: boolean }) {
 	const id = `chart-title-${doc.slug}`;
 	return (
 		<>
-			<h2
-				className="mt-2 scroll-m-20 text-4xl font-semibold tracking-tight mb-4 font-headlines"
-				id={id}
-			>
-				<a href={`#${id}`}>{doc.title}</a>
-			</h2>
+			{!noTitle && (
+				<h2
+					className="mt-2 scroll-m-20 text-4xl font-semibold tracking-tight mb-4 font-headlines"
+					id={id}
+				>
+					<a href={`#${id}`}>{doc.title}</a>
+				</h2>
+			)}
 			<Mdx code={doc.body.code} />
 			<hr className="my-4 md:my-8 border-grayLight text-grayLight" />
 			<br />
@@ -45,7 +50,9 @@ const DocsPageLayout = ({ params }: { params: { slug: string } }) => {
 			{!docsPage.isChartPage && <Mdx code={docsPage.body.code} />}
 			{docsPage.isChartPage && (
 				<>
-					{docsPage.intro && <ChartContentSection {...docsPage.intro} />}
+					{docsPage.intro && (
+						<ChartContentSection {...docsPage.intro} noTitle />
+					)}
 					<ChartContentSection {...docsPage.info} />
 					<ChartContentSection {...docsPage.methodology} />
 					<ChartContentSection {...docsPage.data} />

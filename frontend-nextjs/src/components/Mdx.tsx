@@ -61,7 +61,14 @@ export function Mdx({ code }: MdxProps) {
 						...props
 					}: React.ImgHTMLAttributes<HTMLImageElement>) => (
 						// biome-ignore lint/a11y/useAltText: <explanation>
-						<img alt={alt} className="max-w-full" {...props} />
+						<img
+							alt={alt}
+							className={cn(
+								"max-w-full border border-grayLight shadow-lg shadow-black/5 dark:shadow-black/50",
+								className,
+							)}
+							{...props}
+						/>
 					),
 					hr: ({ ...props }) => <hr {...props} />,
 					table: ({

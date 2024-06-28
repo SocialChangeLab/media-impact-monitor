@@ -136,7 +136,6 @@ async function fetchMonitorUrl(monitor: MonitorType) {
 			status: status,
 		};
 	} catch (error) {
-		console.error(error);
 		return {
 			...monitor,
 			status: "unknown" as const,
@@ -166,9 +165,7 @@ async function fetchMonitors() {
 		monitors =
 			parsed.publicGroupList.find(({ name }) => name === "Services")
 				?.monitorList ?? fallbackMonitors;
-	} catch (error) {
-		console.error(error);
-	}
+	} catch (error) {}
 	const monitorObjects = await Promise.all(
 		monitors.map((monitor) => fetchMonitorUrl(monitor)),
 	);

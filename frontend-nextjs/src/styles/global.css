@@ -250,12 +250,20 @@
 		@apply px-[var(--pagePadding)];
 	}
 
+	.py-content {
+		@apply py-[var(--pagePadding)];
+	}
+
 	.p-content {
 		@apply p-[var(--pagePadding)];
 	}
 
 	.pt-content {
 		@apply pt-[var(--pagePadding)];
+	}
+
+	.gap-content {
+		@apply gap-[var(--pagePadding)];
 	}
 
 	.min-h-content {

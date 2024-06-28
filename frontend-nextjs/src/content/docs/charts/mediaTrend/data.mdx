@@ -14,23 +14,72 @@ The data used in this chart provides from the following sources:
 
 ## Data processing
 
-The data used in this chart is processed as follows:
-
-- The data is filtered to only include protest events that occurred in the selected time period.
-- The data is filtered to only include articles that were mentioned in the protest events.
+1. **Article Collection**: Using web scraping and API integrations, relevant articles are collected.
+2. **Sentiment Analysis**: NLP tools analyze the articles to assign sentiment scores. Commonly used libraries and models include VADER (Valence Aware Dictionary and sEntiment Reasoner) and BERT (Bidirectional Encoder Representations from Transformers).
+3. **Averaging**: The sentiment scores are averaged for each protest event to represent the overall media sentiment.
 
 ## Data limitations
 
-There are some limitations to the data used in this chart:
+- **Bias**: Media sources may have inherent biases that affect sentiment scores.
+- **Context**: Sentiment analysis tools might misinterpret context, impacting accuracy.
+- **Coverage**: Variability in the amount of coverage across different media platforms can skew results.
 
-- The data is filtered to only include protest events that occurred in the selected time period.
-- The data is filtered to only include articles that were mentioned in the protest events.
 
 ## Data licensing
 
 The data used in this chart is licensed under the following terms:
 
-- Media Cloud: Data is licensed under the Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License.
-- Genios: Data is licensed under the Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License.
-- Nexis: Data is licensed under the Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License.
-- DeReKo (Deutsches Referenzkorpus): Data is licensed under the Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License.
+<ul className="sm:grid sm:grid-cols-2 gap-x-4 gap-y-1 p-0 m-0">
+  <li className="flex flex-col m-0 p-0 gap-2">
+    <strong className="m-0 grid grid-cols-[auto_1fr] gap-x-2 items-center pb-1 border-b border-grayLight">
+      <img
+        src={`/images/docs/mediacloud-favicon.png`}
+        className="m-0 aspect-square"
+        alt="Media Cloud Logo"
+        width={20}
+        height={20}
+      />
+      <span>Media Cloud</span>
+    </strong>
+    <span className="leading-tight text-sm text-grayDark">Data is licensed under the Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License.</span>
+  </li>
+  <li className="flex flex-col m-0 p-0 gap-2">
+    <strong className="m-0 grid grid-cols-[auto_1fr] gap-x-2 items-center pb-1 border-b border-grayLight">
+      <img
+        src={`/images/docs/genios-favicon.png`}
+        className="m-0 aspect-square"
+        alt="Genios Logo"
+        width={20}
+        height={20}
+      />
+      <span>Genios</span>
+    </strong>
+    <span className="leading-tight text-sm text-grayDark">Data is licensed under the Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License.</span>
+  </li>
+  <li className="flex flex-col m-0 p-0 gap-2">
+    <strong className="m-0 grid grid-cols-[auto_1fr] gap-x-2 items-center pb-1 border-b border-grayLight">
+      <img
+        src={`/images/docs/nexis-favicon.png`}
+        className="m-0 aspect-square"
+        alt="Nexis Logo"
+        width={20}
+        height={20}
+      />
+      <span>Nexis</span>
+    </strong>
+    <span className="leading-tight text-sm text-grayDark">Data is licensed under the Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License.</span>
+  </li>
+  <li className="flex flex-col m-0 p-0 gap-2">
+    <strong className="m-0 grid grid-cols-[auto_1fr] gap-x-2 items-center pb-1 border-b border-grayLight">
+      <img
+        src={`/images/docs/dereko-favicon.png`}
+        className="m-0 aspect-square"
+        alt="DeReKo Logo"
+        width={20}
+        height={20}
+      />
+      <span>DeReKo (Deutsches Referenzkorpus)</span>
+    </strong>
+    <span className="leading-tight text-sm text-grayDark">Data is licensed under the Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License.</span>
+  </li>
+</ul>

@@ -1,11 +1,12 @@
 "use client";
 
 import DocsOnThisPage from "@/components/DocsOnThisPage";
+import DocsPrevNextNav from "@/components/DocsPrevNextNav";
 import { DocsTocLink } from "@/components/DocsTocLink";
 import { useUiStore } from "@/providers/UiStoreProvider";
 import { cn } from "@/utility/classNames";
 import { getDocsToc } from "@/utility/docsUtil";
-import { type ReactNode, Suspense } from "react";
+import { Suspense } from "react";
 
 function DocsLayout({ children }: { children: ReactNode }) {
 	const docsPagesToc = getDocsToc();
@@ -55,8 +56,11 @@ function DocsLayout({ children }: { children: ReactNode }) {
 					</ul>
 				</div>
 			</nav>
-			<section className="flex justify-center p-content">
-				<Suspense>{children}</Suspense>
+			<section>
+				<div className="flex flex-col items-center p-content">
+					<Suspense>{children}</Suspense>
+				</div>
+				<DocsPrevNextNav />
 			</section>
 			<nav
 				aria-label="On this page"

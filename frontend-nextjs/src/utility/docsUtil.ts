@@ -1,4 +1,4 @@
-import { type DocsPage, allDocsPages } from "contentlayer/generated";
+import { allDocsPages } from "contentlayer/generated";
 
 export type ChartDocsPage = {
 	slug: string;
@@ -78,6 +78,21 @@ export function getDocsToc(): (
 		if (aOrder === bOrder) return a.title.localeCompare(b.title);
 		return aOrder - bOrder;
 	});
+}
+
+export function getDocsFlatToc() {
+	const docsPages = getAllDocsPages();
+	return docsPages
+		.flatMap((docsPage) =>
+			"children" in docsPage && docsPage.children
+				? (docsPage.children as ChartDocsPage[])
+				: [docsPage],
+		)
+		.map((docsPage) => ({
+			slug: docsPage.slug,
+			title: docsPage.title,
+			isChartPage: docsPage.isChartPage,
+		}));
 }
 
 function camelToCapitalCase(str: string) {

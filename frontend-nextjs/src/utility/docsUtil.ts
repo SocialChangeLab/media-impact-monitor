@@ -86,17 +86,11 @@ export function getDocsToc(): (
 
 export function getDocsFlatToc() {
 	const docsPages = getAllDocsPages();
-	return docsPages
-		.flatMap((docsPage) =>
-			"children" in docsPage && docsPage.children
-				? (docsPage.children as ChartDocsPage[])
-				: [docsPage],
-		)
-		.map((docsPage) => ({
-			slug: docsPage.slug,
-			title: docsPage.title,
-			isChartPage: docsPage.isChartPage,
-		}));
+	return docsPages.map((docsPage) => ({
+		slug: docsPage.slug,
+		title: docsPage.title,
+		isChartPage: docsPage.isChartPage,
+	}));
 }
 
 function camelToCapitalCase(str: string) {

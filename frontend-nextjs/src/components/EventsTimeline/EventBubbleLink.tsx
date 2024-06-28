@@ -5,7 +5,7 @@ import { getDateRangeByAggregationUnit } from "@/utility/useTimeIntervals";
 import Link from "next/link";
 import { memo } from "react";
 import { TooltipTrigger } from "../ui/tooltip";
-import { AggregatedItemType } from "./EventsTimelineAggregatedItem";
+import type { AggregatedItemType } from "./EventsTimelineAggregatedItem";
 
 type EventBubbleLinkProps = {
 	event: ParsedEventType;

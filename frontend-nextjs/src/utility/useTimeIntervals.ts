@@ -21,8 +21,8 @@ import {
 } from "date-fns";
 import { useMemo } from "react";
 import {
-	dateToComparableDateItem,
 	type ComparableDateItemType,
+	dateToComparableDateItem,
 } from "./comparableDateItemSchema";
 
 function useTimeIntervals({

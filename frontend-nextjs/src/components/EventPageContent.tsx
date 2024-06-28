@@ -9,7 +9,7 @@ function EventPageContent({ id }: { id: string }) {
 			<SectionHeadlineWithExplanation
 				headline="Media Timeline of Event"
 				description="See the media sentiment of articles and media related to the event"
-				help="See the media sentiment of articles and media related to the event"
+				helpSlug="sentimentTrend"
 			>
 				<MediaSentimentChart />
 			</SectionHeadlineWithExplanation>

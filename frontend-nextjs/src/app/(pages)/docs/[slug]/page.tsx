@@ -1,6 +1,6 @@
+import DocsChartContentSection from "@/components/DocsChartContentSection";
 import { Mdx } from "@/components/Mdx";
 import { getAllDocsPages, getDocsPage } from "@/utility/docsUtil";
-import type { DocsPage } from "contentlayer/generated";
 import { notFound } from "next/navigation";
 
 export const generateStaticParams = () => {
@@ -13,28 +13,6 @@ export const generateMetadata = ({ params }: { params: { slug: string } }) => {
 	if (!docsPage) throw new Error(`DocsPage not found for slug: ${params.slug}`);
 	return { title: docsPage.title };
 };
-
-function ChartContentSection({
-	noTitle = false,
-	...doc
-}: DocsPage & { noTitle?: boolean }) {
-	const id = `chart-title-${doc.slug}`;
-	return (
-		<>
-			{!noTitle && (
-				<h2
-					className="mt-2 scroll-m-20 text-4xl font-semibold tracking-tight mb-4 font-headlines"
-					id={id}
-				>
-					<a href={`#${id}`}>{doc.title}</a>
-				</h2>
-			)}
-			<Mdx code={doc.body.code} />
-			<hr className="my-4 md:my-8 border-grayLight text-grayLight" />
-			<br />
-		</>
-	);
-}
 
 const DocsPageLayout = ({ params }: { params: { slug: string } }) => {
 	const docsPage = getDocsPage(params.slug);
@@ -51,11 +29,11 @@ const DocsPageLayout = ({ params }: { params: { slug: string } }) => {
 			{docsPage.isChartPage && (
 				<>
 					{docsPage.intro && (
-						<ChartContentSection {...docsPage.intro} noTitle />
+						<DocsChartContentSection {...docsPage.intro} noTitle />
 					)}
-					<ChartContentSection {...docsPage.info} />
-					<ChartContentSection {...docsPage.methodology} />
-					<ChartContentSection {...docsPage.data} />
+					<DocsChartContentSection {...docsPage.info} />
+					<DocsChartContentSection {...docsPage.methodology} />
+					<DocsChartContentSection {...docsPage.data} />
 				</>
 			)}
 		</article>

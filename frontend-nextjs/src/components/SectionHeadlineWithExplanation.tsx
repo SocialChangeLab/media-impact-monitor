@@ -1,22 +1,23 @@
 import { cn } from "@/utility/classNames";
 import { Info } from "lucide-react";
-import { type ReactNode, memo } from "react";
+import { memo, type ReactNode } from "react";
+import HelpDialogContent from "./HelpDialogContent";
 import { Button } from "./ui/button";
-import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
+import { Dialog, DialogContent, DialogTrigger } from "./ui/dialog";
 
 function SectionHeadlineWithExplanation({
 	children,
 	headline,
 	description,
 	additionalUi,
-	help,
+	helpSlug,
 	headlineLevel: H = "h2",
 }: {
 	children: ReactNode;
 	headline: ReactNode;
 	description?: ReactNode;
 	additionalUi?: ReactNode;
-	help?: ReactNode;
+	helpSlug?: string;
 	headlineLevel?: "h1" | "h2" | "h3" | "h4" | "h5" | "h6";
 }) {
 	return (
@@ -30,9 +31,9 @@ function SectionHeadlineWithExplanation({
 						)}
 					>
 						{headline}
-						{help && (
-							<Popover>
-								<PopoverTrigger asChild>
+						{helpSlug && (
+							<Dialog>
+								<DialogTrigger asChild>
 									<Button
 										variant="ghost"
 										size="sm"
@@ -40,9 +41,17 @@ function SectionHeadlineWithExplanation({
 									>
 										<Info />
 									</Button>
-								</PopoverTrigger>
-								<PopoverContent>{help}</PopoverContent>
-							</Popover>
+								</DialogTrigger>
+								<DialogContent
+									className={cn(
+										"border border-grayMed",
+										"shadow-lg shadow-black/5 dark:shadow-black/50",
+										"w-full max-w-screen-md",
+									)}
+								>
+									<HelpDialogContent slug={helpSlug} />
+								</DialogContent>
+							</Dialog>
 						)}
 					</H>
 					{description && <p className="text-grayDark">{description}</p>}

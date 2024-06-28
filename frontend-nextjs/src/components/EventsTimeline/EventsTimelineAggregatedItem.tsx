@@ -9,6 +9,7 @@ function EventsTimelineAggregatedItem({
 	date,
 	height,
 	organisations,
+	selectedOrganisations,
 	events,
 	sumSize,
 	aggregationUnit,
@@ -16,6 +17,7 @@ function EventsTimelineAggregatedItem({
 	date: Date;
 	height: number;
 	organisations: OrganisationType[];
+	selectedOrganisations: OrganisationType[];
 	events: ParsedEventType[];
 	sumSize: number | undefined;
 	aggregationUnit: AggregationUnitType;
@@ -27,9 +29,10 @@ function EventsTimelineAggregatedItem({
 			sumSize={sumSize}
 			aggregationUnit={aggregationUnit}
 			organisations={organisations}
+			selectedOrganisations={selectedOrganisations}
 		>
 			<EventsBar height={height} organisations={organisations}>
-				<AggregatedEventsBubble organisations={organisations} />
+				<AggregatedEventsBubble organisations={selectedOrganisations} />
 			</EventsBar>
 		</AggregatedEventsTooltip>
 	);

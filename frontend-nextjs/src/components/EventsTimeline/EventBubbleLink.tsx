@@ -55,7 +55,15 @@ export function AggregatedEventsBubble({
 		<span
 			className={cn(bubbleClasses, "rounded-sm")}
 			style={{
-				background: getCSSStyleGradient(organisations.map((x) => x.color)),
+				background: getCSSStyleGradient(
+					organisations
+						.sort((a, b) => {
+							if (a.color > b.color) return 1;
+							if (a.color < b.color) return -1;
+							return b.name.localeCompare(a.name);
+						})
+						.map((x) => x.color),
+				),
 			}}
 		/>
 	);

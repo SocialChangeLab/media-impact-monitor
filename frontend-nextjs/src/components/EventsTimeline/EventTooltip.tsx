@@ -5,14 +5,17 @@ import { format } from "date-fns";
 import { Users } from "lucide-react";
 import { type PropsWithChildren, useMemo, useState } from "react";
 import { Button } from "../ui/button";
+import OrgLine from "./EventTooltipOrgLine";
 
 function EventTooltip({
 	event,
 	organisations,
+	selectedOrganisations,
 	children,
 }: PropsWithChildren<{
 	event: ParsedEventType;
 	organisations: OrganisationType[];
+	selectedOrganisations: OrganisationType[];
 }>) {
 	const [descriptionExpanded, setDescriptionExpanded] = useState(false);
 	const orgs = useMemo(() => {
@@ -23,12 +26,13 @@ function EventTooltip({
 				if (!org) return;
 				return {
 					...org,
+					isSelected: !!selectedOrganisations.find((x) => x.name === org.name),
 					name: org.name.trim() || unknownOrgName,
 				};
 			})
-			.filter(Boolean) as OrganisationType[];
+			.filter(Boolean) as (OrganisationType & { isSelected: boolean })[];
 		return mappedOrgs;
-	}, [event.organizers, organisations]);
+	}, [event.organizers, organisations, selectedOrganisations]);
 
 	const formattedDate = useMemo(
 		() => format(new Date(event.date), "EEEE d MMMM yyyy"),
@@ -77,22 +81,7 @@ function EventTooltip({
 					{descriptionExpanded ? "Show less" : "Show more"}
 				</Button>
 				{orgs.map((org) => (
-					<div
-						key={org.name}
-						className={cn(
-							"grid grid-cols-[auto_1fr] gap-x-2 items-center",
-							"border-t border-white/10 dark:border-grayLight py-2",
-						)}
-					>
-						<span
-							className={cn(
-								"size-4 rounded-full shadow-[inset_0_0_0_1px_rgba(0,0,0,0.1)] bg-grayDark",
-							)}
-							style={{ backgroundColor: org.color }}
-							aria-hidden="true"
-						/>
-						<span className="truncate">{org.name}</span>
-					</div>
+					<OrgLine key={org.name} {...org} />
 				))}
 			</TooltipContent>
 		</Tooltip>

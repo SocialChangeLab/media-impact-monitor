@@ -9,6 +9,26 @@ import { useCallback, useMemo } from "react";
 import defaultConfig from "./eventsTimelineConfig";
 import type { AggregationUnitType } from "./useAggregationUnit";
 
+function combineOrganizers(
+	events: ParsedEventType[],
+	organisations: OrganisationType[],
+) {
+	return Array.from(
+		events
+			.reduce((acc, evt) => {
+				const orgs = evt.organizers.filter((orgName) =>
+					organisations.find((o) => o.name === orgName),
+				);
+				for (const orgName of orgs) {
+					const organisation = organisations.find((o) => o.name === orgName);
+					if (organisation) acc.set(orgName, organisation);
+				}
+				return acc;
+			}, new Map<string, OrganisationType>())
+			.values(),
+	);
+}
+
 function useTimelineEvents({
 	size,
 	data,
@@ -58,18 +78,10 @@ function useTimelineEvents({
 				sumSize: columnEvents.reduce((acc, evt) => {
 					return acc + (evt.size_number ?? 0);
 				}, 0),
-				combinedOrganizers: Array.from(
-					columnEvents
-						.reduce((acc, evt) => {
-							for (const orgName of evt.organizers) {
-								const organisation = data.organisations.find(
-									(o) => o.name === orgName,
-								);
-								if (organisation) acc.set(orgName, organisation);
-							}
-							return acc;
-						}, new Map<string, OrganisationType>())
-						.values(),
+				combinedOrganizers: combineOrganizers(columnEvents, data.organisations),
+				combinedSelectedOrganizers: combineOrganizers(
+					columnEvents,
+					data.selectedOrganisations,
 				),
 			};
 		});
@@ -79,6 +91,7 @@ function useTimelineEvents({
 		intervals,
 		isInSameUnit,
 		data?.organisations,
+		data?.selectedOrganisations,
 	]);
 
 	const sizeScale = useMemo(() => {

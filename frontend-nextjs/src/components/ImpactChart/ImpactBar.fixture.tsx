@@ -55,6 +55,7 @@ export default function ImpactBarFixture() {
 						uncertainty={uncertainty}
 						uniqueId={label}
 						totalHeight={240}
+						barHeight={240}
 					/>
 				))}
 			</div>

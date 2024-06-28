@@ -1,0 +1,19 @@
+{
+  "tocOrder": 999,
+  "title": "How to read this chart",
+  "date": "2024-06-26T00:00:00.000Z",
+  "body": {
+    "raw": "\n\nThis chart shows the sentiment of the media coverage of the protest events in the selected time period. The sentiment is calculated by averaging the sentiment of all the articles that were mentioned in the protest event.\n\nThe chart shows the sentiment of the media coverage of the protest events in the selected time period. The sentiment is calculated by averaging the sentiment of all the articles that were mentioned in the protest event.\n\nThe chart shows the sentiment of the media coverage of the protest events in the selected time period. The sentiment is calculated by averaging the sentiment of all the articles that were mentioned in the protest event.\n",
+    "code": "var Component=(()=>{var l=Object.create;var a=Object.defineProperty;var d=Object.getOwnPropertyDescriptor;var p=Object.getOwnPropertyNames;var f=Object.getPrototypeOf,g=Object.prototype.hasOwnProperty;var v=(e,t)=>()=>(t||e((t={exports:{}}).exports,t),t.exports),u=(e,t)=>{for(var s in t)a(e,s,{get:t[s],enumerable:!0})},r=(e,t,s,o)=>{if(t&&typeof t==\"object\"||typeof t==\"function\")for(let i of p(t))!g.call(e,i)&&i!==s&&a(e,i,{get:()=>t[i],enumerable:!(o=d(t,i))||o.enumerable});return e};var w=(e,t,s)=>(s=e!=null?l(f(e)):{},r(t||!e||!e.__esModule?a(s,\"default\",{value:e,enumerable:!0}):s,e)),x=e=>r(a({},\"__esModule\",{value:!0}),e);var c=v((D,h)=>{h.exports=_jsx_runtime});var b={};u(b,{default:()=>T,frontmatter:()=>j});var n=w(c()),j={title:\"How to read this chart\",date:new Date(171936e7)};function m(e){let t=Object.assign({p:\"p\"},e.components);return(0,n.jsxs)(n.Fragment,{children:[(0,n.jsx)(t.p,{children:\"This chart shows the sentiment of the media coverage of the protest events in the selected time period. The sentiment is calculated by averaging the sentiment of all the articles that were mentioned in the protest event.\"}),`\n`,(0,n.jsx)(t.p,{children:\"The chart shows the sentiment of the media coverage of the protest events in the selected time period. The sentiment is calculated by averaging the sentiment of all the articles that were mentioned in the protest event.\"}),`\n`,(0,n.jsx)(t.p,{children:\"The chart shows the sentiment of the media coverage of the protest events in the selected time period. The sentiment is calculated by averaging the sentiment of all the articles that were mentioned in the protest event.\"})]})}function _(e={}){let{wrapper:t}=e.components||{};return t?(0,n.jsx)(t,Object.assign({},e,{children:(0,n.jsx)(m,e)})):m(e)}var T=_;return x(b);})();\n;return Component;"
+  },
+  "_id": "docs/charts/sentimentTrend/info.mdx",
+  "_raw": {
+    "sourceFilePath": "docs/charts/sentimentTrend/info.mdx",
+    "sourceFileName": "info.mdx",
+    "sourceFileDir": "docs/charts/sentimentTrend",
+    "contentType": "mdx",
+    "flattenedPath": "docs/charts/sentimentTrend/info"
+  },
+  "type": "DocsPage",
+  "slug": "how-to-read-this-chart"
+}

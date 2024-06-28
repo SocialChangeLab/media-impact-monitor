@@ -2,13 +2,17 @@
 import { cn } from "@/utility/classNames";
 import { useQuery } from "@tanstack/react-query";
 import { ExternalLink } from "lucide-react";
-import { Fragment, forwardRef, useMemo } from "react";
+import { Fragment, forwardRef } from "react";
 import { z } from "zod";
 import { Tooltip, TooltipContent, TooltipTrigger } from "./ui/tooltip";
+
+// Constants –––––––––––––––––––––––––––––––––
 
 const UPTIME_KUMA_BASE_URL =
 	process.env.NEXT_PUBLIC_UPTIME_KUMA_BASE_URL ||
 	`https://status.mediaimpactmonitor.app`;
+
+// ZOD Schemas –––––––––––––––––––––––––––––––––
 
 const ConfigSchema = z.object({
 	slug: z.string(),
@@ -29,7 +33,6 @@ const MonitorSchema = z.object({
 	id: z.number(),
 	name: z.string(),
 });
-type MonitorType = z.infer<typeof MonitorSchema>;
 
 const PublicGroupSchema = z.object({
 	id: z.number(),
@@ -45,42 +48,18 @@ const UptimeStatusSchema = z.object({
 	maintenanceList: z.array(z.unknown()), // Assuming we don't have details about the structure of maintenanceList items
 });
 
+// Types –––––––––––––––––––––––––––––––––
+
 type StatusType = "up" | "down" | "unknown" | "partial";
+type MonitorType = z.infer<typeof MonitorSchema>;
 
-const UptimeStatusLinkAnchor = forwardRef<
-	HTMLAnchorElement,
-	{ status: StatusType }
->((props, ref) => (
-	<a
-		ref={ref}
-		href={UPTIME_KUMA_BASE_URL}
-		target="_blank"
-		rel="noopener noreferrer"
-		className="w-fit inline-grid grid-cols-[auto_auto] gap-x-2 items-center"
-	>
-		<UptimeStatusPill status={props.status} />
-		<span className="flex gap-2 items-center">
-			App status
-			<ExternalLink size={16} className="opacity-50" />
-		</span>
-	</a>
-));
+type MonitorWithStatusType = MonitorType & {
+	status: StatusType;
+};
 
-function UptimeStatusPill({ status }: { status: StatusType }) {
-	return (
-		<span
-			className={cn(
-				"inline-block size-3 rounded-full ring-[1px] ring-[rgba(0,0,0,0.1)] ring-inset",
-				status === "up" && "bg-[var(--sentiment-positive)]",
-				status === "down" && "bg-[var(--sentiment-negative)]",
-				status === "partial" && "bg-[var(--sentiment-neutral)]",
-				status === "unknown" && "bg-[var(--grayLight)]",
-			)}
-		/>
-	);
-}
+// Data –––––––––––––––––––––––––––––––––
 
-const monitors: MonitorType[] = [
+const fallbackMonitors: MonitorType[] = [
 	{
 		id: 1,
 		name: "production website",
@@ -127,6 +106,8 @@ const monitors: MonitorType[] = [
 	},
 ];
 
+// Utility functions –––––––––––––––––––––––––––––––––
+
 function getBadgeUrl(monitorId: number) {
 	const config = {
 		style: "flat-square",
@@ -140,7 +121,9 @@ function getBadgeUrl(monitorId: number) {
 
 async function fetchMonitorUrl(monitor: MonitorType) {
 	try {
-		const response = await fetch(getBadgeUrl(monitor.id));
+		const response = await fetch(getBadgeUrl(monitor.id), {
+			headers: { "cache-control": "no-cache" },
+		});
 		const svgText = await response.text();
 		let status = "unknown" as StatusType;
 		if (svgText.includes("<title>Status: Up</title>")) {
@@ -161,6 +144,17 @@ async function fetchMonitorUrl(monitor: MonitorType) {
 	}
 }
 
+function getOverallStatus(monitors: MonitorWithStatusType[]): StatusType {
+	if (!monitors) return "unknown";
+	const allUp = monitors.every((monitor) => monitor.status === "up");
+	const allDown = monitors.every((monitor) => monitor.status === "down");
+	const allUnknown = monitors.every((monitor) => monitor.status === "unknown");
+	if (allUp) return "up";
+	if (allDown) return "down";
+	if (allUnknown) return "unknown";
+	return "partial";
+}
+
 async function fetchMonitors() {
 	let monitors: MonitorType[] = fallbackMonitors;
 	try {
@@ -175,46 +169,86 @@ async function fetchMonitors() {
 	} catch (error) {
 		console.error(error);
 	}
-	const imageObjects = await Promise.all(
+	const monitorObjects = await Promise.all(
 		monitors.map((monitor) => fetchMonitorUrl(monitor)),
 	);
-	return imageObjects;
+	return {
+		monitors: monitorObjects,
+		overallStatus: getOverallStatus(monitorObjects),
+	};
+}
+
+function formatMonitorName(str: string) {
+	const nameWithoutUnderscores = str.replace("_", " ");
+	const nameInTitleCase = nameWithoutUnderscores.replace(
+		/\w\S*/g,
+		(txt) => txt.charAt(0).toUpperCase() + txt.substr(1),
+	);
+	return nameInTitleCase.replace(" Api ", " API ");
+}
+
+// Components –––––––––––––––––––––––––––––––––
+
+const UptimeStatusLinkAnchor = forwardRef<
+	HTMLAnchorElement,
+	{ status: StatusType }
+>((props, ref) => (
+	<a
+		ref={ref}
+		href={UPTIME_KUMA_BASE_URL}
+		target="_blank"
+		rel="noopener noreferrer"
+		className="w-fit inline-grid grid-cols-[auto_auto] gap-x-2 items-center"
+	>
+		<UptimeStatusPill status={props.status} />
+		<span className="flex gap-2 items-center">
+			App status
+			<ExternalLink size={16} className="opacity-50" />
+		</span>
+	</a>
+));
+
+function UptimeStatusPill({ status }: { status: StatusType }) {
+	return (
+		<span
+			className={cn(
+				"inline-block size-3 rounded-full ring-[1px] ring-[rgba(0,0,0,0.1)] ring-inset",
+				status === "up" && "bg-[var(--sentiment-positive)]",
+				status === "down" && "bg-[var(--sentiment-negative)]",
+				status === "partial" && "bg-[var(--sentiment-neutral)]",
+				status === "unknown" && "bg-[var(--grayLight)]",
+			)}
+		/>
+	);
 }
 
 function UptimeStatusLink() {
 	const query = useQuery({
 		queryKey: ["uptimeStatus"],
 		queryFn: fetchMonitors,
+		// refetch every 5 minutes
+		refetchInterval: 5 * 60 * 1000,
 	});
 
-	const overallStatus = useMemo((): StatusType => {
-		if (!query.data) return "unknown";
-		const allUp = query.data.every((monitor) => monitor.status === "up");
-		const allDown = query.data.every((monitor) => monitor.status === "down");
-		if (allUp) return "up";
-		if (allDown) return "down";
-		return "partial";
-	}, [query.data]);
-
 	if (!query.isSuccess || !query.data)
-		return <UptimeStatusLinkAnchor status={overallStatus} />;
+		return <UptimeStatusLinkAnchor status="unknown" />;
 
 	return (
 		<Tooltip delayDuration={50} disableHoverableContent>
 			<TooltipTrigger className="inline-block w-fit bg-none">
-				<UptimeStatusLinkAnchor status={overallStatus} />
+				<UptimeStatusLinkAnchor status={query.data.overallStatus} />
 			</TooltipTrigger>
 			<TooltipContent className="w-fit" align="start">
 				<ul
 					className="inline-grid grid-cols-[auto_auto] gap-x-2 gap-y-1 items-center"
 					style={{
-						gridTemplateRows: `repeat(${query.data.length}, 20px)`,
+						gridTemplateRows: `repeat(${query.data.monitors.length}, 20px)`,
 					}}
 				>
-					{query.data.map((monitor) => (
+					{query.data.monitors.map((monitor) => (
 						<Fragment key={monitor.id}>
 							<UptimeStatusPill status={monitor.status} />
-							{toTitleCase(monitor.name.replace("_", " ")).replace(
+							{formatMonitorName(monitor.name.replace("_", " ")).replace(
 								" Api ",
 								" API ",
 							)}
@@ -226,10 +260,3 @@ function UptimeStatusLink() {
 	);
 }
 export default UptimeStatusLink;
-
-function toTitleCase(str: string) {
-	return str.replace(
-		/\w\S*/g,
-		(txt) => txt.charAt(0).toUpperCase() + txt.substr(1),
-	);
-}

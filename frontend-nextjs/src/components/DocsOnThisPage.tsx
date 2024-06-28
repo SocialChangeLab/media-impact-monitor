@@ -2,6 +2,7 @@
 
 import { cn } from "@/utility/classNames";
 import { randomInRange } from "@/utility/randomUtil";
+import { usePathname } from "next/navigation";
 import { memo, useEffect, useRef, useState } from "react";
 
 type HeadingElement = {
@@ -30,9 +31,11 @@ const PlaceholderSkeleton = memo(
 );
 
 function DocsOnThisPage() {
+	const pathname = usePathname();
 	const [headingElements, setHeadingElements] = useState<HeadingElement[]>([]);
 	const initialized = useRef(false);
 
+	// biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
 	useEffect(() => {
 		const container = document.getElementById("docs-content");
 		if (!container) return;
@@ -62,7 +65,7 @@ function DocsOnThisPage() {
 		}, [] as HeadingElement[]);
 
 		setHeadingElements(hierarchy);
-	}, []);
+	}, [pathname]);
 
 	useEffect(() => {
 		if (initialized.current) return;

@@ -101,8 +101,10 @@ function EventsTimeline({
 												<span
 													className={cn(
 														"grid sticky top-0 p-4 text-sm select-none whitespace-nowrap",
-														"opacity-0 transition-opacity group-hover:opacity-100",
-														colsAfter < 10 ? "right-px text-right" : "left-px",
+														"opacity-0 transition-opacity group-hover:opacity-100 w-fit",
+														colsAfter < 10
+															? "text-right -translate-x-full"
+															: "left-px",
 													)}
 													style={{ top: dataSourceTop }}
 												>

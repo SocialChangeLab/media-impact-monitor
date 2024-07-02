@@ -17,8 +17,8 @@ import {
 } from "date-fns";
 import { useMemo } from "react";
 import {
-	type ComparableDateItemType,
 	dateToComparableDateItem,
+	type ComparableDateItemType,
 } from "./comparableDateItemSchema";
 
 function useTimeIntervals({
@@ -57,7 +57,7 @@ function useTimeIntervals({
 		const timeStartFn = getTimeStartByAggregationUnit(aggregationUnit);
 		const timeIncrementerFn =
 			getTimeIncrementerByAggregationUnit(aggregationUnit);
-		const timeDiff = Math.abs(timeComparatorFn(to, from)) + 1;
+		const timeDiff = Math.abs(timeComparatorFn(to, from));
 		return new Array(timeDiff)
 			.fill(null)
 			.map((_, idx) =>

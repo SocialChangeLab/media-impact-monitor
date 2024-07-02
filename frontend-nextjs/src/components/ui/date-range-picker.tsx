@@ -1,6 +1,13 @@
 "use client";
 
-import { format, isSameDay, startOfDay, subDays, subMonths } from "date-fns";
+import {
+	endOfDay,
+	format,
+	isSameDay,
+	startOfDay,
+	subDays,
+	subMonths,
+} from "date-fns";
 import type { DateRange } from "react-day-picker";
 
 import { Button } from "@/components/ui/button";
@@ -13,13 +20,13 @@ import {
 import { cn } from "@/utility/classNames";
 import { CalendarDays } from "lucide-react";
 import {
-	type ReactNode,
 	memo,
 	useCallback,
 	useEffect,
 	useMemo,
 	useRef,
 	useState,
+	type ReactNode,
 } from "react";
 
 export const DatePickerWithRange = memo(
@@ -146,7 +153,7 @@ export const DatePickerWithRange = memo(
 								selected={date}
 								onSelect={setDate}
 								numberOfMonths={2}
-								disabled={{ after: new Date() }}
+								disabled={{ after: subDays(endOfDay(new Date()), 1) }}
 								month={month}
 								onMonthChange={setMonth}
 							/>
@@ -189,8 +196,8 @@ const LastSixMonthButton = memo(
 		<PresetButton
 			currentRange={currentRange}
 			targetRange={{
-				from: startOfDay(subMonths(new Date(), 6)),
-				to: startOfDay(new Date()),
+				from: startOfDay(subMonths(startOfDay(subDays(new Date(), 1)), 6)),
+				to: endOfDay(subDays(new Date(), 1)),
 			}}
 			onChange={onChange}
 		>
@@ -210,8 +217,8 @@ const LastTwelveMonthButton = memo(
 		<PresetButton
 			currentRange={currentRange}
 			targetRange={{
-				from: startOfDay(subMonths(new Date(), 12)),
-				to: startOfDay(new Date()),
+				from: startOfDay(subMonths(startOfDay(subDays(new Date(), 1)), 12)),
+				to: endOfDay(subDays(new Date(), 1)),
 			}}
 			onChange={onChange}
 		>
@@ -231,8 +238,8 @@ const LastMonthButton = memo(
 		<PresetButton
 			currentRange={currentRange}
 			targetRange={{
-				from: startOfDay(subDays(new Date(), 30)),
-				to: startOfDay(new Date()),
+				from: startOfDay(subDays(new Date(), 31)),
+				to: endOfDay(subDays(new Date(), 1)),
 			}}
 			onChange={onChange}
 		>

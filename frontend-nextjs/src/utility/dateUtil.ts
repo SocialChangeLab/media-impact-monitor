@@ -1,4 +1,4 @@
-import { isBefore, parse, startOfDay } from "date-fns";
+import { isBefore, parse } from "date-fns";
 export function dateSortCompare(a: unknown, b: unknown): 0 | -1 | 1 {
 	if (typeof a !== "string" || typeof b !== "string") return 0;
 	try {
@@ -15,7 +15,7 @@ export function dateSortCompare(a: unknown, b: unknown): 0 | -1 | 1 {
 export function isValidISODateString(date?: unknown) {
 	if (typeof date !== "string") return false;
 	try {
-		parse(date, "yyyy-MM-dd", startOfDay(new Date()));
+		parse(date, "yyyy-MM-dd", new Date());
 		return true;
 	} catch (error) {
 		return false;

@@ -9,7 +9,14 @@ import { isInSameAggregationUnit } from "@/utility/useTimeIntervals";
 import useDebounce from "@custom-react-hooks/use-debounce";
 import useElementSize from "@custom-react-hooks/use-element-size";
 import { useRanger, type Ranger } from "@tanstack/react-ranger";
-import { addDays, differenceInDays, format, parse, startOfDay } from "date-fns";
+import {
+	addDays,
+	differenceInDays,
+	endOfDay,
+	format,
+	parse,
+	startOfDay,
+} from "date-fns";
 import {
 	memo,
 	useCallback,
@@ -30,7 +37,7 @@ type BtnEvent = BtnMouseEvent | BtnTouchEvent;
 const datasetStartDate = startOfDay(
 	parse("01-01-2020", "dd-MM-yyyy", new Date()),
 );
-const datasetEndDate = startOfDay(new Date());
+const datasetEndDate = endOfDay(new Date());
 const amountOfDays = differenceInDays(datasetEndDate, datasetStartDate) + 1;
 const intervals = new Array(amountOfDays)
 	.fill(null)

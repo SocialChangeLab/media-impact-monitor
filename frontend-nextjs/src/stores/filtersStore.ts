@@ -1,13 +1,13 @@
-import { format, startOfDay, subMonths } from "date-fns";
+import { endOfDay, format, startOfDay, subDays, subMonths } from "date-fns";
 import { create } from "zustand";
 import {
-	type StateStorage,
 	createJSONStorage,
 	persist,
+	type StateStorage,
 } from "zustand/middleware";
 
-const defaultTo = startOfDay(new Date());
-const defaultFrom = startOfDay(subMonths(defaultTo, 2));
+const defaultTo = endOfDay(subDays(new Date(), 1));
+const defaultFrom = startOfDay(subMonths(startOfDay(new Date()), 2));
 
 export type FiltersState = {
 	from: Date;

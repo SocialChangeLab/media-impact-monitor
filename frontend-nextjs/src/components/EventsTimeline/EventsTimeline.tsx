@@ -2,8 +2,8 @@
 import LoadingEventsTimeline from "@/components/EventsTimeline/LoadingEventsTimeline";
 import { cn } from "@/utility/classNames";
 import {
-	dateToComparableDateItem,
 	type ComparableDateItemType,
+	dateToComparableDateItem,
 } from "@/utility/comparableDateItemSchema";
 import { parseErrorMessage } from "@/utility/errorHandlingUtil";
 import type { OrganisationType, ParsedEventType } from "@/utility/eventsUtil";

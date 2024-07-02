@@ -2,8 +2,8 @@
 import LoadingEventsTimeline from "@/components/EventsTimeline/LoadingEventsTimeline";
 import { cn } from "@/utility/classNames";
 import {
-	type ComparableDateItemType,
 	dateToComparableDateItem,
+	type ComparableDateItemType,
 } from "@/utility/comparableDateItemSchema";
 import { parseErrorMessage } from "@/utility/errorHandlingUtil";
 import type { OrganisationType, ParsedEventType } from "@/utility/eventsUtil";
@@ -93,14 +93,14 @@ function EventsTimeline({
 												"w-px h-full absolute top-0 left-1/2 -translate-x-1/2 pointer-events-none",
 												"bg-grayLight group-hover:opacity-50 event-line opacity-0 transition-opacity",
 												insertedDataSource &&
-													"opacity-100 group-hover:opacity-100 bg-gradient-to-b via-grayLight from-fg to-grayUltraLight",
+													"opacity-100 group-hover:opacity-100 bg-gradient-to-t via-grayLight from-grayUltraLight to-fg",
 											)}
 											aria-hidden={!insertedDataSource}
 										>
 											{insertedDataSource && (
 												<span
 													className={cn(
-														"grid absolute top-0 p-4 text-sm select-none truncate",
+														"grid sticky top-0 p-4 text-sm select-none whitespace-nowrap",
 														"opacity-0 transition-opacity group-hover:opacity-100",
 														colsAfter < 10 ? "right-px text-right" : "left-px",
 													)}

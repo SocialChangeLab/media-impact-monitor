@@ -1,7 +1,6 @@
 import type { MediaSourceType } from "@/stores/filtersStore";
-import { format } from "date-fns";
 import { ZodError, z } from "zod";
-import { fetchApiData } from "./fetchUtil";
+import { fetchApiData, formatInput } from "./fetchUtil";
 import { getMediaSentimentQuery } from "./mediaSentimentUtil";
 
 const mediaSentimentImpactZodSchema = z.object({
@@ -70,13 +69,7 @@ function getMediaSentimentImpactQuery(params: {
 			...params,
 			organizers: [params.organizer],
 		}),
-		...(params?.from && params?.to
-			? {
-					start_date: format(params?.from, "yyyy-MM-dd"),
-					end_date: format(params?.to, "yyyy-MM-dd"),
-				}
-			: {}),
-		organizer: params?.organizer,
+		...formatInput(params),
 	};
 }
 

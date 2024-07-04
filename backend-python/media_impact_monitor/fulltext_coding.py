@@ -45,14 +45,17 @@ def code_fulltext(text: str) -> float | None:
             temperature=0.0,
         )
     except BadRequestError as e:
-        print(e)
-        print(text)
-        print(response)
+        print("error coding sentiment:", e)
         return
     try:
-        return json.loads(response.choices[0].message.tool_calls[0].function.arguments)
-    except json.JSONDecodeError:
-        print(response)
+        result = json.loads(
+            response.choices[0].message.tool_calls[0].function.arguments
+        )
+        assert "sentiment_reasoning" in result and "sentiment" in result
+        assert isinstance(result["sentiment"], int)
+        return result
+    except json.JSONDecodeError as e:
+        print("error coding sentiment:", e)
         return
 
 

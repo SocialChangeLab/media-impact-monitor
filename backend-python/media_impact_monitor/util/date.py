@@ -20,7 +20,7 @@ def get_latest_data(func: callable, args: BaseModel):
     """
     assert hasattr(args, "end_date")
     args.end_date = args.end_date or date.today() - timedelta(days=1)
-    _stop_date = args.end_date - timedelta(days=14)
+    _stop_date = args.end_date - timedelta(days=2)
     exception = None  # store exception to raise it only once in the end
     while args.end_date >= _stop_date:
         try:

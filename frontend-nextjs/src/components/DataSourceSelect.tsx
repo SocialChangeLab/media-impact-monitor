@@ -45,8 +45,7 @@ const options: OptionType[] = [
 		name: "Online News",
 		value: "news_online",
 		Icon: GlobeIcon,
-		description:
-			"Online news articles and media from Media Cloud, a global media coverage to understand the content, context, and impact of news stories.",
+		description: "Global online news articles and media from Media Cloud.",
 		links: [
 			{
 				label: "Official Website",
@@ -58,8 +57,7 @@ const options: OptionType[] = [
 		name: "Print News",
 		value: "news_print",
 		Icon: NewspaperIcon,
-		description:
-			"Print news from Genios, text-searchable archives of newspapers and other media content for numerous organizations.",
+		description: "Archived print news content from Genios for text search.",
 		links: [
 			{
 				label: "Official Website",
@@ -75,12 +73,11 @@ const options: OptionType[] = [
 		name: "Google News",
 		value: "web_google",
 		Icon: SearchIcon,
-		description:
-			"Extensive global news by Google, business, and legal information for research and analytics.",
+		description: "Broad global news from Google for research and analytics.",
 		links: [
 			{
 				label: "Official Website",
-				href: "https://www.lexisnexis.com/en-us/professional/research/nexis.page",
+				href: "https://news.google.com/home",
 			},
 		],
 	},

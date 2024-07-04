@@ -61,7 +61,7 @@ function useTimeIntervals({
 		const timeStartFn = getTimeStartByAggregationUnit(aggregationUnit);
 		const timeIncrementerFn =
 			getTimeIncrementerByAggregationUnit(aggregationUnit);
-		const timeDiff = Math.abs(timeComparatorFn(to, from));
+		const timeDiff = Math.abs(timeComparatorFn(to, from)) + 1;
 		return new Array(timeDiff)
 			.fill(null)
 			.map((_, idx) =>

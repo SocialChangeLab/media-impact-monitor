@@ -26,13 +26,15 @@ from media_impact_monitor.util.paths import src
 
 @cache
 def get_fulltexts(q: FulltextSearch) -> pd.DataFrame | None:
-    assert q.topic or q.query or q.event_id
+    assert q.topic or q.organizers or q.query or q.event_id
     keywords = load_keywords()
     if q.topic:
         assert q.topic == "climate_change"
         assert not q.query and not q.organizers and not q.event_id
         query = xs(
-            keywords["science"] + keywords["policy"] + keywords["urgency"],
+            keywords["climate_science"]
+            + keywords["climate_policy"]
+            + keywords["climate_urgency"],
             q.media_source,
         )
     if q.organizers:
@@ -51,7 +53,7 @@ def get_fulltexts(q: FulltextSearch) -> pd.DataFrame | None:
         event = events.iloc[0]
         # TODO: handle start_date and end_date
         q.start_date = event["date"]
-        q.end_date = event["date"] + timedelta(days=7)
+        q.end_date = q.end_date or event["date"] + timedelta(days=7)
         orgs = add_quotes(add_aliases(event["organizers"]))
         query = xs_with_ys(orgs, keywords["activism"], q.media_source)
 
@@ -73,9 +75,12 @@ def get_fulltexts(q: FulltextSearch) -> pd.DataFrame | None:
     if df is None:
         return
 
+    # TODO: use asyncio
     responses = parallel_tqdm(code_fulltext, df["text"], desc="Processing fulltexts")
-    df = pd.concat([df, pd.DataFrame(responses)], axis=1)
-    df = df.drop(columns=["sentiment_reasoning"])
+    df["sentiment"] = [
+        r["sentiment"] if r and "sentiment" in r else None for r in responses
+    ]
+    df["sentiment"] = df["sentiment"].fillna(0).astype(int)
 
     if q.event_id:
         # TODO filter by only those articles that refer to the event

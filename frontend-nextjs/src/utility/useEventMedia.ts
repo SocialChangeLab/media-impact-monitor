@@ -1,0 +1,69 @@
+"use client";
+import { useFiltersStore } from "@/providers/FiltersStoreProvider";
+import { queryOptions, useQuery } from "@tanstack/react-query";
+import { endOfDay } from "date-fns";
+import { useEffect } from "react";
+import { toast } from "sonner";
+import {
+	type EventMediaInputQueryType,
+	eventMediaInputQueryZodSchema,
+	getEventMediaData,
+} from "./eventMediaUtil";
+import type { ParsedEventType } from "./eventsUtil";
+
+export function getEventMediaQueryOptions(
+	query?: Partial<EventMediaInputQueryType>,
+) {
+	const queryParsing = eventMediaInputQueryZodSchema.safeParse(query);
+	const key = queryParsing.success
+		? [
+				"eventMedia",
+				queryParsing.data.eventId,
+				queryParsing.data.mediaSource,
+				queryParsing.data.from,
+				queryParsing.data.to,
+				queryParsing.data.topic,
+				queryParsing.data.organizers,
+			]
+		: ["eventMedia", null];
+	return queryOptions({
+		queryKey: key,
+		queryFn: () =>
+			queryParsing.success ? getEventMediaData(queryParsing.data) : null,
+		staleTime: endOfDay(new Date()).getTime() - new Date().getTime(),
+		enabled: queryParsing.success,
+	});
+}
+
+function useEventMedia(eventId?: ParsedEventType["event_id"]) {
+	const { organizers, mediaSource, from, to } = useFiltersStore(
+		({ organizers, mediaSource, from, to }) => ({
+			organizers,
+			mediaSource,
+			from,
+			to,
+		}),
+	);
+	const query = useQuery(
+		getEventMediaQueryOptions({
+			eventId,
+			organizers,
+			from,
+			to,
+			mediaSource,
+		}),
+	);
+
+	useEffect(() => {
+		if (!query.error) return;
+		toast.error(`Error fetching events: ${query.error}`, {
+			important: true,
+			dismissible: true,
+			duration: 1000000,
+		});
+	}, [query.error]);
+
+	return query;
+}
+
+export default useEventMedia;

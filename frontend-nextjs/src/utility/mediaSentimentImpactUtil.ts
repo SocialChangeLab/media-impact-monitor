@@ -1,3 +1,4 @@
+import type { MediaSourceType } from "@/stores/filtersStore";
 import { format } from "date-fns";
 import { ZodError, z } from "zod";
 import { fetchApiData } from "./fetchUtil";
@@ -59,6 +60,7 @@ export type MediaSentimentImpactDataType = z.infer<
 
 function getMediaSentimentImpactQuery(params: {
 	organizer: string;
+	mediaSource: MediaSourceType;
 	from?: Date;
 	to?: Date;
 }) {
@@ -80,6 +82,7 @@ function getMediaSentimentImpactQuery(params: {
 
 export async function getMediaSentimentImpactData(params: {
 	organizer: string;
+	mediaSource: MediaSourceType;
 	from?: Date;
 	to?: Date;
 }): Promise<ParsedMediaSentimentImpactType> {

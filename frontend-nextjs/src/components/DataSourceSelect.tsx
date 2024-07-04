@@ -16,6 +16,8 @@ import {
 	TooltipProvider,
 	TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { useFiltersStore } from "@/providers/FiltersStoreProvider";
+import type { MediaSourceType } from "@/stores/filtersStore";
 import {
 	ChevronsUpDownIcon,
 	GlobeIcon,
@@ -29,7 +31,7 @@ import { useMemo, useState } from "react";
 
 type OptionType = {
 	name: string;
-	value: string;
+	value: MediaSourceType;
 	Icon: LucideIcon;
 	description: string;
 	links: {
@@ -86,11 +88,16 @@ const options: OptionType[] = [
 const optionsMap = new Map(options.map((o) => [o.value, o]));
 
 export default function MediaSourceSelect() {
+	const { mediaSource, setMediaSource } = useFiltersStore(
+		({ mediaSource, setMediaSource }) => ({
+			mediaSource,
+			setMediaSource,
+		}),
+	);
 	const [isOpened, setIsOpened] = useState(false);
-	const [selectedId, setSelectedId] = useState<string | null>(options[0].value);
 	const selectedValue = useMemo(
-		() => (selectedId && optionsMap.get(selectedId)) || undefined,
-		[selectedId],
+		() => (mediaSource && optionsMap.get(mediaSource)) || undefined,
+		[mediaSource],
 	);
 	return (
 		<Popover open={isOpened} onOpenChange={setIsOpened}>
@@ -129,7 +136,7 @@ export default function MediaSourceSelect() {
 											className="flex items-start gap-3 text-left grow focusable focus-visible:bg-bg"
 											type="button"
 											onClick={() => {
-												setSelectedId(option.value);
+												setMediaSource(option.value);
 												setIsOpened(false);
 											}}
 										>

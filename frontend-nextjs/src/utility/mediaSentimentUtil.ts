@@ -1,3 +1,4 @@
+import type { MediaSourceType } from "@/stores/filtersStore";
 import { format } from "date-fns";
 import { ZodError, z } from "zod";
 import {
@@ -34,9 +35,10 @@ export function getMediaSentimentQuery(params: {
 	from?: Date;
 	to?: Date;
 	organizers: string[];
+	mediaSource: MediaSourceType;
 }) {
 	return {
-		media_source: "news_online",
+		media_source: params.mediaSource || "news_online",
 		topic: "climate_change",
 		trend_type: "sentiment",
 		...(params?.from && params?.to
@@ -56,6 +58,7 @@ export async function getMediaSentimentData(params: {
 	from?: Date;
 	to?: Date;
 	organizers: string[];
+	mediaSource: MediaSourceType;
 }): Promise<MediaDataType> {
 	const json = await fetchApiData({
 		endpoint: "trend",

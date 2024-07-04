@@ -1,3 +1,4 @@
+import type { MediaSourceType } from "@/stores/filtersStore";
 import { format } from "date-fns";
 import { ZodError, z } from "zod";
 import {
@@ -34,11 +35,11 @@ export async function getMediaCoverageData(params?: {
 	from?: Date;
 	to?: Date;
 	organizers: OrganisationType["name"][];
+	mediaSource: MediaSourceType;
 }): Promise<ParsedMediaCoverageType[]> {
 	const json = await fetchApiData({
 		endpoint: "trend",
 		body: {
-			media_source: "news_online",
 			topic: "climate_change",
 			trend_type: "keywords",
 			...(params?.from && params?.to
@@ -51,6 +52,7 @@ export async function getMediaCoverageData(params?: {
 				params?.organizers && params.organizers.length > 0
 					? params.organizers
 					: undefined,
+			media_source: params?.mediaSource || "news_online",
 		},
 		// fallbackFilePathContent: (
 		// 	await import("../data/fallbackMediaCoverage.json")

@@ -13,7 +13,7 @@ type MenuItemType = {
 
 const menuItems: MenuItemType[] = [
 	{
-		name: "events",
+		name: "dashboard",
 		label: "Dashboard",
 		route: "/",
 	},
@@ -22,13 +22,19 @@ const menuItems: MenuItemType[] = [
 		label: "About",
 		route: "/about",
 	},
+	{
+		name: "docs",
+		label: "Docs",
+		route: "/docs",
+	},
 ];
 function HeaderMenu({ currentPage }: { currentPage: string }) {
 	return (
 		<nav
 			className={cn(
-				"px-[max(1rem,2vmax)] py-4 flex gap-6 flex-wrap items-center justify-between",
+				"px-[clamp(1rem,2vmax,4rem)] py-4 flex gap-6 flex-wrap items-center justify-between",
 				"border-b border-grayLight w-screen overflow-clip",
+				`max-w-page mx-auto 2xl:border-x border-grayLight`,
 			)}
 		>
 			<Link

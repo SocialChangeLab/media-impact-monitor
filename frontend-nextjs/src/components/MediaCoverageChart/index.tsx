@@ -96,7 +96,7 @@ const MediaCoverageChart = memo(
 		}, [data, intervals, isInSameUnit, aggregationUnit]);
 
 		return (
-			<div className="media-coverage-chart">
+			<div className="media-coverage-chart max-w-content">
 				<style jsx global>{`
 				.media-coverage-chart .recharts-cartesian-grid-vertical {
 					transition: opacity 150ms cubic-bezier(0.4, 0, 0.2, 1);

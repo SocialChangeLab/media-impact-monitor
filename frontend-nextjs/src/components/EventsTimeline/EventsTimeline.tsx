@@ -2,12 +2,11 @@
 import LoadingEventsTimeline from "@/components/EventsTimeline/LoadingEventsTimeline";
 import { cn } from "@/utility/classNames";
 import {
-	dateToComparableDateItem,
 	type ComparableDateItemType,
+	dateToComparableDateItem,
 } from "@/utility/comparableDateItemSchema";
 import { parseErrorMessage } from "@/utility/errorHandlingUtil";
-import type { OrganisationType, ParsedEventType } from "@/utility/eventsUtil";
-import useEvents from "@/utility/useEvents";
+import useEvents, { type UseEventsReturnType } from "@/utility/useEvents";
 import { isInSameAggregationUnit } from "@/utility/useTimeIntervals";
 import useElementSize from "@custom-react-hooks/use-element-size";
 import { QueryErrorResetBoundary } from "@tanstack/react-query";
@@ -52,27 +51,31 @@ const dataSourceInsertions: DataSourceInsertionType[] = [
 function EventsTimeline({
 	data,
 }: {
-	data: {
-		events: ParsedEventType[];
-		organisations: OrganisationType[];
-	};
+	data: UseEventsReturnType["data"];
 }) {
 	const [parentRef, size] = useElementSize();
-	const { events, organisations } = data;
+	const { organisations, eventsByOrgs, selectedOrganisations } = data;
 	const aggregationUnit = useAggregationUnit(size.width);
 	const { eventColumns, columnsCount, sizeScale } = useTimelineEvents({
 		size,
 		data,
 		aggregationUnit,
 	});
-	if (events.length === 0) return <EmptyEventsTimeline />;
+	if (eventsByOrgs.length === 0) return <EmptyEventsTimeline />;
 
 	return (
 		<EventsTimelineWrapper organisations={organisations} ref={parentRef}>
 			<EventsTimelineScrollWrapper>
 				<EventsTimelineChartWrapper columnsCount={columnsCount + 1}>
 					{eventColumns.map(
-						({ time, date, eventsWithSize, sumSize, combinedOrganizers }) => {
+						({
+							time,
+							date,
+							eventsWithSize,
+							sumSize,
+							combinedOrganizers,
+							combinedSelectedOrganizers,
+						}) => {
 							const insertedDataSource = dataSourceInsertions.find((d) =>
 								isInSameAggregationUnit(aggregationUnit, d.date, date),
 							);
@@ -126,6 +129,7 @@ function EventsTimeline({
 													key={event.event_id}
 													event={event}
 													organisations={organisations}
+													selectedOrganisations={selectedOrganisations}
 													height={sizeScale(event.size_number ?? 0)}
 												/>
 											))}
@@ -135,6 +139,7 @@ function EventsTimeline({
 												sumSize={sumSize}
 												height={Math.ceil(sizeScale(sumSize))}
 												organisations={combinedOrganizers}
+												selectedOrganisations={combinedSelectedOrganizers}
 												events={eventsWithSize}
 												aggregationUnit={aggregationUnit}
 											/>
@@ -151,17 +156,18 @@ function EventsTimeline({
 					width={size.width}
 				/>
 			</EventsTimelineScrollWrapper>
-			<div className="pt-10 flex gap-[max(2rem,4vmax)] sm:grid sm:grid-cols-[1fr_auto]">
+			<div className="pt-10 flex gap-[max(2rem,4vmax)] sm:grid sm:grid-cols-[1fr_auto] max-w-content">
 				<CollapsableSection
 					title="Legend"
 					storageKey="protest-timeline-legend-expanded"
+					storageType="session"
 				>
 					<div className="grid gap-[max(1rem,2vmax)] md:grid-cols-[auto_1fr]">
 						<EventsTimelineSizeLegend
 							sizeScale={sizeScale}
 							aggragationUnit={aggregationUnit}
 						/>
-						<OrgsLegend organisations={organisations} />
+						<OrgsLegend organisations={selectedOrganisations} />
 					</div>
 				</CollapsableSection>
 				<DataCreditLegend

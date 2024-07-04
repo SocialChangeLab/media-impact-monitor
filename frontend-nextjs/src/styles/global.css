@@ -18,6 +18,12 @@
 
 	:root,
 	:root[data-theme='light'] {
+		--pageMaxWidth: 1920px;
+		--pageFullWidth: min(100vw,var(--pageMaxWidth));
+		--pagePadding: clamp(2rem,2vmax,4rem);
+		--headerHeight: 76px;
+		--footerHeight: 216px;
+
 		--fg: var(--brandGreen);
 		--bg: var(--brandWhite);
 		--bgOverlay: rgba(93, 114, 128, 0.5);
@@ -83,6 +89,32 @@
 			--grayLight: #042f2e;
 			--grayUltraLight: #181818;
 		}
+	}
+
+	html body .prose {
+		--tw-prose-body: var(--fg);
+		--tw-prose-headings: var(--fg);
+		--tw-prose-lead: var(--grayDark);
+		--tw-prose-links: var(--fg);
+		--tw-prose-bold: var(--fg);
+		--tw-prose-counters: var(--grayMed);
+		--tw-prose-bullets: var(--grayMed);
+		--tw-prose-hr: var(--grayLight);
+		--tw-prose-quotes: var(--fg);
+		--tw-prose-quote-borders: var(--grayLight);
+		--tw-prose-captions: var(--grayMed);
+		--tw-prose-kbd: var(--fg);
+		--tw-prose-kbd-shadows: 17 24 39;
+		--tw-prose-code: var(--grayDark);
+		--tw-prose-pre-code: var(--brandWhite);
+		--tw-prose-pre-bg: var(--alt);
+		--tw-prose-th-borders: var(--grayMed);
+		--tw-prose-td-borders: var(--grayLight);
+	}
+
+	:root[data-theme='dark'] body .prose {
+		--tw-prose-invert-body: var(--grayDark);
+		--tw-prose-lead: var(--fg);
 	}
 
 	@layer base {
@@ -203,5 +235,38 @@
 
 	.bg-pattern-semi-inverted-light {
 		@apply bg-brandWhite dark:bg-[url(/images/noisy-light.png)] bg-repeat bg-center bg-blend-multiply;
+	}
+
+
+	.max-w-page {
+		@apply max-w-[var(--pageMaxWidth)];
+	}
+
+	.max-w-content {
+		@apply max-w-[calc(var(--pageFullWidth)-(var(--pagePadding)*2))];
+	}
+
+	.px-content {
+		@apply px-[var(--pagePadding)];
+	}
+
+	.py-content {
+		@apply py-[var(--pagePadding)];
+	}
+
+	.p-content {
+		@apply p-[var(--pagePadding)];
+	}
+
+	.pt-content {
+		@apply pt-[var(--pagePadding)];
+	}
+
+	.gap-content {
+		@apply gap-[var(--pagePadding)];
+	}
+
+	.min-h-content {
+		@apply min-h-[calc(100vh-var(--footerHeight)-var(--headerHeight))];
 	}
 }

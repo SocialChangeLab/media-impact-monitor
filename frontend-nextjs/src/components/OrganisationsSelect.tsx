@@ -23,11 +23,15 @@ import { useMemo, useState } from "react";
 import RoundedColorPill from "./RoundedColorPill";
 
 export function OrganisationsSelect({
+	initialValues,
 	onChange = () => undefined,
 	className,
+	multiple = true,
 }: {
+	initialValues?: OrganisationType["name"][];
 	onChange?: (values: OrganisationType["name"][]) => void;
 	className?: string;
+	multiple?: boolean;
 }) {
 	const {
 		data: { organisations },
@@ -36,11 +40,14 @@ export function OrganisationsSelect({
 		to: endOfToday(),
 	});
 	const [open, setOpen] = useState(false);
-	const [selectedOrgs, setSelectedOrgs] = useState<OrganisationType["name"][]>(
+	const initial =
+		initialValues ??
 		organisations.reduce(
 			(acc, org) => (org.isMain ? acc.concat([org.name]) : acc),
 			[] as string[],
-		),
+		);
+	const [selectedOrgs, setSelectedOrgs] = useState<OrganisationType["name"][]>(
+		multiple ? initial : [initial[0]],
 	);
 	const orgNames = useMemo(
 		() => organisations.map((o) => o.name),
@@ -112,17 +119,21 @@ export function OrganisationsSelect({
 					/>
 					<CommandEmpty>No organisation found.</CommandEmpty>
 					<CommandGroup>
-						<CommandItem
-							value="all"
-							onSelect={() => {
-								const newValues =
-									selectedOrgs.length === organisations.length ? [] : orgNames;
-								setSelectedOrgs(newValues);
-								onChange(newValues);
-							}}
-						>
-							Toggle all/none
-						</CommandItem>
+						{multiple && (
+							<CommandItem
+								value="all"
+								onSelect={() => {
+									const newValues =
+										selectedOrgs.length === organisations.length
+											? []
+											: orgNames;
+									setSelectedOrgs(newValues);
+									onChange(newValues);
+								}}
+							>
+								Toggle all/none
+							</CommandItem>
+						)}
 						{organisations.map((org) => (
 							<CommandItem
 								key={org.name}
@@ -136,8 +147,9 @@ export function OrganisationsSelect({
 											)
 										: [...selectedOrgs, org.name];
 									const uniqueValues = Array.from(new Set(newValues));
-									setSelectedOrgs(uniqueValues);
-									onChange(uniqueValues);
+									setSelectedOrgs(multiple ? uniqueValues : [org.name]);
+									onChange(multiple ? uniqueValues : [org.name]);
+									!multiple && setOpen(false);
 								}}
 							>
 								<Check

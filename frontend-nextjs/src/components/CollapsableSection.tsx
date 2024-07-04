@@ -11,7 +11,7 @@ import {
 function CollapsableSection({
 	title,
 	storageKey,
-	storageType = "session",
+	storageType,
 	children,
 	className,
 }: {

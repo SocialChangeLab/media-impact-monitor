@@ -7,6 +7,7 @@ import { cn } from "@/utility/classNames";
 import type { OrganisationType, ParsedEventType } from "@/utility/eventsUtil";
 import { format } from "date-fns";
 import { type ReactNode, memo, useMemo } from "react";
+import OrgLine from "./EventTooltipOrgLine";
 import {
 	type AggregationUnitType,
 	formatDateByAggregationUnit,
@@ -18,6 +19,7 @@ function AggregatedEventsTooltip({
 	aggregationUnit,
 	events,
 	organisations,
+	selectedOrganisations,
 	children,
 }: {
 	date: Date;
@@ -25,6 +27,7 @@ function AggregatedEventsTooltip({
 	aggregationUnit: AggregationUnitType;
 	events: ParsedEventType[];
 	organisations: OrganisationType[];
+	selectedOrganisations: OrganisationType[];
 	children: ReactNode;
 }) {
 	const formattedDate = useMemo(
@@ -38,13 +41,16 @@ function AggregatedEventsTooltip({
 				...org,
 				count: events.filter((event) => event.organizers.includes(org.name))
 					.length,
+				isSelected: !!selectedOrganisations.find((x) => x.name === org.name),
 			}))
 			.sort((a, b) => {
-				if (a.count > b.count) return -1;
-				if (a.count < b.count) return 1;
+				if (a.isSelected && !b.isSelected) return -1;
+				if (!a.isSelected && b.isSelected) return 1;
+				if (a.color > b.color) return -1;
+				if (a.color < b.color) return 1;
 				return a.name.localeCompare(b.name);
 			});
-	}, [organisations, events]);
+	}, [organisations, selectedOrganisations, events]);
 
 	return (
 		<Tooltip>
@@ -72,22 +78,7 @@ function AggregatedEventsTooltip({
 						", and was organized by the following organizations:"}
 				</p>
 				{orgs.map((org) => (
-					<div
-						key={org.name}
-						className={cn(
-							"grid grid-cols-[auto_1fr_auto] gap-x-2 items-center",
-							"border-t border-black/5 py-1",
-						)}
-					>
-						<span
-							className={cn(
-								"size-4 rounded-full shadow-[inset_0_0_0_1px_rgba(0,0,0,0.1)] bg-grayDark",
-							)}
-							style={{ backgroundColor: org.color }}
-							aria-hidden="true"
-						/>
-						<span className="truncate max-w-64">{org.name}</span>
-					</div>
+					<OrgLine key={org.name} {...org} />
 				))}
 			</TooltipContent>
 		</Tooltip>

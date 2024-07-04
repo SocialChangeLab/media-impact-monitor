@@ -2,7 +2,7 @@
 import { Button } from "@/components/ui/button";
 import headerImage from "@/images/header-bg.png";
 import { cn } from "@/utility/classNames";
-import { AnimatePresence, motion } from "framer-motion";
+import { AnimatePresence } from "framer-motion";
 import { X } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
@@ -32,12 +32,8 @@ function WelcomeMessage({ currentPage }: { currentPage: string }) {
 	return (
 		<AnimatePresence>
 			{!isAboutPage && isShowing && (
-				<motion.section
-					initial={{ opacity: 0, height: 0 }}
-					animate={{ opacity: 1, height: "auto" }}
-					exit={{ opacity: 0, height: 0 }}
-				>
-					<div className="p-6 w-screen overflow-x-clip">
+				<section>
+					<div className="p-6 w-screen max-w-content overflow-x-clip">
 						<div className="w-full sm:min-h-40 bg-brandGreen bg-blend-screen relative z-0 shadow-xl">
 							<Image
 								src={headerImage}
@@ -118,7 +114,7 @@ function WelcomeMessage({ currentPage }: { currentPage: string }) {
 							</div>
 						</div>
 					</div>
-				</motion.section>
+				</section>
 			)}
 		</AnimatePresence>
 	);

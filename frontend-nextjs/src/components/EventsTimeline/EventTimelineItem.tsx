@@ -7,11 +7,13 @@ import EventsBar from "./EventsBar";
 type EventTimelineItemProps = {
 	event: ParsedEventType;
 	organisations: OrganisationType[];
+	selectedOrganisations: OrganisationType[];
 	height: number;
 };
 function EventTimelineItem({
 	event,
 	organisations,
+	selectedOrganisations,
 	height,
 }: EventTimelineItemProps) {
 	const mappedOrganisations = useMemo(
@@ -21,14 +23,26 @@ function EventTimelineItem({
 				.filter(Boolean) as OrganisationType[],
 		[event.organizers, organisations],
 	);
+	const selectedOrganisationsMapped = useMemo(
+		() =>
+			event.organizers
+				.filter((x) => selectedOrganisations.find((y) => y.name === x))
+				.map((x) => organisations.find((y) => y.name === x))
+				.filter(Boolean) as OrganisationType[],
+		[event.organizers, selectedOrganisations, organisations],
+	);
 	return (
 		<EventTooltip
 			key={event.event_id}
 			event={event}
 			organisations={mappedOrganisations}
+			selectedOrganisations={selectedOrganisationsMapped}
 		>
 			<EventsBar height={height} organisations={mappedOrganisations}>
-				<EventBubbleLink event={event} organisations={mappedOrganisations} />
+				<EventBubbleLink
+					event={event}
+					organisations={selectedOrganisationsMapped}
+				/>
 			</EventsBar>
 		</EventTooltip>
 	);

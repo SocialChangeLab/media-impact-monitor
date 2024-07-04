@@ -18,6 +18,7 @@ function DataCreditLegend({
 			<CollapsableSection
 				title={title}
 				storageKey={storageKey}
+				storageType="session"
 				className="flex flex-col gap-4 w-full sm:w-80"
 			>
 				<div className="flex gap-8 justify-stretch flex-wrap">

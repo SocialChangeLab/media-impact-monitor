@@ -1,16 +1,14 @@
-import { BaseLayout } from "@/components/BaseLayout";
-import Providers from "@/provders";
+import CommonProviders from "@/commonProviders";
+import ThemeToggle from "@/components/ThemeToggle";
 import "@/styles/global.css";
 import { cn } from "@/utility/classNames";
 import { inter, neueRegrade } from "@/utility/fonts";
 import type { ReactNode } from "react";
 
-export default function RootLayout({
+export default function CosmosLayout({
 	children,
-	modal,
 }: Readonly<{
 	children: ReactNode;
-	modal: ReactNode;
 }>) {
 	return (
 		<html
@@ -19,10 +17,13 @@ export default function RootLayout({
 			suppressHydrationWarning
 		>
 			<head />
-			<body className="bg-pattern-soft w-screen overflow-x-clip">
-				<Providers>
-					<BaseLayout modal={modal}>{children}</BaseLayout>
-				</Providers>
+			<body className="bg-grayUltraLight w-screen min-h-screen overflow-x-clip">
+				<CommonProviders>
+					<div className="fixed top-8 right-8 bg-bg z-10">
+						<ThemeToggle />
+					</div>
+					{children}
+				</CommonProviders>
 			</body>
 		</html>
 	);

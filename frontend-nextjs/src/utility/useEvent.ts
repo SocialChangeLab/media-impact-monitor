@@ -25,7 +25,7 @@ function useEvent(id?: ParsedEventType["event_id"]) {
 		if (!query.error) return;
 		toast.error(`Error fetching events: ${query.error}`, {
 			important: true,
-			dismissible: false,
+			dismissible: true,
 			duration: 1000000,
 		});
 	}, [query.error]);

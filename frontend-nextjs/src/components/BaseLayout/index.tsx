@@ -15,10 +15,10 @@ export function BaseLayout({
 	modal: ReactNode;
 }) {
 	const pathname = usePathname();
-	const currentPage = pathname.split("/")[1] || "events";
+	const currentPage = pathname.split("/")[1] || "dashboard";
 	return (
 		<div
-			className="layout grid grid-rows-[auto_1fr_auto] w-screen overflow-x-clip transition-all"
+			className="layout grid grid-rows-[auto_1fr_auto] w-screen overflow-x-clip transition-all max-w-page"
 			style={{
 				paddingTop: 75 + (pathname === "/" ? 125 : 0),
 				minHeight: `calc(100vh - ${75 + (pathname === "/" ? 77 : 0)}px)`,
@@ -32,6 +32,7 @@ export function BaseLayout({
 						"absolute inset-0 bg-[url(/images/doc-shadow.png)] bg-no-repeat bg-right-top ",
 						"dark:mix-blend-normal dark:invert",
 						`pointer-events-none`,
+						currentPage.startsWith("docs") && "right-80",
 					)}
 				/>
 				<div
@@ -41,10 +42,11 @@ export function BaseLayout({
 						"dark:mix-blend-normal dark:invert",
 						"scale-x-[-1]",
 						`pointer-events-none`,
+						currentPage.startsWith("docs") && "left-80",
 					)}
 				/>
 				{/* <WelcomeMessage currentPage={currentPage} /> */}
-				<div className="min-h-full w-screen overflow-x-clip relative">
+				<div className="min-h-full w-screen max-w-page overflow-x-clip relative">
 					{children}
 				</div>
 			</div>

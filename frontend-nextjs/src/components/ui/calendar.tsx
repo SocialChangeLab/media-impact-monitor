@@ -67,7 +67,10 @@ function Calendar({
 					return (
 						<select
 							{...props}
-							className={cn("w-fit border-0", props.className)}
+							className={cn(
+								"w-fit mix-blend-darken dark:mix-blend-lighten border-0",
+								props.className,
+							)}
 						/>
 					);
 				},

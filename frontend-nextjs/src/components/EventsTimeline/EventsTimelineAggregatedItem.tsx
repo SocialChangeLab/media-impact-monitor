@@ -5,31 +5,21 @@ import { AggregatedEventsBubble } from "./EventBubbleLink";
 import EventsBar from "./EventsBar";
 import type { AggregationUnitType } from "./useAggregationUnit";
 
-function EventsTimelineAggregatedItem({
-	date,
-	height,
-	organisations,
-	events,
-	sumSize,
-	aggregationUnit,
-}: {
+export type AggregatedItemType = {
 	date: Date;
 	height: number;
 	organisations: OrganisationType[];
+	selectedOrganisations: OrganisationType[];
 	events: ParsedEventType[];
 	sumSize: number | undefined;
 	aggregationUnit: AggregationUnitType;
-}) {
+};
+
+function EventsTimelineAggregatedItem(aggregatedItem: AggregatedItemType) {
 	return (
-		<AggregatedEventsTooltip
-			date={date}
-			events={events}
-			sumSize={sumSize}
-			aggregationUnit={aggregationUnit}
-			organisations={organisations}
-		>
-			<EventsBar height={height} organisations={organisations}>
-				<AggregatedEventsBubble organisations={organisations} />
+		<AggregatedEventsTooltip {...aggregatedItem}>
+			<EventsBar {...aggregatedItem}>
+				<AggregatedEventsBubble {...aggregatedItem} />
 			</EventsBar>
 		</AggregatedEventsTooltip>
 	);

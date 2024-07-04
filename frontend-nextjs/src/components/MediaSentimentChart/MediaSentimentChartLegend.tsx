@@ -18,6 +18,7 @@ function MediaCoverageChartLegend({
 			<CollapsableSection
 				title="Legend"
 				storageKey="media-coverage-legend-expanded"
+				storageType="session"
 			>
 				<div className="flex flex-col gap-2">
 					<ul className="grid grid-cols-[repeat(auto-fill,minmax(min(10rem,100%),1fr));] gap-x-8 relative z-20">

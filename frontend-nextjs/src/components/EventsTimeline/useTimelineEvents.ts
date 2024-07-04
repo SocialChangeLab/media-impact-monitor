@@ -1,4 +1,5 @@
 import type { OrganisationType, ParsedEventType } from "@/utility/eventsUtil";
+import type { UseEventsReturnType } from "@/utility/useEvents";
 import useTimeIntervals, {
 	isInSameAggregationUnit,
 } from "@/utility/useTimeIntervals";
@@ -7,6 +8,26 @@ import { scalePow } from "d3-scale";
 import { useCallback, useMemo } from "react";
 import defaultConfig from "./eventsTimelineConfig";
 import type { AggregationUnitType } from "./useAggregationUnit";
+
+function combineOrganizers(
+	events: ParsedEventType[],
+	organisations: OrganisationType[],
+) {
+	return Array.from(
+		events
+			.reduce((acc, evt) => {
+				const orgs = evt.organizers.filter((orgName) =>
+					organisations.find((o) => o.name === orgName),
+				);
+				for (const orgName of orgs) {
+					const organisation = organisations.find((o) => o.name === orgName);
+					if (organisation) acc.set(orgName, organisation);
+				}
+				return acc;
+			}, new Map<string, OrganisationType>())
+			.values(),
+	);
+}
 
 function useTimelineEvents({
 	size,
@@ -17,10 +38,7 @@ function useTimelineEvents({
 	to,
 }: {
 	size: { width: number; height: number };
-	data: {
-		events: ParsedEventType[];
-		organisations: OrganisationType[];
-	} | null;
+	data: UseEventsReturnType["data"];
 	aggregationUnit: AggregationUnitType;
 	from?: Date;
 	to?: Date;
@@ -40,9 +58,9 @@ function useTimelineEvents({
 	);
 
 	const eventColumns = useMemo(() => {
-		if (!timeScale || !data?.events || !data?.organisations) return [];
+		if (!timeScale || !data?.eventsByOrgs || !data?.organisations) return [];
 		return intervals.map((comparableDateObject) => {
-			const columnEvents = data.events.filter((evt) =>
+			const columnEvents = data.eventsByOrgs.filter((evt) =>
 				isInSameUnit(evt, comparableDateObject.date),
 			);
 			const eventsWithSize = columnEvents.sort((a, b) => {
@@ -60,22 +78,21 @@ function useTimelineEvents({
 				sumSize: columnEvents.reduce((acc, evt) => {
 					return acc + (evt.size_number ?? 0);
 				}, 0),
-				combinedOrganizers: Array.from(
-					columnEvents
-						.reduce((acc, evt) => {
-							for (const orgName of evt.organizers) {
-								const organisation = data.organisations.find(
-									(o) => o.name === orgName,
-								);
-								if (organisation) acc.set(orgName, organisation);
-							}
-							return acc;
-						}, new Map<string, OrganisationType>())
-						.values(),
+				combinedOrganizers: combineOrganizers(columnEvents, data.organisations),
+				combinedSelectedOrganizers: combineOrganizers(
+					columnEvents,
+					data.selectedOrganisations,
 				),
 			};
 		});
-	}, [data?.events, timeScale, intervals, isInSameUnit, data?.organisations]);
+	}, [
+		data?.eventsByOrgs,
+		timeScale,
+		intervals,
+		isInSameUnit,
+		data?.organisations,
+		data?.selectedOrganisations,
+	]);
 
 	const sizeScale = useMemo(() => {
 		const displayedEvents = eventColumns.reduce((acc, day) => {

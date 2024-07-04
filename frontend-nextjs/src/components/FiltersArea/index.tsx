@@ -1,3 +1,5 @@
+"use client";
+import { useFiltersStore } from "@/providers/FiltersStoreProvider";
 import { cn } from "@/utility/classNames";
 import { type ReactNode, memo } from "react";
 import MediaSourceSelect from "../DataSourceSelect";
@@ -6,13 +8,19 @@ import { OrganisationsSelect } from "../OrganisationsSelect";
 import TimeFilter from "../TimeFilter";
 
 function FiltersArea({ isScrolledToTop }: { isScrolledToTop: boolean }) {
+	const { organizers, setOrganizers } = useFiltersStore(
+		({ organizers, setOrganizers }) => ({
+			setOrganizers,
+			organizers,
+		}),
+	);
 	return (
 		<nav
 			aria-label="Page filters"
 			className={cn(
 				`w-screen flex flex-col`,
-				`px-[max(1rem,2vmax)]`,
-				`border-b z-50 bg-pattern-soft`,
+				`px-[clamp(2rem,2vmax,4rem)] mx-auto 2xl:border-x border-grayLight`,
+				`border-b z-50 bg-pattern-soft max-w-page 2xl:border-x border-grayLight`,
 				`transition-all`,
 				isScrolledToTop ? `py-[max(0.25rem,1vmax)]` : `py-2`,
 				isScrolledToTop ? `gap-[max(0.25rem,0.75vmax)]` : `gap-2`,
@@ -32,7 +40,10 @@ function FiltersArea({ isScrolledToTop }: { isScrolledToTop: boolean }) {
 					</li>
 					<li className="flex flex-col gap-1 text-sm">
 						<FilterLabel show={isScrolledToTop}>Organisations:</FilterLabel>
-						<OrganisationsSelect />
+						<OrganisationsSelect
+							onChange={setOrganizers}
+							initialValues={organizers}
+						/>
 					</li>
 				</ul>
 				<div className="flex flex-col gap-1 text-sm">

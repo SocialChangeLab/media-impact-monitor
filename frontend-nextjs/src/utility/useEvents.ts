@@ -1,21 +1,44 @@
 "use client";
 import { useFiltersStore } from "@/providers/FiltersStoreProvider";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import {
+	type UseQueryResult,
+	useQuery,
+	useQueryClient,
+} from "@tanstack/react-query";
 import { endOfDay } from "date-fns";
 import { useEffect, useMemo } from "react";
 import { toast } from "sonner";
-import { extractEventOrganisations, getEventsData } from "./eventsUtil";
+import {
+	type OrganisationType,
+	type ParsedEventType,
+	extractEventOrganisations,
+	getEventsData,
+} from "./eventsUtil";
+
+export type UseEventsReturnType = Omit<
+	UseQueryResult<ParsedEventType[], unknown>,
+	"data"
+> & {
+	data: {
+		allEvents: ParsedEventType[];
+		events: ParsedEventType[];
+		eventsByOrgs: ParsedEventType[];
+		organisations: OrganisationType[];
+		selectedOrganisations: OrganisationType[];
+	};
+};
 
 function useEvents({
 	from: inputFrom,
 	to: inputTo,
-}: { from?: Date; to?: Date } = {}) {
+}: { from?: Date; to?: Date } = {}): UseEventsReturnType {
 	const queryClient = useQueryClient();
 	const filterStore = useFiltersStore((state) => ({
 		from: state.from,
 		to: state.to,
 		fromDateString: state.fromDateString,
 		toDateString: state.toDateString,
+		organizers: state.organizers,
 	}));
 	const fromTime = new Date(inputFrom ?? filterStore.from).getTime();
 	const toTime = new Date(inputTo ?? filterStore.to).getTime();
@@ -31,11 +54,15 @@ function useEvents({
 		if (!error) return;
 		toast.error(`Error fetching events: ${error}`, {
 			important: true,
-			dismissible: false,
+			dismissible: true,
 			duration: 1000000,
 		});
 	}, [error]);
 
+	const organisersKey = useMemo(
+		() => filterStore.organizers.sort().join("-"),
+		[filterStore.organizers],
+	);
 	// biome-ignore lint/correctness/useExhaustiveDependencies: Using the fromDateString and toDateString to avoid the exact date (which changes on each render) to be used as dependencies of the useEffect
 	const events = useMemo(() => {
 		return (data ?? []).filter((e) => {
@@ -47,10 +74,28 @@ function useEvents({
 		});
 	}, [data, filterStore.fromDateString, filterStore.toDateString]);
 
+	// biome-ignore lint/correctness/useExhaustiveDependencies: Using the organisersKey to only re-render when the organizers change
+	const eventFilteredByOrganizers = useMemo(() => {
+		if (filterStore.organizers.length === 0) return events;
+		return events.filter((e) =>
+			filterStore.organizers.find((org) => e.organizers.includes(org)),
+		);
+	}, [events, organisersKey]);
+
 	const organisations = useMemo(
-		() => extractEventOrganisations(events),
-		[events],
+		() => (data?.length ? extractEventOrganisations(data) : []),
+		[data],
 	);
+
+	const selectedOrganisations = useMemo(() => {
+		if (filterStore.organizers.length === 0) return organisations;
+		const selectedOrganisations = organisations.filter((org) =>
+			filterStore.organizers.find(
+				(o) => o.toLowerCase() === org.name.toLowerCase(),
+			),
+		);
+		return selectedOrganisations;
+	}, [filterStore.organizers, organisations]);
 
 	// biome-ignore lint/correctness/useExhaustiveDependencies: The queryClient should never change and if it does it shouldn't retrigger the useEffect
 	useEffect(() => {
@@ -62,7 +107,13 @@ function useEvents({
 
 	return {
 		...query,
-		data: { events, organisations },
+		data: {
+			allEvents: data ?? [],
+			events,
+			eventsByOrgs: eventFilteredByOrganizers,
+			organisations,
+			selectedOrganisations,
+		},
 	};
 }
 

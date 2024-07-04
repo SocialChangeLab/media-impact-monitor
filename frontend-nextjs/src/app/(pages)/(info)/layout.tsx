@@ -47,7 +47,7 @@ export default async function AboutPageLayout({
 							style={{ backgroundImage: `url(/images/doc-shadow.png)` }}
 						/>
 						<div
-							className="prose prose-fg dark:prose-invert relative pb-8 sm:py-8 m-0
+							className="prose prose-fg relative pb-8 sm:py-8 m-0
             prose-headings:font-headlines prose-headings:antialiased
             prose-lead:font-headlines prose-lead:antialiased max-w-prose w-full
             prose-lead:text-2xl prose-lead:leading-snug

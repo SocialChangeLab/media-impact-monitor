@@ -4,15 +4,17 @@ import { useFiltersStore } from "@/providers/FiltersStoreProvider";
 import { cn } from "@/utility/classNames";
 import { AlertTriangle } from "lucide-react";
 
+export type ComponentErrorProps = {
+	errorMessage: string;
+	errorDetails?: string;
+	reset?: () => void;
+};
+
 function ComponentError({
 	errorDetails,
 	errorMessage = "There was an unexpected error while fetching the data:",
 	reset,
-}: {
-	errorMessage: string;
-	errorDetails?: string;
-	reset?: () => void;
-}) {
+}: ComponentErrorProps) {
 	const { from, to, resetAllFilters } = useFiltersStore(
 		({ from, to, resetAllFilters }) => ({
 			from,

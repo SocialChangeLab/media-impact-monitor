@@ -1,3 +1,4 @@
+import type { OrganisationType } from "@/utility/eventsUtil";
 import {
 	endOfDay,
 	format,
@@ -27,12 +28,14 @@ export type FiltersState = {
 	fromDateString: string;
 	toDateString: string;
 	isDefaultTimeRange: boolean;
+	organizers: OrganisationType["name"][];
 };
 
 export type FiltersActions = {
 	setDateRange: (props: { from: Date; to: Date }) => void;
 	resetAllFilters: () => void;
 	resetDateRange: () => void;
+	setOrganizers: (organizers: OrganisationType["name"][]) => void;
 };
 
 export type FiltersStore = FiltersState & FiltersActions;
@@ -45,6 +48,7 @@ export const defaultInitState: FiltersState = {
 	fromDateString: format(defaultFrom, "yyyy-MM-dd"),
 	toDateString: format(defaultTo, "yyyy-MM-dd"),
 	isDefaultTimeRange: true,
+	organizers: ["Fridays for Future", "Extinction Rebellion"],
 };
 
 const filtersZodSchema = z
@@ -136,6 +140,8 @@ export const createFiltersStore = (
 						fromDateString: defaultInitState.fromDateString,
 						toDateString: defaultInitState.toDateString,
 					})),
+				setOrganizers: (organizers: OrganisationType["name"][]) =>
+					set(() => ({ organizers })),
 			}),
 			storageOptions,
 		),

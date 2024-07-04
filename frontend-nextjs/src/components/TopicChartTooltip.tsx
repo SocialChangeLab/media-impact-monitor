@@ -62,7 +62,6 @@ function TopicChartTooltip({
 			<div className="border-t border-grayLight pt-1 mt-1 flex gap-4 justify-between items-center">
 				<strong className="font-bold ">Total:</strong>
 				<span className="font-mono text-xs text-grayDark">
-					{/* biome-ignore lint/correctness/useJsxKeyInIterable: <explanation> */}
 					{topics.reduce((acc, { topic }) => acc + (item[topic] || 0), 0)}
 				</span>
 			</div>

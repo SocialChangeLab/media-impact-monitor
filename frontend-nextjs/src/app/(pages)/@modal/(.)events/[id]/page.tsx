@@ -26,7 +26,7 @@ function InderceptedEventPage({
 			<SectionHeadlineWithExplanation
 				headline="Media Timeline of Event"
 				description="See the media sentiment of articles and media related to the event"
-				help="See the media sentiment of articles and media related to the event"
+				helpSlug="mediaTrend"
 			>
 				<MediaSentimentChart />
 			</SectionHeadlineWithExplanation>

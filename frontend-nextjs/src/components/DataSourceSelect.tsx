@@ -1,7 +1,3 @@
-import derekoFavicon from "@/assets/images/dereko-favicon.png";
-import geniosFavicon from "@/assets/images/genios-favicon.png";
-import mediacloudFavicon from "@/assets/images/mediacloud-favicon.png";
-import nexisFavicon from "@/assets/images/nexis-favicon.png";
 import { Button } from "@/components/ui/button";
 import {
 	Command,
@@ -20,17 +16,35 @@ import {
 	TooltipProvider,
 	TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { ChevronsUpDownIcon, InfoIcon, LinkIcon } from "lucide-react";
-import Image from "next/image";
+import {
+	ChevronsUpDownIcon,
+	GlobeIcon,
+	InfoIcon,
+	LinkIcon,
+	type LucideIcon,
+	NewspaperIcon,
+	SearchIcon,
+} from "lucide-react";
 import { useMemo, useState } from "react";
 
-const options = [
+type OptionType = {
+	name: string;
+	value: string;
+	Icon: LucideIcon;
+	description: string;
+	links: {
+		label: string;
+		href: string;
+	}[];
+};
+
+const options: OptionType[] = [
 	{
-		name: "Media Cloud",
-		value: "mediacloud",
-		image: mediacloudFavicon,
+		name: "Online News",
+		value: "news_online",
+		Icon: GlobeIcon,
 		description:
-			"Global media coverage to understand the content, context, and impact of news stories.",
+			"Online news articles and media from Media Cloud, a global media coverage to understand the content, context, and impact of news stories.",
 		links: [
 			{
 				label: "Official Website",
@@ -39,11 +53,11 @@ const options = [
 		],
 	},
 	{
-		name: "Genios",
-		value: "genios",
-		image: geniosFavicon,
+		name: "Print News",
+		value: "news_print",
+		Icon: NewspaperIcon,
 		description:
-			"Text-searchable archives of newspapers and other media content for numerous organizations.",
+			"Print news from Genios, text-searchable archives of newspapers and other media content for numerous organizations.",
 		links: [
 			{
 				label: "Official Website",
@@ -56,11 +70,11 @@ const options = [
 		],
 	},
 	{
-		name: "Nexis",
-		value: "nexis",
-		image: nexisFavicon,
+		name: "Google News",
+		value: "web_google",
+		Icon: SearchIcon,
 		description:
-			"Extensive global news, business, and legal information for research and analytics.",
+			"Extensive global news by Google, business, and legal information for research and analytics.",
 		links: [
 			{
 				label: "Official Website",
@@ -68,43 +82,29 @@ const options = [
 			},
 		],
 	},
-	{
-		name: "DeReKo (Deutsches Referenzkorpus)",
-		value: "dereko",
-		image: derekoFavicon,
-		description:
-			"Modern German texts, used for linguistic research and analysis.",
-		links: [
-			{
-				label: "Official Website",
-				href: "https://www.corpusfinder.ugent.be/corpus/69",
-			},
-		],
-	},
 ];
 const optionsMap = new Map(options.map((o) => [o.value, o]));
 
 export default function MediaSourceSelect() {
+	const [isOpened, setIsOpened] = useState(false);
 	const [selectedId, setSelectedId] = useState<string | null>(options[0].value);
 	const selectedValue = useMemo(
 		() => (selectedId && optionsMap.get(selectedId)) || undefined,
 		[selectedId],
 	);
 	return (
-		<Popover>
+		<Popover open={isOpened} onOpenChange={setIsOpened}>
 			<PopoverTrigger asChild>
 				<Button
 					variant="outline"
 					role="combobox"
 					className="w-fit justify-between"
 				>
-					<div className="flex items-center gap-2">
+					<div className="flex items-center gap-3">
 						{selectedValue && (
-							<Image
-								src={selectedValue.image}
-								alt={selectedValue.name}
-								width={20}
-								height={20}
+							<selectedValue.Icon
+								size={20}
+								className="mt-0 shrink-0 text-grayDark"
 							/>
 						)}
 						<span>{selectedValue?.name || "Select data source"}</span>
@@ -126,16 +126,16 @@ export default function MediaSourceSelect() {
 								>
 									<TooltipProvider>
 										<button
-											className="flex items-start gap-2 text-left grow focusable focus-visible:bg-bg"
+											className="flex items-start gap-3 text-left grow focusable focus-visible:bg-bg"
 											type="button"
-											onClick={() => setSelectedId(option.value)}
+											onClick={() => {
+												setSelectedId(option.value);
+												setIsOpened(false);
+											}}
 										>
-											<Image
-												src={option.image}
-												alt={option.name}
-												width={20}
-												height={20}
-												className="mt-0.5"
+											<option.Icon
+												size={20}
+												className="mt-0.5 shrink-0 text-grayDark"
 											/>
 											<div>
 												<div className="font-medium">{option.name}</div>

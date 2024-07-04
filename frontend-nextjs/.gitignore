@@ -46,4 +46,4 @@ cosmos-export/
 .env.sentry-build-plugin
 
 # Contentlayer
-.contentlayer
+.contentlayer/

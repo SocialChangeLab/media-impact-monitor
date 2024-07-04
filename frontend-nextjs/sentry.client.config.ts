@@ -26,5 +26,9 @@ Sentry.init({
 			maskAllText: true,
 			blockAllMedia: true,
 		}),
+		Sentry.feedbackAsyncIntegration({
+			showBranding: false,
+			id: "user-feedback-button",
+		}),
 	],
 });

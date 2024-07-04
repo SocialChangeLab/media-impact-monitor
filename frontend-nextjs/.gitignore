@@ -47,3 +47,6 @@ cosmos-export/
 
 # Contentlayer
 .contentlayer/
+
+# Sentry Config File
+.env.sentry-build-plugin

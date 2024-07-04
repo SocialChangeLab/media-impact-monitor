@@ -72,7 +72,7 @@ const getUrlSearch = () => {
 	const filters = searchParams.get("filters");
 	const parsingResult = z
 		.object({ state: filtersZodSchema })
-		.safeParse(JSON.parse(JSON.parse(filters || `'{"state":{}}'`)));
+		.safeParse(JSON.parse(JSON.parse(filters || `"{\\"state\\":{}}"`)));
 	const state = parsingResult.success
 		? parsingResult.data.state
 		: defaultInitState;

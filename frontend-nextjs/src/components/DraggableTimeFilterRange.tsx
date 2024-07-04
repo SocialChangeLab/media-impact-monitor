@@ -178,6 +178,7 @@ function DraggableTimeFilterRange() {
 				document.removeEventListener("touchmove", onDrag);
 				document.removeEventListener("mouseup", handleRelease);
 				document.removeEventListener("touchend", handleRelease);
+				setIsDragging(false);
 			};
 
 			document.addEventListener("mousemove", onDrag);

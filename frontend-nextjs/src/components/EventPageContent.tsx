@@ -13,6 +13,12 @@ function EventPageContent({ id }: { id: string }) {
 				helpSlug="sentimentTrend"
 			>
 				<MediaSentimentChart />
+			</SectionHeadlineWithExplanation>
+			<SectionHeadlineWithExplanation
+				headline="Event Media Mentions"
+				description="See which articles and media mention the event"
+				helpSlug="mediaMentions"
+			>
 				<EventMediaTable id={id} />
 			</SectionHeadlineWithExplanation>
 		</>

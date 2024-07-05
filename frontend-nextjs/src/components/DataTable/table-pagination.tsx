@@ -1,4 +1,3 @@
-import { Combobox } from "@/components/ui/combobox";
 import {
 	Pagination,
 	PaginationContent,
@@ -11,10 +10,10 @@ import {
 	PaginationPrevious,
 } from "@/components/ui/pagination";
 import { cn } from "@/utility/classNames";
-import type { Table as ReactTableType } from "@tanstack/react-table";
+import type { useReactTable } from "@tanstack/react-table";
 
-type TablePaginationProps<RecordType> = Pick<
-	ReactTableType<RecordType>,
+type TablePaginationProps = Pick<
+	ReturnType<typeof useReactTable>,
 	| "getState"
 	| "setPageIndex"
 	| "getCanPreviousPage"
@@ -25,7 +24,7 @@ type TablePaginationProps<RecordType> = Pick<
 	| "setPageSize"
 >;
 
-function TablePagination<RecordType>({
+function TablePagination({
 	getState,
 	setPageIndex,
 	getCanPreviousPage,
@@ -34,13 +33,14 @@ function TablePagination<RecordType>({
 	nextPage,
 	previousPage,
 	setPageSize,
-}: TablePaginationProps<RecordType>) {
+}: TablePaginationProps) {
 	const currentPage = getState().pagination.pageIndex + 1;
 	const paginationRange = getPaginationRangeWithEllipsis(
 		currentPage,
 		getPageCount(),
 		5,
 	);
+	if (paginationRange.length === 1) return null;
 	return (
 		<Pagination>
 			<PaginationContent>
@@ -67,7 +67,7 @@ function TablePagination<RecordType>({
 							<PaginationLink
 								onClick={() => setPageIndex(page - 1)}
 								className={cn(
-									page === currentPage && "bg-grayLight",
+									page === currentPage && "bg-fg text-bg",
 									"pt-2 pb-1",
 								)}
 							>
@@ -90,14 +90,14 @@ function TablePagination<RecordType>({
 					</PaginationItem>
 				)}
 			</PaginationContent>
-			<Combobox
+			{/* <Combobox
 				options={["10", "20", "30", "40", "50"].map((pageSize) => ({
 					label: `${pageSize} items`,
 					value: pageSize,
 				}))}
 				value={getState().pagination.pageSize.toString()}
 				onChange={(value) => setPageSize(Number.parseInt(value, 10))}
-			/>
+			/> */}
 		</Pagination>
 	);
 }

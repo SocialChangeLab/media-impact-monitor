@@ -1,19 +1,30 @@
+"use client";
 import { Frown, HelpCircle, Meh, Smile } from "lucide-react";
+import { Tooltip, TooltipContent, TooltipTrigger } from "./ui/tooltip";
 
 const positiveMin = 0.8;
 const negativeMax = 0.2;
 
-function SentimentLabel({ sentiment }: { sentiment?: number }) {
+function Label({ sentiment }: { sentiment?: number }) {
 	const sentimentLabel = getSentimentLabel(sentiment);
 	const icon = getSentimentIcon(sentiment);
 	return (
-		<div className="flex items-center gap-2">
+		<span className="flex items-center gap-2">
 			{icon}
-			<span className="text-sm text-grayDark">
-				{sentimentLabel}
-				{sentiment && ` (${sentiment.toFixed(2)})`}
-			</span>
-		</div>
+			<span className="text-sm text-grayDark">{sentimentLabel}</span>
+		</span>
+	);
+}
+
+function SentimentLabel({ sentiment }: { sentiment?: number }) {
+	if (!sentiment) return <Label />;
+	return (
+		<Tooltip delayDuration={50}>
+			<TooltipTrigger>
+				<Label sentiment={sentiment} />
+			</TooltipTrigger>
+			<TooltipContent className="w-fit">{sentiment.toFixed(2)}</TooltipContent>
+		</Tooltip>
 	);
 }
 

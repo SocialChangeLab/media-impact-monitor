@@ -39,7 +39,7 @@ const columns = [
 	columnHelper.accessor("url", {
 		header: "URL",
 		cell: ({ getValue }) => <ExternalLink href={getValue()} />,
-		size: 200,
+		size: 300,
 	}),
 	columnHelper.accessor("sentiment", {
 		header: "Sentiment",
@@ -70,7 +70,7 @@ const data = [
 	{
 		id: "3",
 		name: "Nexis",
-		url: "https://www.lexisnexis.com/en-us/professional/research/nexis.page",
+		url: "https://www.lexisnexis.com/en-us/professional/research/Users/vogelino/repos/media-impact-monitor/frontend-nextjs/node_modules/@contentlayer/core/dist/generation/generate-dotpkg.js",
 		description:
 			"Extensive global news, business, and legal information for research and analytics.",
 		date: "2023-08-01T00:00:00.000Z",

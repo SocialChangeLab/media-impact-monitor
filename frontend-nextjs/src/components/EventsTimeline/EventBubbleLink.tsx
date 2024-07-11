@@ -31,7 +31,9 @@ function EventBubbleLink({
 				href={`/events/${event.event_id}`}
 				className={bubbleClasses}
 				style={{
-					background: getCSSStyleGradient(organisations.map((x) => x.color)),
+					background: getCSSStyleGradientWithEqualSteps(
+						organisations.map((x) => x.color),
+					),
 				}}
 				{...otherProps}
 			>
@@ -53,6 +55,7 @@ export function AggregatedEventsBubble({
 	selectedOrganisations,
 	date,
 	aggregationUnit,
+	events,
 }: AggregatedItemType) {
 	const { setDateRange } = useFiltersStore(({ setDateRange }) => ({
 		setDateRange,
@@ -66,21 +69,49 @@ export function AggregatedEventsBubble({
 			}
 			className={cn(bubbleClasses, "rounded-sm")}
 			style={{
-				background: getCSSStyleGradient(
-					selectedOrganisations
-						.sort((a, b) => {
-							if (a.color > b.color) return 1;
-							if (a.color < b.color) return -1;
-							return b.name.localeCompare(a.name);
-						})
-						.map((x) => x.color),
+				background: getCSSStyleGradientWithPercentages(
+					getColorPercentagesByOrganisations(selectedOrganisations, events),
 				),
 			}}
 		/>
 	);
 }
 
-function getCSSStyleGradient(colors: string[]) {
+type ColorsWithPercentages = Record<string, number>;
+
+function getColorPercentagesByOrganisations(
+	organisations: OrganisationType[],
+	events: ParsedEventType[],
+): ColorsWithPercentages {
+	if (organisations.length === 0) return {};
+	const organisationsColors = organisations
+		.sort((a, b) => {
+			if (a.isMain && !b.isMain) return -1;
+			if (!a.isMain && b.isMain) return 1;
+			if (a.color > b.color) return 1;
+			if (a.color < b.color) return -1;
+			return b.name.localeCompare(a.name);
+		})
+		.map((x) => x.color);
+	const uniqueColors = Array.from(new Set(organisationsColors));
+	const colors2OrgsCount = events.reduce(
+		(acc, event) => {
+			for (const organizer of event.organizers) {
+				const org = organisations.find((x) => x.name === organizer);
+				if (!org) continue;
+				acc[org.color] = (acc[org.color] ?? 0) + 1;
+			}
+			return acc;
+		},
+		{} as Record<string, number>,
+	);
+	return uniqueColors.reduce((acc, color) => {
+		acc[color] = (colors2OrgsCount[color] / organisations.length) * 100;
+		return acc;
+	}, {} as ColorsWithPercentages);
+}
+
+function getCSSStyleGradientWithEqualSteps(colors: string[]) {
 	if (colors.length === 0) return;
 	const uniqueColors = Array.from(new Set(colors));
 	if (uniqueColors.length === 1) return uniqueColors[0];
@@ -92,6 +123,19 @@ function getCSSStyleGradient(colors: string[]) {
 					(i + 1) * stepPercentage
 				}%`,
 		)
+		.join(", ")})`;
+}
+
+function getCSSStyleGradientWithPercentages(
+	colorsWithPercentages: ColorsWithPercentages,
+) {
+	let lastPercentage = 0;
+	return `linear-gradient(0deg, ${Object.entries(colorsWithPercentages)
+		.map(([color, percentage]) => {
+			const newPercentage = `${color} ${lastPercentage}%, ${color} ${lastPercentage + percentage}%`;
+			lastPercentage += percentage;
+			return newPercentage;
+		})
 		.join(", ")})`;
 }
 

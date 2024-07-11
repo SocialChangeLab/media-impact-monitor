@@ -41,19 +41,23 @@ def regress(
     protest_df = add_lags(protest_df, lags=lags)
     media_df = add_lags(media_df, lags=lags)
     # protest_df = add_emws(protest_df)
-    # media_df = add_emws(media_df)
+    media_df = add_emws(media_df, spans=[7, 30, 90])
+    df = pd.concat([protest_df, media_df], axis=1)
+    df = add_weekday_dummies(df)
     treatment = "protest"
     outcome = "count"
-    media_df[outcome] = media_df[outcome].shift(-day)
+    df[outcome] = df[outcome].shift(-day)
     if cumulative:
+        # TODO write tests for this
         if day < 0:
             indexer = pd.api.indexers.FixedForwardWindowIndexer(window_size=-day)
-            media_df[outcome] = -media_df[outcome].rolling(window=indexer).sum()
+            df[outcome] = -df[outcome].rolling(window=indexer).sum()
         else:
-            media_df[outcome] = media_df[outcome].rolling(day + 1).sum()
-    df = pd.concat([protest_df, media_df], axis=1).dropna()
+            df[outcome] = df[outcome].rolling(day + 1).sum()
+    df = df.dropna()
     X = df.drop(columns=[outcome])
-    model = sm.OLS(df[outcome], sm.add_constant(X))
+    y = df[outcome]
+    model = sm.OLS(y, sm.add_constant(X))
     model = model.fit(cov_type="HC3")
     return {
         "date": day,

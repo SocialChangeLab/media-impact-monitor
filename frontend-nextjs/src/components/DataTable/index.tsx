@@ -21,13 +21,7 @@ function DataTableWithState<RecordType>(props: {
 			</div>
 		);
 	}
-	return (
-		<DataTable<RecordType>
-			// biome-ignore lint/suspicious/noExplicitAny: <explanation>
-			columns={columns as ColumnDef<RecordType, any>[]}
-			data={data || []}
-		/>
-	);
+	return <DataTable<RecordType> columns={columns} data={data || []} />;
 }
 
 export default DataTableWithState;

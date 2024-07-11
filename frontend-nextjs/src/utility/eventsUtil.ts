@@ -1,11 +1,10 @@
-import { endOfToday, format } from "date-fns";
 import { ZodError, z } from "zod";
 import {
 	comparableDateItemSchema,
 	dateToComparableDateItem,
 } from "./comparableDateItemSchema";
 import { dateSortCompare, isValidISODateString } from "./dateUtil";
-import { fetchApiData } from "./fetchUtil";
+import { fetchApiData, formatInput } from "./fetchUtil";
 
 const eventZodSchema = z.object({
 	event_id: z.string(),
@@ -55,19 +54,8 @@ export async function getEventsData(params?: {
 		endpoint: "events",
 		body: {
 			source: "acled",
-			topic: "climate_change",
-			...(params?.from && params?.to
-				? {
-						start_date: format(params?.from, "yyyy-MM-dd"),
-						end_date: format(params?.to, "yyyy-MM-dd"),
-					}
-				: {
-						start_date: "2020-01-01",
-						end_date: format(endOfToday(), "yyyy-MM-dd"),
-					}),
+			...formatInput(params),
 		},
-		// fallbackFilePathContent: (await import("../data/fallbackProtests.json"))
-		// 	.default,
 	});
 	return validateGetDataResponse(json);
 }

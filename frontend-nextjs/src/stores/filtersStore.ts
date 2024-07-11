@@ -20,6 +20,8 @@ import {
 const defaultTo = endOfDay(subDays(new Date(), 1));
 const defaultFrom = startOfDay(subMonths(startOfDay(new Date()), 2));
 
+export type MediaSourceType = "news_online" | "news_print" | "web_google";
+
 export type FiltersState = {
 	from: Date;
 	to: Date;
@@ -29,6 +31,7 @@ export type FiltersState = {
 	toDateString: string;
 	isDefaultTimeRange: boolean;
 	organizers: OrganisationType["name"][];
+	mediaSource: MediaSourceType;
 };
 
 export type FiltersActions = {
@@ -36,6 +39,7 @@ export type FiltersActions = {
 	resetAllFilters: () => void;
 	resetDateRange: () => void;
 	setOrganizers: (organizers: OrganisationType["name"][]) => void;
+	setMediaSource: (mediaSource: MediaSourceType) => void;
 };
 
 export type FiltersStore = FiltersState & FiltersActions;
@@ -49,6 +53,7 @@ export const defaultInitState: FiltersState = {
 	toDateString: format(defaultTo, "yyyy-MM-dd"),
 	isDefaultTimeRange: true,
 	organizers: ["Fridays for Future", "Extinction Rebellion"],
+	mediaSource: "news_online",
 };
 
 const filtersZodSchema = z
@@ -142,6 +147,8 @@ export const createFiltersStore = (
 					})),
 				setOrganizers: (organizers: OrganisationType["name"][]) =>
 					set(() => ({ organizers })),
+				setMediaSource: (mediaSource: MediaSourceType) =>
+					set(() => ({ mediaSource })),
 			}),
 			storageOptions,
 		),

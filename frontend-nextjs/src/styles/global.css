@@ -117,6 +117,33 @@
 		--tw-prose-lead: var(--fg);
 	}
 
+	#user-feedback-button {
+		--trigger-background: var(--bg);
+		--font-family: var(--font-inter);
+		--font-size: 1rem;
+		--dialog-border-radius: 0;
+		--input-border-radius: 0;
+		--button-border-radius: 0;
+		--button-primary-border-radius: 0;
+		--z-index: 999;
+		--interactive-filter: brightness(95%);
+
+		--foreground: var(--fg);
+		--background: url(/images/noisy.png);
+		--accent-foreground: var(--bg);
+		--accent-background: var(--fg);
+		--success-color: var(--sentiment-positive);
+		--error-color: var(--sentiment-negative);
+		--outline: var(--fg);
+		--border: 1px solid var(--grayMed);
+		--input-color: var(--grayDark);
+		--button-primary-border: 1px solid var(--fg);
+	}
+
+	:root[data-theme='dark']  #user-feedback-button {
+		--background: var(--bg) url(/images/noisy-inverted.png) repeat center;
+	}
+
 	@layer base {
 		input[type='text'],
 		input[type='password'],

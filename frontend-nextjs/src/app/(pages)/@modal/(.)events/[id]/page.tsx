@@ -1,7 +1,5 @@
 "use client";
-import EventPageHeader from "@/components/EventPageHeader";
-import MediaSentimentChart from "@/components/MediaSentimentChart";
-import SectionHeadlineWithExplanation from "@/components/SectionHeadlineWithExplanation";
+import EventPageContent from "@/components/EventPageContent";
 import { ResponsiveModal } from "@/components/ui/responsive-dialog";
 import { useRouter } from "next/navigation";
 
@@ -22,14 +20,7 @@ function InderceptedEventPage({
 				}
 			}}
 		>
-			<EventPageHeader id={id} />
-			<SectionHeadlineWithExplanation
-				headline="Media Timeline of Event"
-				description="See the media sentiment of articles and media related to the event"
-				helpSlug="mediaTrend"
-			>
-				<MediaSentimentChart />
-			</SectionHeadlineWithExplanation>
+			<EventPageContent id={id} />
 		</ResponsiveModal>
 	);
 }

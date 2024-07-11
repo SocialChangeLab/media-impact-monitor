@@ -1,11 +1,11 @@
-import { format } from "date-fns";
+import type { MediaSourceType } from "@/stores/filtersStore";
 import { ZodError, z } from "zod";
 import {
 	comparableDateItemSchema,
 	dateToComparableDateItem,
 } from "./comparableDateItemSchema";
 import { dateSortCompare, isValidISODateString } from "./dateUtil";
-import { fetchApiData } from "./fetchUtil";
+import { fetchApiData, formatInput } from "./fetchUtil";
 
 export const mediaSentimentZodSchema = z.object({
 	date: z.string(),
@@ -34,21 +34,11 @@ export function getMediaSentimentQuery(params: {
 	from?: Date;
 	to?: Date;
 	organizers: string[];
+	mediaSource: MediaSourceType;
 }) {
 	return {
-		media_source: "news_online",
-		topic: "climate_change",
 		trend_type: "sentiment",
-		...(params?.from && params?.to
-			? {
-					start_date: format(params?.from, "yyyy-MM-dd"),
-					end_date: format(params?.to, "yyyy-MM-dd"),
-				}
-			: {}),
-		organizers:
-			params?.organizers && params.organizers.length > 0
-				? params.organizers
-				: undefined,
+		...formatInput(params),
 	};
 }
 
@@ -56,6 +46,7 @@ export async function getMediaSentimentData(params: {
 	from?: Date;
 	to?: Date;
 	organizers: string[];
+	mediaSource: MediaSourceType;
 }): Promise<MediaDataType> {
 	const json = await fetchApiData({
 		endpoint: "trend",

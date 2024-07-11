@@ -28,6 +28,14 @@ def add_emws(df: pd.DataFrame, spans=[1, 2, 7, 30, 90, 365]):
     return pd.concat([df, emws], axis=1)
 
 
+def add_weekday_dummies(df: pd.DataFrame):
+    """Add dummies for weekdays."""
+    weekdays = pd.to_datetime(df.index).weekday
+    weekday_dummies = pd.get_dummies(weekdays, prefix="weekday", dtype=int)
+    weekday_dummies.index = df.index
+    return pd.concat([df, weekday_dummies], axis=1)
+
+
 def regress(
     protest_df: pd.DataFrame,
     media_df: pd.DataFrame,

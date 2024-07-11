@@ -3,8 +3,11 @@ import {
 	TooltipContent,
 	TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { cn } from "@/utility/classNames";
-import type { OrganisationType, ParsedEventType } from "@/utility/eventsUtil";
+import {
+	type OrganisationType,
+	type ParsedEventType,
+	compareOrganizationsByColors,
+} from "@/utility/eventsUtil";
 import { format } from "date-fns";
 import { type ReactNode, memo, useMemo } from "react";
 import OrgLine from "./EventTooltipOrgLine";
@@ -46,9 +49,7 @@ function AggregatedEventsTooltip({
 			.sort((a, b) => {
 				if (a.isSelected && !b.isSelected) return -1;
 				if (!a.isSelected && b.isSelected) return 1;
-				if (a.color > b.color) return -1;
-				if (a.color < b.color) return 1;
-				return a.name.localeCompare(b.name);
+				return compareOrganizationsByColors(a, b);
 			});
 	}, [organisations, selectedOrganisations, events]);
 

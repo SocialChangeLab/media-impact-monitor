@@ -7,7 +7,9 @@ import { toast } from "sonner";
 import { getMediaSentimentImpactData } from "./mediaSentimentImpactUtil";
 
 function useMediaSentimentImpactData(organizer: string | undefined) {
-	const { from, to } = useFiltersStore(({ from, to }) => ({ from, to }));
+	const { from, to, mediaSource } = useFiltersStore(
+		({ from, to, mediaSource }) => ({ from, to, mediaSource }),
+	);
 	const fromDateString = format(from, "yyyy-MM-dd");
 	const toDateString = format(to, "yyyy-MM-dd");
 	const queryKey = [
@@ -15,12 +17,18 @@ function useMediaSentimentImpactData(organizer: string | undefined) {
 		organizer,
 		fromDateString,
 		toDateString,
+		mediaSource,
 	];
 	const query = useQuery({
 		queryKey,
 		queryFn: async () => {
 			if (organizer === undefined) return undefined;
-			return await getMediaSentimentImpactData({ from, to, organizer });
+			return await getMediaSentimentImpactData({
+				from,
+				to,
+				organizer,
+				mediaSource,
+			});
 		},
 		staleTime: endOfDay(new Date()).getTime() - new Date().getTime(),
 		enabled: organizer !== undefined,

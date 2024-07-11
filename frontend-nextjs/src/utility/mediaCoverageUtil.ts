@@ -1,4 +1,4 @@
-import { format } from "date-fns";
+import type { MediaSourceType } from "@/stores/filtersStore";
 import { ZodError, z } from "zod";
 import {
 	comparableDateItemSchema,
@@ -6,7 +6,7 @@ import {
 } from "./comparableDateItemSchema";
 import { dateSortCompare, isValidISODateString } from "./dateUtil";
 import type { OrganisationType } from "./eventsUtil";
-import { fetchApiData } from "./fetchUtil";
+import { fetchApiData, formatInput } from "./fetchUtil";
 
 const mediaCoverageZodSchema = z.object({
 	date: z.string(),
@@ -34,23 +34,13 @@ export async function getMediaCoverageData(params?: {
 	from?: Date;
 	to?: Date;
 	organizers: OrganisationType["name"][];
+	mediaSource: MediaSourceType;
 }): Promise<ParsedMediaCoverageType[]> {
 	const json = await fetchApiData({
 		endpoint: "trend",
 		body: {
-			media_source: "news_online",
-			topic: "climate_change",
 			trend_type: "keywords",
-			...(params?.from && params?.to
-				? {
-						start_date: format(params?.from, "yyyy-MM-dd"),
-						end_date: format(params?.to, "yyyy-MM-dd"),
-					}
-				: {}),
-			organizers:
-				params?.organizers && params.organizers.length > 0
-					? params.organizers
-					: undefined,
+			...formatInput(params),
 		},
 		// fallbackFilePathContent: (
 		// 	await import("../data/fallbackMediaCoverage.json")

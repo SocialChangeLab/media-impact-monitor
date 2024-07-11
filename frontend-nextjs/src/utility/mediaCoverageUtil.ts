@@ -1,5 +1,5 @@
 import type { MediaSourceType } from "@/stores/filtersStore";
-import { ZodError, z } from "zod";
+import { z } from "zod";
 import {
 	comparableDateItemSchema,
 	dateToComparableDateItem,
@@ -7,6 +7,7 @@ import {
 import { dateSortCompare, isValidISODateString } from "./dateUtil";
 import type { OrganisationType } from "./eventsUtil";
 import { fetchApiData, formatInput } from "./fetchUtil";
+import { formatZodError } from "./zodUtil";
 
 const mediaCoverageZodSchema = z.object({
 	date: z.string(),
@@ -62,16 +63,6 @@ function validateGetDataResponse(response: unknown): ParsedMediaCoverageType[] {
 			.sort((a, b) => dateSortCompare(a.date, b.date));
 		return mediaDataTypeZodSchema.parse(sortedMedia);
 	} catch (error) {
-		if (error instanceof ZodError) {
-			const errorMessage = (error.issues ?? [])
-				.map(
-					(x) =>
-						`${x.message}${x.path.length > 0 ? ` at ${x.path.join(".")}` : ""}`,
-				)
-				.join(", ");
-			throw new Error(`ZodError&&&${errorMessage}`);
-		}
-		if (error instanceof Error) throw error;
-		throw new Error(`UnknownError&&&${error}`);
+		throw formatZodError(error);
 	}
 }

@@ -1,6 +1,7 @@
 import { parse } from "date-fns";
-import { ZodError, z } from "zod";
+import { z } from "zod";
 import { fetchApiData, formatInput } from "./fetchUtil";
+import { formatZodError } from "./zodUtil";
 
 export const eventMediaInputQueryZodSchema = z.object({
 	mediaSource: z.enum(["news_online", "news_print", "web_google"]),
@@ -76,16 +77,6 @@ function validateGetDataResponse(response: unknown): ParsedEventMediaType[] {
 		}));
 		return parsedEventMediaCoverageZodSchema.array().parse(media);
 	} catch (error) {
-		if (error instanceof ZodError) {
-			const errorMessage = (error.issues ?? [])
-				.map(
-					(x) =>
-						`${x.message}${x.path.length > 0 ? ` at ${x.path.join(".")}` : ""}`,
-				)
-				.join(", ");
-			throw new Error(`ZodError&&&${errorMessage}`);
-		}
-		if (error instanceof Error) throw error;
-		throw new Error(`UnknownError&&&${error}`);
+		throw formatZodError(error);
 	}
 }

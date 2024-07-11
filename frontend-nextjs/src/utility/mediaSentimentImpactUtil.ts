@@ -1,7 +1,8 @@
 import type { MediaSourceType } from "@/stores/filtersStore";
-import { ZodError, z } from "zod";
+import { z } from "zod";
 import { fetchApiData, formatInput } from "./fetchUtil";
 import { getMediaSentimentQuery } from "./mediaSentimentUtil";
+import { formatZodError } from "./zodUtil";
 
 const mediaSentimentImpactZodSchema = z.object({
 	method_applicability: z.boolean(),
@@ -104,18 +105,6 @@ function validateGetDataResponse(
 			),
 		});
 	} catch (error) {
-		if (error instanceof ZodError) {
-			const errorMessage = (error.issues ?? [])
-				.map(
-					(x) =>
-						`  - ${x.path.length > 0 ? `${x.path.join(".")}` : ""}: ${
-							x.message
-						}`,
-				)
-				.join("\n");
-			throw new Error(`ZodError&&&${errorMessage}`);
-		}
-		if (error instanceof Error) throw error;
-		throw new Error(`UnknownError&&&${error}`);
+		throw formatZodError(error);
 	}
 }

@@ -1,11 +1,12 @@
 import type { MediaSourceType } from "@/stores/filtersStore";
-import { ZodError, z } from "zod";
+import { z } from "zod";
 import {
 	comparableDateItemSchema,
 	dateToComparableDateItem,
 } from "./comparableDateItemSchema";
 import { dateSortCompare, isValidISODateString } from "./dateUtil";
 import { fetchApiData, formatInput } from "./fetchUtil";
+import { formatZodError } from "./zodUtil";
 
 export const mediaSentimentZodSchema = z.object({
 	date: z.string(),
@@ -51,9 +52,6 @@ export async function getMediaSentimentData(params: {
 	const json = await fetchApiData({
 		endpoint: "trend",
 		body: getMediaSentimentQuery(params),
-		// fallbackFilePathContent: (
-		// 	await import("../data/fallbackMediaSentiment.json")
-		// ).default,
 	});
 	return validateGetDataResponse(json);
 }
@@ -73,16 +71,6 @@ function validateGetDataResponse(
 			.sort((a, b) => dateSortCompare(a.date, b.date));
 		return parsedMediaSentimentZodSchema.array().parse(sortedMedia);
 	} catch (error) {
-		if (error instanceof ZodError) {
-			const errorMessage = (error.issues ?? [])
-				.map(
-					(x) =>
-						`${x.message}${x.path.length > 0 ? ` at ${x.path.join(".")}` : ""}`,
-				)
-				.join(", ");
-			throw new Error(`ZodError&&&${errorMessage}`);
-		}
-		if (error instanceof Error) throw error;
-		throw new Error(`UnknownError&&&${error}`);
+		throw formatZodError(error);
 	}
 }

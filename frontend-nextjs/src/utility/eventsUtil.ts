@@ -1,10 +1,11 @@
-import { ZodError, z } from "zod";
+import { z } from "zod";
 import {
 	comparableDateItemSchema,
 	dateToComparableDateItem,
 } from "./comparableDateItemSchema";
 import { dateSortCompare, isValidISODateString } from "./dateUtil";
 import { fetchApiData, formatInput } from "./fetchUtil";
+import { formatZodError } from "./zodUtil";
 
 const eventZodSchema = z.object({
 	event_id: z.string(),
@@ -82,17 +83,7 @@ function validateGetDataResponse(response: unknown): ParsedEventType[] {
 			.sort((a, b) => dateSortCompare(a.date, b.date));
 		return parsedEventZodSchema.array().parse(eventsWithFixedOrgs);
 	} catch (error) {
-		if (error instanceof ZodError) {
-			const errorMessage = (error.issues ?? [])
-				.map(
-					(x) =>
-						`${x.message}${x.path.length > 0 ? ` at ${x.path.join(".")}` : ""}`,
-				)
-				.join(", ");
-			throw new Error(`ZodError&&&${errorMessage}`);
-		}
-		if (error instanceof Error) throw error;
-		throw new Error(`UnknownError&&&${error}`);
+		throw formatZodError(error);
 	}
 }
 

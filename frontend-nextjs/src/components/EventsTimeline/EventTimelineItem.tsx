@@ -41,7 +41,7 @@ function EventTimelineItem({
 			<EventsBar height={height} organisations={mappedOrganisations}>
 				<EventBubbleLink
 					event={event}
-					organisations={selectedOrganisationsMapped}
+					organisations={[selectedOrganisationsMapped[0]]}
 				/>
 			</EventsBar>
 		</EventTooltip>

@@ -93,20 +93,22 @@ function getColorPercentagesByOrganisations(
 			return b.name.localeCompare(a.name);
 		})
 		.map((x) => x.color);
-	const uniqueColors = Array.from(new Set(organisationsColors));
 	const colors2OrgsCount = events.reduce(
 		(acc, event) => {
-			for (const organizer of event.organizers) {
-				const org = organisations.find((x) => x.name === organizer);
-				if (!org) continue;
-				acc[org.color] = (acc[org.color] ?? 0) + 1;
-			}
+			const org = organisations.find((x) => event.organizers.includes(x.name));
+			if (!org) return acc;
+			acc[org.color] = (acc[org.color] ?? 0) + (event.size_number ?? 0);
 			return acc;
 		},
 		{} as Record<string, number>,
 	);
+	const sumSize = Object.values(colors2OrgsCount).reduce(
+		(acc, x) => acc + x,
+		0,
+	);
+	const uniqueColors = Array.from(new Set(Object.keys(colors2OrgsCount)));
 	return uniqueColors.reduce((acc, color) => {
-		acc[color] = (colors2OrgsCount[color] / organisations.length) * 100;
+		acc[color] = (colors2OrgsCount[color] / sumSize) * 100;
 		return acc;
 	}, {} as ColorsWithPercentages);
 }

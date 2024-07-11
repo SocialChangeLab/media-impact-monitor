@@ -108,22 +108,22 @@ function validateGetDataResponse(response: unknown): ParsedEventType[] {
 	}
 }
 
-export const distinctiveColors = [
-	`var(--categorical-color-1)`,
-	`var(--categorical-color-2)`,
-	`var(--categorical-color-3)`,
-	`var(--categorical-color-4)`,
-	`var(--categorical-color-5)`,
-	`var(--categorical-color-6)`,
-	`var(--categorical-color-7)`,
-	`var(--categorical-color-8)`,
-	`var(--categorical-color-9)`,
-	`var(--categorical-color-10)`,
-	`var(--categorical-color-11)`,
-	`var(--categorical-color-12)`,
-	"var(--categorical-color-13)",
-	"var(--categorical-color-14)",
-];
+export const distinctiveColorsMap = {
+	"Fridays for Future": `var(--categorical-color-1)`,
+	"Last Generation (Germany)": `var(--categorical-color-2)`,
+	"Extinction Rebellion": `var(--categorical-color-3)`,
+	BUND: `var(--categorical-color-4)`,
+	Greenpeace: `var(--categorical-color-5)`,
+	"Ver.di: United Services Union": `var(--categorical-color-6)`,
+	"Ende Gelaende": `var(--categorical-color-7)`,
+	"The Greens (Germany)": `var(--categorical-color-8)`,
+	"MLPD: Marxist-Leninist Party of Germany": `var(--categorical-color-9)`,
+	"The Left (Germany)": `var(--categorical-color-10)`,
+	"ADFC: German Bicycle Club": `var(--categorical-color-11)`,
+	"SPD: Social Democratic Party of Germany": `var(--categorical-color-12)`,
+	"Government of Germany (2021-)": "var(--categorical-color-13)",
+	"REBELL: Youth League Rebel": "var(--categorical-color-14)",
+};
 
 export function extractEventOrganisations(
 	events: ParsedEventType[],
@@ -151,11 +151,33 @@ export function extractEventOrganisations(
 					isMain: false,
 				};
 			}
-			const color = distinctiveColors[idx];
+			const color =
+				distinctiveColorsMap[
+					organizer.name as keyof typeof distinctiveColorsMap
+				];
 			return {
 				...organizer,
 				color: color ?? "var(--grayDark)",
-				isMain: idx < distinctiveColors.length,
+				isMain: !!color,
 			};
 		});
+}
+
+export function compareOrganizationsByColors(
+	a: OrganisationType,
+	b: OrganisationType,
+): -1 | 0 | 1 {
+	if (a.isMain && !b.isMain) return -1;
+	if (!a.isMain && b.isMain) return 1;
+	if (a.isMain && b.isMain) {
+		const mainNames = Object.keys(distinctiveColorsMap);
+		const aIdx = mainNames.indexOf(a.name);
+		const bIdx = mainNames.indexOf(b.name);
+		if (aIdx > bIdx) return 1;
+		if (aIdx < bIdx) return -1;
+	}
+	const nameComparison = a.name.localeCompare(b.name);
+	if (nameComparison === 1) return 1;
+	if (nameComparison === -1) return -1;
+	return 0;
 }

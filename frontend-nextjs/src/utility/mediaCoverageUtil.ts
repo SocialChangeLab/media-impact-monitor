@@ -5,7 +5,7 @@ import {
 	dateToComparableDateItem,
 } from "./comparableDateItemSchema";
 import { dateSortCompare, isValidISODateString } from "./dateUtil";
-import type { OrganisationType } from "./eventsUtil";
+import type { EventOrganizerSlugType, OrganisationType } from "./eventsUtil";
 import { fetchApiData, formatInput } from "./fetchUtil";
 import { formatZodError } from "./zodUtil";
 
@@ -31,21 +31,21 @@ const mediaCoverageDataResponseTypeZodSchema = z.object({
 	error: z.union([z.string(), z.null()]).optional(),
 });
 
-export async function getMediaCoverageData(params?: {
-	from?: Date;
-	to?: Date;
-	organizers: OrganisationType["name"][];
-	mediaSource: MediaSourceType;
-}): Promise<ParsedMediaCoverageType[]> {
+export async function getMediaCoverageData(
+	allOrganisations: OrganisationType[],
+	params?: {
+		from?: Date;
+		to?: Date;
+		organizers: EventOrganizerSlugType[];
+		mediaSource: MediaSourceType;
+	},
+): Promise<ParsedMediaCoverageType[]> {
 	const json = await fetchApiData({
 		endpoint: "trend",
 		body: {
 			trend_type: "keywords",
-			...formatInput(params),
+			...formatInput(params || {}, allOrganisations),
 		},
-		// fallbackFilePathContent: (
-		// 	await import("../data/fallbackMediaCoverage.json")
-		// ).default,
 	});
 	return validateGetDataResponse(json);
 }

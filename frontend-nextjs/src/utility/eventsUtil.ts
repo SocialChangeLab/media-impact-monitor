@@ -23,8 +23,15 @@ const eventZodSchema = z.object({
 });
 export type EventType = z.infer<typeof eventZodSchema>;
 
+export const eventOrganizerSlugZodSchema = z
+	.string()
+	.brand("EventOrganizerSlug");
+export type EventOrganizerSlugType = z.infer<
+	typeof eventOrganizerSlugZodSchema
+>;
+
 const eventOrganizerZodSchema = z.object({
-	slug: z.string(),
+	slug: eventOrganizerSlugZodSchema,
 	name: z.string(),
 });
 export type EventOrganizerType = z.infer<typeof eventOrganizerZodSchema>;
@@ -64,7 +71,7 @@ export async function getEventsData(params?: {
 		endpoint: "events",
 		body: {
 			source: "acled",
-			...formatInput(params),
+			...formatInput(params || {}, []),
 		},
 	});
 	return validateGetDataResponse(json);
@@ -142,7 +149,7 @@ export function extractEventOrganisations(
 		.map((organizer, idx) => {
 			if (organizer.name.toLocaleLowerCase().trim() === "") {
 				return {
-					slug: "unknown-organisation",
+					slug: "unknown-organisation" as EventOrganizerSlugType,
 					name: "Unknown organisation",
 					color: "var(--grayMed)",
 					count: events.filter((x) => x.organizers?.filter((x) => !x)).length,

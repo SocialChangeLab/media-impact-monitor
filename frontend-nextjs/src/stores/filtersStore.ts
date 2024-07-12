@@ -1,4 +1,4 @@
-import type { OrganisationType } from "@/utility/eventsUtil";
+import type { EventOrganizerSlugType } from "@/utility/eventsUtil";
 import {
 	endOfDay,
 	format,
@@ -31,7 +31,7 @@ export type FiltersState = {
 	fromDateString: string;
 	toDateString: string;
 	isDefaultTimeRange: boolean;
-	organizers: OrganisationType["name"][];
+	organizers: EventOrganizerSlugType[];
 	mediaSource: MediaSourceType;
 };
 
@@ -39,7 +39,7 @@ export type FiltersActions = {
 	setDateRange: (props: { from: Date; to: Date }) => void;
 	resetAllFilters: () => void;
 	resetDateRange: () => void;
-	setOrganizers: (organizers: OrganisationType["slug"][]) => void;
+	setOrganizers: (organizers: EventOrganizerSlugType[]) => void;
 	setMediaSource: (mediaSource: MediaSourceType) => void;
 };
 
@@ -55,7 +55,7 @@ export const defaultInitState: FiltersState = {
 	isDefaultTimeRange: true,
 	organizers: ["Fridays for Future", "Extinction Rebellion"].map((x) =>
 		slugify(x, { lower: true, strict: true }),
-	),
+	) as EventOrganizerSlugType[],
 	mediaSource: "news_online",
 };
 
@@ -149,7 +149,7 @@ export const createFiltersStore = (
 						fromDateString: defaultInitState.fromDateString,
 						toDateString: defaultInitState.toDateString,
 					})),
-				setOrganizers: (organizers: OrganisationType["slug"][]) =>
+				setOrganizers: (organizers: EventOrganizerSlugType[]) =>
 					set(() => ({ organizers })),
 				setMediaSource: (mediaSource: MediaSourceType) =>
 					set(() => ({ mediaSource })),

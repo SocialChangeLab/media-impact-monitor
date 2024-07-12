@@ -6,6 +6,7 @@ import { useEffect, useMemo } from "react";
 import slugify from "slugify";
 import { toast } from "sonner";
 import { getMediaCoverageData } from "./mediaCoverageUtil";
+import useEvents from "./useEvents";
 
 function useMediaCoverageData() {
 	const { from, to, organizers, mediaSource } = useFiltersStore(
@@ -26,6 +27,7 @@ function useMediaCoverageData() {
 				.join("-"),
 		[organizers],
 	);
+	const { data } = useEvents();
 	const queryKey = [
 		"mediaCoverage",
 		fromDateString,
@@ -36,7 +38,12 @@ function useMediaCoverageData() {
 	const query = useQuery({
 		queryKey,
 		queryFn: async () =>
-			await getMediaCoverageData({ from, to, organizers, mediaSource }),
+			await getMediaCoverageData(data.organisations || [], {
+				from,
+				to,
+				organizers,
+				mediaSource,
+			}),
 		staleTime: endOfDay(new Date()).getTime() - new Date().getTime(),
 	});
 

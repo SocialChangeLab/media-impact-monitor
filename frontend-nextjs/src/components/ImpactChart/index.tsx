@@ -1,6 +1,7 @@
 "use client";
 import { cn } from "@/utility/classNames";
 import { parseErrorMessage } from "@/utility/errorHandlingUtil";
+import type { EventOrganizerSlugType } from "@/utility/eventsUtil";
 import useMediaSentimentImpactData from "@/utility/useMediaSentimentImpact";
 import { QueryErrorResetBoundary } from "@tanstack/react-query";
 import type { icons } from "lucide-react";
@@ -66,8 +67,12 @@ function ImpactChartWithData({
 	unitLabel = "articles & media",
 	icon = "LineChart",
 }: ImpactChartWithDataProps) {
-	const fffQuery = useMediaSentimentImpactData("Fridays for Future");
-	const xrQuery = useMediaSentimentImpactData("Extinction Rebellion");
+	const fffQuery = useMediaSentimentImpactData(
+		"fridays-for-future" as EventOrganizerSlugType,
+	);
+	const xrQuery = useMediaSentimentImpactData(
+		"extinction-rebellion" as EventOrganizerSlugType,
+	);
 	const data = {
 		fridaysForFuture: fffQuery.data,
 		extinctionRebellion: xrQuery.data,

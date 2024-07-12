@@ -1,12 +1,15 @@
 "use client";
-import type { OrganisationType } from "@/utility/eventsUtil";
+import type {
+	EventOrganizerSlugType,
+	OrganisationType,
+} from "@/utility/eventsUtil";
 import { ArrowRight } from "lucide-react";
 import { useMemo } from "react";
 import OrgsLegendItem from "./OrgsLegendItem";
 
 function getOtherOrg(organisations: OrganisationType[]) {
 	return {
-		slug: "other",
+		slug: "other" as EventOrganizerSlugType,
 		name: "Other",
 		count: organisations.reduce((acc, org) => acc + org.count, 0),
 		color: `var(--grayDark)`,

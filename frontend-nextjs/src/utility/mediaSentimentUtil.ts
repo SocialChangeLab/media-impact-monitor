@@ -5,6 +5,7 @@ import {
 	dateToComparableDateItem,
 } from "./comparableDateItemSchema";
 import { dateSortCompare, isValidISODateString } from "./dateUtil";
+import type { EventOrganizerSlugType, OrganisationType } from "./eventsUtil";
 import { fetchApiData, formatInput } from "./fetchUtil";
 import { formatZodError } from "./zodUtil";
 
@@ -31,27 +32,33 @@ const mediaSentimentDataResponseTypeZodSchema = z.object({
 	error: z.union([z.string(), z.null()]).optional(),
 });
 
-export function getMediaSentimentQuery(params: {
-	from?: Date;
-	to?: Date;
-	organizers: string[];
-	mediaSource: MediaSourceType;
-}) {
+export function getMediaSentimentQuery(
+	params: {
+		from?: Date;
+		to?: Date;
+		organizers: EventOrganizerSlugType[];
+		mediaSource: MediaSourceType;
+	},
+	allOrganisations: OrganisationType[],
+) {
 	return {
 		trend_type: "sentiment",
-		...formatInput(params),
+		...formatInput(params, allOrganisations),
 	};
 }
 
-export async function getMediaSentimentData(params: {
-	from?: Date;
-	to?: Date;
-	organizers: string[];
-	mediaSource: MediaSourceType;
-}): Promise<MediaDataType> {
+export async function getMediaSentimentData(
+	params: {
+		from?: Date;
+		to?: Date;
+		organizers: EventOrganizerSlugType[];
+		mediaSource: MediaSourceType;
+	},
+	allOrganisations: OrganisationType[],
+): Promise<MediaDataType> {
 	const json = await fetchApiData({
 		endpoint: "trend",
-		body: getMediaSentimentQuery(params),
+		body: getMediaSentimentQuery(params, allOrganisations),
 	});
 	return validateGetDataResponse(json);
 }

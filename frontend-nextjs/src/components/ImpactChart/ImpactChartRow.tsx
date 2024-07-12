@@ -1,7 +1,6 @@
 "use client";
-import type { OrganisationType } from "@/utility/eventsUtil";
+import type { EventOrganizerSlugType } from "@/utility/eventsUtil";
 import type { icons } from "lucide-react";
-import { useState } from "react";
 import { OrganisationsSelect } from "../OrganisationsSelect";
 import Icon from "../ui/icon";
 
@@ -16,7 +15,7 @@ type ImpactChartRowProps = {
 	impacts: ImpactType[];
 	icon: keyof typeof icons;
 	unitLabel: string;
-	initialOrg?: string;
+	initialOrg?: EventOrganizerSlugType;
 };
 
 function ImpactChartRow({
@@ -25,18 +24,11 @@ function ImpactChartRow({
 	icon,
 	initialOrg,
 }: ImpactChartRowProps) {
-	const [selectedOrg, setSelectedOrg] = useState<OrganisationType["name"]>(
-		initialOrg ?? "Fridays for Future",
-	);
 	const impactsWithUncertainty = impacts.filter((i) => i.uncertainty !== null);
 	return (
 		<div className="flex flex-col gap-6">
 			<div className="flex flex-col gap-6">
-				<OrganisationsSelect
-					initialValues={[selectedOrg]}
-					onChange={(values) => setSelectedOrg(values[0])}
-					multiple={false}
-				/>
+				<OrganisationsSelect />
 				{impactsWithUncertainty.map((i) => {
 					const impactShare = `${i.impact > 0 ? "+" : "-"}${Math.round(
 						Math.abs((i.impact / 1) * 100),

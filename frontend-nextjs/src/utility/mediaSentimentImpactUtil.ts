@@ -1,5 +1,10 @@
 import type { MediaSourceType } from "@/stores/filtersStore";
 import { z } from "zod";
+import {
+	type EventOrganizerSlugType,
+	type OrganisationType,
+	eventOrganizerSlugZodSchema,
+} from "./eventsUtil";
 import { fetchApiData, formatInput } from "./fetchUtil";
 import { getMediaSentimentQuery } from "./mediaSentimentUtil";
 import { formatZodError } from "./zodUtil";
@@ -47,7 +52,7 @@ type ParsedMediaSentimentImpactType = z.infer<
 >;
 
 const mediaSentimentQueryZodSchema = z.object({
-	organizer: z.string(),
+	organizer: eventOrganizerSlugZodSchema,
 });
 
 const mediaImpactDataTypeZodSchema = z.object({
@@ -58,31 +63,40 @@ export type MediaSentimentImpactDataType = z.infer<
 	typeof mediaImpactDataTypeZodSchema
 >;
 
-function getMediaSentimentImpactQuery(params: {
-	organizer: string;
-	mediaSource: MediaSourceType;
-	from?: Date;
-	to?: Date;
-}) {
+function getMediaSentimentImpactQuery(
+	params: {
+		organizer: EventOrganizerSlugType;
+		mediaSource: MediaSourceType;
+		from?: Date;
+		to?: Date;
+	},
+	allOrganisations: OrganisationType[],
+) {
 	return {
 		method: "time_series_regression",
-		impacted_trend: getMediaSentimentQuery({
-			...params,
-			organizers: [params.organizer],
-		}),
-		...formatInput(params),
+		impacted_trend: getMediaSentimentQuery(
+			{
+				...params,
+				organizers: [params.organizer],
+			},
+			allOrganisations,
+		),
+		...formatInput(params, allOrganisations),
 	};
 }
 
-export async function getMediaSentimentImpactData(params: {
-	organizer: string;
-	mediaSource: MediaSourceType;
-	from?: Date;
-	to?: Date;
-}): Promise<ParsedMediaSentimentImpactType> {
+export async function getMediaSentimentImpactData(
+	params: {
+		organizer: EventOrganizerSlugType;
+		mediaSource: MediaSourceType;
+		from?: Date;
+		to?: Date;
+	},
+	allOrganisations: OrganisationType[],
+): Promise<ParsedMediaSentimentImpactType> {
 	const json = await fetchApiData({
 		endpoint: "impact",
-		body: getMediaSentimentImpactQuery(params),
+		body: getMediaSentimentImpactQuery(params || {}, allOrganisations),
 	});
 	return validateGetDataResponse(json);
 }

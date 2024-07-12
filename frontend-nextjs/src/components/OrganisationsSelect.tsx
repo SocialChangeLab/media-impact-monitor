@@ -17,18 +17,16 @@ import {
 } from "@/components/ui/popover";
 import { useFiltersStore } from "@/providers/FiltersStoreProvider";
 import { cn } from "@/utility/classNames";
-import type { OrganisationType } from "@/utility/eventsUtil";
+import type { EventOrganizerSlugType } from "@/utility/eventsUtil";
 import useEvents from "@/utility/useEvents";
 import { endOfToday, parse, startOfDay } from "date-fns";
 import { useMemo, useState } from "react";
 import RoundedColorPill from "./RoundedColorPill";
 
 export function OrganisationsSelect({
-	onChange = () => undefined,
 	className,
 	multiple = true,
 }: {
-	onChange?: (values: OrganisationType["slug"][]) => void;
 	className?: string;
 	multiple?: boolean;
 }) {
@@ -133,7 +131,6 @@ export function OrganisationsSelect({
 											? []
 											: orgSlugs;
 									setOrganizers(newSlugs);
-									onChange(newSlugs);
 								}}
 							>
 								Toggle all/none
@@ -143,14 +140,15 @@ export function OrganisationsSelect({
 							<CommandItem
 								key={org.slug}
 								value={org.slug}
-								onSelect={(currentValue: OrganisationType["slug"]) => {
-									const alreadySelected = organizerSlugs.includes(currentValue);
+								onSelect={(currentValue: string) => {
+									const alreadySelected = organizerSlugs.includes(
+										currentValue as EventOrganizerSlugType,
+									);
 									const newValues = alreadySelected
 										? organizerSlugs.filter((slug) => slug !== currentValue)
 										: [...organizerSlugs, org.slug];
 									const uniqueValues = Array.from(new Set(newValues));
 									setOrganizers(multiple ? uniqueValues : [org.slug]);
-									onChange(multiple ? uniqueValues : [org.slug]);
 									!multiple && setOpen(false);
 								}}
 							>

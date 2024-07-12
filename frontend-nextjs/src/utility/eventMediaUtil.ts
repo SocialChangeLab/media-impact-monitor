@@ -1,5 +1,9 @@
 import { parse } from "date-fns";
 import { z } from "zod";
+import {
+	type OrganisationType,
+	eventOrganizerSlugZodSchema,
+} from "./eventsUtil";
 import { fetchApiData, formatInput } from "./fetchUtil";
 import { formatZodError } from "./zodUtil";
 
@@ -9,7 +13,7 @@ export const eventMediaInputQueryZodSchema = z.object({
 	to: z.coerce.date().optional(),
 	eventId: z.string(),
 	topic: z.string().optional().default("climate_change"),
-	organizers: z.array(z.string()).optional(),
+	organizers: z.array(eventOrganizerSlugZodSchema).optional(),
 	query: z.string().optional(),
 });
 export type EventMediaInputQueryType = z.infer<
@@ -22,7 +26,7 @@ const eventMediaOutputQueryZodSchema = z.object({
 	end_date: z.string().optional(),
 	event_id: z.string(),
 	topic: z.string(),
-	organizers: z.array(z.string()).optional(),
+	organizers: z.array(eventOrganizerSlugZodSchema).optional(),
 });
 
 const eventMediaZodSchema = z.object({
@@ -48,17 +52,23 @@ const mediaCoverageDataResponseTypeZodSchema = z.object({
 	query: eventMediaOutputQueryZodSchema,
 });
 
-export async function getEventMediaData({
-	eventId,
-	organizers,
-	topic = "climate_change",
-	from,
-	to,
-	mediaSource = "news_online",
-}: EventMediaInputQueryType) {
+export async function getEventMediaData(
+	{
+		eventId,
+		organizers,
+		topic = "climate_change",
+		from,
+		to,
+		mediaSource = "news_online",
+	}: EventMediaInputQueryType,
+	allOrganisations: OrganisationType[],
+) {
 	const body = eventMediaOutputQueryZodSchema.parse({
 		event_id: eventId,
-		...formatInput({ from, to, organizers, mediaSource, topic }),
+		...formatInput(
+			{ from, to, organizers, mediaSource, topic },
+			allOrganisations,
+		),
 	});
 	const json = await fetchApiData({
 		endpoint: "fulltexts",

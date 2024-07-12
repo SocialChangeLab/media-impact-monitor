@@ -4,6 +4,7 @@ import {
 	datasetStartDate,
 } from "@/stores/filtersStore";
 import { format } from "date-fns";
+import type { EventOrganizerSlugType, OrganisationType } from "./eventsUtil";
 
 export async function fetchApiData({
 	endpoint,
@@ -41,11 +42,12 @@ export function formatInput(
 	input: Partial<{
 		from: Date;
 		to: Date;
-		organizers: string[];
 		mediaSource: MediaSourceType;
+		organizers: EventOrganizerSlugType[];
 		eventId: string;
 		topic: string;
-	}> = {},
+	}>,
+	allOrganisations: OrganisationType[],
 ) {
 	const { from, to } = input;
 	const organizers =
@@ -54,8 +56,13 @@ export function formatInput(
 			: undefined;
 	const media_source = input.mediaSource ? input.mediaSource : undefined;
 	const event_id = input.eventId ? input.eventId : undefined;
+	const organisationNames = allOrganisations
+		.filter(({ slug }) => organizers?.includes(slug))
+		.map(({ name }) => name);
 	const normalizedInput = {
-		...(organizers ? { organizers } : {}),
+		...(organizers && organizers.length > 0
+			? { organizers: organisationNames }
+			: {}),
 		...(media_source ? { media_source } : {}),
 		...(event_id ? { event_id } : {}),
 		topic: input.topic || "climate_change",

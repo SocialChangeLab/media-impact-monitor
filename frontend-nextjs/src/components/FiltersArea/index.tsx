@@ -47,8 +47,7 @@ function FiltersArea({ isScrolledToTop }: { isScrolledToTop: boolean }) {
 		>
 			<div
 				className={cn(
-					`flex gap-[max(1rem,2vmax)] flex-wrap items-center`,
-					display.onlyTime ? `justify-end` : `justify-between`,
+					`flex gap-[max(1rem,2vmax)] justify-between flex-wrap items-center`,
 				)}
 			>
 				{(display.media || display.organisations) && (

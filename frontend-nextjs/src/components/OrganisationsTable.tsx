@@ -1,3 +1,4 @@
+import { cn } from "@/utility/classNames";
 import type {
 	EventOrganizerSlugType,
 	OrganisationType,
@@ -72,8 +73,11 @@ function OrganisationsTable() {
 					const { name, slug, color } = row.original;
 					return (
 						<Link
-							href={`/organisations/${slug}${searchParams && `?${searchParams.toString()}`}`}
-							className={"grid grid-cols-[auto_1fr_auto] gap-x-2 items-center"}
+							href={`/organisations/${slug}?${searchParams.toString()}`}
+							className={cn(
+								"grid grid-cols-[auto_1fr_auto] gap-x-2 items-center",
+								"hover:font-medium transition-all w-fit",
+							)}
 						>
 							<RoundedColorPill color={color} />
 							<div className="truncate underline-offset-4 underline decoration-grayMed">

@@ -22,7 +22,9 @@ function OrgsLegendItem({
 			<>
 				<RoundedColorPill color={org.color} />
 				<span className="grid grid-cols-[1fr_auto] gap-4">
-					<div className="truncate">{org.name.split(":")[0]}</div>
+					<div className="truncate group-hover:font-medium group-hover:text-fg transition-all">
+						{org.name.split(":")[0]}
+					</div>
 					<span className="font-mono text-xs text-grayDark">
 						({org.count.toLocaleString("en-GB")})
 					</span>
@@ -33,16 +35,15 @@ function OrgsLegendItem({
 
 	if (org.isMain) {
 		return (
-			<Tooltip key={org.slug} delayDuration={50} disableHoverableContent>
+			<Tooltip key={org.slug} disableHoverableContent>
 				<TooltipTrigger asChild>
 					<li>
 						<Link
 							href={`/organisations/${org.slug}?${searchParams.toString()}`}
 							className={cn(
-								"grid grid-cols-[auto_1fr_auto] gap-x-2 py-2",
-								"items-center",
+								"grid grid-cols-[auto_1fr_auto] gap-x-2 py-2 transition-colors",
+								`items-center group cursor-pointer hover:bg-grayUltraLight`,
 								org.isMain && `legend-org legend-org-${org.slug}`,
-								`cursor-pointer`,
 							)}
 						>
 							{triggerContent}

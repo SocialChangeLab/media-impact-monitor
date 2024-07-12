@@ -50,11 +50,11 @@ function EventTooltip({
 	return (
 		<Tooltip delayDuration={50}>
 			{children}
-			<TooltipContent>
+			<TooltipContent className="p-0 pb-4">
 				<ul
 					className={cn(
 						"flex justify-between items-center border-b py-2",
-						"mb-2 border-grayLight",
+						"mb-2 border-grayLight px-4",
 					)}
 				>
 					<li className="flex gap-4 items-center font-bold font-headlines text-base">
@@ -67,7 +67,7 @@ function EventTooltip({
 				</ul>
 				<p
 					className={cn(
-						"max-w-80 text-xs mb-1",
+						"max-w-80 text-xs mb-1 px-4",
 						!descriptionExpanded && "line-clamp-3",
 					)}
 				>
@@ -76,7 +76,7 @@ function EventTooltip({
 				<Button
 					variant="ghost"
 					onClick={() => setDescriptionExpanded(!descriptionExpanded)}
-					className="text-xs font-medium px-1 py-0.5 -translate-x-1 -mt-0.5 h-auto mb-3 hover:translate-x-0 transition"
+					className="text-xs font-medium px-1 py-0.5 -translate-x-1 -mt-0.5 h-auto mb-3 hover:translate-x-0 transition ml-4"
 				>
 					{descriptionExpanded ? "Show less" : "Show more"}
 				</Button>

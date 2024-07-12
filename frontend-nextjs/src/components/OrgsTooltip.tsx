@@ -20,15 +20,18 @@ function OrgsTooltip({
 		<Tooltip delayDuration={50}>
 			<TooltipTrigger asChild>{children}</TooltipTrigger>
 			<Portal>
-				<TooltipContent className="text-sm" side="bottom">
+				<TooltipContent className="text-sm px-0" side="bottom">
 					<ul className="flex flex-col w-96 max-w-full legend-orgs-container">
 						{otherOrgs?.map((subOrg) => (
 							<li key={subOrg.slug} className={cn("flex flex-col")}>
 								<Link
 									href={`/organisations/${subOrg.slug}?${searchParams.toString()}`}
 									className={cn(
-										"grid gap-2 py-2 border-b border-black/10 items-center",
+										"grid gap-2 py-2 text-grayDark",
+										"border-b border-grayLight items-center",
 										`legend-org legend-org-${subOrg.slug}`,
+										`hover:bg-grayUltraLight hover:text-fg transition-all`,
+										`hover:font-medium px-4`,
 										withPills
 											? "grid-cols-[auto_1fr_auto]"
 											: "grid-cols-[1fr_auto]",

@@ -57,8 +57,8 @@ function AggregatedEventsTooltip({
 	return (
 		<Tooltip>
 			<TooltipTrigger>{children}</TooltipTrigger>
-			<TooltipContent>
-				<p className="text-base pt-2 pb-3 max-w-80">
+			<TooltipContent className="px-0">
+				<p className="text-base pt-2 pb-3 max-w-80 px-4">
 					The {aggregationUnit} of{" "}
 					<strong>
 						{aggregationUnit === "month"

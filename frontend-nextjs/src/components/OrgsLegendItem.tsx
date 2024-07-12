@@ -3,6 +3,7 @@ import type { OrganisationType } from "@/utility/eventsUtil";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { memo, useMemo } from "react";
+import OrgsTooltip from "./OrgsTooltip";
 import RoundedColorPill from "./RoundedColorPill";
 import { Portal, Tooltip, TooltipContent, TooltipTrigger } from "./ui/tooltip";
 
@@ -18,32 +19,36 @@ function OrgsLegendItem({
 	// biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
 	const triggerContent = useMemo(() => {
 		return (
-			<li>
-				<Link
-					href={`/organisations/${org.slug}?${searchParams.toString()}`}
-					className={cn(
-						"grid grid-cols-[auto_1fr_auto] gap-x-2 py-2",
-						"items-center",
-						`legend-org legend-org-${org.slug}`,
-						`cursor-pointer`,
-					)}
-				>
-					<RoundedColorPill color={org.color} />
-					<span className="grid grid-cols-[1fr_auto] gap-4">
-						<div className="truncate">{org.name.split(":")[0]}</div>
-						<span className="font-mono text-xs text-grayDark">
-							({org.count.toLocaleString("en-GB")})
-						</span>
+			<>
+				<RoundedColorPill color={org.color} />
+				<span className="grid grid-cols-[1fr_auto] gap-4">
+					<div className="truncate">{org.name.split(":")[0]}</div>
+					<span className="font-mono text-xs text-grayDark">
+						({org.count.toLocaleString("en-GB")})
 					</span>
-				</Link>
-			</li>
+				</span>
+			</>
 		);
 	}, [org.slug, searchParams]);
 
 	if (org.isMain) {
 		return (
 			<Tooltip key={org.slug} delayDuration={50} disableHoverableContent>
-				<TooltipTrigger asChild>{triggerContent}</TooltipTrigger>
+				<TooltipTrigger asChild>
+					<li>
+						<Link
+							href={`/organisations/${org.slug}?${searchParams.toString()}`}
+							className={cn(
+								"grid grid-cols-[auto_1fr_auto] gap-x-2 py-2",
+								"items-center",
+								org.isMain && `legend-org legend-org-${org.slug}`,
+								`cursor-pointer`,
+							)}
+						>
+							{triggerContent}
+						</Link>
+					</li>
+				</TooltipTrigger>
 				<Portal>
 					<TooltipContent className="text-sm">{org.name}</TooltipContent>
 				</Portal>
@@ -51,25 +56,18 @@ function OrgsLegendItem({
 		);
 	}
 	return (
-		<Tooltip key={org.slug} delayDuration={50}>
-			<TooltipTrigger asChild>{triggerContent}</TooltipTrigger>
-			<Portal>
-				<TooltipContent className="text-sm">
-					<ul className="flex flex-col w-96 max-w-full">
-						{otherOrgs?.map((subOrg) => (
-							<li key={subOrg.slug} className="flex flex-col">
-								<div className="grid grid-cols-[1fr_auto] gap-4 py-2 border-b border-black/10">
-									<span className="truncate">{subOrg.name}</span>
-									<span className="font-mono text-xs text-black/45">
-										({subOrg.count.toLocaleString("en-GB")})
-									</span>
-								</div>
-							</li>
-						))}
-					</ul>
-				</TooltipContent>
-			</Portal>
-		</Tooltip>
+		<OrgsTooltip otherOrgs={otherOrgs}>
+			<li>
+				<span
+					className={cn(
+						"grid grid-cols-[auto_1fr_auto] gap-x-2 py-2",
+						`items-center cursor-pointer`,
+					)}
+				>
+					{triggerContent}
+				</span>
+			</li>
+		</OrgsTooltip>
 	);
 }
 

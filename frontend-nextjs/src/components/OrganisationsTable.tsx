@@ -1,10 +1,20 @@
+import type {
+	EventOrganizerSlugType,
+	OrganisationType,
+} from "@/utility/eventsUtil";
 import useEvents from "@/utility/useEvents";
 import { createColumnHelper } from "@tanstack/react-table";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { useMemo } from "react";
 import { DataTable } from "./DataTable/DataTable";
+import OrgsTooltip from "./OrgsTooltip";
 import RoundedColorPill from "./RoundedColorPill";
+
+function formatNumber(num: number) {
+	if (Number.isNaN(num)) return "?";
+	return Math.round(num).toLocaleString("en-GB");
+}
 
 function OrganisationsTable() {
 	const { data } = useEvents();
@@ -16,17 +26,38 @@ function OrganisationsTable() {
 				const orgEvents = data.events.filter((e) =>
 					e.organizers.find((o) => o.slug === org.slug),
 				);
+				const totalEvents = orgEvents.length ?? 0;
 				const totalParticipants = orgEvents.reduce(
 					(acc, e) => acc + (e.size_number ?? 0),
 					0,
+				);
+				const partners = Array.from(
+					orgEvents
+						.reduce((acc, e) => {
+							for (const partner of e.organizers) {
+								if (partner.slug === org.slug) continue;
+								const partnerOrg = data.organisations.find(
+									(o) => o.slug === partner.slug,
+								);
+								if (!partnerOrg) continue;
+								acc.set(partner.slug, partnerOrg);
+							}
+							return acc;
+						}, new Map<EventOrganizerSlugType, OrganisationType>())
+						.values(),
 				);
 				return {
 					...org,
 					slug: org.slug,
 					name: org.name,
-					totalEvents: orgEvents.length,
+					totalEvents: totalEvents,
 					totalParticipants,
-					avgParticipantsPerEvent: totalParticipants / orgEvents.length,
+					avgParticipantsPerEvent:
+						totalEvents === 0 ? 0 : totalParticipants / totalEvents,
+					avgPartnerOrgsPerEvent:
+						totalEvents === 0 ? 0 : partners.length / totalEvents,
+					totalPartners: partners.length,
+					partners,
 				};
 			}),
 		[data],
@@ -63,14 +94,40 @@ function OrganisationsTable() {
 			columnHelper.accessor("totalParticipants", {
 				header: "Total Participants",
 				cell: function render({ getValue }) {
-					return Math.round(getValue()).toLocaleString("en-GB");
+					return formatNumber(getValue());
 				},
 				size: 50,
 			}),
 			columnHelper.accessor("avgParticipantsPerEvent", {
-				header: "Avg. Participants per Event",
+				header: "Avg. Participants",
 				cell: function render({ getValue }) {
-					return Math.round(getValue()).toLocaleString("en-GB");
+					return formatNumber(getValue());
+				},
+				size: 50,
+			}),
+			columnHelper.accessor("avgPartnerOrgsPerEvent", {
+				header: "Avg. Partners",
+				cell: function render({ getValue }) {
+					return formatNumber(getValue());
+				},
+				size: 50,
+			}),
+			columnHelper.accessor("totalPartners", {
+				header: "Total Partners",
+				cell: function render({ getValue, row }) {
+					const partners = row.original.partners.sort((a, b) => {
+						if (a.count < b.count) return 1;
+						if (a.count > b.count) return -1;
+						return a.name.localeCompare(b.name);
+					});
+					if (partners.length === 0) return <span>0</span>;
+					return (
+						<OrgsTooltip otherOrgs={partners} withPills>
+							<span className="underline underline-offset-4 decoration-grayMed cursor-pointer">
+								{formatNumber(getValue())}
+							</span>
+						</OrgsTooltip>
+					);
 				},
 				size: 50,
 			}),

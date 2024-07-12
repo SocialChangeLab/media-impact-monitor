@@ -70,7 +70,7 @@ const PaginationLink = React.forwardRef<HTMLButtonElement, PaginationLinkProps>(
 			variant={isActive ? "default" : "ghost"}
 			size={size}
 			className={cn(
-				"px-1.5 py-2 hover:bg-alt rounded-none",
+				"px-1.5 py-2 hover:bg-fg hover:text-bg rounded-none",
 				`border-none h-9 min-w-9`,
 				className,
 			)}

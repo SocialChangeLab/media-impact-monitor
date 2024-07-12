@@ -11,12 +11,9 @@ const EventsBar = forwardRef<
 			className={cn(
 				"size-3 relative z-10 hover:z-20",
 				"event-item transition-all",
-				organisations.map((org) => {
-					const isMain = org?.isMain ?? false;
-					return `event-item-org-${
-						isMain ? org.slug || "unknown-organisation" : "other"
-					}`;
-				}),
+				organisations.map(
+					(org) => `event-item-org-${org.slug || "unknown-organisation"}`,
+				),
 			)}
 			style={{ height: `${height}px` }}
 		>

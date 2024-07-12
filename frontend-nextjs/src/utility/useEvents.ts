@@ -89,13 +89,18 @@ function useEvents({
 		[data],
 	);
 
+	const orgsFromFilteredEvents = useMemo(
+		() => (events.length ? extractEventOrganisations(events) : []),
+		[events],
+	);
+
 	const selectedOrganisations = useMemo(() => {
-		if (filterStore.organizers.length === 0) return organisations;
-		const selectedOrs = organisations.filter((org) =>
+		if (filterStore.organizers.length === 0) return orgsFromFilteredEvents;
+		const selectedOrs = orgsFromFilteredEvents.filter((org) =>
 			filterStore.organizers.find((o) => o === org.slug),
 		);
-		return selectedOrs.length === 0 ? organisations : selectedOrs;
-	}, [filterStore.organizers, organisations]);
+		return selectedOrs.length === 0 ? orgsFromFilteredEvents : selectedOrs;
+	}, [filterStore.organizers, orgsFromFilteredEvents]);
 
 	// biome-ignore lint/correctness/useExhaustiveDependencies: The queryClient should never change and if it does it shouldn't retrigger the useEffect
 	useEffect(() => {

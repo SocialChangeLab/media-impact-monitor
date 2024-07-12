@@ -14,14 +14,14 @@ const EventsTimelineWrapper = forwardRef<
 			ref={ref}
 		>
 			<style jsx global>{`
-				.events-timeline:has(.legend-org:hover) .event-item {
+				body:has(.legend-orgs-container .legend-org:hover) .event-item {
 					opacity: 0.2 !important;
 					filter: grayscale(100%) !important;
 				}
 				${organisations
 					.map(({ slug }) => {
 						return `
-								.events-timeline:has(.legend-org-${slug}:hover)
+								body:has(.legend-orgs-container .legend-org-${slug}:hover)
 									.event-item-org-${slug} {
 										opacity: 1 !important;
 										filter: grayscale(0%) !important;

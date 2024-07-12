@@ -62,7 +62,7 @@ function OrgsLegend({
 				<ArrowRight size={16} className="text-grayDark" />
 				Organizations
 			</h5>
-			<ul className="grid grid-cols-[repeat(auto-fill,minmax(min(13rem,100%),1fr))] gap-x-6 relative z-20">
+			<ul className="grid grid-cols-[repeat(auto-fill,minmax(min(13rem,100%),1fr))] gap-x-6 relative z-20 legend-orgs-container">
 				{allOrgs.map((org) => (
 					<OrgsLegendItem key={org.slug} org={org} otherOrgs={otherOrgs} />
 				))}

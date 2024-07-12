@@ -1,3 +1,4 @@
+"use client";
 import { useFiltersStore } from "@/providers/FiltersStoreProvider";
 import { cn } from "@/utility/classNames";
 import {
@@ -7,6 +8,7 @@ import {
 } from "@/utility/eventsUtil";
 import { getDateRangeByAggregationUnit } from "@/utility/useTimeIntervals";
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 import { memo } from "react";
 import { TooltipTrigger } from "../ui/tooltip";
 import type { AggregatedItemType } from "./EventsTimelineAggregatedItem";
@@ -29,10 +31,11 @@ function EventBubbleLink({
 	organisations,
 	...otherProps
 }: EventBubbleLinkProps) {
+	const searchParams = useSearchParams();
 	return (
 		<TooltipTrigger asChild>
 			<Link
-				href={`/events/${event.event_id}`}
+				href={`/events/${event.event_id}?${searchParams.toString()}`}
 				className={bubbleClasses}
 				style={{
 					background: getCSSStyleGradientWithEqualSteps(

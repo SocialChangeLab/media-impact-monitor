@@ -1,12 +1,34 @@
 "use client";
 import { cn } from "@/utility/classNames";
-import { type ReactNode, memo } from "react";
+import { usePathname } from "next/navigation";
+import { type ReactNode, memo, useMemo } from "react";
 import MediaSourceSelect from "../DataSourceSelect";
 import DraggableTimeFilterRange from "../DraggableTimeFilterRange";
 import { OrganisationsSelect } from "../OrganisationsSelect";
 import TimeFilter from "../TimeFilter";
+import {
+	doesPathnameShowAnyFilter,
+	doesPathnameShowMediaFilter,
+	doesPathnameShowOrganisationsFilter,
+	doesPathnameShowTimeFilter,
+} from "../menu/HeaderMenu";
 
 function FiltersArea({ isScrolledToTop }: { isScrolledToTop: boolean }) {
+	const pathname = usePathname();
+
+	console.log(pathname);
+
+	const display = useMemo(() => {
+		const any = doesPathnameShowAnyFilter(pathname);
+		const media = doesPathnameShowMediaFilter(pathname);
+		const organisations = doesPathnameShowOrganisationsFilter(pathname);
+		const time = doesPathnameShowTimeFilter(pathname);
+		const onlyTime = !media && !organisations && time;
+		return { any, media, organisations, time, onlyTime };
+	}, [pathname]);
+
+	if (!display.any) return null;
+
 	return (
 		<nav
 			aria-label="Page filters"
@@ -24,22 +46,33 @@ function FiltersArea({ isScrolledToTop }: { isScrolledToTop: boolean }) {
 			)}
 		>
 			<div
-				className={`flex gap-[max(1rem,2vmax)] flex-wrap justify-between items-center`}
+				className={cn(
+					`flex gap-[max(1rem,2vmax)] flex-wrap items-center`,
+					display.onlyTime ? `justify-end` : `justify-between`,
+				)}
 			>
-				<ul className="flex gap-6 items-center flex-wrap">
-					<li className="flex flex-col gap-1 text-sm">
-						<FilterLabel show={isScrolledToTop}>Media source:</FilterLabel>
-						<MediaSourceSelect />
-					</li>
-					<li className="flex flex-col gap-1 text-sm">
-						<FilterLabel show={isScrolledToTop}>Organisations:</FilterLabel>
-						<OrganisationsSelect />
-					</li>
-				</ul>
-				<div className="flex flex-col gap-1 text-sm">
-					<FilterLabel show={isScrolledToTop}>Time range:</FilterLabel>
-					<TimeFilter />
-				</div>
+				{(display.media || display.organisations) && (
+					<ul className="flex gap-6 items-center flex-wrap">
+						{display.media && (
+							<li className="flex flex-col gap-1 text-sm">
+								<FilterLabel show={isScrolledToTop}>Media source:</FilterLabel>
+								<MediaSourceSelect />
+							</li>
+						)}
+						{display.organisations && (
+							<li className="flex flex-col gap-1 text-sm">
+								<FilterLabel show={isScrolledToTop}>Organisations:</FilterLabel>
+								<OrganisationsSelect />
+							</li>
+						)}
+					</ul>
+				)}
+				{display.time && (
+					<div className="flex flex-col gap-1 text-sm">
+						<FilterLabel show={isScrolledToTop}>Time range:</FilterLabel>
+						<TimeFilter />
+					</div>
+				)}
 			</div>
 			<DraggableTimeFilterRange />
 		</nav>

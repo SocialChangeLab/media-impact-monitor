@@ -1,7 +1,9 @@
+"use client";
 import ThemeToggle from "@/components/ThemeToggle";
 import AppLogo from "@/components/logos/AppLogo";
 import { cn } from "@/utility/classNames";
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 import { memo } from "react";
 import HeaderMenuLink from "./HeaderMenuLink";
 
@@ -9,6 +11,9 @@ type MenuItemType = {
 	name: string;
 	label?: string;
 	route?: string;
+	showMediaFilter?: boolean;
+	showOrganisationsFilter?: boolean;
+	showTimeFilter?: boolean;
 };
 
 const menuItems: MenuItemType[] = [
@@ -16,6 +21,15 @@ const menuItems: MenuItemType[] = [
 		name: "dashboard",
 		label: "Dashboard",
 		route: "/",
+		showMediaFilter: true,
+		showOrganisationsFilter: true,
+		showTimeFilter: true,
+	},
+	{
+		name: "organisations",
+		label: "Organisations",
+		route: "/organisations",
+		showTimeFilter: true,
 	},
 	{
 		name: "about",
@@ -28,7 +42,41 @@ const menuItems: MenuItemType[] = [
 		route: "/docs",
 	},
 ];
+
+function getMenuItemByPathname(pathname: string) {
+	return menuItems.find((i) => i.route === pathname);
+}
+
+export function doesPathnameShowAnyFilter(pathname: string) {
+	const menuItem = getMenuItemByPathname(pathname);
+	if (!menuItem) return false;
+	const showAnyFilter =
+		menuItem.showMediaFilter ||
+		menuItem.showOrganisationsFilter ||
+		menuItem.showTimeFilter;
+	return showAnyFilter;
+}
+
+export function doesPathnameShowMediaFilter(pathname: string) {
+	const menuItem = getMenuItemByPathname(pathname);
+	if (!menuItem) return false;
+	return menuItem.showMediaFilter;
+}
+
+export function doesPathnameShowOrganisationsFilter(pathname: string) {
+	const menuItem = getMenuItemByPathname(pathname);
+	if (!menuItem) return false;
+	return menuItem.showOrganisationsFilter;
+}
+
+export function doesPathnameShowTimeFilter(pathname: string) {
+	const menuItem = getMenuItemByPathname(pathname);
+	if (!menuItem) return false;
+	return menuItem.showTimeFilter;
+}
+
 function HeaderMenu({ currentPage }: { currentPage: string }) {
+	const searchParams = useSearchParams();
 	return (
 		<nav
 			className={cn(
@@ -54,7 +102,7 @@ function HeaderMenu({ currentPage }: { currentPage: string }) {
 				{menuItems.map((item) => (
 					<HeaderMenuLink
 						key={item.name}
-						href={item.route ?? "/"}
+						href={`${item.route ?? "/"}?${searchParams.toString()}`}
 						title={item.label ?? "-"}
 						active={currentPage === item.name}
 					/>

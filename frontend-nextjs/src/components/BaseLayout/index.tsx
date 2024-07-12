@@ -6,6 +6,7 @@ import { cn } from "@/utility/classNames";
 import { usePathname } from "next/navigation";
 import type { ReactNode } from "react";
 import { Menu } from "../menu";
+import { doesPathnameShowAnyFilter } from "../menu/HeaderMenu";
 
 export function BaseLayout({
 	children,
@@ -16,12 +17,13 @@ export function BaseLayout({
 }) {
 	const pathname = usePathname();
 	const currentPage = pathname.split("/")[1] || "dashboard";
+	const showFilters = doesPathnameShowAnyFilter(pathname);
 	return (
 		<div
 			className="layout grid grid-rows-[auto_1fr_auto] w-screen overflow-x-clip transition-all max-w-page"
 			style={{
-				paddingTop: 75 + (pathname === "/" ? 125 : 0),
-				minHeight: `calc(100vh - ${75 + (pathname === "/" ? 77 : 0)}px)`,
+				paddingTop: 75 + (showFilters ? 125 : 0),
+				minHeight: `calc(100vh - ${75 + (showFilters ? 77 : 0)}px)`,
 			}}
 		>
 			<Menu currentPage={currentPage} />

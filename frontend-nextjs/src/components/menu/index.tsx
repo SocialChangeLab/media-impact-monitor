@@ -2,7 +2,7 @@
 import { useUiStore } from "@/providers/UiStoreProvider";
 import { usePathname } from "next/navigation";
 import FiltersArea from "../FiltersArea";
-import HeaderMenu from "./HeaderMenu";
+import HeaderMenu, { doesPathnameShowAnyFilter } from "./HeaderMenu";
 import { StickyMenuWrapper } from "./StickyMenuWrapper";
 
 export const Menu = ({ currentPage }: { currentPage: string }) => {
@@ -17,7 +17,7 @@ export const Menu = ({ currentPage }: { currentPage: string }) => {
 	return (
 		<StickyMenuWrapper {...uiState}>
 			<HeaderMenu currentPage={currentPage} />
-			{pathname === "/" && (
+			{doesPathnameShowAnyFilter(pathname) && (
 				<FiltersArea isScrolledToTop={uiState.isScrolledToTop} />
 			)}
 		</StickyMenuWrapper>

@@ -1,5 +1,4 @@
 import { cn } from "@/utility/classNames";
-import { slugifyCssClass } from "@/utility/cssSlugify";
 import type { OrganisationType } from "@/utility/eventsUtil";
 import { memo, useMemo } from "react";
 import RoundedColorPill from "./RoundedColorPill";
@@ -12,13 +11,14 @@ function OrgsLegendItem({
 	org: OrganisationType;
 	otherOrgs?: OrganisationType[];
 }) {
+	// biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
 	const triggerContent = useMemo(() => {
 		return (
 			<li
 				className={cn(
 					"grid grid-cols-[auto_1fr_auto] gap-x-2 py-2",
 					"items-center",
-					`legend-org legend-org-${slugifyCssClass(org.name)}`,
+					`legend-org legend-org-${org.slug}`,
 					`cursor-pointer`,
 				)}
 			>
@@ -31,10 +31,10 @@ function OrgsLegendItem({
 				</span>
 			</li>
 		);
-	}, [org.name, org.color, org.count]);
+	}, [org.slug]);
 	if (org.isMain) {
 		return (
-			<Tooltip key={org.name} delayDuration={50} disableHoverableContent>
+			<Tooltip key={org.slug} delayDuration={50} disableHoverableContent>
 				<TooltipTrigger asChild>{triggerContent}</TooltipTrigger>
 				<Portal>
 					<TooltipContent className="text-sm">{org.name}</TooltipContent>
@@ -43,13 +43,13 @@ function OrgsLegendItem({
 		);
 	}
 	return (
-		<Tooltip key={org.name} delayDuration={50}>
+		<Tooltip key={org.slug} delayDuration={50}>
 			<TooltipTrigger asChild>{triggerContent}</TooltipTrigger>
 			<Portal>
 				<TooltipContent className="text-sm">
 					<ul className="flex flex-col w-96 max-w-full">
 						{otherOrgs?.map((subOrg) => (
-							<li key={subOrg.name} className="flex flex-col">
+							<li key={subOrg.slug} className="flex flex-col">
 								<div className="grid grid-cols-[1fr_auto] gap-4 py-2 border-b border-black/10">
 									<span className="truncate">{subOrg.name}</span>
 									<span className="font-mono text-xs text-black/45">

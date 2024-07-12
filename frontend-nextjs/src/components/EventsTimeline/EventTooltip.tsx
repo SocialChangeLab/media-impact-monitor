@@ -22,11 +22,11 @@ function EventTooltip({
 		const unknownOrgName = "Unknown organisation";
 		const mappedOrgs = event.organizers
 			.map((orgName) => {
-				const org = organisations.find((x) => x.name === orgName);
+				const org = organisations.find((x) => x.slug === orgName.slug);
 				if (!org) return;
 				return {
 					...org,
-					isSelected: !!selectedOrganisations.find((x) => x.name === org.name),
+					isSelected: !!selectedOrganisations.find((x) => x.slug === org.slug),
 					name: org.name.trim() || unknownOrgName,
 				};
 			})
@@ -81,7 +81,7 @@ function EventTooltip({
 					{descriptionExpanded ? "Show less" : "Show more"}
 				</Button>
 				{orgs.map((org) => (
-					<OrgLine key={org.name} {...org} />
+					<OrgLine key={org.slug} {...org} />
 				))}
 			</TooltipContent>
 		</Tooltip>

@@ -97,7 +97,7 @@ function getColorPercentagesByParticipants(
 		(acc, event) => {
 			const eventSum = event.size_number ?? 0 / event.organizers.length;
 			for (const organizer of event.organizers) {
-				const org = organisations.find((x) => x.name === organizer);
+				const org = organisations.find((x) => x.slug === organizer.slug);
 				if (!org) continue;
 				const currentColorCount = acc[org.color] ?? 0;
 				acc[org.color] = currentColorCount + eventSum;

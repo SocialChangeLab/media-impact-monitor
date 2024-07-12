@@ -80,7 +80,7 @@ const EventPageWithPopulatedData = memo(
 						<dd className="flex flex-wrap">
 							{data?.organisations.map((org) => (
 								<span
-									key={org.name}
+									key={org.slug}
 									className={cn(
 										"grid grid-cols-[auto_1fr_auto] gap-x-2",
 										`items-center cursor-pointer`,

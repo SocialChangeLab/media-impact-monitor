@@ -1,5 +1,4 @@
 "use client";
-import { slugifyCssClass } from "@/utility/cssSlugify";
 import type { OrganisationType } from "@/utility/eventsUtil";
 import { type PropsWithChildren, forwardRef } from "react";
 
@@ -20,8 +19,7 @@ const EventsTimelineWrapper = forwardRef<
 					filter: grayscale(100%) !important;
 				}
 				${organisations
-					.map((org) => {
-						const slug = org.isMain ? slugifyCssClass(org.name) : "other";
+					.map(({ slug }) => {
 						return `
 								.events-timeline:has(.legend-org-${slug}:hover)
 									.event-item-org-${slug} {

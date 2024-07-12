@@ -42,9 +42,10 @@ function AggregatedEventsTooltip({
 		return organisations
 			.map((org) => ({
 				...org,
-				count: events.filter((event) => event.organizers.includes(org.name))
-					.length,
-				isSelected: !!selectedOrganisations.find((x) => x.name === org.name),
+				count: events.filter((event) =>
+					event.organizers.find((x) => x.slug === org.slug),
+				).length,
+				isSelected: !!selectedOrganisations.find((x) => x.slug === org.slug),
 			}))
 			.sort((a, b) => {
 				if (a.isSelected && !b.isSelected) return -1;
@@ -79,7 +80,7 @@ function AggregatedEventsTooltip({
 						", and was organized by the following organizations:"}
 				</p>
 				{orgs.map((org) => (
-					<OrgLine key={org.name} {...org} />
+					<OrgLine key={org.slug} {...org} />
 				))}
 			</TooltipContent>
 		</Tooltip>

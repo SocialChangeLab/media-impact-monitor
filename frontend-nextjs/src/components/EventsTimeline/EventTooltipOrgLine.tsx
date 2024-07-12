@@ -8,7 +8,7 @@ export default function OrgLine(
 ) {
 	return (
 		<div
-			key={org.name}
+			key={org.slug}
 			className={cn(
 				"grid grid-cols-[auto_1fr_auto] gap-x-2 items-center",
 				"border-t border-black/5 py-1",

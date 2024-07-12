@@ -6,6 +6,7 @@ import OrgsLegendItem from "./OrgsLegendItem";
 
 function getOtherOrg(organisations: OrganisationType[]) {
 	return {
+		slug: "other",
 		name: "Other",
 		count: organisations.reduce((acc, org) => acc + org.count, 0),
 		color: `var(--grayDark)`,
@@ -60,7 +61,7 @@ function OrgsLegend({
 			</h5>
 			<ul className="grid grid-cols-[repeat(auto-fill,minmax(min(13rem,100%),1fr))] gap-x-6 relative z-20">
 				{allOrgs.map((org) => (
-					<OrgsLegendItem key={org.name} org={org} otherOrgs={otherOrgs} />
+					<OrgsLegendItem key={org.slug} org={org} otherOrgs={otherOrgs} />
 				))}
 			</ul>
 		</div>

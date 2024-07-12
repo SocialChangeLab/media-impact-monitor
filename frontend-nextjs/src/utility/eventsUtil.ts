@@ -1,3 +1,4 @@
+import slugify from "slugify";
 import { z } from "zod";
 import {
 	comparableDateItemSchema,
@@ -22,16 +23,24 @@ const eventZodSchema = z.object({
 });
 export type EventType = z.infer<typeof eventZodSchema>;
 
+const eventOrganizerZodSchema = z.object({
+	slug: z.string(),
+	name: z.string(),
+});
+export type EventOrganizerType = z.infer<typeof eventOrganizerZodSchema>;
+
 const parsedEventZodSchema = eventZodSchema
-	.omit({ date: true })
-	.merge(comparableDateItemSchema);
+	.omit({ date: true, organizers: true })
+	.merge(comparableDateItemSchema)
+	.extend({
+		organizers: z.array(eventOrganizerZodSchema),
+	});
 export type ParsedEventType = z.infer<typeof parsedEventZodSchema>;
 
 const colorTypeZodSchema = z.string();
 export type ColorType = z.infer<typeof colorTypeZodSchema>;
 
-const organisationZodSchema = z.object({
-	name: z.string(),
+export const organisationZodSchema = eventOrganizerZodSchema.extend({
 	count: z.number(),
 	color: colorTypeZodSchema,
 	isMain: z.boolean().default(false),
@@ -76,7 +85,10 @@ function validateGetDataResponse(response: unknown): ParsedEventType[] {
 			.map((x) => {
 				return {
 					...x,
-					organizers: x.organizers ?? [],
+					organizers: (x.organizers ?? []).map((x) => ({
+						slug: slugify(x, { lower: true, strict: true }),
+						name: x,
+					})),
 					...dateToComparableDateItem(x.date),
 				};
 			})
@@ -87,43 +99,50 @@ function validateGetDataResponse(response: unknown): ParsedEventType[] {
 	}
 }
 
-export const distinctiveColorsMap = {
-	"Fridays for Future": `var(--categorical-color-1)`,
-	"Last Generation (Germany)": `var(--categorical-color-2)`,
-	"Extinction Rebellion": `var(--categorical-color-3)`,
-	BUND: `var(--categorical-color-4)`,
-	Greenpeace: `var(--categorical-color-5)`,
-	"Ver.di: United Services Union": `var(--categorical-color-6)`,
-	"Ende Gelaende": `var(--categorical-color-7)`,
-	"The Greens (Germany)": `var(--categorical-color-8)`,
-	"MLPD: Marxist-Leninist Party of Germany": `var(--categorical-color-9)`,
-	"The Left (Germany)": `var(--categorical-color-10)`,
-	"ADFC: German Bicycle Club": `var(--categorical-color-11)`,
-	"SPD: Social Democratic Party of Germany": `var(--categorical-color-12)`,
-	"Government of Germany (2021-)": "var(--categorical-color-13)",
-	"REBELL: Youth League Rebel": "var(--categorical-color-14)",
-};
+export const distinctiveColorsMap = Object.fromEntries(
+	Object.entries({
+		"Fridays for Future": `var(--categorical-color-1)`,
+		"Last Generation (Germany)": `var(--categorical-color-2)`,
+		"Extinction Rebellion": `var(--categorical-color-3)`,
+		BUND: `var(--categorical-color-4)`,
+		Greenpeace: `var(--categorical-color-5)`,
+		"Ver.di: United Services Union": `var(--categorical-color-6)`,
+		"Ende Gelaende": `var(--categorical-color-7)`,
+		"The Greens (Germany)": `var(--categorical-color-8)`,
+		"MLPD: Marxist-Leninist Party of Germany": `var(--categorical-color-9)`,
+		"The Left (Germany)": `var(--categorical-color-10)`,
+		"ADFC: German Bicycle Club": `var(--categorical-color-11)`,
+		"SPD: Social Democratic Party of Germany": `var(--categorical-color-12)`,
+		"Government of Germany (2021-)": "var(--categorical-color-13)",
+		"REBELL: Youth League Rebel": "var(--categorical-color-14)",
+	}).map(([key, value]) => [
+		slugify(key, { lower: true, strict: true }),
+		value,
+	]),
+);
 
 export function extractEventOrganisations(
 	events: ParsedEventType[],
 ): OrganisationType[] {
-	const organisationStrings = [
-		...events
-			.reduce((acc, event) => {
-				for (const organizer of event.organizers ?? []) acc.add(organizer);
-				return acc;
-			}, new Set<string>())
-			.values(),
-	];
-	return organisationStrings
+	const organisationsMap = events.reduce((acc, event) => {
+		for (const organizer of event.organizers ?? []) {
+			acc.set(organizer.slug, organizer);
+		}
+		return acc;
+	}, new Map<string, EventOrganizerType>());
+	const organisations = Array.from(organisationsMap.values());
+	return organisations
 		.map((organizer) => ({
-			name: organizer,
-			count: events.filter((x) => x.organizers?.includes(organizer)).length,
+			...organizer,
+			count: events.filter((x) =>
+				x.organizers?.find((x) => x.slug === organizer.slug),
+			).length,
 		}))
 		.sort((a, b) => b.count - a.count)
 		.map((organizer, idx) => {
 			if (organizer.name.toLocaleLowerCase().trim() === "") {
 				return {
+					slug: "unknown-organisation",
 					name: "Unknown organisation",
 					color: "var(--grayMed)",
 					count: events.filter((x) => x.organizers?.filter((x) => !x)).length,
@@ -132,7 +151,7 @@ export function extractEventOrganisations(
 			}
 			const color =
 				distinctiveColorsMap[
-					organizer.name as keyof typeof distinctiveColorsMap
+					organizer.slug as keyof typeof distinctiveColorsMap
 				];
 			return {
 				...organizer,
@@ -150,8 +169,8 @@ export function compareOrganizationsByColors(
 	if (!a.isMain && b.isMain) return 1;
 	if (a.isMain && b.isMain) {
 		const mainNames = Object.keys(distinctiveColorsMap);
-		const aIdx = mainNames.indexOf(a.name);
-		const bIdx = mainNames.indexOf(b.name);
+		const aIdx = mainNames.indexOf(a.slug);
+		const bIdx = mainNames.indexOf(b.slug);
 		if (aIdx > bIdx) return 1;
 		if (aIdx < bIdx) return -1;
 	}

@@ -9,6 +9,7 @@ import {
 	subDays,
 	subMonths,
 } from "date-fns";
+import slugify from "slugify";
 import { z } from "zod";
 import { create } from "zustand";
 import {
@@ -38,7 +39,7 @@ export type FiltersActions = {
 	setDateRange: (props: { from: Date; to: Date }) => void;
 	resetAllFilters: () => void;
 	resetDateRange: () => void;
-	setOrganizers: (organizers: OrganisationType["name"][]) => void;
+	setOrganizers: (organizers: OrganisationType["slug"][]) => void;
 	setMediaSource: (mediaSource: MediaSourceType) => void;
 };
 
@@ -52,7 +53,9 @@ export const defaultInitState: FiltersState = {
 	fromDateString: format(defaultFrom, "yyyy-MM-dd"),
 	toDateString: format(defaultTo, "yyyy-MM-dd"),
 	isDefaultTimeRange: true,
-	organizers: ["Fridays for Future", "Extinction Rebellion"],
+	organizers: ["Fridays for Future", "Extinction Rebellion"].map((x) =>
+		slugify(x, { lower: true, strict: true }),
+	),
 	mediaSource: "news_online",
 };
 
@@ -67,6 +70,7 @@ const filtersZodSchema = z
 		isDefaultTimeRange: z
 			.boolean()
 			.default(defaultInitState.isDefaultTimeRange),
+		organizers: z.array(z.string()).default(defaultInitState.organizers),
 	})
 	.default(defaultInitState);
 
@@ -145,7 +149,7 @@ export const createFiltersStore = (
 						fromDateString: defaultInitState.fromDateString,
 						toDateString: defaultInitState.toDateString,
 					})),
-				setOrganizers: (organizers: OrganisationType["name"][]) =>
+				setOrganizers: (organizers: OrganisationType["slug"][]) =>
 					set(() => ({ organizers })),
 				setMediaSource: (mediaSource: MediaSourceType) =>
 					set(() => ({ mediaSource })),

@@ -32,7 +32,7 @@ export const getColumns = () => [
 	columnHelper.accessor("organizers", {
 		header: "Organizers",
 		cell: function render({ getValue }) {
-			return ((getValue() as string[] | null) ?? []).join(", ");
+			return (getValue() ?? []).map((x) => x.name).join(", ");
 		},
 	}),
 ];

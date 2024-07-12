@@ -1,5 +1,7 @@
 import { cn } from "@/utility/classNames";
 import type { OrganisationType } from "@/utility/eventsUtil";
+import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 import { memo, useMemo } from "react";
 import RoundedColorPill from "./RoundedColorPill";
 import { Portal, Tooltip, TooltipContent, TooltipTrigger } from "./ui/tooltip";
@@ -11,27 +13,33 @@ function OrgsLegendItem({
 	org: OrganisationType;
 	otherOrgs?: OrganisationType[];
 }) {
+	const searchParams = useSearchParams();
+
 	// biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
 	const triggerContent = useMemo(() => {
 		return (
-			<li
-				className={cn(
-					"grid grid-cols-[auto_1fr_auto] gap-x-2 py-2",
-					"items-center",
-					`legend-org legend-org-${org.slug}`,
-					`cursor-pointer`,
-				)}
-			>
-				<RoundedColorPill color={org.color} />
-				<span className="grid grid-cols-[1fr_auto] gap-4">
-					<div className="truncate">{org.name.split(":")[0]}</div>
-					<span className="font-mono text-xs text-grayDark">
-						({org.count.toLocaleString("en-GB")})
+			<li>
+				<Link
+					href={`/organisations/${org.slug}?${searchParams.toString()}`}
+					className={cn(
+						"grid grid-cols-[auto_1fr_auto] gap-x-2 py-2",
+						"items-center",
+						`legend-org legend-org-${org.slug}`,
+						`cursor-pointer`,
+					)}
+				>
+					<RoundedColorPill color={org.color} />
+					<span className="grid grid-cols-[1fr_auto] gap-4">
+						<div className="truncate">{org.name.split(":")[0]}</div>
+						<span className="font-mono text-xs text-grayDark">
+							({org.count.toLocaleString("en-GB")})
+						</span>
 					</span>
-				</span>
+				</Link>
 			</li>
 		);
-	}, [org.slug]);
+	}, [org.slug, searchParams]);
+
 	if (org.isMain) {
 		return (
 			<Tooltip key={org.slug} delayDuration={50} disableHoverableContent>

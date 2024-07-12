@@ -140,7 +140,13 @@ function getCSSStyleGradientWithPercentages(
 ) {
 	let lastPercentage = 0;
 	return `linear-gradient(0deg, ${Object.entries(colorsWithPercentages)
-		.sort((a, b) => b[1] - a[1])
+		.sort((a, b) => {
+			if (a[0] === "var(--grayDark)" && b[0] !== "var(--grayDark)") return -1;
+			if (a[0] !== "var(--grayDark)" && b[0] === "var(--grayDark)") return 1;
+			if (a[1] < b[1]) return -1;
+			if (a[1] > b[1]) return 1;
+			return a[0].localeCompare(b[0]);
+		})
 		.map(([color, percentage]) => {
 			const newPercentage = `${color} ${lastPercentage}%, ${color} ${lastPercentage + percentage}%`;
 			lastPercentage += percentage;

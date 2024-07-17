@@ -12,8 +12,8 @@ function InderceptedEventPage({
 	const router = useRouter();
 	return (
 		<ResponsiveModal
-			open
-			onClose={() => {
+			initialOpen
+			onUnmountEnd={() => {
 				try {
 					router.back();
 				} catch {

@@ -1,9 +1,9 @@
 import { cn } from "@/utility/classNames";
-import Link from "next/link";
 import type { ReactNode } from "react";
+import InternalLink from "../InternalLink";
 
 function HeaderMenuLink({
-	as = Link,
+	as = InternalLink,
 	onClick,
 	href,
 	title,
@@ -11,7 +11,7 @@ function HeaderMenuLink({
 	active,
 	ariaLabel,
 }: {
-	as?: typeof Link | string;
+	as?: typeof InternalLink | string;
 	onClick?: () => void;
 	href?: string;
 	title: ReactNode;

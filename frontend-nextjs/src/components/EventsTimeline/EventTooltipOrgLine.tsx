@@ -1,18 +1,16 @@
 "use client";
 import { cn } from "@/utility/classNames";
 import type { OrganisationType } from "@/utility/eventsUtil";
-import Link from "next/link";
-import { useSearchParams } from "next/navigation";
+import InternalLink from "../InternalLink";
 
 export default function OrgLine(
 	org: OrganisationType & {
 		isSelected: boolean;
 	},
 ) {
-	const searchParams = useSearchParams();
 	return (
-		<Link
-			href={`/organisations/${org.slug}?${searchParams.toString()}`}
+		<InternalLink
+			href={`/organisations/${org.slug}`}
 			key={org.slug}
 			className={cn(
 				"grid grid-cols-[auto_1fr_auto] gap-x-2 items-center focusable",
@@ -30,6 +28,6 @@ export default function OrgLine(
 			<span className={cn(org.isSelected && "font-bold", "truncate max-w-64")}>
 				{org.name}
 			</span>
-		</Link>
+		</InternalLink>
 	);
 }

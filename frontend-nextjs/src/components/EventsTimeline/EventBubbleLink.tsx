@@ -7,9 +7,9 @@ import {
 	compareOrganizationsByColors,
 } from "@/utility/eventsUtil";
 import { getDateRangeByAggregationUnit } from "@/utility/useTimeIntervals";
-import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { memo } from "react";
+import InternalLink from "../InternalLink";
 import { TooltipTrigger } from "../ui/tooltip";
 import type { AggregatedItemType } from "./EventsTimelineAggregatedItem";
 
@@ -34,8 +34,8 @@ function EventBubbleLink({
 	const searchParams = useSearchParams();
 	return (
 		<TooltipTrigger asChild>
-			<Link
-				href={`/events/${event.event_id}?${searchParams.toString()}`}
+			<InternalLink
+				href={`/events/${event.event_id}`}
 				className={bubbleClasses}
 				style={{
 					background: getCSSStyleGradientWithEqualSteps(
@@ -53,7 +53,7 @@ function EventBubbleLink({
 						event.description.length > 300 ? "..." : ""
 					}"`}
 				</span>
-			</Link>
+			</InternalLink>
 		</TooltipTrigger>
 	);
 }

@@ -7,7 +7,7 @@ import PrototypeFundLogo from "@/components/logos/PrototypeFundLogo";
 import SocialChangeLabLogo from "@/components/logos/SocialChangeLabLogo";
 import { cn } from "@/utility/classNames";
 import { ArrowUp } from "lucide-react";
-import Link from "next/link";
+import InternalLink from "../InternalLink";
 
 const year = new Date().getFullYear();
 
@@ -16,22 +16,22 @@ function Footer() {
 		<footer className="mx-auto w-full relative" aria-label="Main page footer">
 			<div className="flex justify-between w-full px-6 py-8 relative border-y border-grayLight">
 				<div className="flex flex-col gap-4 justify-between">
-					<Link
+					<InternalLink
 						href="/"
 						className="flex flex-col gap-4 justify-between w-fit focusable"
 						scroll={false}
 					>
 						<Logo className="text-grayDark" width={256} height={31} />
-					</Link>
+					</InternalLink>
 
 					<div className="flex flex-col gap-4 justify-between text-grayDark text-sm">
-						<Link
+						<InternalLink
 							href="/logos"
 							className="no-underline focusable hover:text-fg transition-colors w-fit"
 							scroll={false}
 						>
 							Logo assets
-						</Link>
+						</InternalLink>
 						<UptimeStatusLink />
 						<span aria-label={`Copyright ${year}`}>
 							© {year} - Social Change Lab

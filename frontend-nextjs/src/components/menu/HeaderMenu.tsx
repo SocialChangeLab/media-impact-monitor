@@ -2,9 +2,9 @@
 import ThemeToggle from "@/components/ThemeToggle";
 import AppLogo from "@/components/logos/AppLogo";
 import { cn } from "@/utility/classNames";
-import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { memo } from "react";
+import InternalLink from "../InternalLink";
 import HeaderMenuLink from "./HeaderMenuLink";
 
 type MenuItemType = {
@@ -81,11 +81,11 @@ function HeaderMenu({ currentPage }: { currentPage: string }) {
 		<nav
 			className={cn(
 				"px-[clamp(1rem,2vmax,4rem)] py-4 flex gap-6 flex-wrap items-center justify-between",
-				"border-b border-grayLight w-screen overflow-clip",
-				`max-w-page mx-auto 2xl:border-x border-grayLight`,
+				"border-b border-grayLight w-screen overflow-clip z-50 relative",
+				`max-w-page mx-auto 2xl:border-x border-grayLight bg-bg`,
 			)}
 		>
-			<Link
+			<InternalLink
 				href="/"
 				title="Home"
 				className={cn(
@@ -94,7 +94,7 @@ function HeaderMenu({ currentPage }: { currentPage: string }) {
 				)}
 			>
 				<AppLogo /> <span className="text-grayDark text-sm">alpha</span>
-			</Link>
+			</InternalLink>
 			<ul
 				className={cn(`flex flex-col md:flex-row md:gap-4 items-center`)}
 				aria-label="Main menu items"

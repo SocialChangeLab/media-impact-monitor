@@ -5,8 +5,8 @@ import { cn } from "@/utility/classNames";
 import { AnimatePresence } from "framer-motion";
 import { X } from "lucide-react";
 import Image from "next/image";
-import Link from "next/link";
 import { useCallback, useEffect, useState } from "react";
+import InternalLink from "../InternalLink";
 
 function WelcomeMessage({ currentPage }: { currentPage: string }) {
 	const [isShowing, setIsShowing] = useState(false);
@@ -64,13 +64,13 @@ function WelcomeMessage({ currentPage }: { currentPage: string }) {
 										influences public discussion.
 									</p>
 									<p>
-										<Link
+										<InternalLink
 											href="/about"
 											className={cn(
 												"text-brandWhite underline focusable focus-visible:ring-offset-0 focus-visible:ring-brandWhite",
 												"p-2 -ml-2 hover:decoration-brandGreen",
 											)}
-										>{`Learn more about the project`}</Link>
+										>{`Learn more about the project`}</InternalLink>
 									</p>
 								</div>
 								<div className="flex gap-4 flex-wrap pt-2">

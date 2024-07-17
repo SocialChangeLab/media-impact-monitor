@@ -1,8 +1,8 @@
 import { cn } from "@/utility/classNames";
 import type { OrganisationType } from "@/utility/eventsUtil";
-import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { memo, useMemo } from "react";
+import InternalLink from "./InternalLink";
 import OrgsTooltip from "./OrgsTooltip";
 import RoundedColorPill from "./RoundedColorPill";
 import { Portal, Tooltip, TooltipContent, TooltipTrigger } from "./ui/tooltip";
@@ -38,8 +38,8 @@ function OrgsLegendItem({
 			<Tooltip key={org.slug} disableHoverableContent>
 				<TooltipTrigger asChild>
 					<li>
-						<Link
-							href={`/organisations/${org.slug}?${searchParams.toString()}`}
+						<InternalLink
+							href={`/organisations/${org.slug}`}
 							className={cn(
 								"focusable",
 								"grid grid-cols-[auto_1fr_auto] gap-x-2 py-2 transition-colors",
@@ -48,7 +48,7 @@ function OrgsLegendItem({
 							)}
 						>
 							{triggerContent}
-						</Link>
+						</InternalLink>
 					</li>
 				</TooltipTrigger>
 				<Portal>

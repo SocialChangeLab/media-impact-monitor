@@ -10,14 +10,10 @@ import { QueryErrorResetBoundary } from "@tanstack/react-query";
 import { ArrowLeft } from "lucide-react";
 import { ErrorBoundary } from "next/dist/client/components/error-boundary";
 import Image from "next/image";
-import Link from "next/link";
-import { useSearchParams } from "next/navigation";
 import { Suspense, memo, useMemo } from "react";
-import seed from "seed-random";
 import placeholderImage from "../assets/images/placeholder-image.avif";
 import ComponentError from "./ComponentError";
-
-const seededRandom = seed("event-page-loading");
+import InternalLink from "./InternalLink";
 
 const PlaceholderSkeleton = memo(
 	({ width, height }: { width: number | string; height?: number | string }) => (
@@ -30,7 +26,6 @@ const PlaceholderSkeleton = memo(
 
 const OrganisationPageWithPopulatedData = memo(
 	({ org }: { org?: OrganisationType }) => {
-		const searchParams = useSearchParams();
 		const title = useMemo(
 			() => (
 				<>
@@ -52,18 +47,21 @@ const OrganisationPageWithPopulatedData = memo(
 			[org],
 		);
 		return (
-			<div className="grid md:grid-cols-[3fr,1fr] lg:grid-cols-[2fr,1fr] border-b border-grayLight -mt-6 min-h-56">
+			<div className="grid md:grid-cols-[3fr,1fr] lg:grid-cols-[2fr,1fr] border-b border-grayLight min-h-56">
 				<div className="px-[max(1rem,2vmax)] pt-[max(1.25rem,2.5vmax)] pb-[max(1.25rem,4vmax)] flex flex-col gap-4 min-h-full">
-					<Link
-						href={`/organisations?${searchParams.toString()}`}
+					<InternalLink
+						href={`/organisations`}
 						className="flex gap-2 items-center text-grayDark hover:text-fg hover:font-semibold transition-all"
 					>
 						<ArrowLeft size={16} className="text-grayDark" />
 						<span>All organisations</span>
-					</Link>
+					</InternalLink>
 					<h1 className="text-3xl font-bold font-headlines flex gap-3 items-center">
 						{title}
 					</h1>
+					<InternalLink href={`/organisations/extinction-rebellion`}>
+						Extincion Rebellion
+					</InternalLink>
 				</div>
 				<div className="relative border-l border-grayLight bg-grayUltraLight">
 					<Image

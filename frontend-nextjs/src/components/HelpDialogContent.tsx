@@ -1,8 +1,9 @@
+"use client";
 import { cn } from "@/utility/classNames";
 import { getDocsPage } from "@/utility/docsUtil";
 import { ArrowRight } from "lucide-react";
-import Link from "next/link";
 import DocsChartContentSection from "./DocsChartContentSection";
+import InternalLink from "./InternalLink";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "./ui/tabs";
 
 function HelpDialogContent({ slug }: { slug: string }) {
@@ -16,7 +17,7 @@ function HelpDialogContent({ slug }: { slug: string }) {
 						<h2 className="text-5xl font-bold tracking-tight font-headlines mb-2">
 							{docsPage.title}
 						</h2>
-						<Link
+						<InternalLink
 							href={`/docs/${docsPage.slug}`}
 							className={cn(
 								"text-grayDark flex gap-2 items-center",
@@ -24,7 +25,7 @@ function HelpDialogContent({ slug }: { slug: string }) {
 							)}
 						>
 							Read in the docs <ArrowRight size={16} />
-						</Link>
+						</InternalLink>
 					</div>
 				</div>
 				<div className="w-full flex pt-6 overflow-x-auto -ml-4 translate-y-px px-content">

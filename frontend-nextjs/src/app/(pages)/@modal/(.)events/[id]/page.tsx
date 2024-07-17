@@ -1,25 +1,14 @@
 "use client";
 import EventPageContent from "@/components/EventPageContent";
 import { ResponsiveModal } from "@/components/ui/responsive-dialog";
-import { useRouter } from "next/navigation";
 
 function InderceptedEventPage({
 	params: { id },
 }: {
 	params: { id: string };
 }) {
-	const router = useRouter();
 	return (
-		<ResponsiveModal
-			initialOpen
-			onUnmountEnd={() => {
-				try {
-					router.back();
-				} catch {
-					router.push("/");
-				}
-			}}
-		>
+		<ResponsiveModal id={id} basePath="/events/">
 			<EventPageContent id={id} />
 		</ResponsiveModal>
 	);

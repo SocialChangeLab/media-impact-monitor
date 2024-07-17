@@ -5,10 +5,9 @@ import type {
 } from "@/utility/eventsUtil";
 import useEvents from "@/utility/useEvents";
 import { createColumnHelper } from "@tanstack/react-table";
-import Link from "next/link";
-import { useSearchParams } from "next/navigation";
 import { useMemo } from "react";
 import { DataTable } from "./DataTable/DataTable";
+import InternalLink from "./InternalLink";
 import OrgsTooltip from "./OrgsTooltip";
 import RoundedColorPill from "./RoundedColorPill";
 
@@ -19,7 +18,6 @@ function formatNumber(num: number) {
 
 function OrganisationsTable() {
 	const { data } = useEvents();
-	const searchParams = useSearchParams();
 
 	const extendedData = useMemo(
 		() =>
@@ -72,8 +70,8 @@ function OrganisationsTable() {
 				cell: function render({ getValue, row }) {
 					const { name, slug, color } = row.original;
 					return (
-						<Link
-							href={`/organisations/${slug}?${searchParams.toString()}`}
+						<InternalLink
+							href={`/organisations/${slug}`}
 							className={cn(
 								"grid grid-cols-[auto_1fr_auto] gap-x-2 items-center",
 								"hover:font-semibold transition-all w-fit focusable",
@@ -83,7 +81,7 @@ function OrganisationsTable() {
 							<div className="truncate underline-offset-4 underline decoration-grayMed">
 								{name}
 							</div>
-						</Link>
+						</InternalLink>
 					);
 				},
 				size: 1000,
@@ -140,7 +138,7 @@ function OrganisationsTable() {
 				size: 50,
 			}),
 		];
-	}, [searchParams]);
+	}, []);
 
 	if (!data) return null;
 

@@ -3,6 +3,7 @@
 import Footer from "@/components/Footer";
 import "@/styles/global.css";
 import { cn } from "@/utility/classNames";
+import { motion } from "framer-motion";
 import { usePathname } from "next/navigation";
 import type { ReactNode } from "react";
 import { Menu } from "../menu";
@@ -19,11 +20,23 @@ export function BaseLayout({
 	const currentPage = pathname.split("/")[1] || "dashboard";
 	const showFilters = doesPathnameShowAnyFilter(pathname);
 	return (
-		<div
-			className="layout grid grid-rows-[auto_1fr_auto] w-screen overflow-x-clip transition-all max-w-page"
+		<motion.div
+			className="layout grid grid-rows-[auto_1fr_auto] w-screen overflow-x-clip max-w-page"
+			variants={{
+				withoutFilters: { paddingTop: 75 },
+				withFilters: {
+					paddingTop: 75 + 125,
+				},
+			}}
+			initial="withoutFilters"
+			animate={showFilters ? "withFilters" : "withoutFilters"}
+			exit="withoutFilters"
+			transition={{
+				duration: 0.3,
+				ease: "circInOut",
+			}}
 			style={{
-				paddingTop: 75 + (showFilters ? 125 : 0),
-				minHeight: `calc(100vh - ${75 + (showFilters ? 77 : 0)}px)`,
+				minHeight: `calc(100vh - ${75}px)`,
 			}}
 		>
 			<Menu currentPage={currentPage} />
@@ -53,7 +66,8 @@ export function BaseLayout({
 				</div>
 			</div>
 			<Footer />
+
 			{modal}
-		</div>
+		</motion.div>
 	);
 }

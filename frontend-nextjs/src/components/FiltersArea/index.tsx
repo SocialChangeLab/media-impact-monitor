@@ -1,5 +1,6 @@
 "use client";
 import { cn } from "@/utility/classNames";
+import { AnimatePresence, motion } from "framer-motion";
 import { usePathname } from "next/navigation";
 import { type ReactNode, memo, useMemo } from "react";
 import MediaSourceSelect from "../DataSourceSelect";
@@ -25,54 +26,70 @@ function FiltersArea({ isScrolledToTop }: { isScrolledToTop: boolean }) {
 		return { any, media, organisations, time, onlyTime };
 	}, [pathname]);
 
-	if (!display.any) return null;
-
 	return (
-		<nav
-			aria-label="Page filters"
-			className={cn(
-				`w-screen flex flex-col`,
-				`px-[clamp(2rem,2vmax,4rem)] mx-auto 2xl:border-x border-grayLight`,
-				`border-b z-50 bg-pattern-soft max-w-page 2xl:border-x border-grayLight`,
-				`transition-all`,
-				isScrolledToTop ? `py-[max(0.25rem,1vmax)]` : `py-2`,
-				isScrolledToTop ? `gap-[max(0.25rem,0.75vmax)]` : `gap-2`,
-				isScrolledToTop
-					? `border-grayLight`
-					: `border-grayMed dark:border-grayLight`,
-				!isScrolledToTop && `shadow-xl shadow-black/5 dark:shadow-black/30`,
-			)}
-		>
-			<div
-				className={cn(
-					`flex gap-[max(1rem,2vmax)] justify-between flex-wrap items-center`,
-				)}
-			>
-				{(display.media || display.organisations) && (
-					<ul className="flex gap-6 items-center flex-wrap">
-						{display.media && (
-							<li className="flex flex-col gap-1 text-sm">
-								<FilterLabel show={isScrolledToTop}>Media source:</FilterLabel>
-								<MediaSourceSelect />
-							</li>
+		<AnimatePresence>
+			{display.any && (
+				<motion.nav
+					initial="hidden"
+					animate="visible"
+					exit="hidden"
+					variants={{
+						hidden: { transform: "translateY(-100%)", opacity: 0 },
+						visible: { transform: "translateY(0%)", opacity: 1 },
+					}}
+					transition={{
+						duration: 0.3,
+						ease: "circInOut",
+					}}
+					aria-label="Page filters"
+					className={cn(
+						`w-screen flex flex-col`,
+						`px-[clamp(2rem,2vmax,4rem)] mx-auto 2xl:border-x border-grayLight`,
+						`border-b z-40 bg-pattern-soft max-w-page 2xl:border-x border-grayLight`,
+						isScrolledToTop ? `py-[max(0.25rem,1vmax)]` : `py-2`,
+						isScrolledToTop ? `gap-[max(0.25rem,0.75vmax)]` : `gap-2`,
+						isScrolledToTop
+							? `border-grayLight`
+							: `border-grayMed dark:border-grayLight`,
+						!isScrolledToTop && `shadow-xl shadow-black/5 dark:shadow-black/30`,
+					)}
+				>
+					<div
+						className={cn(
+							`flex gap-[max(1rem,2vmax)] justify-between flex-wrap items-center`,
 						)}
-						{display.organisations && (
-							<li className="flex flex-col gap-1 text-sm">
-								<FilterLabel show={isScrolledToTop}>Organisations:</FilterLabel>
-								<OrganisationsSelect />
-							</li>
+					>
+						{(display.media || display.organisations) && (
+							<ul className="flex gap-6 items-center flex-wrap">
+								{display.media && (
+									<li className="flex flex-col gap-1 text-sm">
+										<FilterLabel show={isScrolledToTop}>
+											Media source:
+										</FilterLabel>
+										<MediaSourceSelect />
+									</li>
+								)}
+								{display.organisations && (
+									<li className="flex flex-col gap-1 text-sm">
+										<FilterLabel show={isScrolledToTop}>
+											Organisations:
+										</FilterLabel>
+										<OrganisationsSelect />
+									</li>
+								)}
+							</ul>
 						)}
-					</ul>
-				)}
-				{display.time && (
-					<div className="flex flex-col gap-1 text-sm">
-						<FilterLabel show={isScrolledToTop}>Time range:</FilterLabel>
-						<TimeFilter />
+						{display.time && (
+							<div className="flex flex-col gap-1 text-sm">
+								<FilterLabel show={isScrolledToTop}>Time range:</FilterLabel>
+								<TimeFilter />
+							</div>
+						)}
 					</div>
-				)}
-			</div>
-			<DraggableTimeFilterRange />
-		</nav>
+					<DraggableTimeFilterRange />
+				</motion.nav>
+			)}
+		</AnimatePresence>
 	);
 }
 

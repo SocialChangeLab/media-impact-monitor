@@ -1,78 +1,105 @@
 "use client";
 
+import { cn } from "@/utility/classNames";
+import { AnimatePresence, motion } from "framer-motion";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import {
-	Drawer,
-	DrawerContent,
-	DrawerDescription,
-	DrawerFooter,
-	DrawerHeader,
-	DrawerTitle,
-} from "@/components/ui/drawer";
-import {
-	type PropsWithChildren,
 	type ReactNode,
+	useCallback,
 	useEffect,
 	useRef,
 	useState,
 } from "react";
 
+type Destination = "overview" | "individual-page";
+
 export function ResponsiveModal({
 	children,
-	title,
-	description,
-	footer,
-	onClose = () => {},
-	onUnmountEnd = () => {},
-	initialOpen = false,
-}: PropsWithChildren<{
-	initialOpen?: boolean;
-	title?: ReactNode;
-	description?: ReactNode;
-	footer?: ReactNode;
-	onClose?: () => void;
-	onUnmountEnd?: (open: boolean) => void;
-}>) {
-	const [snap, setSnap] = useState<number | string | null>(1);
-	const [open, setOpen] = useState(initialOpen);
-	const unmountRef = useRef<NodeJS.Timeout | undefined>(undefined);
+	id,
+	basePath,
+}: {
+	children: ReactNode;
+	id?: string;
+	basePath: string;
+}) {
+	const pathname = usePathname();
+	const router = useRouter();
 
-	// biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
+	const show = !!id && pathname.startsWith(basePath);
+	const lastShow = useRef(show);
+	const [isOpen, setIsOpen] = useState(show);
+
+	const searchParams = useSearchParams();
+
 	useEffect(() => {
-		if (open) return;
-		clearTimeout(unmountRef.current);
-		setTimeout(() => {
-			onUnmountEnd(open);
-		}, 300);
-		return () => {
-			clearTimeout(unmountRef.current);
-		};
-	}, [open]);
+		if (show !== lastShow.current) {
+			setIsOpen(show);
+			lastShow.current = show;
+		}
+	}, [show]);
+
+	const onClose = useCallback(() => {
+		if (lastShow.current) {
+			const backLink = searchParams.get("backLink");
+			const newSearchParams = new URLSearchParams(searchParams);
+			newSearchParams.set("backLink", `${basePath}${id}`);
+			if (typeof backLink === "string" && backLink.startsWith("/")) {
+				router.push(`${backLink}?${newSearchParams.toString()}`);
+			} else {
+				const validatedBasePath =
+					basePath === "/events/" ? "/" : basePath.replace(/\/$/, "");
+				router.push(`${validatedBasePath}?${newSearchParams.toString()}`);
+			}
+			lastShow.current = false;
+		}
+	}, [router, searchParams, id, basePath]);
 
 	return (
-		<Drawer
-			open={open}
-			onOpenChange={(open: unknown) => {
-				if (open) return;
-				onClose();
-				setOpen(false);
-			}}
-			direction="bottom"
-			snapPoints={[1]}
-			activeSnapPoint={snap}
-			setActiveSnapPoint={setSnap}
-		>
-			<DrawerContent>
-				{(title || description) && (
-					<DrawerHeader className="text-left">
-						{title && <DrawerTitle>{title}</DrawerTitle>}
-						{description && (
-							<DrawerDescription>{description}</DrawerDescription>
+		<AnimatePresence onExitComplete={() => onClose()}>
+			{isOpen && (
+				<>
+					<motion.button
+						type="button"
+						onClick={() => setIsOpen(false)}
+						onKeyDown={(e) => {
+							if (e.key === "Escape" || e.key === "Esc") {
+								setIsOpen(false);
+							}
+						}}
+						initial="initial"
+						animate="animate"
+						exit="iniial"
+						variants={{
+							initial: { opacity: 0 },
+							animate: { opacity: 1 },
+						}}
+						transition={{
+							duration: 0.3,
+							ease: "circInOut",
+						}}
+						className="fixed inset-0 z-50 bg-bgOverlay"
+					/>
+					<motion.dialog
+						open
+						initial={{ transform: "translateY(100%)" }}
+						animate={{ transform: "translateY(0%)" }}
+						exit={{ transform: "translateY(100%)" }}
+						className={cn(
+							"w-screen h-screen fixed inset-0 top-auto z-50 bg-transparent",
+							"overflow-x-hidden overflow-y-auto pointer-events-none",
 						)}
-					</DrawerHeader>
-				)}
-				<div className="overflow-x-clip overflow-y-auto">{children}</div>
-				{footer && <DrawerFooter>{footer}</DrawerFooter>}
-			</DrawerContent>
-		</Drawer>
+					>
+						<div className="bg-bg rounded-t-lg mt-56 w-screen h-auto pointer-events-auto min-h-full">
+							{children}
+						</div>
+					</motion.dialog>
+				</>
+			)}
+		</AnimatePresence>
 	);
+}
+
+function getDestinaiton(pathname: string, basePath: string): Destination {
+	if (pathname.startsWith(basePath)) return "overview";
+	return "individual-page";
 }

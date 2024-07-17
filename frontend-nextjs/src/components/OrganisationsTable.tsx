@@ -76,7 +76,7 @@ function OrganisationsTable() {
 							href={`/organisations/${slug}?${searchParams.toString()}`}
 							className={cn(
 								"grid grid-cols-[auto_1fr_auto] gap-x-2 items-center",
-								"hover:font-medium transition-all w-fit",
+								"hover:font-semibold transition-all w-fit focusable",
 							)}
 						>
 							<RoundedColorPill color={color} />
@@ -127,9 +127,13 @@ function OrganisationsTable() {
 					if (partners.length === 0) return <span>0</span>;
 					return (
 						<OrgsTooltip otherOrgs={partners} withPills>
-							<span className="underline underline-offset-4 decoration-grayMed cursor-pointer">
+							<button
+								type="button"
+								className="underline underline-offset-4 decoration-grayMed cursor-pointer focusable"
+								aria-label="Show partners tooltip"
+							>
 								{formatNumber(getValue())}
-							</span>
+							</button>
 						</OrgsTooltip>
 					);
 				},

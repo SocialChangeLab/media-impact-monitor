@@ -15,9 +15,9 @@ export default function OrgLine(
 			href={`/organisations/${org.slug}?${searchParams.toString()}`}
 			key={org.slug}
 			className={cn(
-				"grid grid-cols-[auto_1fr_auto] gap-x-2 items-center",
+				"grid grid-cols-[auto_1fr_auto] gap-x-2 items-center focusable",
 				"border-t border-grayLight py-1 px-4 hover:bg-grayUltraLight",
-				"hover:text-fg hover:font-medium transition-all first-of-type:border-t-0",
+				"hover:text-fg hover:font-semibold transition-all first-of-type:border-t-0",
 			)}
 		>
 			<span

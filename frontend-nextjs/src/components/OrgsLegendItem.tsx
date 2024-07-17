@@ -22,7 +22,7 @@ function OrgsLegendItem({
 			<>
 				<RoundedColorPill color={org.color} />
 				<span className="grid grid-cols-[1fr_auto] gap-4">
-					<div className="truncate group-hover:font-medium group-hover:text-fg transition-all">
+					<div className="truncate group-hover:font-semibold group-hover:text-fg transition-all">
 						{org.name.split(":")[0]}
 					</div>
 					<span className="font-mono text-xs text-grayDark">
@@ -41,6 +41,7 @@ function OrgsLegendItem({
 						<Link
 							href={`/organisations/${org.slug}?${searchParams.toString()}`}
 							className={cn(
+								"focusable",
 								"grid grid-cols-[auto_1fr_auto] gap-x-2 py-2 transition-colors",
 								`items-center group cursor-pointer hover:bg-grayUltraLight`,
 								org.isMain && `legend-org legend-org-${org.slug}`,

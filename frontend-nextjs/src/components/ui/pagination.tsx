@@ -31,7 +31,7 @@ const PaginationContent = React.forwardRef<
 		ref={ref}
 		className={cn(
 			"flex flex-row items-center gap-px bg-grayLight",
-			"overflow-clip border border-grayLight",
+			"border border-grayLight",
 			className,
 		)}
 		{...props}

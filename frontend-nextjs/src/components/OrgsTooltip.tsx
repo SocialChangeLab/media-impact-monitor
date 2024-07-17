@@ -27,11 +27,11 @@ function OrgsTooltip({
 								<Link
 									href={`/organisations/${subOrg.slug}?${searchParams.toString()}`}
 									className={cn(
-										"grid gap-2 py-2 text-grayDark",
+										"grid gap-2 py-2 text-grayDark focusable",
 										"border-b border-grayLight items-center",
 										`legend-org legend-org-${subOrg.slug}`,
 										`hover:bg-grayUltraLight hover:text-fg transition-all`,
-										`hover:font-medium px-4`,
+										`hover:font-semibold px-4`,
 										withPills
 											? "grid-cols-[auto_1fr_auto]"
 											: "grid-cols-[1fr_auto]",

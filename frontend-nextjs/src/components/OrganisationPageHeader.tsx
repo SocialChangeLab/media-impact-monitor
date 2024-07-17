@@ -7,8 +7,11 @@ import type {
 } from "@/utility/eventsUtil";
 import useEvents from "@/utility/useEvents";
 import { QueryErrorResetBoundary } from "@tanstack/react-query";
+import { ArrowLeft } from "lucide-react";
 import { ErrorBoundary } from "next/dist/client/components/error-boundary";
 import Image from "next/image";
+import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 import { Suspense, memo, useMemo } from "react";
 import seed from "seed-random";
 import placeholderImage from "../assets/images/placeholder-image.avif";
@@ -27,6 +30,7 @@ const PlaceholderSkeleton = memo(
 
 const OrganisationPageWithPopulatedData = memo(
 	({ org }: { org?: OrganisationType }) => {
+		const searchParams = useSearchParams();
 		const title = useMemo(
 			() => (
 				<>
@@ -50,6 +54,13 @@ const OrganisationPageWithPopulatedData = memo(
 		return (
 			<div className="grid md:grid-cols-[3fr,1fr] lg:grid-cols-[2fr,1fr] border-b border-grayLight -mt-6 min-h-56">
 				<div className="px-[max(1rem,2vmax)] pt-[max(1.25rem,2.5vmax)] pb-[max(1.25rem,4vmax)] flex flex-col gap-4 min-h-full">
+					<Link
+						href={`/organisations?${searchParams.toString()}`}
+						className="flex gap-2 items-center text-grayDark hover:text-fg hover:font-semibold transition-all"
+					>
+						<ArrowLeft size={16} className="text-grayDark" />
+						<span>All organisations</span>
+					</Link>
 					<h1 className="text-3xl font-bold font-headlines flex gap-3 items-center">
 						{title}
 					</h1>

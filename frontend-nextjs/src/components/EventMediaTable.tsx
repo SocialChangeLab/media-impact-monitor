@@ -88,7 +88,6 @@ const data = [
 ];
 
 function EventMediaTable({ id }: { id: string }) {
-	console.log(id);
 	const query = {
 		data,
 		isPending: false,

@@ -16,8 +16,6 @@ import {
 function FiltersArea({ isScrolledToTop }: { isScrolledToTop: boolean }) {
 	const pathname = usePathname();
 
-	console.log(pathname);
-
 	const display = useMemo(() => {
 		const any = doesPathnameShowAnyFilter(pathname);
 		const media = doesPathnameShowMediaFilter(pathname);

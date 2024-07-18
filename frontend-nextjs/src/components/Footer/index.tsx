@@ -17,7 +17,7 @@ function Footer() {
 			<div className="flex justify-between w-full px-6 py-8 relative border-y border-grayLight">
 				<div className="flex flex-col gap-4 justify-between">
 					<InternalLink
-						href="/"
+						href="/dashboard"
 						className="flex flex-col gap-4 justify-between w-fit focusable"
 						scroll={false}
 					>

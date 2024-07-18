@@ -9,8 +9,8 @@ import HeaderMenuLink from "./HeaderMenuLink";
 
 type MenuItemType = {
 	name: string;
-	label?: string;
-	route?: string;
+	label: string;
+	route: string;
 	showMediaFilter?: boolean;
 	showOrganisationsFilter?: boolean;
 	showTimeFilter?: boolean;
@@ -20,7 +20,7 @@ const menuItems: MenuItemType[] = [
 	{
 		name: "dashboard",
 		label: "Dashboard",
-		route: "/",
+		route: "/dashboard",
 		showMediaFilter: true,
 		showOrganisationsFilter: true,
 		showTimeFilter: true,
@@ -102,8 +102,8 @@ function HeaderMenu({ currentPage }: { currentPage: string }) {
 				{menuItems.map((item) => (
 					<HeaderMenuLink
 						key={item.name}
-						href={`${item.route ?? "/"}?${searchParams.toString()}`}
-						title={item.label ?? "-"}
+						href={`${item.route}?${searchParams.toString()}`}
+						title={item.label}
 						active={currentPage === item.name}
 					/>
 				))}

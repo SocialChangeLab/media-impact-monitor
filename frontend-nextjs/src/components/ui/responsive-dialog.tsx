@@ -53,7 +53,7 @@ export function ResponsiveModal({
 					"w-screen h-screen fixed z-50 bg-transparent",
 					"overflow-x-hidden overflow-y-auto left-0 top-auto right-0 bottom-0 max-w-screen",
 					"block max-w-full translate-x-0 translate-y-0",
-					"border-0 pt-56 duration-1000 focusable !pointer-events-none",
+					"border-0 pt-56 focusable !pointer-events-none",
 
 					"data-[state=open]:animate-in",
 					"data-[state=closed]:animate-out",
@@ -61,6 +61,10 @@ export function ResponsiveModal({
 					"data-[state=closed]:slide-out-to-bottom",
 				)}
 				childrenContainerClassName={cn("h-auto min-h-full bg-bg rounded-t-lg")}
+				style={{
+					animationDuration: "1000ms",
+					animationTimingFunction: "cubic-bezier(0,1.01,0,1)",
+				}}
 			>
 				<div className="w-screen h-auto min-h-full pointer-events-auto">
 					{children}

@@ -28,9 +28,7 @@ export default function HomePageWithSuspense() {
 					aria-hidden="true"
 				/>
 				<div className="prose max-w-[50ch]">
-					<InternalLink
-						href="/"
-						title="Home"
+					<span
 						className={cn(
 							"opacity-100 motion-safe:transition-opacity hover:opacity-80 focusable",
 							"flex items-center gap-3 not-prose",
@@ -38,7 +36,7 @@ export default function HomePageWithSuspense() {
 					>
 						<AppLogo showType={false} className="text-brandWhite" />{" "}
 						<span className="text-brandWhite opacity-50 text-sm">alpha</span>
-					</InternalLink>
+					</span>
 					<h1 className="text-4xl font-bold font-headlines antialiased text-brandWhite pr-12 md:pr-0 mt-8 mb-6 text-balance">
 						Welcome to the Media Impact Monitor
 					</h1>
@@ -93,13 +91,13 @@ export default function HomePageWithSuspense() {
 					</div>
 				</div>
 			</div>
-			<div className="w-full h-full relative">
+			<div className="w-full h-[calc(100vh-4rem)] relative">
 				<Image
 					src={dashboardScreenshotLight}
 					alt="A screenshot of the dashboard (light mode)"
 					priority
 					className={cn(
-						"absolute inset-0 object-cover object-left-top w-full h-full",
+						"absolute inset-y-0 inset-x-4 xl:inset-0 object-cover object-left-top h-full",
 						"translate-y-24 rounded-tl-lg shadow-black/30 shadow-xl",
 						"dark:hidden",
 					)}
@@ -109,7 +107,7 @@ export default function HomePageWithSuspense() {
 					alt="A screenshot of the dashboard (dark mode)"
 					priority
 					className={cn(
-						"absolute inset-0 object-cover object-left-top w-full h-full",
+						"absolute inset-y-0 inset-x-4 xl:inset-0 object-cover object-left-top h-full",
 						"translate-y-24 rounded-tl-lg shadow-black/30 shadow-xl",
 						"hidden dark:block",
 					)}

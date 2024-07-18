@@ -39,7 +39,7 @@ export default function OrgLine(
 				{org.name}
 			</span>
 			{!org.isSelected && organizers.length > 1 && (
-				<span className="text-grayDark opacity-80">(filtered out)</span>
+				<span className="text-grayDark opacity-80">(not selected)</span>
 			)}
 		</InternalLink>
 	);

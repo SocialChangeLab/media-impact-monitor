@@ -10,7 +10,6 @@ function DataTableWithState<RecordType>(props: {
 	columns: ColumnDef<RecordType, any>[];
 }) {
 	const { error, isPending, data, columns } = props;
-	if (isPending) return <div>Loading...</div>;
 	if (error) {
 		return (
 			<div className="w-full flex justify-center min-h-96 p-8 items-center bg-grayUltraLight">
@@ -21,7 +20,13 @@ function DataTableWithState<RecordType>(props: {
 			</div>
 		);
 	}
-	return <DataTable<RecordType> columns={columns} data={data || []} />;
+	return (
+		<DataTable<RecordType>
+			columns={columns}
+			data={data || []}
+			isLoading={isPending ?? true}
+		/>
+	);
 }
 
 export default DataTableWithState;

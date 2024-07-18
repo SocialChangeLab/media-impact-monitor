@@ -17,7 +17,7 @@ function formatNumber(num: number) {
 }
 
 function OrganisationsTable() {
-	const { data } = useEvents();
+	const { data, isPending } = useEvents();
 
 	const extendedData = useMemo(
 		() =>
@@ -146,6 +146,7 @@ function OrganisationsTable() {
 		<DataTable<(typeof extendedData)[0]>
 			columns={columns}
 			data={extendedData}
+			isLoading={isPending ?? true}
 		/>
 	);
 }

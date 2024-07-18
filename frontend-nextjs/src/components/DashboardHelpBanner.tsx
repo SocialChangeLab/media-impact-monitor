@@ -47,7 +47,10 @@ function ExpandedHelpBanner({ onCollapse }: HelpBannerActions) {
 					</InternalLink>
 				</span>
 			</div>
-			<span className="absolute flex gap-1 top-4 right-1/3">
+			<span
+				className="absolute flex gap-1 top-4 right-1/3 pointer-events-none"
+				aria-hidden="true"
+			>
 				<CornerLeftUp
 					className="-rotate-12 text-grayDark opacity-60"
 					size={40}
@@ -60,7 +63,10 @@ function ExpandedHelpBanner({ onCollapse }: HelpBannerActions) {
 					<span>Set your filters</span>
 				</div>
 			</span>
-			<span className="absolute flex gap-1 bottom-4 right-[15%]">
+			<span
+				className="absolute flex gap-1 bottom-4 right-[15%] pointer-events-none"
+				aria-hidden="true"
+			>
 				<CornerLeftDown
 					className="rotate-6 mt-5 text-grayDark opacity-60"
 					size={40}

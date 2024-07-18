@@ -54,6 +54,9 @@ def get_fulltexts(q: FulltextSearch) -> pd.DataFrame | None:
         # TODO: handle start_date and end_date
         q.start_date = event["date"]
         q.end_date = q.end_date or event["date"] + timedelta(days=7)
+        if q.start_date.year < 2022:
+            # MediaCloud only goes back until 2022
+            return None
         orgs = add_quotes(add_aliases(event["organizers"]))
         query = xs_with_ys(orgs, keywords["activism"], q.media_source)
 
@@ -73,7 +76,7 @@ def get_fulltexts(q: FulltextSearch) -> pd.DataFrame | None:
             )
 
     if df is None:
-        return
+        return None
 
     # TODO: use asyncio
     responses = parallel_tqdm(code_fulltext, df["text"], desc="Processing fulltexts")

@@ -13,7 +13,7 @@ function InternalLink({ href, ...props }: InternalLinkProps) {
 	const pathname = usePathname();
 	const searchParams = useSearchParams();
 	const newSearchParams = new URLSearchParams(searchParams);
-	newSearchParams.set("backLink", pathname);
+	newSearchParams.set("backLink", encodeURIComponent(pathname));
 	return <Link href={`${href}?${newSearchParams.toString()}`} {...props} />;
 }
 

@@ -64,6 +64,7 @@ function useEventMedia(eventId?: ParsedEventType["event_id"]) {
 			important: true,
 			dismissible: true,
 			duration: 1000000,
+			closeButton: true,
 		});
 	}, [query.error]);
 

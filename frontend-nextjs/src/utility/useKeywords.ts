@@ -53,6 +53,7 @@ function useMediaCoverageData() {
 			important: true,
 			dismissible: true,
 			duration: 1000000,
+			closeButton: true,
 		});
 	}, [query.error]);
 

@@ -18,13 +18,20 @@ const Toaster = ({ ...props }: ToasterProps) => {
 					toast: cn(
 						"group toast group-[.toaster]:bg-bg group-[.toaster]:text-fg",
 						"group-[.toaster]:border-grayMed group-[.toaster]:shadow-lg",
+						"pr-8 gap-2",
 					),
 					description: "group-[.toast]:text-grayDark",
-					actionButton: "group-[.toast]:bg-fg group-[.toast]:text-bg",
+					content: "[&>div]:leading-tight",
+					actionButton: "group-[.toast]:bg-fg group-[.toast]:text-bg focusable",
 					cancelButton: cn(
 						"group-[.toast]:bg-bg group-[.toast]:text-fg group-[.toast]:border",
 						"group-[.toast]:hover:bg-grayLight group-[.toast]:border-grayLight",
-						"group-[.toast]:rounded-none",
+						"group-[.toast]:rounded-none focusable",
+					),
+					icon: "shrink-0",
+					closeButton: cn(
+						"left-auto right-3 top-1/2 -translate-y-1/2 shrink-0 size-6",
+						"[&>svg]:stroke-2 [&>svg]:h-4 [&>svg]:w-4 focusable",
 					),
 				},
 			}}

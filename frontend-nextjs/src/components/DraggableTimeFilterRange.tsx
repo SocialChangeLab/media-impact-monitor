@@ -272,6 +272,7 @@ const Handle = memo(
 
 		const handleKeyDown = useCallback(
 			(e: ReactKeyboardEvent) => {
+				if (e.key === "Tab") return;
 				e.preventDefault();
 				onKeyDownHandler(e);
 			},

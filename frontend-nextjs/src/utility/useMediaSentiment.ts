@@ -52,6 +52,7 @@ function useMediaSentimentData() {
 			important: true,
 			dismissible: true,
 			duration: 1000000,
+			closeButton: true,
 		});
 	}, [error]);
 

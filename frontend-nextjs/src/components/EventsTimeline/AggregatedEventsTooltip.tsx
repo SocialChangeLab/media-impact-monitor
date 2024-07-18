@@ -48,6 +48,8 @@ function AggregatedEventsTooltip({
 				isSelected: !!selectedOrganisations.find((x) => x.slug === org.slug),
 			}))
 			.sort((a, b) => {
+				if (selectedOrganisations.length === 0)
+					return compareOrganizationsByColors(a, b);
 				if (a.isSelected && !b.isSelected) return -1;
 				if (!a.isSelected && b.isSelected) return 1;
 				return compareOrganizationsByColors(a, b);
@@ -76,8 +78,7 @@ function AggregatedEventsTooltip({
 							<strong>{sumSize.toLocaleString("en-GB")} participants</strong>
 						</>
 					)}
-					{organisations.length > 1 &&
-						", and was organized by the following organizations:"}
+					{`, and ${events.length > 1 ? "were" : "was"} organized by the following organization${orgs.length > 1 ? "s" : ""}:`}
 				</p>
 				{orgs.map((org) => (
 					<OrgLine key={org.slug} {...org} />

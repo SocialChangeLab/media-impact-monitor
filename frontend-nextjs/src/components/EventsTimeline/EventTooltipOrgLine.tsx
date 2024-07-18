@@ -1,4 +1,5 @@
 "use client";
+import { useFiltersStore } from "@/providers/FiltersStoreProvider";
 import { cn } from "@/utility/classNames";
 import type { OrganisationType } from "@/utility/eventsUtil";
 import InternalLink from "../InternalLink";
@@ -8,6 +9,9 @@ export default function OrgLine(
 		isSelected: boolean;
 	},
 ) {
+	const { organizers } = useFiltersStore((state) => ({
+		organizers: state.organizers,
+	}));
 	return (
 		<InternalLink
 			href={`/organisations/${org.slug}`}
@@ -25,9 +29,18 @@ export default function OrgLine(
 				style={{ backgroundColor: org.color }}
 				aria-hidden="true"
 			/>
-			<span className={cn(org.isSelected && "font-bold", "truncate max-w-64")}>
+			<span
+				className={cn(
+					org.isSelected && organizers.length > 1 && "font-semibold",
+					!org.isSelected && "text-grayDark",
+					"truncate max-w-64",
+				)}
+			>
 				{org.name}
 			</span>
+			{!org.isSelected && organizers.length > 1 && (
+				<span className="text-grayDark opacity-80">(filtered out)</span>
+			)}
 		</InternalLink>
 	);
 }

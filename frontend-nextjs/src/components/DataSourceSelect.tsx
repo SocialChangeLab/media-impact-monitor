@@ -1,10 +1,5 @@
 import { Button } from "@/components/ui/button";
-import {
-	Command,
-	CommandGroup,
-	CommandItem,
-	CommandList,
-} from "@/components/ui/command";
+import { Command, CommandItem, CommandList } from "@/components/ui/command";
 import {
 	Popover,
 	PopoverContent,
@@ -18,6 +13,7 @@ import {
 } from "@/components/ui/tooltip";
 import { useFiltersStore } from "@/providers/FiltersStoreProvider";
 import type { MediaSourceType } from "@/stores/filtersStore";
+import { cn } from "@/utility/classNames";
 import {
 	ChevronsUpDownIcon,
 	GlobeIcon,
@@ -120,65 +116,65 @@ export default function MediaSourceSelect() {
 				className="w-full max-w-96 p-0 rounded-none"
 				align="start"
 			>
-				<Command>
+				<Command value={mediaSource}>
 					<CommandList>
-						<CommandGroup>
-							{options.map((option) => (
-								<CommandItem
-									key={option.value}
-									className="flex justify-between items-start"
-								>
-									<TooltipProvider>
-										<button
-											className="flex items-start gap-3 text-left grow focusable focus-visible:bg-bg"
-											type="button"
-											onClick={() => {
-												setMediaSource(option.value);
-												setIsOpened(false);
-											}}
-										>
-											<option.Icon
-												size={20}
-												className="mt-0.5 shrink-0 text-grayDark"
-											/>
-											<div>
-												<div className="font-medium">{option.name}</div>
-												<p className="text-sm text-grayDark">
-													{option.description}
-												</p>
-											</div>
-										</button>
-										{option.links.length > 0 && (
-											<Tooltip>
-												<TooltipTrigger asChild>
-													<Button
-														variant="ghost"
-														size="icon"
-														className="focus-visible:bg-bg -mt-1"
+						{options.map((option) => (
+							<CommandItem
+								key={option.value}
+								className={cn(
+									"flex justify-between items-start group cursor-pointer",
+									"aria-selected:bg-fg aria-selected:text-bg aria-selected:cursor-default",
+									"hover:bg-grayUltraLight focusable ring-inset",
+								)}
+								value={option.value}
+								onSelect={() => {
+									setMediaSource(option.value);
+									setIsOpened(false);
+								}}
+							>
+								<TooltipProvider>
+									<span className="flex items-start gap-3 text-left grow focusable focus-visible:bg-bg">
+										<option.Icon
+											size={20}
+											className="mt-0.5 shrink-0 text-grayDark group-hover:text-fg group-aria-selected:text-bg"
+										/>
+										<div>
+											<div className="font-medium">{option.name}</div>
+											<p className="text-sm text-grayDark group-hover:text-fg group-aria-selected:text-bg">
+												{option.description}
+											</p>
+										</div>
+									</span>
+									{option.links.length > 0 && (
+										<Tooltip>
+											<TooltipTrigger asChild>
+												<Button
+													variant="ghost"
+													size="icon"
+													className="focus-visible:bg-bg group-aria-selected:focus-visible:bg-fg -mt-1"
+												>
+													<InfoIcon className="h-4 w-4" />
+												</Button>
+											</TooltipTrigger>
+											<TooltipContent className="w-fit space-y-2 rounded-none flex flex-col gap-2">
+												{option.links.map((link) => (
+													<a
+														href={link.href}
+														target="_blank"
+														rel="noopener noreferrer"
+														key={link.href}
+														className="flex items-center gap-2 focusable"
 													>
-														<InfoIcon className="h-4 w-4" />
-													</Button>
-												</TooltipTrigger>
-												<TooltipContent className="w-fit space-y-2 rounded-none flex flex-col gap-2">
-													{option.links.map((link) => (
-														<a
-															href={link.href}
-															target="_blank"
-															rel="noopener noreferrer"
-															key={link.href}
-															className="flex items-center gap-2"
-														>
-															<LinkIcon className="h-4 w-4 text-grayDark" />
-															<span>{link.label}</span>
-														</a>
-													))}
-												</TooltipContent>
-											</Tooltip>
-										)}
-									</TooltipProvider>
-								</CommandItem>
-							))}
-						</CommandGroup>
+														<LinkIcon className="h-4 w-4 text-grayDark" />
+														<span>{link.label}</span>
+													</a>
+												))}
+											</TooltipContent>
+										</Tooltip>
+									)}
+								</TooltipProvider>
+							</CommandItem>
+						))}
 					</CommandList>
 				</Command>
 			</PopoverContent>

@@ -29,6 +29,13 @@ Sentry.init({
 		Sentry.feedbackAsyncIntegration({
 			showBranding: false,
 			id: "user-feedback-button",
+			triggerLabel: "Send Feedback",
+			buttonLabel: "Feedback",
+			submitButtonLabel: "Send Feedback",
+			formTitle: "Send Feedback",
+			emailLabel: "Email (optional)",
+			nameLabel: "Name (optional)",
+			isRequiredLabel: " ",
 		}),
 	],
 });

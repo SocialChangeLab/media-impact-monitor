@@ -134,12 +134,12 @@
 		--accent-background: var(--fg);
 		--success-color: var(--sentiment-positive);
 		--error-color: var(--sentiment-negative);
-		--outline: var(--fg);
+		--outline: 1px auto var(--fg);
 		--border: 1px solid var(--grayMed);
 		--input-color: var(--grayDark);
 		--button-primary-border: 1px solid var(--fg);
 	}
-
+	
 	:root[data-theme='dark']  #user-feedback-button {
 		--background: var(--bg) url(/images/noisy-inverted.png) repeat center;
 	}
@@ -161,9 +161,9 @@
 		select,
 		select[multiple],
 		textarea {
-			@apply border-grayMed focus:outline-none focus:ring-2;
-			@apply focus:ring-offset-2 focus:ring-fg focus:ring-offset-bg;
-			@apply focus:border-grayMed bg-bg;
+			@apply border-grayMed focus-visible:outline-none focus-visible:ring-2;
+			@apply focus-visible:ring-offset-2 focus-visible:ring-fg focus-visible:ring-offset-bg;
+			@apply focus-visible:border-grayMed bg-bg;
 		}
 	}
 

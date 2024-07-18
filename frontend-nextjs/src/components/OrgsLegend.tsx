@@ -4,6 +4,20 @@ import { ArrowRight } from "lucide-react";
 import { useMemo } from "react";
 import OrgsLegendItem from "./OrgsLegendItem";
 
+function getOtherOrg(organisations: OrganisationType[]) {
+	return {
+		name: "Other",
+		count: organisations.reduce((acc, org) => acc + org.count, 0),
+		color: `var(--grayDark)`,
+		isMain: false,
+		orgs: organisations.sort((a, b) => {
+			if (a.count > b.count) return -1;
+			if (a.count < b.count) return 1;
+			return a.name.localeCompare(b.name);
+		}),
+	};
+}
+
 function OrgsLegend({
 	organisations,
 }: {
@@ -18,25 +32,20 @@ function OrgsLegend({
 			else mainOrgs.push(org);
 		}
 
+		if (mainOrgs.length === 0) {
+			return {
+				allOrgs: organisations
+					.slice(0, 16)
+					.concat(getOtherOrg(organisations.slice(16))),
+				otherOrgs: organisations.slice(16),
+			};
+		}
 		if (organisations.length < 16) {
 			return { allOrgs: [...mainOrgs, ...otherOrgs], otherOrgs: [] };
 		}
 		if (otherOrgs.length === 0) return { allOrgs: mainOrgs, otherOrgs: [] };
 		return {
-			allOrgs: [
-				...mainOrgs,
-				{
-					name: "Other",
-					count: otherOrgs.reduce((acc, org) => acc + org.count, 0),
-					color: `var(--grayDark)`,
-					isMain: false,
-					orgs: otherOrgs.sort((a, b) => {
-						if (a.count > b.count) return -1;
-						if (a.count < b.count) return 1;
-						return a.name.localeCompare(b.name);
-					}),
-				},
-			],
+			allOrgs: [...mainOrgs, getOtherOrg(otherOrgs)],
 			otherOrgs,
 		};
 	}, [organisations]);

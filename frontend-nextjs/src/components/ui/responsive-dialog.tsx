@@ -48,25 +48,19 @@ export function ResponsiveModal({
 			}}
 		>
 			<DialogContent
+				animate={false}
 				className={cn(
 					"w-screen h-screen fixed z-50 bg-transparent",
 					"overflow-x-hidden overflow-y-auto left-0 top-auto right-0 bottom-0 max-w-screen",
 					"block max-w-full translate-x-0 translate-y-0",
 					"border-0 pt-56 duration-1000 focusable !pointer-events-none",
 
-					"data-[state=closed]:fade-out-100",
-					"data-[state=open]:fade-in-100",
-					"data-[state=closed]:zoom-out-100",
-					"data-[state=open]:zoom-in-100",
+					"data-[state=open]:animate-in",
+					"data-[state=closed]:animate-out",
 					"data-[state=open]:slide-in-from-bottom",
 					"data-[state=closed]:slide-out-to-bottom",
-					"data-[state=closed]:slide-out-to-left-1/2",
-					"data-[state=open]:slide-in-from-left-1/2",
 				)}
 				childrenContainerClassName={cn("h-auto min-h-full bg-bg rounded-t-lg")}
-				style={{
-					transform: `translate(0, ${isOpen ? "0" : "-100%"})`,
-				}}
 			>
 				<div className="w-screen h-auto min-h-full pointer-events-auto">
 					{children}

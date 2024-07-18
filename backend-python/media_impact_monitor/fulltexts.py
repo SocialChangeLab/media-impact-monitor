@@ -26,7 +26,9 @@ from media_impact_monitor.util.paths import src
 
 @cache
 def get_fulltexts(q: FulltextSearch) -> pd.DataFrame | None:
-    assert q.topic or q.organizers or q.query or q.event_id
+    assert (
+        q.topic or q.organizers or q.query or q.event_id
+    ), "One of 'topic', 'organizers', 'query', or 'event_id' must be provided."
     keywords = load_keywords()
     num_filters = sum(
         [bool(q.topic), bool(q.organizers), bool(q.query), bool(q.event_id)]
@@ -63,6 +65,10 @@ def get_fulltexts(q: FulltextSearch) -> pd.DataFrame | None:
         query = xs_with_ys(orgs, keywords["activism"], q.media_source)
 
     print(f"Looking for news fulltexts that match: '{query}'")
+
+    assert (
+        q.start_date and q.end_date
+    ), "Both start_date and end_date must be provided; either explicitly or through the event_id."
 
     match q.media_source:
         case "news_online":

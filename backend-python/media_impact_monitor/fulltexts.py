@@ -28,9 +28,17 @@ from media_impact_monitor.util.paths import src
 def get_fulltexts(q: FulltextSearch) -> pd.DataFrame | None:
     assert q.topic or q.organizers or q.query or q.event_id
     keywords = load_keywords()
+    num_filters = sum(
+        [bool(q.topic), bool(q.organizers), bool(q.query), bool(q.event_id)]
+    )
+    if num_filters > 1:
+        raise ValueError(
+            "Only one of 'topic', 'organizers', 'query', 'event_id' is allowed."
+        )
     if q.topic:
-        assert q.topic == "climate_change"
-        assert not q.query and not q.organizers and not q.event_id
+        assert (
+            q.topic == "climate_change"
+        ), "Only 'climate_change' is supported as topic."
         query = xs(
             keywords["climate_science"]
             + keywords["climate_policy"]
@@ -38,16 +46,13 @@ def get_fulltexts(q: FulltextSearch) -> pd.DataFrame | None:
             q.media_source,
         )
     if q.organizers:
-        assert not q.topic and not q.query and not q.event_id
         for org in q.organizers:
             assert org in climate_orgs, f"Unknown organization: {org}"
         orgs = add_quotes(add_aliases(q.organizers))
         query = xs_with_ys(orgs, keywords["activism"], q.media_source)
     if q.query:
-        assert not q.topic and not q.organizers and not q.event_id
         query = q.query
     if q.event_id:
-        assert not q.topic and not q.query and not q.organizers
         events = get_events_by_id([q.event_id])
         assert len(events) == 1
         event = events.iloc[0]

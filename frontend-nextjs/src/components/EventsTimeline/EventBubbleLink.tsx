@@ -1,6 +1,10 @@
 import { useFiltersStore } from "@/providers/FiltersStoreProvider";
 import { cn } from "@/utility/classNames";
-import type { OrganisationType, ParsedEventType } from "@/utility/eventsUtil";
+import {
+	type OrganisationType,
+	type ParsedEventType,
+	compareOrganizationsByColors,
+} from "@/utility/eventsUtil";
 import { getDateRangeByAggregationUnit } from "@/utility/useTimeIntervals";
 import Link from "next/link";
 import { memo } from "react";
@@ -31,7 +35,9 @@ function EventBubbleLink({
 				href={`/events/${event.event_id}`}
 				className={bubbleClasses}
 				style={{
-					background: getCSSStyleGradient(organisations.map((x) => x.color)),
+					background: getCSSStyleGradientWithEqualSteps(
+						organisations.map((x) => x.color),
+					),
 				}}
 				{...otherProps}
 			>
@@ -53,6 +59,8 @@ export function AggregatedEventsBubble({
 	selectedOrganisations,
 	date,
 	aggregationUnit,
+	events,
+	sumSize,
 }: AggregatedItemType) {
 	const { setDateRange } = useFiltersStore(({ setDateRange }) => ({
 		setDateRange,
@@ -66,32 +74,75 @@ export function AggregatedEventsBubble({
 			}
 			className={cn(bubbleClasses, "rounded-sm")}
 			style={{
-				background: getCSSStyleGradient(
-					selectedOrganisations
-						.sort((a, b) => {
-							if (a.color > b.color) return 1;
-							if (a.color < b.color) return -1;
-							return b.name.localeCompare(a.name);
-						})
-						.map((x) => x.color),
+				background: getCSSStyleGradientWithPercentages(
+					getColorPercentagesByParticipants(selectedOrganisations, events),
 				),
 			}}
 		/>
 	);
 }
 
-function getCSSStyleGradient(colors: string[]) {
+type ColorsWithPercentages = Record<string, number>;
+
+function getColorPercentagesByParticipants(
+	organisations: OrganisationType[],
+	events: ParsedEventType[],
+): ColorsWithPercentages {
+	if (organisations.length === 0) return {};
+	const organisationsColors = organisations
+		.sort(compareOrganizationsByColors)
+		.map((x) => x.color);
+	const uniqueColors = Array.from(new Set(organisationsColors));
+	const colors2OrgsCount = events.reduce(
+		(acc, event) => {
+			const eventSum = event.size_number ?? 0 / event.organizers.length;
+			for (const organizer of event.organizers) {
+				const org = organisations.find((x) => x.name === organizer);
+				if (!org) continue;
+				const currentColorCount = acc[org.color] ?? 0;
+				acc[org.color] = currentColorCount + eventSum;
+			}
+			return acc;
+		},
+		{} as Record<string, number>,
+	);
+	const sumSize = Object.values(colors2OrgsCount).reduce(
+		(acc, count) => acc + count,
+		0,
+	);
+	return uniqueColors.reduce((acc, color) => {
+		const count = colors2OrgsCount[color] ?? 0;
+		const sum = sumSize ?? 0;
+		acc[color] = (count / sum) * 100;
+		return acc;
+	}, {} as ColorsWithPercentages);
+}
+
+function getCSSStyleGradientWithEqualSteps(colors: string[]) {
 	if (colors.length === 0) return;
-	const uniqueColors = Array.from(new Set(colors));
-	if (uniqueColors.length === 1) return uniqueColors[0];
-	const stepPercentage = Math.round(100 / uniqueColors.length);
-	return `linear-gradient(0deg, ${uniqueColors
+	if (colors.length === 1) return colors[0];
+	const stepPercentage = Math.round(100 / colors.length);
+	return `linear-gradient(0deg, ${colors
 		.map(
 			(color, i) =>
 				`${color} ${i * stepPercentage}%, ${color} ${
 					(i + 1) * stepPercentage
 				}%`,
 		)
+		.join(", ")})`;
+}
+
+function getCSSStyleGradientWithPercentages(
+	colorsWithPercentages: ColorsWithPercentages,
+) {
+	let lastPercentage = 0;
+	return `linear-gradient(0deg, ${Object.entries(colorsWithPercentages)
+		.sort((a, b) => b[1] - a[1])
+		.map(([color, percentage]) => {
+			const newPercentage = `${color} ${lastPercentage}%, ${color} ${lastPercentage + percentage}%`;
+			lastPercentage += percentage;
+			return newPercentage;
+		})
 		.join(", ")})`;
 }
 

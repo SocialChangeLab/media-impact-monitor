@@ -47,6 +47,8 @@ function AggregatedEventsTooltip({
 				isSelected: !!selectedOrganisations.find((x) => x.name === org.name),
 			}))
 			.sort((a, b) => {
+				if (selectedOrganisations.length === 0)
+					return compareOrganizationsByColors(a, b);
 				if (a.isSelected && !b.isSelected) return -1;
 				if (!a.isSelected && b.isSelected) return 1;
 				return compareOrganizationsByColors(a, b);
@@ -76,7 +78,7 @@ function AggregatedEventsTooltip({
 						</>
 					)}
 					{organisations.length > 1 &&
-						", and was organized by the following organizations:"}
+						`, and ${orgs.length > 1 ? "were" : "was"} organized by the following organization${orgs.length > 1 ? "s" : ""}:`}
 				</p>
 				{orgs.map((org) => (
 					<OrgLine key={org.name} {...org} />

@@ -4,7 +4,7 @@ from litellm import BadRequestError
 
 from media_impact_monitor.util.llm import completion
 
-system_prompt = "You're a sentiment analysis tool. For a given user input, always return the sentiment of the input. Return -1 for negative, 0 for neutral, and 1 for positive. Before you make your decision, reason about the decision."
+system_prompt = """You're a sentiment analysis tool. For a given user input, always return the sentiment of the input. Return -1 for negative, 0 for neutral, and 1 for positive. Before you make your decision, reason about the decision. Stick exactly to the specified JSON schema including the "sentiment_reasoning" and "sentiment" fields."""
 
 tools = [
     {

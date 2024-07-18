@@ -77,7 +77,7 @@ function AggregatedEventsTooltip({
 							<strong>{sumSize.toLocaleString("en-GB")} participants</strong>
 						</>
 					)}
-					{`, and ${orgs.length > 1 ? "were" : "was"} organized by the following organization${orgs.length > 1 ? "s" : ""}:`}
+					{`, and ${events.length > 1 ? "were" : "was"} organized by the following organization${orgs.length > 1 ? "s" : ""}:`}
 				</p>
 				{orgs.map((org) => (
 					<OrgLine key={org.name} {...org} />

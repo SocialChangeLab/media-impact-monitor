@@ -30,6 +30,7 @@ const menuItems: MenuItemType[] = [
 		label: "Organisations",
 		route: "/organisations",
 		showTimeFilter: true,
+		showOrganisationsFilter: true,
 	},
 	{
 		name: "about",

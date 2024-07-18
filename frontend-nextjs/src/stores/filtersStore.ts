@@ -9,7 +9,6 @@ import {
 	subDays,
 	subMonths,
 } from "date-fns";
-import slugify from "slugify";
 import { z } from "zod";
 import { create } from "zustand";
 import {
@@ -53,9 +52,7 @@ export const defaultInitState: FiltersState = {
 	fromDateString: format(defaultFrom, "yyyy-MM-dd"),
 	toDateString: format(defaultTo, "yyyy-MM-dd"),
 	isDefaultTimeRange: true,
-	organizers: ["Fridays for Future", "Extinction Rebellion"].map((x) =>
-		slugify(x, { lower: true, strict: true }),
-	) as EventOrganizerSlugType[],
+	organizers: [] as EventOrganizerSlugType[],
 	mediaSource: "news_online",
 };
 

@@ -1,6 +1,7 @@
 "use client";
 
 import Footer from "@/components/Footer";
+import { useUiStore } from "@/providers/UiStoreProvider";
 import "@/styles/global.css";
 import { cn } from "@/utility/classNames";
 import { motion } from "framer-motion";
@@ -19,13 +20,17 @@ export function BaseLayout({
 	const pathname = usePathname();
 	const currentPage = pathname.split("/")[1] || "dashboard";
 	const showFilters = doesPathnameShowAnyFilter(pathname);
+	const { scrollThreshold, filtersHeight } = useUiStore((state) => ({
+		scrollThreshold: state.scrollThresholdConsideredTheTop,
+		filtersHeight: state.filtersAreaHeightDesktop,
+	}));
 	return (
 		<motion.div
 			className="layout grid grid-rows-[auto_1fr_auto] w-screen overflow-x-clip max-w-page"
 			variants={{
-				withoutFilters: { paddingTop: 75 },
+				withoutFilters: { paddingTop: scrollThreshold },
 				withFilters: {
-					paddingTop: 75 + 125,
+					paddingTop: scrollThreshold + filtersHeight,
 				},
 			}}
 			initial="withoutFilters"
@@ -36,7 +41,8 @@ export function BaseLayout({
 				ease: "circInOut",
 			}}
 			style={{
-				minHeight: `calc(100vh - ${75}px)`,
+				minHeight: `calc(100vh - ${scrollThreshold}px)`,
+				paddingTop: scrollThreshold + (showFilters ? filtersHeight : 0),
 			}}
 		>
 			<Menu currentPage={currentPage} />

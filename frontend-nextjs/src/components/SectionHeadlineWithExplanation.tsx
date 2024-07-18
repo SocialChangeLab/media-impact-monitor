@@ -12,25 +12,38 @@ function SectionHeadlineWithExplanation({
 	helpSlug,
 	headlineLevel: H = "h2",
 }: {
-	children: ReactNode;
-	headline: ReactNode;
+	children?: ReactNode;
+	headline?: ReactNode;
 	description?: ReactNode;
 	helpSlug?: string;
 	headlineLevel?: "h1" | "h2" | "h3" | "h4" | "h5" | "h6";
 }) {
 	return (
-		<section className="px-[max(1rem,2vmax)] pt-[max(1.25rem,2.5vmax)] py-[max(1.5rem,4vmax)] border-b border-grayLight last-of-type:border-b-0">
+		<section
+			className={cn(
+				"px-[max(1rem,2vmax)] py-[max(1.25rem,2.5vmax)]",
+				children && "pb-[max(1.5rem,4vmax)]",
+				"border-b border-grayLight last-of-type:border-b-0",
+			)}
+		>
 			<Dialog>
-				<div className="flex justify-between items-center mb-6">
-					<div className="w-fit flex flex-col mb-2">
-						<H
-							className={cn(
-								"font-headlines text-3xl font-bold",
-								"flex items-center mb-1 antialiased gap-2",
-							)}
-						>
-							{headline}
-						</H>
+				<div
+					className={cn(
+						"flex justify-between items-center",
+						children && "mb-8",
+					)}
+				>
+					<div className="w-fit flex flex-col ">
+						{headline && (
+							<H
+								className={cn(
+									"font-headlines text-3xl font-bold",
+									"flex items-center mb-1 antialiased gap-2",
+								)}
+							>
+								{headline}
+							</H>
+						)}
 						{description && <p className="text-grayDark">{description}</p>}
 					</div>
 					{helpSlug && (
@@ -65,7 +78,7 @@ function SectionHeadlineWithExplanation({
 					</DialogContent>
 				)}
 			</Dialog>
-			<div className="flex flex-col gap-8">{children}</div>
+			{children && <div className="flex flex-col gap-8">{children}</div>}
 		</section>
 	);
 }

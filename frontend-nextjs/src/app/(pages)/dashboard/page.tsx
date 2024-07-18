@@ -1,3 +1,4 @@
+import DashboardHelpBanner from "@/components/DashboardHelpBanner";
 import EventsTimeline from "@/components/EventsTimeline/EventsTimeline";
 // import ImpactChartWithData from "@/components/ImpactChart";
 import MediaCoverageChartWithData from "@/components/MediaCoverageChart";
@@ -7,6 +8,7 @@ import SectionHeadlineWithExplanation from "@/components/SectionHeadlineWithExpl
 export default function EventsPageWithSuspense() {
 	return (
 		<>
+			<DashboardHelpBanner />
 			<SectionHeadlineWithExplanation
 				headline="Protest Timeline"
 				description="See protests over time for each of the selected organisations"

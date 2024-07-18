@@ -15,14 +15,15 @@ const buttonVariants = cva(
 		variants: {
 			variant: {
 				default: "bg-fg text-bg hover:bg-grayDark hover:text-bg",
-				outline: " border-grayMed bg-transparent hover:bg-grayLight",
+				outline:
+					" border-grayMed bg-transparent hover:bg-grayLight hover:text-fg",
 				secondary: "bg-grayLight text-fg hover:bg-fg hover:bg-bg",
 				ghost: "hover:bg-grayLight hover:text-fg",
 				link: "text-fg underline-offset-4 hover:underline-fg",
 			},
 			size: {
 				default: "h-9 px-3.5 py-5",
-				sm: "h-8 px-3 py-4 text-xs",
+				sm: "h-8 px-3 py-4 text-sm",
 				lg: "h-10 px-4 py-6 text-lg",
 				icon: "p-2",
 			},

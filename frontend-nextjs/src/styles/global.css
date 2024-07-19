@@ -18,7 +18,7 @@
 
 	:root,
 	:root[data-theme='light'] {
-		--pageMaxWidth: 1920px;
+		--pageMaxWidth: 1440px;
 		--pageFullWidth: min(100vw,var(--pageMaxWidth));
 		--pagePadding: clamp(2rem,2vmax,4rem);
 		--headerHeight: 76px;
@@ -115,6 +115,10 @@
 	:root[data-theme='dark'] body .prose {
 		--tw-prose-invert-body: var(--grayDark);
 		--tw-prose-lead: var(--fg);
+	}
+
+	body:has(.boost-header-above-dialog) > header.main-header {
+		z-index: 60;
 	}
 
 	#user-feedback-button {

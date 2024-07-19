@@ -10,6 +10,7 @@ function InderceptedEventPage({
 	return (
 		<SlideUpDrawer id={id} basePath="/events/">
 			<EventPageContent id={id} />
+			<div className="boost-header-above-dialog" aria-hidden="true" />
 		</SlideUpDrawer>
 	);
 }

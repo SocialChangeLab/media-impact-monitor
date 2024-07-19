@@ -3,7 +3,6 @@
 import * as DialogPrimitive from "@radix-ui/react-dialog";
 import * as React from "react";
 
-import { scrollThresholdConsideredTheTop } from "@/stores/uiStore";
 import { cn } from "@/utility/classNames";
 import { X } from "lucide-react";
 
@@ -27,13 +26,10 @@ const DialogOverlay = React.forwardRef<
 			"data-[state=closed]:animate-out",
 			"data-[state=closed]:fade-out-0",
 			"data-[state=open]:fade-in-0",
+			"[body:has(.boost-header-above-dialog)]:z-30",
 			className,
 		)}
 		{...props}
-		style={{
-			...(props.style ?? {}),
-			top: scrollThresholdConsideredTheTop,
-		}}
 	/>
 ));
 DialogOverlay.displayName = DialogPrimitive.Overlay.displayName;

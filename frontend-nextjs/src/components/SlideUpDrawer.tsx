@@ -22,9 +22,7 @@ export function SlideUpDrawer({
 
 	const searchParams = useSearchParams();
 
-	useEffect(() => {
-		setIsOpen(show);
-	}, [show]);
+	useEffect(() => setIsOpen(show), [show]);
 
 	const onClose = useCallback(() => {
 		const backLink = searchParams.get("backLink");

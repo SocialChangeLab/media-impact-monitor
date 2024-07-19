@@ -82,7 +82,7 @@ function HeaderMenu({ currentPage }: { currentPage: string }) {
 			className={cn(
 				"px-[clamp(1rem,2vmax,4rem)] py-4 flex gap-6 flex-wrap items-center justify-between",
 				"border-b border-grayLight w-screen overflow-clip z-50 relative",
-				`max-w-page mx-auto 2xl:border-x border-grayLight bg-bg z-50`,
+				`max-w-page mx-auto maxPage:border-x maxPage:border-grayLight bg-bg z-50`,
 			)}
 		>
 			<InternalLink

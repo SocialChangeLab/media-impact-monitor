@@ -61,7 +61,7 @@ function FiltersArea() {
 			aria-label="Page filters"
 			className={cn(
 				`w-screen flex flex-col relative z-40`,
-				`px-[clamp(2rem,2vmax,4rem)] mx-auto 2xl:border-x border-grayLight`,
+				`px-[clamp(2rem,2vmax,4rem)] mx-auto maxPage:border-x maxPage:border-grayLight`,
 				`border-b bg-pattern-soft max-w-page`,
 				isScrolledToTop ? `py-[max(0.25rem,1vmax)]` : `py-2`,
 				isScrolledToTop ? `gap-[max(0.25rem,0.75vmax)]` : `gap-2`,

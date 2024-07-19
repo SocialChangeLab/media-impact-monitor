@@ -11,6 +11,7 @@ function InderceptedEventPage({
 	return (
 		<SlideUpDrawer id={slug} basePath="/organisations/">
 			<OrganisationPageContent slug={slug} />
+			<div className="boost-header-above-dialog" aria-hidden="true" />
 		</SlideUpDrawer>
 	);
 }

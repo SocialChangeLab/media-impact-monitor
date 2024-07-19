@@ -37,7 +37,10 @@ export function BaseLayout({
 		<>
 			<Menu currentPage={currentPage} />
 			<motion.div
-				className="layout grid grid-rows-[auto_1fr_auto] w-screen overflow-x-clip max-w-page"
+				className={cn(
+					"layout grid grid-rows-[auto_1fr_auto] w-screen overflow-x-clip max-w-page",
+					"maxPage:border-x maxPage:border-grayLight",
+				)}
 				variants={{
 					withoutFilters: { paddingTop: scrollThreshold },
 					withFilters: {

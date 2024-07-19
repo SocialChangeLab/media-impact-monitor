@@ -39,7 +39,7 @@ export function BaseLayout({
 			<motion.div
 				className={cn(
 					"layout grid grid-rows-[auto_1fr_auto] w-screen overflow-x-clip max-w-page",
-					"maxPage:border-x maxPage:border-grayLight",
+					"maxPage:border-x maxPage:border-grayLight min-h-screen grid-rows-[1fr_auto]",
 				)}
 				variants={{
 					withoutFilters: { paddingTop: scrollThreshold },
@@ -53,9 +53,6 @@ export function BaseLayout({
 				transition={{
 					duration: shouldExit ? 0.3 : 0,
 					ease: "circInOut",
-				}}
-				style={{
-					minHeight: `calc(100vh - ${scrollThreshold}px)`,
 				}}
 			>
 				<div className="relative min-h-full">

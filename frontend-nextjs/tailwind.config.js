@@ -48,7 +48,7 @@ module.exports = {
 			width: { screen: '100lvw' },
 			screens: {
 				xs: '400px',
-				maxPage: '1440px',
+				maxPage: '1920px',
 			},
 			keyframes: {
 				'accordion-down': {

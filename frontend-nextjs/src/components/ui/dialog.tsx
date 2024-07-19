@@ -56,8 +56,8 @@ const DialogContent = React.forwardRef<
 			<DialogPrimitive.Content
 				ref={ref}
 				className={cn(
-					"fixed left-[50%] top-[50%] z-50 grid w-full",
-					"max-w-lg translate-x-[-50%] translate-y-[-50%]",
+					"fixed left-1/2 top-1/2 z-50 grid w-full",
+					"max-w-lg translate-x-1/2 translate-y-1/2",
 					"border border-grayLight bg-bg duration-200 focusable",
 					animate &&
 						cn(
@@ -86,10 +86,10 @@ const DialogContent = React.forwardRef<
 
 					<DialogPrimitive.Close
 						className={cn(
-							"absolute right-4 top-4 z-50 ring-offset-bg",
+							"absolute right-4 top-4 pointer-events-auto ring-offset-bg",
 							"transition focusable bg-bg rounded-full p-1",
 							"disabled:pointer-events-none data-[state=open]:bg-fg",
-							"data-[state=open]:text-grayDark",
+							"data-[state=open]:text-grayDark hover:bg-fg hover:text-bg",
 						)}
 					>
 						<X />

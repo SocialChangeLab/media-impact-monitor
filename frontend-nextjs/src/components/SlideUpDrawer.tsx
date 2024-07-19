@@ -50,13 +50,16 @@ export function SlideUpDrawer({
 			<DialogContent
 				animate={false}
 				className={cn(
-					"w-screen h-screen fixed z-50 bg-transparent",
-					"overflow-x-hidden overflow-y-auto left-0 top-auto right-0 bottom-0 max-w-screen",
-					"block max-w-full translate-x-0 translate-y-0",
+					"w-screen h-screen fixed z-50 bg-transparent max-w-screen-maxPage",
+					"overflow-x-hidden overflow-y-auto left-1/2 -translate-x-1/2",
+					"top-auto right-auto bottom-0 max-w-screen",
+					"block max-w-full translate-y-0",
 					"border-0 pt-56 focusable !pointer-events-none",
 
 					"data-[state=open]:animate-in",
 					"data-[state=closed]:animate-out",
+					"data-[state=open]:slide-in-from-left-1/2",
+					"data-[state=closed]:slide-in-to-left-1/2",
 					"data-[state=open]:slide-in-from-bottom",
 					"data-[state=closed]:slide-out-to-bottom",
 				)}

@@ -82,11 +82,19 @@ const DialogContent = React.forwardRef<
 					)}
 				>
 					{children}
+
+					<DialogPrimitive.Close
+						className={cn(
+							"absolute right-4 top-4 z-50 ring-offset-bg",
+							"transition focusable bg-bg rounded-full p-1",
+							"disabled:pointer-events-none data-[state=open]:bg-fg",
+							"data-[state=open]:text-grayDark",
+						)}
+					>
+						<X />
+						<span className="sr-only">Close</span>
+					</DialogPrimitive.Close>
 				</div>
-				<DialogPrimitive.Close className="absolute right-4 top-4 z-50 opacity-70 ring-offset-bg transition-opacity hover:opacity-100 focusable disabled:pointer-events-none data-[state=open]:bg-fg data-[state=open]:text-grayDark">
-					<X />
-					<span className="sr-only">Close</span>
-				</DialogPrimitive.Close>
 			</DialogPrimitive.Content>
 		</DialogPortal>
 	),

@@ -1,4 +1,5 @@
 "use client";
+import { cn } from "@/utility/classNames";
 import Link, { type LinkProps } from "next/link";
 import { usePathname, useSearchParams } from "next/navigation";
 import { type AnchorHTMLAttributes, forwardRef } from "react";
@@ -10,7 +11,7 @@ export type InternalLinkProps = Omit<
 	LinkProps;
 
 const InternalLink = forwardRef<HTMLAnchorElement, InternalLinkProps>(
-	({ href, ...props }, ref) => {
+	({ href, className, ...props }, ref) => {
 		const pathname = usePathname();
 		const searchParams = useSearchParams();
 		const newSearchParams = new URLSearchParams(
@@ -19,8 +20,9 @@ const InternalLink = forwardRef<HTMLAnchorElement, InternalLinkProps>(
 		newSearchParams.set("backLink", pathname);
 		return (
 			<Link
-				href={`${href}?${newSearchParams.toString()}`}
 				{...props}
+				href={`${href}?${newSearchParams.toString()}`}
+				className={cn("focusable", className)}
 				ref={ref}
 			/>
 		);

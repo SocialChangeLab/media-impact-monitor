@@ -75,15 +75,24 @@ export function OrganisationsSelect({
 					className={cn(
 						"w-fit justify-between rounded-none h-[38px]",
 						"hover:bg-grayLight hover:text-fg border-grayMed",
-						"group",
+						"group transition-colors",
+						isPending && "text-grayDark",
 						className,
 					)}
 				>
-					{isPending && (
-						<Loader2 className="mr-2 h-4 w-4 animate-spin duration-1000 text-grayMed" />
+					{(isPending || organizerSlugs.length === 0) && (
+						<>
+							Select organisations
+							<Loader2
+								className={cn(
+									"mr-2 h-4 w-4 animate-spin duration-1000 text-grayMed transition-opacity opacity-0",
+									isPending && "opacity-100",
+								)}
+								aria-hidden="true"
+							/>
+						</>
 					)}
-					{organizerSlugs.length === 0 && "Select organisations"}
-					{organizerSlugs.length === 1 && (
+					{!isPending && organizerSlugs.length === 1 && (
 						<span className="grid grid-cols-[auto_1fr] gap-2 items-center">
 							<RoundedColorPill
 								color={firstOrg?.color ?? "transparent"}
@@ -92,7 +101,7 @@ export function OrganisationsSelect({
 							<span className="truncate">{firstOrg?.name}</span>
 						</span>
 					)}
-					{organizerSlugs.length > 1 && (
+					{!isPending && organizerSlugs.length > 1 && (
 						<span className="flex items-center">
 							{selectedColors.map((color) => {
 								return (
@@ -115,59 +124,61 @@ export function OrganisationsSelect({
 				className="w-fit max-w-96 p-0 max-h-[70vh] overflow-y-auto"
 				align="start"
 			>
-				<Command>
-					<CommandInput
-						placeholder="Search..."
-						className="focus-visible:ring-inset focus-visible:ring-offset-0 outline-offset-0 border-0 border-l"
-					/>
-					<CommandEmpty>No organisation found.</CommandEmpty>
-					<CommandGroup>
-						{multiple && (
-							<CommandItem
-								value="all"
-								onSelect={() => {
-									const newSlugs =
-										organizerSlugs.length === allOrgsObjects.length
-											? []
-											: orgSlugs;
-									setOrganizers(newSlugs);
-								}}
-							>
-								Toggle all/none
-							</CommandItem>
-						)}
-						{allOrgsObjects.map((org) => (
-							<CommandItem
-								key={org.slug}
-								value={org.slug}
-								onSelect={(currentValue: string) => {
-									const alreadySelected = organizerSlugs.includes(
-										currentValue as EventOrganizerSlugType,
-									);
-									const newValues = alreadySelected
-										? organizerSlugs.filter((slug) => slug !== currentValue)
-										: [...organizerSlugs, org.slug];
-									const uniqueValues = Array.from(new Set(newValues));
-									setOrganizers(multiple ? uniqueValues : [org.slug]);
-									!multiple && setOpen(false);
-								}}
-							>
-								<Check
-									className={cn(
-										"mr-2 h-4 w-4 shrink-0",
-										organizerSlugs.find((o) => o === org.slug)
-											? "opacity-100"
-											: "opacity-0",
-									)}
-								/>
-								<span className="grid grid-cols-[auto_1fr] gap-2 items-center">
-									<RoundedColorPill color={org.color} className="shrink-0" />
-									<span className="truncate">{org.name}</span>
-								</span>
-							</CommandItem>
-						))}
-					</CommandGroup>
-				</Command>
+				{!isPending && (
+					<Command>
+						<CommandInput
+							placeholder="Search..."
+							className="focus-visible:ring-inset focus-visible:ring-offset-0 outline-offset-0 border-0 border-l"
+						/>
+						<CommandEmpty>No organisation found.</CommandEmpty>
+						<CommandGroup>
+							{multiple && (
+								<CommandItem
+									value="all"
+									onSelect={() => {
+										const newSlugs =
+											organizerSlugs.length === allOrgsObjects.length
+												? []
+												: orgSlugs;
+										setOrganizers(newSlugs);
+									}}
+								>
+									Toggle all/none
+								</CommandItem>
+							)}
+							{allOrgsObjects.map((org) => (
+								<CommandItem
+									key={org.slug}
+									value={org.slug}
+									onSelect={(currentValue: string) => {
+										const alreadySelected = organizerSlugs.includes(
+											currentValue as EventOrganizerSlugType,
+										);
+										const newValues = alreadySelected
+											? organizerSlugs.filter((slug) => slug !== currentValue)
+											: [...organizerSlugs, org.slug];
+										const uniqueValues = Array.from(new Set(newValues));
+										setOrganizers(multiple ? uniqueValues : [org.slug]);
+										!multiple && setOpen(false);
+									}}
+								>
+									<Check
+										className={cn(
+											"mr-2 h-4 w-4 shrink-0",
+											organizerSlugs.find((o) => o === org.slug)
+												? "opacity-100"
+												: "opacity-0",
+										)}
+									/>
+									<span className="grid grid-cols-[auto_1fr] gap-2 items-center">
+										<RoundedColorPill color={org.color} className="shrink-0" />
+										<span className="truncate">{org.name}</span>
+									</span>
+								</CommandItem>
+							))}
+						</CommandGroup>
+					</Command>
+				)}
 			</PopoverContent>
 		</Popover>
 	);

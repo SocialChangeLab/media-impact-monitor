@@ -129,7 +129,7 @@
 		--interactive-filter: brightness(95%);
 
 		--foreground: var(--fg);
-		--background: url(/images/noisy.png);
+		--background: url(/images/noisy.webp);
 		--accent-foreground: var(--bg);
 		--accent-background: var(--fg);
 		--success-color: var(--sentiment-positive);
@@ -141,7 +141,7 @@
 	}
 	
 	:root[data-theme='dark']  #user-feedback-button {
-		--background: var(--bg) url(/images/noisy-inverted.png) repeat center;
+		--background: var(--bg) url(/images/noisy-inverted.webp) repeat center;
 	}
 
 	@layer base {
@@ -258,15 +258,15 @@
 	}
 
 	.bg-pattern-soft {
-		@apply bg-[url(/images/noisy.png)] dark:bg-[url(/images/noisy-inverted.png)] bg-repeat bg-center;
+		@apply bg-[url(/images/noisy.webp)] dark:bg-[url(/images/noisy-inverted.webp)] bg-repeat bg-center;
 	}
 
 	.bg-pattern-semi-inverted {
-		@apply bg-fg bg-[url(/images/noisy-dark.png)] dark:bg-[url(/images/noisy-light.png)] bg-repeat bg-center bg-blend-screen dark:bg-blend-multiply;
+		@apply bg-fg bg-[url(/images/noisy-dark.webp)] dark:bg-[url(/images/noisy-light.webp)] bg-repeat bg-center bg-blend-screen dark:bg-blend-multiply;
 	}
 
 	.bg-pattern-semi-inverted-light {
-		@apply bg-brandWhite dark:bg-[url(/images/noisy-light.png)] bg-repeat bg-center bg-blend-multiply;
+		@apply bg-brandWhite dark:bg-[url(/images/noisy-light.webp)] bg-repeat bg-center bg-blend-multiply;
 	}
 
 

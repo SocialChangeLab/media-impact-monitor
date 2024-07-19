@@ -59,7 +59,7 @@ export function BaseLayout({
 					<div
 						aria-hidden="true"
 						className={cn(
-							"absolute inset-0 bg-[url(/images/doc-shadow.png)] bg-no-repeat bg-right-top ",
+							"absolute inset-0 bg-[url(/images/doc-shadow.webp)] bg-no-repeat bg-right-top ",
 							"dark:mix-blend-normal dark:invert",
 							`pointer-events-none`,
 							currentPage.startsWith("docs") && "right-80",
@@ -68,7 +68,7 @@ export function BaseLayout({
 					<div
 						aria-hidden="true"
 						className={cn(
-							"absolute inset-0 bg-[url(/images/doc-shadow.png)] bg-no-repeat bg-right-top",
+							"absolute inset-0 bg-[url(/images/doc-shadow.webp)] bg-no-repeat bg-right-top",
 							"dark:mix-blend-normal dark:invert",
 							"scale-x-[-1]",
 							`pointer-events-none`,

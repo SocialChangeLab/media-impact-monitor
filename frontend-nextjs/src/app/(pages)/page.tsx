@@ -1,9 +1,9 @@
 import InternalLink from "@/components/InternalLink";
 import AppLogo from "@/components/logos/AppLogo";
 import { buttonVariants } from "@/components/ui/button";
-import headerImage from "@/images/header-bg.png";
-import dashboardScreenshotDark from "@/images/home-screenshot-dashboard-dark.png";
-import dashboardScreenshotLight from "@/images/home-screenshot-dashboard-light.png";
+import headerImage from "@/images/header-bg.webp";
+import dashboardScreenshotDark from "@/images/home-screenshot-dashboard-dark.webp";
+import dashboardScreenshotLight from "@/images/home-screenshot-dashboard-light.webp";
 import { cn } from "@/utility/classNames";
 import Image from "next/image";
 
@@ -21,10 +21,11 @@ export default function HomePageWithSuspense() {
 					src={headerImage}
 					alt="A decorative header image of a crowd protesting"
 					className="absolute -z-10 w-full h-full sm:min-h-40 inset-0 object-cover mix-blend-screen opacity-10"
-					priority
+					fill
+					priority={true}
 				/>
 				<div
-					className="absolute -z-10 inset-0 w-full h-full sm:min-h-40 bg-repeat bg-center mix-blend-screen bg-[url(/images/noisy-dark.png)]"
+					className="absolute -z-10 inset-0 w-full h-full sm:min-h-40 bg-repeat bg-center mix-blend-screen bg-[url(/images/noisy-dark.webp)]"
 					aria-hidden="true"
 				/>
 				<div className="prose max-w-[50ch]">

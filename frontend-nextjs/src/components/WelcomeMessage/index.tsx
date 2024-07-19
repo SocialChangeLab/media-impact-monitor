@@ -1,6 +1,6 @@
 "use client";
 import { Button } from "@/components/ui/button";
-import headerImage from "@/images/header-bg.png";
+import headerImage from "@/images/header-bg.webp";
 import { cn } from "@/utility/classNames";
 import { AnimatePresence } from "framer-motion";
 import { X } from "lucide-react";
@@ -44,7 +44,7 @@ function WelcomeMessage({ currentPage }: { currentPage: string }) {
 							<div
 								className="absolute -z-10 inset-0 w-full h-full sm:min-h-40 bg-repeat
                     bg-center mix-blend-screen
-                    bg-[url(/images/noisy-dark.png)]"
+                    bg-[url(/images/noisy-dark.webp)]"
 								aria-hidden="true"
 							/>
 							<div className="px-6 pt-6 pb-8 max-w-prose flex flex-col gap-4">

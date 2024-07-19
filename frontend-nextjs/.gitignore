@@ -38,10 +38,6 @@ next-env.d.ts
 # Fake data for testing
 src/fakeDataForTesting/
 
-# Cosmos
-cosmos.imports.ts
-cosmos-export/
-
 # Sentry Config File
 .env.sentry-build-plugin
 

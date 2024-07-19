@@ -98,6 +98,7 @@ async def global_exception_handler(request: Request, exc: Exception):
         status_code=500,
         content={"message": "Internal server error", "details": str(exc)},
         media_type="application/json",
+        headers={"Access-Control-Allow-Origin": "*"},
     )
 
 

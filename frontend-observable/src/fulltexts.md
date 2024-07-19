@@ -5,8 +5,8 @@ import { embed, queryApi } from './components/util.js'
 const events = await queryApi('events', {
   source: 'acled',
   topic: 'climate_change',
-  start_date: '2024-05-01',
-  end_date: '2024-05-30'
+  start_date: '2022-12-10',
+  end_date: '2023-01-05'
 })
 const event_id = await view(
   Inputs.select(

@@ -21,7 +21,7 @@ export default function RootLayout({
 			<head />
 			<body
 				className={cn(
-					"bg-pattern-soft min-h-screen",
+					"bg-pattern-soft min-h-screen !pointer-events-auto",
 					"w-screen overflow-x-clip max-w-page 2xl:border-x border-grayLight mx-auto",
 				)}
 			>

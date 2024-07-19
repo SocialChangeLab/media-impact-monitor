@@ -25,55 +25,57 @@ export function BaseLayout({
 		filtersHeight: state.filtersAreaHeightDesktop,
 	}));
 	return (
-		<motion.div
-			className="layout grid grid-rows-[auto_1fr_auto] w-screen overflow-x-clip max-w-page"
-			variants={{
-				withoutFilters: { paddingTop: scrollThreshold },
-				withFilters: {
-					paddingTop: scrollThreshold + filtersHeight,
-				},
-			}}
-			initial={showFilters ? "withFilters" : "withoutFilters"}
-			animate={showFilters ? "withFilters" : "withoutFilters"}
-			exit="withoutFilters"
-			transition={{
-				duration: 0.3,
-				ease: "circInOut",
-			}}
-			style={{
-				minHeight: `calc(100vh - ${scrollThreshold}px)`,
-				paddingTop: scrollThreshold + (showFilters ? filtersHeight : 0),
-			}}
-		>
+		<>
 			<Menu currentPage={currentPage} />
-			<div className="relative min-h-full">
-				<div
-					aria-hidden="true"
-					className={cn(
-						"absolute inset-0 bg-[url(/images/doc-shadow.png)] bg-no-repeat bg-right-top ",
-						"dark:mix-blend-normal dark:invert",
-						`pointer-events-none`,
-						currentPage.startsWith("docs") && "right-80",
-					)}
-				/>
-				<div
-					aria-hidden="true"
-					className={cn(
-						"absolute inset-0 bg-[url(/images/doc-shadow.png)] bg-no-repeat bg-right-top",
-						"dark:mix-blend-normal dark:invert",
-						"scale-x-[-1]",
-						`pointer-events-none`,
-						currentPage.startsWith("docs") && "left-80",
-					)}
-				/>
-				{/* <WelcomeMessage currentPage={currentPage} /> */}
-				<div className="min-h-full w-screen max-w-page overflow-x-clip relative">
-					{children}
+			<motion.div
+				className="layout grid grid-rows-[auto_1fr_auto] w-screen overflow-x-clip max-w-page"
+				variants={{
+					withoutFilters: { paddingTop: scrollThreshold },
+					withFilters: {
+						paddingTop: scrollThreshold + filtersHeight,
+					},
+				}}
+				initial={showFilters ? "withFilters" : "withoutFilters"}
+				animate={showFilters ? "withFilters" : "withoutFilters"}
+				exit="withoutFilters"
+				transition={{
+					duration: 0.3,
+					ease: "circInOut",
+				}}
+				style={{
+					minHeight: `calc(100vh - ${scrollThreshold}px)`,
+					paddingTop: scrollThreshold + (showFilters ? filtersHeight : 0),
+				}}
+			>
+				<div className="relative min-h-full">
+					<div
+						aria-hidden="true"
+						className={cn(
+							"absolute inset-0 bg-[url(/images/doc-shadow.png)] bg-no-repeat bg-right-top ",
+							"dark:mix-blend-normal dark:invert",
+							`pointer-events-none`,
+							currentPage.startsWith("docs") && "right-80",
+						)}
+					/>
+					<div
+						aria-hidden="true"
+						className={cn(
+							"absolute inset-0 bg-[url(/images/doc-shadow.png)] bg-no-repeat bg-right-top",
+							"dark:mix-blend-normal dark:invert",
+							"scale-x-[-1]",
+							`pointer-events-none`,
+							currentPage.startsWith("docs") && "left-80",
+						)}
+					/>
+					{/* <WelcomeMessage currentPage={currentPage} /> */}
+					<div className="min-h-full w-screen max-w-page overflow-x-clip relative">
+						{children}
+					</div>
 				</div>
-			</div>
-			<Footer />
+				<Footer />
 
-			{modal}
-		</motion.div>
+				{modal}
+			</motion.div>
+		</>
 	);
 }

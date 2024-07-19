@@ -19,7 +19,9 @@ export const StickyMenuWrapper = memo(
 			);
 		return (
 			<header
-				className={cn(`fixed top-0 z-50 transition-transform left-0 w-screen`)}
+				className={cn(
+					`fixed top-0 z-[999] transition-transform left-0 w-screen`,
+				)}
 				style={{
 					transform:
 						!isScrolledToTop && !isScrollingUp

@@ -1,10 +1,13 @@
 import { create } from "zustand";
 
+export const scrollThresholdConsideredTheTop = 75;
+export const filtersAreaHeightDesktop = 137;
+
 export const defaultInitState: UiState = {
 	isScrollingUp: false,
 	isScrolledToTop: true,
-	scrollThresholdConsideredTheTop: 75,
-	filtersAreaHeightDesktop: 137,
+	scrollThresholdConsideredTheTop,
+	filtersAreaHeightDesktop,
 };
 
 export type UiState = {

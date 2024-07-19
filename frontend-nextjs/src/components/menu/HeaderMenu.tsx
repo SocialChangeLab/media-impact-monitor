@@ -2,7 +2,6 @@
 import ThemeToggle from "@/components/ThemeToggle";
 import AppLogo from "@/components/logos/AppLogo";
 import { cn } from "@/utility/classNames";
-import { useSearchParams } from "next/navigation";
 import { memo } from "react";
 import InternalLink from "../InternalLink";
 import HeaderMenuLink from "./HeaderMenuLink";
@@ -77,13 +76,12 @@ export function doesPathnameShowTimeFilter(pathname: string) {
 }
 
 function HeaderMenu({ currentPage }: { currentPage: string }) {
-	const searchParams = useSearchParams();
 	return (
 		<nav
 			className={cn(
 				"px-[clamp(1rem,2vmax,4rem)] py-4 flex gap-6 flex-wrap items-center justify-between",
 				"border-b border-grayLight w-screen overflow-clip z-50 relative",
-				`max-w-page mx-auto 2xl:border-x border-grayLight bg-bg`,
+				`max-w-page mx-auto 2xl:border-x border-grayLight bg-bg z-50`,
 			)}
 		>
 			<InternalLink

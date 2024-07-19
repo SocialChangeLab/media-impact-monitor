@@ -18,7 +18,7 @@ export function BaseLayout({
 	modal: ReactNode;
 }) {
 	const pathname = usePathname();
-	const currentPage = pathname.split("/")[1] || "dashboard";
+	const currentPage = pathname.split("/")[1] || "home";
 	const showFilters = doesPathnameShowAnyFilter(pathname);
 	const { scrollThreshold, filtersHeight } = useUiStore((state) => ({
 		scrollThreshold: state.scrollThresholdConsideredTheTop,

@@ -1,22 +1,22 @@
 "use client";
-import type { UiState } from "@/stores/uiStore";
+import { useUiStore } from "@/providers/UiStoreProvider";
 import { cn } from "@/utility/classNames";
-import { type PropsWithChildren, memo } from "react";
-
-type StickyMenuWrapperProps = PropsWithChildren<
-	Pick<
-		UiState,
-		"isScrolledToTop" | "isScrollingUp" | "scrollThresholdConsideredTheTop"
-	>
->;
+import { type ReactNode, memo } from "react";
 
 export const StickyMenuWrapper = memo(
-	({
-		children,
-		isScrolledToTop,
-		isScrollingUp,
-		scrollThresholdConsideredTheTop,
-	}: StickyMenuWrapperProps) => {
+	({ children }: { children: ReactNode }) => {
+		const { isScrolledToTop, isScrollingUp, scrollThresholdConsideredTheTop } =
+			useUiStore(
+				({
+					isScrolledToTop,
+					isScrollingUp,
+					scrollThresholdConsideredTheTop,
+				}) => ({
+					isScrolledToTop,
+					isScrollingUp,
+					scrollThresholdConsideredTheTop,
+				}),
+			);
 		return (
 			<header
 				className={cn(`fixed top-0 z-50 transition-transform left-0 w-screen`)}

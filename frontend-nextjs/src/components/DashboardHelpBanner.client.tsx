@@ -2,7 +2,7 @@
 import { cn } from "@/utility/classNames";
 import { motion } from "framer-motion";
 import { CornerLeftDown, CornerLeftUp, HelpCircle } from "lucide-react";
-import { useMemo, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import InternalLink from "./InternalLink";
 import { Button, buttonVariants } from "./ui/button";
 
@@ -92,15 +92,29 @@ function CollapsedHelpBanner({ onExpand }: HelpBannerActions) {
 	);
 }
 
-function DashboardHelpBanner() {
-	const [isExpanded, setIsExpanded] = useState(true);
+function DashboardHelpBannerClient({
+	defaultIsExpanded = true,
+	persistIsExpanded = () => {},
+}: {
+	defaultIsExpanded?: boolean | undefined;
+	persistIsExpanded?: (value: boolean) => void;
+}) {
+	const [isExpanded, setIsExpanded] = useState(defaultIsExpanded);
+
+	const setIsExpandedValue = useCallback(
+		(value: boolean) => {
+			setIsExpanded(value);
+			persistIsExpanded(value);
+		},
+		[persistIsExpanded],
+	);
 
 	const actions = useMemo(
 		() => ({
-			onExpand: () => setIsExpanded(true),
-			onCollapse: () => setIsExpanded(false),
+			onExpand: () => setIsExpandedValue(true),
+			onCollapse: () => setIsExpandedValue(false),
 		}),
-		[],
+		[setIsExpandedValue],
 	);
 
 	return (
@@ -117,7 +131,7 @@ function DashboardHelpBanner() {
 					paddingBottom: 32,
 				},
 			}}
-			initial="expanded"
+			initial={isExpanded ? "expanded" : "collapsed"}
 			animate={isExpanded ? "expanded" : "collapsed"}
 			className={cn(
 				"px-[max(1rem,2vmax)] overflow-clip",
@@ -133,4 +147,4 @@ function DashboardHelpBanner() {
 	);
 }
 
-export default DashboardHelpBanner;
+export default DashboardHelpBannerClient;

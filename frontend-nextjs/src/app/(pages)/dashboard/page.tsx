@@ -1,4 +1,4 @@
-import DashboardHelpBanner from "@/components/DashboardHelpBanner";
+import DashboardHelpBanner from "@/components/DashboardHelpBanner.server";
 import EventsTimeline from "@/components/EventsTimeline/EventsTimeline";
 // import ImpactChartWithData from "@/components/ImpactChart";
 import MediaCoverageChartWithData from "@/components/MediaCoverageChart";

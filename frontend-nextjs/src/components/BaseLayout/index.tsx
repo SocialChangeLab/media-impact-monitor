@@ -33,7 +33,7 @@ export function BaseLayout({
 					paddingTop: scrollThreshold + filtersHeight,
 				},
 			}}
-			initial="withoutFilters"
+			initial={showFilters ? "withFilters" : "withoutFilters"}
 			animate={showFilters ? "withFilters" : "withoutFilters"}
 			exit="withoutFilters"
 			transition={{

@@ -30,7 +30,7 @@ function FiltersArea({ isScrolledToTop }: { isScrolledToTop: boolean }) {
 		<AnimatePresence>
 			{display.any && (
 				<motion.nav
-					initial="hidden"
+					initial="visible"
 					animate="visible"
 					exit="hidden"
 					variants={{

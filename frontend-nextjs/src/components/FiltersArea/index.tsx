@@ -29,12 +29,21 @@ function FiltersArea() {
 		return { any, media, organisations, time, onlyTime };
 	}, [pathname]);
 
+	const lastHasAny = useRef(display.any);
+
 	const previouslyShown = useMemo(() => {
 		if (!lastPathname.current) return true;
 		const hasAny = doesPathnameShowAnyFilter(lastPathname.current);
 		lastPathname.current = pathname;
 		return hasAny;
 	}, [pathname]);
+
+	const shouldExit = useMemo(() => {
+		if (!lastHasAny.current) return display.any;
+		const wasShown = lastHasAny.current;
+		lastHasAny.current = display.any;
+		return wasShown && !display.any;
+	}, [display.any]);
 
 	return (
 		<motion.nav
@@ -46,7 +55,7 @@ function FiltersArea() {
 				visible: { transform: "translateY(0%)", opacity: 1 },
 			}}
 			transition={{
-				duration: 0.3,
+				duration: shouldExit ? 0.3 : 0,
 				ease: "circInOut",
 			}}
 			aria-label="Page filters"

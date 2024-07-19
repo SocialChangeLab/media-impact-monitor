@@ -6,7 +6,7 @@ import "@/styles/global.css";
 import { cn } from "@/utility/classNames";
 import { motion } from "framer-motion";
 import { usePathname } from "next/navigation";
-import type { ReactNode } from "react";
+import { type ReactNode, useMemo, useRef } from "react";
 import { Menu } from "../menu";
 import { doesPathnameShowAnyFilter } from "../menu/HeaderMenu";
 
@@ -20,10 +20,19 @@ export function BaseLayout({
 	const pathname = usePathname();
 	const currentPage = pathname.split("/")[1] || "home";
 	const showFilters = doesPathnameShowAnyFilter(pathname);
+	const previouslyShown = useRef(showFilters);
 	const { scrollThreshold, filtersHeight } = useUiStore((state) => ({
 		scrollThreshold: state.scrollThresholdConsideredTheTop,
 		filtersHeight: state.filtersAreaHeightDesktop,
 	}));
+
+	const shouldExit = useMemo(() => {
+		if (!previouslyShown.current) return showFilters;
+		const wasShown = previouslyShown.current;
+		previouslyShown.current = showFilters;
+		return wasShown && !showFilters;
+	}, [showFilters]);
+
 	return (
 		<>
 			<Menu currentPage={currentPage} />
@@ -39,12 +48,11 @@ export function BaseLayout({
 				animate={showFilters ? "withFilters" : "withoutFilters"}
 				exit="withoutFilters"
 				transition={{
-					duration: 0.3,
+					duration: shouldExit ? 0.3 : 0,
 					ease: "circInOut",
 				}}
 				style={{
 					minHeight: `calc(100vh - ${scrollThreshold}px)`,
-					paddingTop: scrollThreshold + (showFilters ? filtersHeight : 0),
 				}}
 			>
 				<div className="relative min-h-full">

@@ -50,10 +50,11 @@ function getMenuItemByPathname(pathname: string) {
 export function doesPathnameShowAnyFilter(pathname: string) {
 	const menuItem = getMenuItemByPathname(pathname);
 	if (!menuItem) return false;
-	const showAnyFilter =
+	const showAnyFilter = Boolean(
 		menuItem.showMediaFilter ||
-		menuItem.showOrganisationsFilter ||
-		menuItem.showTimeFilter;
+			menuItem.showOrganisationsFilter ||
+			menuItem.showTimeFilter,
+	);
 	return showAnyFilter;
 }
 

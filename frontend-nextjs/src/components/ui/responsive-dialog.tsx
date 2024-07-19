@@ -28,8 +28,10 @@ export function ResponsiveModal({
 
 	const onClose = useCallback(() => {
 		const backLink = searchParams.get("backLink");
-		const newSearchParams = new URLSearchParams(searchParams);
-		newSearchParams.set("backLink", encodeURIComponent(`${basePath}${id}`));
+		const newSearchParams = new URLSearchParams(
+			Object.fromEntries(searchParams),
+		);
+		newSearchParams.set("backLink", `${basePath}${id}`);
 		if (typeof backLink === "string" && backLink.startsWith("/")) {
 			router.push(`${backLink}?${newSearchParams.toString()}`);
 		} else {

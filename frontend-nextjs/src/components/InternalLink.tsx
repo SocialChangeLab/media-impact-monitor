@@ -12,8 +12,8 @@ export type InternalLinkProps = Omit<
 function InternalLink({ href, ...props }: InternalLinkProps) {
 	const pathname = usePathname();
 	const searchParams = useSearchParams();
-	const newSearchParams = new URLSearchParams(searchParams);
-	newSearchParams.set("backLink", encodeURIComponent(pathname));
+	const newSearchParams = new URLSearchParams(Object.fromEntries(searchParams));
+	newSearchParams.set("backLink", pathname);
 	return <Link href={`${href}?${newSearchParams.toString()}`} {...props} />;
 }
 

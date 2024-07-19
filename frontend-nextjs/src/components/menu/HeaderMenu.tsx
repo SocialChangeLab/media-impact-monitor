@@ -103,7 +103,7 @@ function HeaderMenu({ currentPage }: { currentPage: string }) {
 				{menuItems.map((item) => (
 					<HeaderMenuLink
 						key={item.name}
-						href={`${item.route}?${searchParams.toString()}`}
+						href={item.route}
 						title={item.label}
 						active={currentPage === item.name}
 					/>

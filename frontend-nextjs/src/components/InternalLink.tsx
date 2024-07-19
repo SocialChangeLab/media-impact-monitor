@@ -1,7 +1,7 @@
 "use client";
 import Link, { type LinkProps } from "next/link";
 import { usePathname, useSearchParams } from "next/navigation";
-import type { AnchorHTMLAttributes } from "react";
+import { type AnchorHTMLAttributes, forwardRef } from "react";
 
 export type InternalLinkProps = Omit<
 	AnchorHTMLAttributes<HTMLAnchorElement>,
@@ -9,12 +9,22 @@ export type InternalLinkProps = Omit<
 > &
 	LinkProps;
 
-function InternalLink({ href, ...props }: InternalLinkProps) {
-	const pathname = usePathname();
-	const searchParams = useSearchParams();
-	const newSearchParams = new URLSearchParams(Object.fromEntries(searchParams));
-	newSearchParams.set("backLink", pathname);
-	return <Link href={`${href}?${newSearchParams.toString()}`} {...props} />;
-}
+const InternalLink = forwardRef<HTMLAnchorElement, InternalLinkProps>(
+	({ href, ...props }, ref) => {
+		const pathname = usePathname();
+		const searchParams = useSearchParams();
+		const newSearchParams = new URLSearchParams(
+			Object.fromEntries(searchParams),
+		);
+		newSearchParams.set("backLink", pathname);
+		return (
+			<Link
+				href={`${href}?${newSearchParams.toString()}`}
+				{...props}
+				ref={ref}
+			/>
+		);
+	},
+);
 
 export default InternalLink;

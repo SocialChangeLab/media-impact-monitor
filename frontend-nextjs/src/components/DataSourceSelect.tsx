@@ -113,7 +113,7 @@ export default function MediaSourceSelect() {
 				</Button>
 			</PopoverTrigger>
 			<PopoverContent
-				className="w-full max-w-96 p-0 rounded-none"
+				className="w-full max-w-96 p-0 rounded-none z-[70]"
 				align="start"
 			>
 				<Command value={mediaSource}>

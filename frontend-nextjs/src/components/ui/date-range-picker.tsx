@@ -121,7 +121,7 @@ export const DatePickerWithRange = memo(
 						</Button>
 					</PopoverTrigger>
 					{isOpen && (
-						<PopoverContent className="w-auto p-0" align="end">
+						<PopoverContent className="w-auto p-0 z-[70]" align="end">
 							<div className="flex gap-4 p-3 border-b border-grayUltraLight items-center justify-end">
 								<span className="grow">Presets:</span>
 								<LastTwelveMonthButton

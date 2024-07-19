@@ -12,7 +12,7 @@ export default function HomePageWithSuspense() {
 		<div
 			className={cn(
 				"w-full sm:min-h-[calc(100vh-4rem)] bg-brandGreen bg-blend-screen relative z-0",
-				"shadow-xl overflow-clip",
+				"overflow-clip",
 				"grid grid-cols-1 xl:grid-cols-[2fr_3fr] gap-12 items-center justify-center",
 			)}
 		>

@@ -12,7 +12,7 @@ function DashboardHelpBannerServer() {
 	return (
 		<DashboardHelpBannerClient
 			defaultIsExpanded={
-				typeof isExpanded === "undefined" ? false : isExpanded === "true"
+				typeof isExpanded === "undefined" ? true : isExpanded === "true"
 			}
 			persistIsExpanded={setDashboardHelpBannerExpandedState}
 		/>

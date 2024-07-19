@@ -39,9 +39,33 @@ def test_get_fulltexts_for_event():
         assert (texts["date"] <= date(2024, 5, 18)).all()
 
 
-# def test_get_mediacloud_fulltexts():
-#     start_date = date(2024, 5, 20)
-#     query = '"letzte generation"'
-#     fulltexts = get_mediacloud_fulltexts(
-#         query=query, start_date=start_date, countries=["Germany"]
-#     )
+def test_get_fulltexts_with_too_many_params():
+    with pytest.raises(ValueError) as e:
+        get_fulltexts(
+            FulltextSearch(
+                media_source="news_online",
+                topic="climate_change",
+                start_date=date(2023, 1, 1),
+                end_date=date(2024, 1, 31),
+                event_id="adb689988aa3e61021da64570bda6d95",
+            )
+        )
+    assert (
+        str(e.value)
+        == "Only one of 'topic', 'organizers', 'query', 'event_id' is allowed."
+    )
+
+
+def test_get_fulltexts_for_climate_change():
+    texts = get_fulltexts(
+        FulltextSearch(
+            media_source="news_online",
+            topic="climate_change",
+            # using a Sunday so there's fewer articles
+            start_date=date(2022, 3, 6),
+            end_date=date(2022, 3, 6),
+        )
+    )
+    assert texts is not None
+    assert len(texts) > 0
+    # TODO: check availability and format of dates

@@ -3,9 +3,9 @@
 import { cn } from "@/utility/classNames";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { type ReactNode, useCallback, useEffect, useState } from "react";
-import { Dialog, DialogContent } from "./dialog";
+import { Dialog, DialogContent } from "./ui/dialog";
 
-export function ResponsiveModal({
+export function SlideUpDrawer({
 	children,
 	id,
 	basePath,

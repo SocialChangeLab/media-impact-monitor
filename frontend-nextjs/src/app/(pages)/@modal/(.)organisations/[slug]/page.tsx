@@ -1,6 +1,6 @@
 "use client";
 import OrganisationPageContent from "@/components/OrganisationPageContent";
-import { ResponsiveModal } from "@/components/ui/responsive-dialog";
+import { SlideUpDrawer } from "@/components/SlideUpDrawer";
 import type { EventOrganizerSlugType } from "@/utility/eventsUtil";
 
 function InderceptedEventPage({
@@ -9,9 +9,9 @@ function InderceptedEventPage({
 	params: { slug: EventOrganizerSlugType };
 }) {
 	return (
-		<ResponsiveModal id={slug} basePath="/organisations/">
+		<SlideUpDrawer id={slug} basePath="/organisations/">
 			<OrganisationPageContent slug={slug} />
-		</ResponsiveModal>
+		</SlideUpDrawer>
 	);
 }
 

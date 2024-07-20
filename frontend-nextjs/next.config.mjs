@@ -51,4 +51,7 @@ export default withSentryConfig(
 		// https://vercel.com/docs/cron-jobs
 		automaticVercelMonitors: true,
 	}),
+	{
+		project: 'media-impact-monitor-frontend',
+	},
 )

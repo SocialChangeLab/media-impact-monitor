@@ -33,6 +33,13 @@ def get_impact(q: ImpactSearch) -> Impact:
             end_date=q.end_date,
         )
     )
+    n_event_days = events["date"].nunique()
+    if n_event_days < 5:
+        return Impact(
+            method_applicability=False,
+            method_limitations=["Not enough events to estimate impact."],
+            impact_estimates=None,
+        )
     q.impacted_trend.start_date = q.start_date
     q.impacted_trend.end_date = q.end_date
     trends = get_trend(TrendSearch(**dict(q.impacted_trend)))
@@ -55,7 +62,7 @@ def get_impact(q: ImpactSearch) -> Impact:
     assert (
         len(set([str(lims) for lims in lims_list])) == 1
     ), "All topics should have same limitations."
-    n_days = 14 - 1
+    n_days = 7 - 1
     return Impact(
         method_applicability=applicabilities[0],
         method_limitations=lims_list[0],

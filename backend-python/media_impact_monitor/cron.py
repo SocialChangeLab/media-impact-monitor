@@ -69,8 +69,7 @@ def fill_cache():
     events = events["acled"]  # TODO: include press_releases
     recent_events = events[events["date"] >= date.today() - timedelta(days=70)]
     for event in tqdm(
-        recent_events.itertuples(),
-        total=len(recent_events),
+        list(recent_events.itertuples()),
         desc="Retrieving event fulltexts",
     ):
         get_fulltexts(
@@ -81,6 +80,3 @@ def fill_cache():
         )
     print("Successfully filled cache!")
     return
-
-
-fill_cache()

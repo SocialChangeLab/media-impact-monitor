@@ -53,3 +53,5 @@ py-spy = "^0.3.14"
 [tool.ruff.lint]
 ignore = ["F401"]
 
+[tool.pytest.ini_options]
+testpaths = ["backend-python/media_impact_monitor"]

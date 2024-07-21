@@ -62,3 +62,34 @@ def test_fff_api():
             start_date="2022-09-14",
         )
     )
+
+def test_impact_api_with_wrong_name():
+    with pytest.raises(ValueError):
+        response = _get_impact(
+            ImpactSearch(
+                end_date="2022-04-30",
+                impacted_trend=TrendSearch(
+                    media_source="news_print",
+                    topic="climate_change",
+                    trend_type="keywords",
+                ),
+                method="time_series_regression",
+                organizer="Fridays for Future (Germany)"
+            )
+        )
+
+def test_impact_api_without_start_date():
+    response = _get_impact(
+        ImpactSearch(
+            end_date="2022-04-30",
+            impacted_trend=TrendSearch(
+                media_source="news_print",
+                topic="climate_change",
+                trend_type="keywords",
+            ),
+            method="time_series_regression",
+            organizer="Fridays for Future"
+        )
+    )
+    assert response.data.method_applicability == True
+    assert response.data.impact_estimates is not None

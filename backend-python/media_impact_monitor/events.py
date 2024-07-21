@@ -33,14 +33,18 @@ def get_events(q: EventSearch) -> pd.DataFrame | None:
             df = filter_climate_orgs(df)
         case _:
             raise ValueError(f"Unsupported topic: {q.topic}")
+    _org_freqs = org_freqs()
     if q.organizers:
+        _orgs = _org_freqs.index.tolist()
+        unknown_orgs = [org for org in q.organizers if org not in _orgs]
+        if unknown_orgs:
+            raise ValueError(f"Unknown organizers: {'; '.join(unknown_orgs)}")
         df = df[df["organizers"].apply(lambda x: any(org in q.organizers for org in x))]
     if q.start_date:
         df = df[df["date"] >= q.start_date]
     if q.end_date:
         df = df[df["date"] <= q.end_date]
     df["event_id"] = df.apply(joblib_hash, axis=1, raw=True)
-    _org_freqs = org_freqs()
 
     def sort_organizers(organizers: list[str]) -> list[str]:
         return sorted(organizers, key=lambda x: _org_freqs.get(x, 0), reverse=True)

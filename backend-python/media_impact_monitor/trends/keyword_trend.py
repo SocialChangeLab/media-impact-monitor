@@ -1,5 +1,3 @@
-from datetime import date
-
 import pandas as pd
 import yaml
 
@@ -9,7 +7,6 @@ from media_impact_monitor.data_loaders.news_online.mediacloud_ import (
 from media_impact_monitor.data_loaders.news_print.genios import get_genios_counts
 from media_impact_monitor.data_loaders.web.google_trends import get_google_trends_counts
 from media_impact_monitor.types_ import TrendSearch
-from media_impact_monitor.util.cache import cache
 from media_impact_monitor.util.paths import src
 
 

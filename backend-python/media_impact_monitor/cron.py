@@ -2,18 +2,21 @@
 Cron job to be run every day to populate the cache.
 """
 
-from datetime import date
+from datetime import date, timedelta
 from functools import partial
 
 from apscheduler.schedulers.background import BackgroundScheduler
 from apscheduler.triggers.cron import CronTrigger
+from media_impact_monitor.fulltexts import get_fulltexts
 from sentry_sdk.crons import monitor
+from tqdm import tqdm
 
 from media_impact_monitor.events import get_events
 from media_impact_monitor.impact import get_impact
 from media_impact_monitor.trend import get_trend
 from media_impact_monitor.types_ import (
     EventSearch,
+    FulltextSearch,
     Impact,
     ImpactSearch,
     TrendSearch,
@@ -36,19 +39,24 @@ def setup_cron():
 @monitor(monitor_slug="data-processing-cron-job")
 def fill_cache():
     print("Filling cache...")
+    events = {}
     for data_source in ["acled", "press_releases"]:
-        get_events(
+        print(f"Retrieving {data_source} events...")
+        events[data_source] = get_events(
             EventSearch(
                 source=data_source, topic="climate_change", end_date=date.today()
             )
         )
-    for trend_type in ["keywords", "sentiment"]:
-        for media_source in ["news_online", "news_print", "web_google"]:
+    for media_source in ["news_online", "news_print", "web_google"]:
+        for trend_type in ["keywords", "sentiment"]:
             for aggregation in ["daily", "weekly"]:
                 if aggregation == "daily" and media_source == "web_google":
                     continue
                 if trend_type == "sentiment" and media_source != "news_online":
                     continue
+                if media_source == "news_online":
+                    continue
+                print(f"Retrieving {media_source} {trend_type} {aggregation} trend...")
                 get_trend(
                     TrendSearch(
                         trend_type=trend_type,
@@ -58,6 +66,21 @@ def fill_cache():
                         end_date=date.today(),
                     )
                 )
-    # TODO: compute impacts
+    events = events["acled"]  # TODO: include press_releases
+    recent_events = events[events["date"] >= date.today() - timedelta(days=70)]
+    for event in tqdm(
+        recent_events.itertuples(),
+        total=len(recent_events),
+        desc="Retrieving event fulltexts",
+    ):
+        get_fulltexts(
+            FulltextSearch(
+                media_source="news_online",
+                event_id=event.event_id,
+            )
+        )
     print("Successfully filled cache!")
     return
+
+
+fill_cache()

@@ -1,8 +1,6 @@
-import os
 from datetime import date
 
 import pandas as pd
-from dotenv import load_dotenv
 
 from media_impact_monitor.data_loaders.protest.acled_size import (
     get_size_number,
@@ -11,8 +9,6 @@ from media_impact_monitor.data_loaders.protest.acled_size import (
 from media_impact_monitor.util.cache import cache, get
 from media_impact_monitor.util.date import verify_dates
 from media_impact_monitor.util.env import ACLED_EMAIL, ACLED_KEY
-
-load_dotenv()
 
 info = """
 ACLED (Armed Conflict Location & Event Data Project) is a project that tracks political violence and protest events around the world. The data is collected from reports by local and international news sources, and is updated on a weekly basis. The ACLED API provides access to the data.

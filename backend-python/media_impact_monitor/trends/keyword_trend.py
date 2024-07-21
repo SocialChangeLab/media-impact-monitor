@@ -1,5 +1,3 @@
-from datetime import date
-
 import pandas as pd
 import yaml
 
@@ -9,7 +7,6 @@ from media_impact_monitor.data_loaders.news_online.mediacloud_ import (
 from media_impact_monitor.data_loaders.news_print.genios import get_genios_counts
 from media_impact_monitor.data_loaders.web.google_trends import get_google_trends_counts
 from media_impact_monitor.types_ import TrendSearch
-from media_impact_monitor.util.cache import cache
 from media_impact_monitor.util.paths import src
 
 
@@ -56,19 +53,19 @@ def load_keywords():
 def topic_queries(media_source: str) -> dict[str, str]:
     keywords = load_keywords()
     keyword_queries = {
-        "science": xs(keywords["climate_science"], media_source),
-        "policy": xs(keywords["climate_policy"], media_source),
-        "urgency": xs(keywords["climate_urgency"], media_source),
-        "all_excl_activism": xs_without_ys(
-            keywords["climate_science"]
-            + keywords["climate_policy"]
-            + keywords["climate_urgency"],
-            keywords["activism"],
-            media_source,
-        ),
+        "climate policy": xs(keywords["climate_policy"], media_source),
+        "climate science": xs(keywords["climate_science"], media_source),
+        "climate crisis framing": xs(keywords["climate_urgency"], media_source),
+        # "all_excl_activism": xs_without_ys(
+        #     keywords["climate_science"]
+        #     + keywords["climate_policy"]
+        #     + keywords["climate_urgency"],
+        #     keywords["activism"],
+        #     media_source,
+        # ),
     }
     if media_source != "web_google":
-        keyword_queries["activism"] = xs_with_ys(
+        keyword_queries["climate activism"] = xs_with_ys(
             keywords["climate_science"]
             + keywords["climate_policy"]
             + keywords["climate_urgency"],

@@ -12,7 +12,8 @@ let impact = await queryApi('impact', {
     media_source: 'news_print',
     topic: 'climate_change'
   },
-  organizer: 'Last Generation (Germany)',
+  organizer: 'Fridays for Future',
+  start_date: '2020-04-10',
   end_date: '2022-04-30'
 })
 display(impact)

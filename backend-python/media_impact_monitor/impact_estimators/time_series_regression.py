@@ -20,7 +20,7 @@ def add_emws(df: pd.DataFrame, spans=[1, 2, 7, 30, 90, 365]):
     """Add new columns with exponentially weighted moving averages."""
     emws = pd.DataFrame(
         {
-            f"{col}_emw{i}": df.shift(1).ewm(span=i).mean().iloc[:, 0]
+            f"{col}_emw{i}": df.shift(1).ewm(halflife=i).mean().iloc[:, 0]
             for i in spans
             for col in df.columns
         }
@@ -46,10 +46,10 @@ def regress(
     """Get regression result where the outcome is `day` days after the treatment."""
     lags = range(1, lags + 1)
     media_df = pd.DataFrame(media_df, columns=["count"])
-    protest_df = add_lags(protest_df, lags=lags)
-    media_df = add_lags(media_df, lags=lags)
+    # protest_df = add_lags(protest_df, lags=[])
+    media_df = add_lags(media_df, lags=[4,5,6,7,8])
     # protest_df = add_emws(protest_df)
-    media_df = add_emws(media_df, spans=[7, 30, 90])
+    # media_df = add_emws(media_df, spans=[14])
     df = pd.concat([protest_df, media_df], axis=1)
     df = add_weekday_dummies(df)
     treatment = "protest"
@@ -63,16 +63,20 @@ def regress(
         else:
             df[outcome] = df[outcome].rolling(day + 1).sum()
     df = df.dropna()
+    placebo = False
+    if placebo:
+        df[treatment] = df.sample(frac=1)[treatment].to_list()
     X = df.drop(columns=[outcome])
     y = df[outcome]
     model = sm.OLS(y, sm.add_constant(X))
     model = model.fit(cov_type="HC3")
+    alpha = 0.1
     return {
         "date": day,
         "mean": model.params[treatment],
         "p": model.pvalues[treatment],
-        "ci_lower": model.conf_int()[0][treatment],
-        "ci_upper": model.conf_int()[1][treatment],
+        "ci_lower": model.conf_int(alpha=alpha)[0][treatment],
+        "ci_upper": model.conf_int(alpha=alpha)[1][treatment],
     }
 
 

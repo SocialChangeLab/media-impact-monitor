@@ -13,8 +13,9 @@ type ImpactChartColumnItem = {
 };
 
 type ImpactChartColumn = {
-	data: ImpactChartColumnItem[];
+	data: ImpactChartColumnItem[] | null;
 	id: string;
+	limitations?: string[];
 };
 
 type ImpactChartProps = {
@@ -28,20 +29,25 @@ function ImpactChart(props: ImpactChartProps) {
 	const padding = 32;
 
 	const columnItems = useMemo(
-		() => props.columns.flatMap((columnItem) => columnItem.data),
+		() =>
+			props.columns
+				.flatMap((columnItem) => {
+					const itemsPerGroup = Math.max(
+						...props.columns.map((item) => item?.data?.length ?? 1),
+					);
+					if (!columnItem.data) return new Array(itemsPerGroup).fill(null);
+					return columnItem.data;
+				}),
 		[props.columns],
 	);
 
 	const impactScale = useCallback(
 		(impact: number) => {
-			const columnsWithValidCertainty = columnItems.filter(
-				(item) => item.uncertainty !== null,
-			);
 			const lowestImpact = Math.min(
-				...columnsWithValidCertainty.map((item) => item.impact),
+				...columnItems.map((item) => item?.impact ?? 0),
 			);
 			const highestImpact = Math.max(
-				...columnsWithValidCertainty.map((item) => item.impact),
+				...columnItems.map((item) => item?.impact ?? 0),
 			);
 			const impactRange = Math.abs(lowestImpact) + Math.abs(highestImpact);
 			const highImpactsPercentage = highestImpact / impactRange;
@@ -59,7 +65,9 @@ function ImpactChart(props: ImpactChartProps) {
 
 	const items = useMemo(() => {
 		if (props.columns.length === 0) return [];
-		const itemsPerGroup = props.columns[0].data.length;
+		const itemsPerGroup = Math.max(
+			...props.columns.map((item) => item?.data?.length ?? 1),
+		);
 		const separatorsCount = Math.floor(columnItems.length / itemsPerGroup) - 2;
 		let separatorsAdded = 0;
 		return Array.from(
@@ -85,21 +93,23 @@ function ImpactChart(props: ImpactChartProps) {
 		<div className="flex flex-col">
 			<style jsx global>{`
 				${columnItems
-					.map(
-						(item) => `
+					.map((item) =>
+						item
+							? `
 						.impact-chart-container:has(.${item.uniqueId}-item:hover) .${item.uniqueId}-show {
 							opacity: 1;
 						}
 						.impact-chart-container:has(.${item.uniqueId}-item:hover) .${item.uniqueId}-hide {
 							opacity: 0;
 						}
-					`,
+					`
+							: "",
 					)
 					.join("\n")}
 			`}</style>
 			<div
 				className={cn(
-					`impact-chart-container`,
+					"impact-chart-container",
 					"grid grid-flow-col grid-rows-[1fr_auto] w-full",
 				)}
 				style={{
@@ -110,7 +120,7 @@ function ImpactChart(props: ImpactChartProps) {
 				}}
 			>
 				{items.map(({ type, item, key }) => {
-					const commonCSSClasses = cn("size-full");
+					const commonCSSClasses = cn("size-full min-h-2");
 					const oddCSSClasses = cn("border-b border-grayLight");
 					if (type === "separator" || typeof item === "number") {
 						return (
@@ -131,33 +141,35 @@ function ImpactChart(props: ImpactChartProps) {
 						);
 					}
 					const columnItem = item;
-					const impactInHeightPercentage = impactScale(columnItem.impact);
-					const itemClass = `${columnItem.uniqueId}-item`;
+					const impactInHeightPercentage = impactScale(columnItem?.impact ?? 0);
+					const itemClass = `${columnItem?.uniqueId ?? "unknown"}-item`;
 					return (
 						<Fragment key={key}>
-							{columnItem.impact < 0 && (
+							{(!columnItem || columnItem.impact < 0) && (
 								<div
 									className={cn(itemClass, commonCSSClasses, oddCSSClasses)}
 								/>
 							)}
-							<div
-								key={columnItem.uniqueId}
-								className={cn(
-									itemClass,
-									commonCSSClasses,
-									`flex items-end px-4 group`,
-									columnItem.impact < 0 && `-scale-y-100`,
-									columnItem.impact > 0 && oddCSSClasses,
-								)}
-								style={{ paddingTop: `${padding}px` }}
-							>
-								<ImpactBar
-									{...columnItem}
-									totalHeight={height - padding * 2}
-									barHeight={Math.abs(impactInHeightPercentage)}
-								/>
-							</div>
-							{columnItem.impact >= 0 && (
+							{!!columnItem && (
+								<div
+									key={columnItem.uniqueId}
+									className={cn(
+										itemClass,
+										commonCSSClasses,
+										"flex items-end px-4 group",
+										columnItem.impact < 0 && "-scale-y-100",
+										columnItem.impact > 0 && oddCSSClasses,
+									)}
+									style={{ paddingTop: `${padding}px` }}
+								>
+									<ImpactBar
+										{...columnItem}
+										totalHeight={height - padding * 2}
+										barHeight={Math.abs(impactInHeightPercentage)}
+									/>
+								</div>
+							)}
+							{(!columnItem || columnItem.impact >= 0) && (
 								<div className={cn(itemClass, commonCSSClasses)} />
 							)}
 						</Fragment>
@@ -168,13 +180,14 @@ function ImpactChart(props: ImpactChartProps) {
 				className="grid"
 				style={{ gridTemplateColumns: `repeat(${props.columns.length}, 1fr)` }}
 			>
-				{props.columns.map(({ id, data }) => {
+				{props.columns.map(({ id, data, limitations }) => {
 					return (
 						<div key={`column-${id}`} className="p-4">
 							<ImpactChartRow
 								icon={props.icon}
 								impacts={data}
 								unitLabel={props.unitLabel}
+								limitations={limitations}
 							/>
 						</div>
 					);

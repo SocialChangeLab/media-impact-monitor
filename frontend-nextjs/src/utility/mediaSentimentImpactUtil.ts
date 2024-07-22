@@ -12,24 +12,27 @@ import { formatZodError } from "./zodUtil";
 const mediaSentimentImpactZodSchema = z.object({
 	method_applicability: z.boolean(),
 	method_limitations: z.array(z.string()),
-	impact_estimates: z.record(
-		z.string(),
-		z.object({
-			absolute_impact: z.object({
-				mean: z.number(),
-				ci_upper: z.number(),
-				ci_lower: z.number(),
-			}),
-			absolute_impact_time_series: z.array(
-				z.object({
-					date: z.number(),
+	impact_estimates: z.union([
+		z.null(),
+		z.record(
+			z.string(),
+			z.object({
+				absolute_impact: z.object({
 					mean: z.number(),
 					ci_upper: z.number(),
 					ci_lower: z.number(),
 				}),
-			),
-		}),
-	),
+				absolute_impact_time_series: z.array(
+					z.object({
+						date: z.number(),
+						mean: z.number(),
+						ci_upper: z.number(),
+						ci_lower: z.number(),
+					}),
+				),
+			}),
+		),
+	]),
 });
 export type MediaSentimentImpactType = z.infer<
 	typeof mediaSentimentImpactZodSchema
@@ -37,7 +40,7 @@ export type MediaSentimentImpactType = z.infer<
 
 const parsedMediaSentimentImpactZodSchema = z.object({
 	id: z.string(),
-	data: z.array(
+	data: z.union([z.null(), z.array(
 		z.object({
 			impact: z.number(),
 			uncertainty: z.number().nullable(),
@@ -45,7 +48,8 @@ const parsedMediaSentimentImpactZodSchema = z.object({
 			color: z.string(),
 			uniqueId: z.string(),
 		}),
-	),
+	)]),
+	limitations: z.array(z.string()).optional().default([]),
 });
 type ParsedMediaSentimentImpactType = z.infer<
 	typeof parsedMediaSentimentImpactZodSchema
@@ -106,6 +110,13 @@ function validateGetDataResponse(
 ): ParsedMediaSentimentImpactType {
 	try {
 		const parsedResponse = mediaImpactDataTypeZodSchema.parse(response);
+		if (parsedResponse.data.impact_estimates === null) {
+			return {
+				id: parsedResponse.query.organizer,
+				data: null,
+				limitations: parsedResponse.data.method_limitations,
+			};
+		}
 		return parsedMediaSentimentImpactZodSchema.parse({
 			id: parsedResponse.query.organizer,
 			data: Object.entries(parsedResponse.data.impact_estimates).map(

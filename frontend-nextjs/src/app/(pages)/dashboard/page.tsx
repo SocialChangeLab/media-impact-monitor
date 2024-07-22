@@ -1,6 +1,6 @@
 import DashboardHelpBanner from "@/components/DashboardHelpBanner.server";
 import EventsTimeline from "@/components/EventsTimeline/EventsTimeline";
-// import ImpactChartWithData from "@/components/ImpactChart";
+import ImpactChartWithData from "@/components/ImpactChart";
 import MediaCoverageChartWithData from "@/components/MediaCoverageChart";
 import MediaSentimentChart from "@/components/MediaSentimentChart";
 import SectionHeadlineWithExplanation from "@/components/SectionHeadlineWithExplanation";
@@ -62,7 +62,7 @@ export default function EventsPageWithSuspense() {
 				}
 				helpSlug="mediaTrend"
 			>
-				(I am not an impact chart!)
+				<ImpactChartWithData />
 			</SectionHeadlineWithExplanation>
 			<SectionHeadlineWithExplanation
 				headline="What sentiment does the media have towards the protests?"
@@ -70,7 +70,6 @@ export default function EventsPageWithSuspense() {
 				helpSlug="sentimentTrend"
 			>
 				<MediaSentimentChart />
-				{/* <ImpactChartWithData /> */}
 			</SectionHeadlineWithExplanation>
 			<SectionHeadlineWithExplanation
 				headline="What stance does the media have towards progressive climate policies?"

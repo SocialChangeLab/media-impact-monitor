@@ -68,10 +68,10 @@ function ImpactChartWithData({
 	icon = "LineChart",
 }: ImpactChartWithDataProps) {
 	const fffQuery = useMediaSentimentImpactData(
-		"fridays-for-future" as EventOrganizerSlugType,
+		"Fridays for Future" as EventOrganizerSlugType,
 	);
 	const xrQuery = useMediaSentimentImpactData(
-		"extinction-rebellion" as EventOrganizerSlugType,
+		"Excinction Rebellion" as EventOrganizerSlugType,
 	);
 	const data = {
 		fridaysForFuture: fffQuery.data,
@@ -92,7 +92,8 @@ function ImpactChartWithData({
 		<ImpactChart
 			columns={Object.entries(data).map(([key, data]) => ({
 				id: key,
-				data: data?.data || [],
+				data: data?.data || null,
+				limitations: data?.limitations,
 			}))}
 			unitLabel={unitLabel}
 			icon={icon}

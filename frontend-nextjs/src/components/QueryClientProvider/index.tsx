@@ -1,18 +1,30 @@
-'use client'
-import {
-	QueryClient,
-	QueryClientProvider as TanstackQueryClientProvider,
-} from '@tanstack/react-query'
-import { PropsWithChildren } from 'react'
+"use client";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { Suspense, useRef } from "react";
 
-const queryClient = new QueryClient()
-
-function QueryClientProvider({ children }: PropsWithChildren<{}>) {
-	return (
-		<TanstackQueryClientProvider client={queryClient}>
-			{children}
-		</TanstackQueryClientProvider>
-	)
+function makeQueryClient() {
+	return new QueryClient({
+		defaultOptions: {
+			queries: {
+				// With SSR, we usually want to set some default staleTime
+				// above 0 to avoid refetching immediately on the client
+				staleTime: 60 * 1000,
+			},
+		},
+	});
 }
 
-export default QueryClientProvider
+function CustomQueryClientProvider({
+	children,
+}: { children: React.ReactNode }) {
+	const queryClient = useRef(makeQueryClient());
+	return (
+		<Suspense>
+			<QueryClientProvider client={queryClient.current}>
+				{children}
+			</QueryClientProvider>
+		</Suspense>
+	);
+}
+
+export default CustomQueryClientProvider;

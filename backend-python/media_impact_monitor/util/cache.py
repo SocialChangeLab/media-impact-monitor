@@ -1,16 +1,15 @@
 """Cache functions."""
 
-from os import environ
+import asyncio
 from time import sleep as _sleep
 
-from dotenv import load_dotenv
 from joblib import Memory
 from requests import get as _get
 from requests import post as _post
+from tqdm.asyncio import tqdm_asyncio
 from zenrows import ZenRowsClient
 
-load_dotenv()
-
+from media_impact_monitor.util.env import ZENROWS_API_KEY
 
 memory = Memory("cache", verbose=0)
 cache = memory.cache
@@ -54,16 +53,50 @@ def post(url, sleep=None, **kwargs):
     return response
 
 
-concurrency = 10
-retries = 5
+client = ZenRowsClient(ZENROWS_API_KEY, retries=2, concurrency=10)
 
 
 @cache
-def get_proxied(url, *args, **kwargs):
-    client = ZenRowsClient(
-        environ["ZENROWS_API_KEY"], retries=2, concurrency=concurrency
-    )
-    response = client.get(url, *args, **kwargs)
-    if '{"code":' in response.text:
-        raise ValueError(response.text)
+async def get_proxied_async(url, **kwargs):
+    response = await client.get_async(url, **kwargs)
+    if response.text.startswith('{"code":'):
+        zenrows_errors = [
+            "REQS001",
+            "REQS004",
+            "REQS006",
+            "RESP004",
+            "AUTH001",
+            "AUTH002",
+            "AUTH003",
+            "AUTH004",
+            "AUTH005",
+            "AUTH009",
+            "BLK0001",
+            "AUTH007",
+            "AUTH006",
+            "AUTH008",
+            "CTX0001",
+            "ERR0001",
+            "ERR0000",
+            "RESP003",
+        ]
+        if any(error in response.text for error in zenrows_errors):
+            # problem with zenrows -> inform the developer
+            raise Exception(response.text)
+        # otherwise, problem with the site itself -> just don't use this site
+        return None
     return response
+
+
+def get_proxied(url, **kwargs):
+    return asyncio.run(get_proxied_async(url, **kwargs))
+
+
+async def get_proxied_many_async(urls, desc=""):
+    return await tqdm_asyncio.gather(
+        *[get_proxied_async(url) for url in urls], desc=desc
+    )
+
+
+def get_proxied_many(urls, desc=""):
+    return asyncio.run(get_proxied_many_async(urls, desc=desc))

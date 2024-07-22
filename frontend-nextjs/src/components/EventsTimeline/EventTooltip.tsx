@@ -1,70 +1,91 @@
-import { Tooltip, TooltipContent, TooltipTrigger } from '@components/ui/tooltip'
-import { cn } from '@utility/classNames'
-import { EventType, OrganisationType } from '@utility/eventsUtil'
-import { format } from 'date-fns'
-import { Target } from 'lucide-react'
-import { PropsWithChildren, useMemo } from 'react'
+import { Tooltip, TooltipContent } from "@/components/ui/tooltip";
+import { cn } from "@/utility/classNames";
+import type { OrganisationType, ParsedEventType } from "@/utility/eventsUtil";
+import { format } from "date-fns";
+import { Users } from "lucide-react";
+import { type PropsWithChildren, useMemo, useState } from "react";
+import { Button } from "../ui/button";
+import OrgLine from "./EventTooltipOrgLine";
 
 function EventTooltip({
 	event,
 	organisations,
+	selectedOrganisations,
 	children,
-}: PropsWithChildren<{ event: EventType; organisations: OrganisationType[] }>) {
-	const org = useMemo(() => {
-		const eventOrgName = event.organizations[0]
-		const unknownOrgName = 'Unknown organisation'
-		const eventOrg = organisations.find((x) => x.name === eventOrgName)
-		const unknownOrg = organisations.find((x) => x.name === unknownOrgName)
-		return eventOrg ?? unknownOrg
-	}, [event.organizations, organisations])
+}: PropsWithChildren<{
+	event: ParsedEventType;
+	organisations: OrganisationType[];
+	selectedOrganisations: OrganisationType[];
+}>) {
+	const [descriptionExpanded, setDescriptionExpanded] = useState(false);
+	const orgs = useMemo(() => {
+		const unknownOrgName = "Unknown organisation";
+		const mappedOrgs = event.organizers
+			.map((orgName) => {
+				const org = organisations.find((x) => x.slug === orgName.slug);
+				if (!org) return;
+				return {
+					...org,
+					isSelected: !!selectedOrganisations.find((x) => x.slug === org.slug),
+					name: org.name.trim() || unknownOrgName,
+				};
+			})
+			.filter(Boolean) as (OrganisationType & { isSelected: boolean })[];
+		return mappedOrgs;
+	}, [event.organizers, organisations, selectedOrganisations]);
 
 	const formattedDate = useMemo(
-		() => format(new Date(event.date), 'd MMMM yyyy'),
+		() => format(new Date(event.date), "EEEE d MMMM yyyy"),
 		[event.date],
-	)
+	);
 
 	const formattedImpact = useMemo(
-		() => Math.round(event.impact).toLocaleString('en-GB'),
-		[event.impact],
-	)
+		() =>
+			event.size_number
+				? Math.round(event.size_number).toLocaleString("en-GB")
+				: "?",
+		[event.size_number],
+	);
 
 	return (
-		<Tooltip>
-			<TooltipTrigger asChild>{children}</TooltipTrigger>
-			<TooltipContent>
+		<Tooltip delayDuration={50}>
+			{children}
+			<TooltipContent className="p-0 pb-4">
 				<ul
 					className={cn(
-						'flex justify-between items-center border-b py-2',
-						'mb-2 border-white/10 dark:border-black/10',
+						"flex justify-between items-center border-b py-2",
+						"mb-2 border-grayLight px-4",
 					)}
 				>
-					<li className="flex gap-4 items-center">{formattedDate}</li>
-					<li className="flex gap-2 items-center">
-						<Target size={16} className="text-white/60 dark:text-black/60" />
+					<li className="flex gap-4 items-center font-bold font-headlines text-base">
+						{formattedDate}
+					</li>
+					<li className={cn("flex gap-2 items-center")}>
+						<Users size={16} className={cn("text-grayDark")} />
 						<span>{formattedImpact}</span>
 					</li>
 				</ul>
-				<p className="max-w-80 line-clamp-3 text-xs">{event.description}</p>
-				{org && (
-					<div
-						className={cn(
-							'grid grid-cols-[auto_1fr] gap-x-2 items-center',
-							'border-t border-white/10 dark:border-black/10 py-2 mt-3',
-						)}
-					>
-						<span
-							className={cn(
-								'size-4 rounded-full shadow-[inset_0_0_0_1px_rgba(0,0,0,0.1)] bg-grayDark',
-							)}
-							style={{ backgroundColor: org.color }}
-							aria-hidden="true"
-						/>
-						<span className="truncate">{org.name}</span>
-					</div>
-				)}
+				<p
+					className={cn(
+						"max-w-80 text-xs mb-1 px-4",
+						!descriptionExpanded && "line-clamp-3",
+					)}
+				>
+					{event.description}
+				</p>
+				<Button
+					variant="ghost"
+					onClick={() => setDescriptionExpanded(!descriptionExpanded)}
+					className="text-xs font-medium px-1 py-0.5 -translate-x-1 -mt-0.5 h-auto mb-3 hover:translate-x-0 transition ml-4"
+				>
+					{descriptionExpanded ? "Show less" : "Show more"}
+				</Button>
+				{orgs.map((org) => (
+					<OrgLine key={org.slug} {...org} />
+				))}
 			</TooltipContent>
 		</Tooltip>
-	)
+	);
 }
 
-export default EventTooltip
+export default EventTooltip;

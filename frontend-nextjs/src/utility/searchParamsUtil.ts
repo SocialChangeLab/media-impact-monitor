@@ -1,27 +1,22 @@
-import { format, parse } from 'date-fns'
-export type AllowedParamsInputType = {
-	from?: Date | undefined
-	to?: Date | undefined
-}
+import { z } from "zod";
 
-export function parseSearchParams(
-	originalSearchParams: URLSearchParams,
-): AllowedParamsInputType {
-	const from = originalSearchParams.get('from')
-	const to = originalSearchParams.get('to')
-	if (typeof from !== 'string' || typeof to !== 'string') return {}
-	return {
-		from: parse(from, 'yyyy-MM-dd', new Date()),
-		to: parse(to, 'yyyy-MM-dd', new Date()),
+const stringDateZodSchema = z.coerce.date().optional();
+
+export function parseSearchParamsFilters(searchParams?: {
+	[key: string]: string | string[] | undefined;
+}) {
+	if (
+		!searchParams ||
+		!("filters" in searchParams) ||
+		typeof searchParams.filters !== "string"
+	)
+		return { from: undefined, to: undefined };
+	try {
+		const parsed = JSON.parse(JSON.parse(searchParams.filters));
+		return z
+			.object({ from: stringDateZodSchema, to: stringDateZodSchema })
+			.parse(parsed.state);
+	} catch (error) {
+		return { from: undefined, to: undefined };
 	}
-}
-
-export function formatSearchParams(
-	searchParams: AllowedParamsInputType,
-): URLSearchParams {
-	if (!searchParams.from || !searchParams.to) return new URLSearchParams()
-	return new URLSearchParams({
-		from: format(searchParams.from, 'yyyy-MM-dd'),
-		to: format(searchParams.to, 'yyyy-MM-dd'),
-	})
 }

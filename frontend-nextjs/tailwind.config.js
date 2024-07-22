@@ -40,11 +40,33 @@ module.exports = {
 				grayMed: 'var(--grayMed)',
 				grayLight: 'var(--grayLight)',
 				grayUltraLight: 'var(--grayUltraLight)',
+				sentimentPositive: 'var(--sentiment-positive)',
+				sentimentNegative: 'var(--sentiment-negative)',
+				sentimentNeutral: 'var(--sentiment-neutral)',
 			},
 			height: { screen: '100lvh' },
 			width: { screen: '100lvw' },
 			screens: {
 				xs: '400px',
+				maxPage: '1920px',
+			},
+			keyframes: {
+				'accordion-down': {
+					from: { height: '0' },
+					to: { height: 'var(--radix-accordion-content-height)' },
+				},
+				'accordion-up': {
+					from: { height: 'var(--radix-accordion-content-height)' },
+					to: { height: '0' },
+				},
+			},
+			animation: {
+				'accordion-down': 'accordion-down 0.2s ease-out',
+				'accordion-up': 'accordion-up 0.2s ease-out',
+			},
+			transitionTimingFunction: {
+				'smooth-out': 'cubic-bezier(0,.99,0,1)',
+				'smooth-in-out': 'cubic-bezier(.33,.38,0,1)',
 			},
 		},
 	},
@@ -53,7 +75,7 @@ module.exports = {
 		require('@tailwindcss/forms'),
 		require('@tailwindcss/typography'),
 		require('tailwindcss-animate'),
-		plugin(function ({ addUtilities }) {
+		plugin(({ addUtilities }) => {
 			addUtilities({
 				'.text-balance': {
 					'text-wrap': 'balance',

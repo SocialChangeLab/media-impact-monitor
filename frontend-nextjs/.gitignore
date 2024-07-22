@@ -34,3 +34,15 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# Fake data for testing
+src/fakeDataForTesting/
+
+# Sentry Config File
+.env.sentry-build-plugin
+
+# Contentlayer
+.contentlayer/
+
+# Sentry Config File
+.env.sentry-build-plugin

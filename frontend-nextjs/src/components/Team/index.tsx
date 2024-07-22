@@ -1,31 +1,31 @@
-import portraitDavid from '@images/portrait-david.jpeg'
-import portraitLennart from '@images/portrait-lennart.png'
-import portraitLucas from '@images/portrait-lucas.png'
-import Image from 'next/image'
+import portraitDavid from "@/images/portrait-david.webp";
+import portraitLennart from "@/images/portrait-lennart.webp";
+import portraitLucas from "@/images/portrait-lucas.webp";
+import Image from "next/image";
 
 const team = [
 	{
 		image: portraitDavid,
-		name: 'David Pomerenke',
-		title: 'Data Science',
-		bio: 'M.A. Artificial Intelligence',
-		tags: ['causal inference'],
+		name: "David Pomerenke",
+		title: "Data Science",
+		bio: "M.Sc. Artificial Intelligence",
+		tags: ["causal inference"],
 	},
 	{
 		image: portraitLennart,
-		name: 'Lennart Klein',
-		title: 'Data Science',
-		bio: 'B.A. Political Science',
-		tags: ['rstats'],
+		name: "Lennart Klein",
+		title: "Data Science",
+		bio: "B.A. Political Science",
+		tags: ["rstats"],
 	},
 	{
 		image: portraitLucas,
-		name: 'Lucas Vogel',
-		title: 'Frontend UI/UX & Development',
-		bio: 'B.A. Interface Design',
+		name: "Lucas Vogel",
+		title: "Frontend UI/UX & Development",
+		bio: "B.A. Interface Design",
 		tags: [],
 	},
-]
+];
 
 function Team() {
 	return (
@@ -63,7 +63,7 @@ function Team() {
 				</li>
 			))}
 		</ul>
-	)
+	);
 }
 
-export default Team
+export default Team;

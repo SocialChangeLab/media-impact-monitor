@@ -4,32 +4,39 @@
 
 # Media Impact Monitor
 
-<!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
+[![Project Status: WIP – Initial development is in progress, but there has not yet been a stable, usable release suitable for the public.](https://www.repostatus.org/badges/latest/wip.svg)](https://www.repostatus.org/#wip) <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->[![All Contributors](https://img.shields.io/badge/all_contributors-3-orange.svg?style=flat-square)](#contributors-)<!-- ALL-CONTRIBUTORS-BADGE:END -->
 
-[![All Contributors](https://img.shields.io/badge/all_contributors-3-orange.svg?style=flat-square)](#contributors-)
+_Media Impact Monitor_ makes you explore the world of protest and activism, and the impact that it has on societal discourse. Activists want to change the world -- whether it is about climate change mitigation, animal welfare, human rights, or any other important topic -- but it is hard to measure how successful they are at it. _Media Impact Monitor_ takes all the data that is available, visualizes it, and makes statistical estimates of how successful different groups and different protest types are at creating attention and support for the cause that they care about.
 
-<!-- ALL-CONTRIBUTORS-BADGE:END -->
+- [x] **Explore what protests are happening.** We visualize all protests that are happening, and you can filter by time range, geographic area, and the topics and organizations that you are interested in. Currently we focus on climate protests in Germany, with plans to expand to more topics and countries.
 
-The _Media Impact Monitor_ is a novel tool for protest groups and NGOs to measure and visualize their impact on public discourse. The tool shows how activist events affect the discourse across various media sources, such as local and national newspapers, social media, parliamentary debates, and more. Protest groups can use it to quantitatively and qualitatively evaluate their actions and adapt them in a targeted manner to draw attention to their issues.
+- [ ] **Analyze the coverage of specific protest events.** Find the events that you have attended or organized, and see how newspapers have reported about them. We find all articles about your event, analyze their sentiment towards the protest, as well as the support for the cause that you pursue.
 
-The _Media Impact Monitor_ project is hosted by [Social Change Lab](http://socialchangelab.org/) and funded by [Prototype Fund](https://prototypefund.de/en/) ([BMBF](https://www.bmbf.de/bmbf/de/home/home_node.html)). Development is primarily taking place from March–August 2024.
+- [x] **Understand trends in societal discourse.** The _theory of change_ of how most protests achieve an impact is: via media attention, societal discourse, popular opinion, and eventually policy change. Not everything can be quantified, but some things can. We collect data and analyze it with regard to your protest and your cause, from:
 
-## Background
+  - [x] online newspapers
+  - [ ] print newspapers
+  - [ ] trends on Google and Wikipedia
+  - [ ] social media
+  - [ ] parliamentary debates
+  - [ ] political processes
+  - [ ] social surveys
 
-NGOs and protest groups often want to draw more public attention to important issues in order to initiate social change. To do this, they organise panel discussions, publish articles on social media, send out press releases, organize demonstrations, practice civil disobedience, implement art actions, and so on. To evaluate their work, organizations often use "press hits" as a metric - but this is a poor substitute for the broader impact on agenda setting within public discourse, which the organizations are interested in but cannot easily analyze.
+- [ ] **Quantify the impact of activism.** Activists often count the amount of coverage about themselves, but that is a mediocre metric for measuring success. We use rigourous statistics from causal inference to estimate the impact of protests on general trends in attention and support for the _area of concern_ of the protests. For example, how much more is climate policy discussed in newspapers, due to the protests? You can compare the impact of different organizations, and the impact of moderate and radical protest tactics. And since statistics is somewhat complicated, we explain our methods and show intermediate steps.
 
-This impact on agenda setting is difficult to capture statistically because of the complex causal relationship between discourse, action events, and external events. A correlational and even a simple regression analysis would therefore lead to statistically biased results.
+- [ ] **Keep track of your organization.** If you're part of an organization and want to measure your media impact, then we can collect data and compute statistics just for your organization. You can have your own dashboard with your own events, and see your impact on all the media sources that we monitor, or on your own outcome metrics. We collect citations from politicians and journalists about your work, and provide transparent estimates of your reach. Share your dashboard with your members and supporters to motivate them to donate and take action.
 
-This is where the _Media Impact Monitor_ comes in: It uses innovative causal inference methods to quantify and visualize how action events affect agenda setting in public discourse.
+## Documentation
 
-**Examples:** Protest groups such as "Last Generation" can use it to see whether their actions distract from actual climate policy discussion or contribute to it constructively; and NGOs such as Greenpeace can evaluate which of their formats are most effective in media terms, and can use their media impact as an argument for donating to them.
+- [Backend documentation](backend-python/README.md)
+- [Frontend documentation](frontend-nextjs/README.MD)
 
 ## Team
 
-The project team is constituted from:
+The project team consists of:
 
-- **David Pomerenke** (@davidpomerenke) – Data Science – M.A. Artificial Intelligence
-- **Lennard Klein** (@kleinlennart) – Data Science – B.A. Political Science
+- **David Pomerenke** (@davidpomerenke) – Data Science – M.Sc. Artificial Intelligence
+- **Lennart Klein** (@kleinlennart) – Data Science – B.A. Political Science
 - **Lucas Vogel** (@vogelino) – Frontend UI/UX Development – B.A. Interface Design
 
 ## Contact
@@ -67,8 +74,14 @@ Please [send us an email](mailto:david@socialchangelab.org) or [book a short mee
 
 <!-- ALL-CONTRIBUTORS-LIST:END -->
 
+## License
+
+We use a combined license, in short: Derivative works must be made open source (General Public License). Only ethical use is permitted (NoHarm Clause). Only noncommercial use is permitted (Commons Clause).
+
+For details check out the [full license text](LICENSE).
+
 ## Partners
 
-| Hosted by                                                                                                                                                                    | Sponsored by                                                                                                                                          |                                                                                                                                   |
-| ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------- |
-| [![Logo of the Social Change Lab](https://mediaimpactmonitor.app/assets/logos/socialchangelab-hybrid.svg)](https://socialchangelab.org/)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; | [![Logo of the Bundesministerium für Bildung und Forschung](https://mediaimpactmonitor.app/assets/logos/bmbf-hybrid.svg)](https://prototypefund.org/) | [![Logo of the Prototype Fund](https://mediaimpactmonitor.app/assets/logos/prototypefund-hybrid.svg)](https://prototypefund.org/) |
+| Hosted by                                                                                                                                                                    | Sponsored by                                                                                                                                         |                                                                                                                                  |
+| ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------- |
+| [![Logo of the Social Change Lab](https://mediaimpactmonitor.app/assets/logos/socialchangelab-hybrid.svg)](https://socialchangelab.org/)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; | [![Logo of the Bundesministerium für Bildung und Forschung](https://mediaimpactmonitor.app/assets/logos/bmbf-hybrid.svg)](https://prototypefund.de/) | [![Logo of the Prototype Fund](https://mediaimpactmonitor.app/assets/logos/prototypefund-hybrid.svg)](https://prototypefund.de/) |

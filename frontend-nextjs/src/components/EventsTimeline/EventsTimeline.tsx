@@ -1,153 +1,216 @@
-import { cn } from '@utility/classNames'
-import { dateSortCompare } from '@utility/dateUtil'
-import { type EventType, type EventsDataType } from '@utility/eventsUtil'
-import { scalePow } from 'd3-scale'
-import { addDays, format, isBefore, startOfDay } from 'date-fns'
-import { AnimationProps, motion } from 'framer-motion'
-import EventBubbleLink from './EventBubbleLink'
-import EventTooltip from './EventTooltip'
-import EventsTimelineWrapper from './EventsTimelinWrapper'
+"use client";
+import LoadingEventsTimeline from "@/components/EventsTimeline/LoadingEventsTimeline";
+import { cn } from "@/utility/classNames";
+import {
+	type ComparableDateItemType,
+	dateToComparableDateItem,
+} from "@/utility/comparableDateItemSchema";
+import { parseErrorMessage } from "@/utility/errorHandlingUtil";
+import useEvents, { type UseEventsReturnType } from "@/utility/useEvents";
+import { isInSameAggregationUnit } from "@/utility/useTimeIntervals";
+import useElementSize from "@custom-react-hooks/use-element-size";
+import { QueryErrorResetBoundary } from "@tanstack/react-query";
+import { format } from "date-fns";
+import { ErrorBoundary } from "next/dist/client/components/error-boundary";
+import { Suspense } from "react";
+import CollapsableSection from "../CollapsableSection";
+import DataCreditLegend from "../DataCreditLegend";
+import OrgsLegend from "../OrgsLegend";
+import EmptyEventsTimeline from "./EmptyEventsTimeline";
+import ErrorEventsTimeline from "./ErrorEventsTimeline";
+import EventTimelineItem from "./EventTimelineItem";
+import EventsTimelineWrapper from "./EventsTimelinWrapper";
+import EventsTimelineAggregatedItem from "./EventsTimelineAggregatedItem";
+import EventsTimelineAxis from "./EventsTimelineAxis";
+import EventsTimelineChartWrapper from "./EventsTimelineChartWrapper";
+import EventsTimelineScrollWrapper from "./EventsTimelineScrollWrapper";
+import EventsTimelineSizeLegend from "./EventsTimelineSizeLegend";
+import useAggregationUnit from "./useAggregationUnit";
+import useTimelineEvents from "./useTimelineEvents";
 
-export const impactScale = scalePow([0, 100], [12, 80])
+type DataSourceInsertionType = {
+	date: ComparableDateItemType;
+	name: string;
+};
 
-const eventVariants: AnimationProps['variants'] = {
-	initial: { opacity: 0, scale: 0.5 },
-	enter: { opacity: 1, scale: 1 },
-}
+const dataSourceInsertions: DataSourceInsertionType[] = [
+	{
+		date: dateToComparableDateItem(new Date("2023-05-01T00:00:00.000Z")),
+		name: "ACLED (Armed Conflict Location & Event Data Project)",
+	},
+	{
+		date: dateToComparableDateItem(new Date("2024-05-10T00:00:00.000Z")),
+		name: "Press Releases by Last Generation (Germany)",
+	},
+	{
+		date: dateToComparableDateItem(new Date("2020-05-20T00:00:00.000Z")),
+		name: "GENIOS (German News Online)",
+	},
+];
 
-const fadeVariants: AnimationProps['variants'] = {
-	initial: { opacity: 0 },
-	enter: { opacity: 1 },
-}
-
-function EventsTimeline({ events, organisations }: EventsDataType) {
-	const eventsByDay = events.reduce((acc, event) => {
-		const day = startOfDay(new Date(event.date)).toISOString()
-		const newEvents = [...(acc.get(day) ?? []), event].sort((a, b) =>
-			a.organizations[0].localeCompare(b.organizations[0]),
-		)
-		acc.set(day, newEvents)
-		return acc
-	}, new Map<string, EventType[]>())
-
-	const sortedDays = [...eventsByDay.entries()]
-		.map(([day, events]) => ({ day, events }))
-		.sort((a, b) => dateSortCompare(a.day, b.day))
-
-	const allDays = createAllDays(sortedDays.at(0)?.day, sortedDays.at(-1)?.day)
-	const eventDays = allDays.map((day) => {
-		const dayString = startOfDay(day)
-		const events = eventsByDay.get(dayString.toISOString()) ?? []
-		return { day: dayString, events }
-	})
+function EventsTimeline({
+	data,
+}: {
+	data: UseEventsReturnType["data"];
+}) {
+	const [parentRef, size] = useElementSize();
+	const { organisations, eventsByOrgs, selectedOrganisations } = data;
+	const aggregationUnit = useAggregationUnit(size.width);
+	const { eventColumns, columnsCount, sizeScale } = useTimelineEvents({
+		size,
+		data,
+		aggregationUnit,
+	});
+	if (eventsByOrgs.length === 0) return <EmptyEventsTimeline />;
 
 	return (
-		<EventsTimelineWrapper>
-			<motion.ul
-				key="events-timeline-chart-wrapper"
-				className="flex gap-0.5 items-center py-6 justify-evenly min-w-full bg-grayUltraLight min-h-96 max-h-[calc(100vh-17rem)] overflow-auto"
-				variants={fadeVariants}
-				initial="initial"
-				animate="enter"
-				transition={{ staggerChildren: 0.01 }}
-			>
-				{eventDays.map(({ day, events }) => (
-					<motion.li
-						key={day.toISOString()}
-						className="flex flex-col gap-0.5"
-						variants={fadeVariants}
-						transition={{ staggerChildren: 0.01 }}
-					>
-						{events.map((event) => (
-							<EventTooltip
-								key={event.event_id}
-								event={event}
-								organisations={organisations}
-							>
-								<motion.div
-									className="size-3 relative z-10 hover:z-20"
-									style={{
-										height: `${Math.ceil(impactScale(event.impact))}px`,
-									}}
-									variants={eventVariants}
-								>
-									<EventBubbleLink
-										event={event}
-										organisations={organisations}
-									/>
-								</motion.div>
-							</EventTooltip>
-						))}
-					</motion.li>
-				))}
-			</motion.ul>
-			{eventDays.length > 0 && (
-				<>
-					<ul
-						aria-label="X Axis - Time"
-						className="flex gap-0.5 items-center pb-6 justify-evenly min-w-full border-t border-grayMed"
-					>
-						{eventDays.map(({ day }, idx) => (
-							<li
-								key={day.toISOString()}
-								className="size-3 relative"
-								aria-hidden={idx % 4 !== 0 ? 'false' : 'true'}
-								aria-label="X Axis Tick"
-							>
-								<span
-									className="w-px h-2 bg-grayMed absolute left-1/2 -translate-x-1/2"
-									aria-hidden="true"
-								/>
-								{idx % 4 === 0 && (
-									<span className="absolute left-1/2 top-full -translate-x-1/2 text-grayDark text-sm">
-										{format(new Date(day), 'dd.MM.yyyy')}
-									</span>
-								)}
-							</li>
-						))}
-					</ul>
-					<div className="mt-6 flex flex-col gap-2">
-						<h4 className="text-lg font-bold font-headlines antialiased relative">
-							<span className="w-fit pr-4 bg-bg relative z-20">Legend</span>
-							<span className="h-px w-full bg-grayLight absolute top-1/2 z-10"></span>
-						</h4>
-						<ul className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-8">
-							{organisations.map((org) => (
+		<EventsTimelineWrapper organisations={organisations} ref={parentRef}>
+			<EventsTimelineScrollWrapper>
+				<EventsTimelineChartWrapper columnsCount={columnsCount + 1}>
+					{eventColumns.map(
+						({
+							time,
+							date,
+							eventsWithSize,
+							sumSize,
+							combinedOrganizers,
+							combinedSelectedOrganizers,
+						}) => {
+							const insertedDataSource = dataSourceInsertions.find((d) =>
+								isInSameAggregationUnit(aggregationUnit, d.date, date),
+							);
+							const indexOfDataSourceInsertion = dataSourceInsertions.findIndex(
+								(d) => d === insertedDataSource,
+							);
+							const colIdx = eventColumns.findIndex((d) => d.date === date);
+							const colsAfter = eventColumns.length - colIdx - 1;
+							const dataSourceTop = `${indexOfDataSourceInsertion * 3}rem`;
+							return (
 								<li
-									key={org.name}
-									className="grid grid-cols-[auto_1fr_auto] gap-x-2 items-center border-b border-b-grayLight py-2"
+									key={`event-day-${time}`}
+									className="grid grid-rows-subgrid row-span-3 relative w-4 grow shrink-0 h-full py-4"
 								>
-									<span
-										className={cn(
-											'size-4 rounded-full shadow-[inset_0_0_0_1px_rgba(0,0,0,0.1)] bg-grayDark',
+									<div className="flex flex-col justify-end items-center gap-0.5">
+										<div
+											className={cn(
+												"w-px h-full absolute top-0 left-1/2 -translate-x-1/2 pointer-events-none",
+												"bg-grayLight group-hover:opacity-50 event-line opacity-0 transition-opacity",
+												insertedDataSource &&
+													"opacity-100 group-hover:opacity-100 bg-gradient-to-t via-grayLight from-grayUltraLight to-fg",
+											)}
+											aria-hidden={!insertedDataSource}
+										>
+											{insertedDataSource && (
+												<span
+													className={cn(
+														"grid sticky top-0 p-4 text-sm select-none whitespace-nowrap",
+														"opacity-0 transition-opacity group-hover:opacity-100 w-fit",
+														colsAfter < 10
+															? "text-right -translate-x-full"
+															: "left-px",
+													)}
+													style={{ top: dataSourceTop }}
+												>
+													<span className="uppercase text-xs text-grayDark opacity-80">
+														{format(
+															insertedDataSource.date.date,
+															"LLLL d, yyyy",
+														)}
+														{" • "}
+														Dataset Insertion
+													</span>
+													{insertedDataSource.name}
+												</span>
+											)}
+										</div>
+										{aggregationUnit === "day" &&
+											eventsWithSize.map((event) => (
+												<EventTimelineItem
+													key={event.event_id}
+													event={event}
+													organisations={organisations}
+													selectedOrganisations={selectedOrganisations}
+													height={sizeScale(event.size_number ?? 0)}
+												/>
+											))}
+										{aggregationUnit !== "day" && eventsWithSize.length > 0 && (
+											<EventsTimelineAggregatedItem
+												date={date}
+												sumSize={sumSize}
+												height={Math.ceil(sizeScale(sumSize))}
+												organisations={combinedOrganizers}
+												selectedOrganisations={combinedSelectedOrganizers}
+												events={eventsWithSize}
+												aggregationUnit={aggregationUnit}
+											/>
 										)}
-										style={{ backgroundColor: org.color }}
-										aria-hidden="true"
-									/>
-									<span className="truncate">{org.name}</span>
-									<span className="font-mono text-xs">{org.count}</span>
+									</div>
 								</li>
-							))}
-						</ul>
+							);
+						},
+					)}
+				</EventsTimelineChartWrapper>
+				<EventsTimelineAxis
+					eventColumns={eventColumns}
+					aggregationUnit={aggregationUnit}
+					width={size.width}
+				/>
+			</EventsTimelineScrollWrapper>
+			<div className="pt-10 flex gap-[max(2rem,4vmax)] sm:grid sm:grid-cols-[1fr_auto] max-w-content">
+				<CollapsableSection
+					title="Legend"
+					storageKey="protest-timeline-legend-expanded"
+					storageType="session"
+				>
+					<div className="grid gap-[max(1rem,2vmax)] md:grid-cols-[auto_1fr]">
+						<EventsTimelineSizeLegend
+							sizeScale={sizeScale}
+							aggragationUnit={aggregationUnit}
+						/>
+						<OrgsLegend organisations={selectedOrganisations} />
 					</div>
-				</>
-			)}
+				</CollapsableSection>
+				<DataCreditLegend
+					storageKey={"protest-timeline-data-credit-expanded"}
+					sources={[
+						{
+							label: "Protest data",
+							links: [
+								{
+									text: "Armed Conflict Location & Event Data Project (ACLED)",
+									url: "https://acleddata.com",
+								},
+							],
+						},
+					]}
+				/>
+			</div>
 		</EventsTimelineWrapper>
-	)
+	);
 }
 
-function createAllDays(start?: string, end?: string) {
-	if (!start || !end) return []
-	const days: Date[] = []
-	let currentDate = startOfDay(new Date(start))
-	const endDate = startOfDay(new Date(end))
-
-	while (isBefore(currentDate, endDate)) {
-		days.push(currentDate)
-		currentDate = addDays(currentDate, 1)
-	}
-
-	return days
+function EventsTimelineWithData({ reset }: { reset?: () => void }) {
+	const { data, isFetching, isPending, error, isError } = useEvents();
+	if (isFetching || isPending) return <LoadingEventsTimeline />;
+	if (isError)
+		return <ErrorEventsTimeline {...parseErrorMessage(error)} reset={reset} />;
+	if (data?.events.length > 0) return <EventsTimeline data={data} />;
+	return <EmptyEventsTimeline />;
 }
-
-export default EventsTimeline
+export default function EventsTimelineWithErrorBoundary() {
+	return (
+		<QueryErrorResetBoundary>
+			{({ reset }) => (
+				<ErrorBoundary
+					errorComponent={({ error }) => (
+						<ErrorEventsTimeline {...parseErrorMessage(error)} reset={reset} />
+					)}
+				>
+					<Suspense fallback={<LoadingEventsTimeline />}>
+						<EventsTimelineWithData reset={reset} />
+					</Suspense>
+				</ErrorBoundary>
+			)}
+		</QueryErrorResetBoundary>
+	);
+}

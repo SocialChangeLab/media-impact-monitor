@@ -1,36 +1,38 @@
-'use client'
+"use client";
 
-import Logo from '@components/logos/AppLogo'
-import BMBFLogo from '@components/logos/BMBFLogo'
-import PrototypeFundLogo from '@components/logos/PrototypeFundLogo'
-import SocialChangeLabLogo from '@components/logos/SocialChangeLabLogo'
-import { cn } from '@utility/classNames'
-import { ArrowUp } from 'lucide-react'
-import Link from 'next/link'
+import UptimeStatusLink from "@/components/UptimeStatusLink";
+import Logo from "@/components/logos/AppLogo";
+import BMBFLogo from "@/components/logos/BMBFLogo";
+import PrototypeFundLogo from "@/components/logos/PrototypeFundLogo";
+import SocialChangeLabLogo from "@/components/logos/SocialChangeLabLogo";
+import { cn } from "@/utility/classNames";
+import { ArrowUp } from "lucide-react";
+import InternalLink from "../InternalLink";
 
-const year = new Date().getFullYear()
+const year = new Date().getFullYear();
 
 function Footer() {
 	return (
-		<footer className="relative" aria-label="Main page footer">
+		<footer className="mx-auto w-full relative" aria-label="Main page footer">
 			<div className="flex justify-between w-full px-6 py-8 relative border-y border-grayLight">
 				<div className="flex flex-col gap-4 justify-between">
-					<Link
-						href="/"
+					<InternalLink
+						href="/dashboard"
 						className="flex flex-col gap-4 justify-between w-fit focusable"
 						scroll={false}
 					>
 						<Logo className="text-grayDark" width={256} height={31} />
-					</Link>
+					</InternalLink>
 
 					<div className="flex flex-col gap-4 justify-between text-grayDark text-sm">
-						<Link
+						<InternalLink
 							href="/logos"
 							className="no-underline focusable hover:text-fg transition-colors w-fit"
 							scroll={false}
 						>
 							Logo assets
-						</Link>
+						</InternalLink>
+						<UptimeStatusLink />
 						<span aria-label={`Copyright ${year}`}>
 							© {year} - Social Change Lab
 						</span>
@@ -59,7 +61,7 @@ function Footer() {
 					<div className="flex flex-wrap gap-x-8">
 						<a
 							className="h-fit focusable flex flex-col gap-6 group"
-							href="https://prototypefund.org/"
+							href="https://prototypefund.de/"
 							target="_blank"
 							rel="noopener noreferrer"
 							title="Bundesministerium für Bildung und Forschung"
@@ -76,7 +78,7 @@ function Footer() {
 						</a>
 						<a
 							className="focusable flex flex-col gap-6 group w-fit h-fit"
-							href="https://prototypefund.org/"
+							href="https://prototypefund.de/"
 							target="_blank"
 							rel="noopener noreferrer"
 							title="Prototype Fund"
@@ -94,6 +96,7 @@ function Footer() {
 					</div>
 					<div className="flex flex-col gap-4">
 						<button
+							type="button"
 							id="back-to-top"
 							aria-label="Scroll to top"
 							className={cn(
@@ -102,7 +105,8 @@ function Footer() {
 								`focusable hover:border-grayLight`,
 							)}
 							onClick={() => {
-								window.scrollTo({ top: 0, behavior: 'smooth' })
+								if (typeof window === "undefined") return;
+								window.scrollTo({ top: 0, behavior: "smooth" });
 							}}
 						>
 							<ArrowUp />
@@ -111,7 +115,7 @@ function Footer() {
 				</div>
 			</div>
 		</footer>
-	)
+	);
 }
 
-export default Footer
+export default Footer;

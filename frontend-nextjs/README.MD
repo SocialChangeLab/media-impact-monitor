@@ -26,10 +26,10 @@ This is where the _Media Impact Monitor_ comes in: It uses innovative causal inf
 
 ## Team
 
-The project team is constituted from:
+The project team consists of:
 
-- **David Pomerenke** (@davidpomerenke) – Data Science – M.A. Artificial Intelligence
-- **Lennard Klein** (@kleinlennart) – Data Science – B.A. Political Science
+- **David Pomerenke** (@davidpomerenke) – Data Science – M.Sc. Artificial Intelligence
+- **Lennart Klein** (@kleinlennart) – Data Science – B.A. Political Science
 - **Lucas Vogel** (@vogelino) – Frontend UI/UX Development – B.A. Interface Design
 
 ## Contact
@@ -69,6 +69,6 @@ Please [send us an email](mailto:david@socialchangelab.org) or [book a short mee
 
 ## Partners
 
-| Hosted by                                                                                                                                                                    | Sponsored by                                                                                                                                          |                                                                                                                                   |
-| ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------- |
-| [![Logo of the Social Change Lab](https://mediaimpactmonitor.app/assets/logos/socialchangelab-hybrid.svg)](https://socialchangelab.org/)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; | [![Logo of the Bundesministerium für Bildung und Forschung](https://mediaimpactmonitor.app/assets/logos/bmbf-hybrid.svg)](https://prototypefund.org/) | [![Logo of the Prototype Fund](https://mediaimpactmonitor.app/assets/logos/prototypefund-hybrid.svg)](https://prototypefund.org/) |
+| Hosted by                                                                                                                                                                    | Sponsored by                                                                                                                                         |                                                                                                                                  |
+| ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------- |
+| [![Logo of the Social Change Lab](https://mediaimpactmonitor.app/assets/logos/socialchangelab-hybrid.svg)](https://socialchangelab.org/)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; | [![Logo of the Bundesministerium für Bildung und Forschung](https://mediaimpactmonitor.app/assets/logos/bmbf-hybrid.svg)](https://prototypefund.de/) | [![Logo of the Prototype Fund](https://mediaimpactmonitor.app/assets/logos/prototypefund-hybrid.svg)](https://prototypefund.de/) |

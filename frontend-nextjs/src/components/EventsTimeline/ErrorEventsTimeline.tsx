@@ -1,23 +1,35 @@
-import ComponentError from '@components/ComponentError'
-import EventsTimelineWrapper from './EventsTimelinWrapper'
-import EventsTimelineChartWrapper from './EventsTimelineChartWrapper'
+"use client";
+import ComponentError from "@/components/ComponentError";
+import { cn } from "@/utility/classNames";
+import EventsTimelineWrapper from "./EventsTimelinWrapper";
+import EventsTimelineChartWrapper from "./EventsTimelineChartWrapper";
 
 export default function ErrorEventsTimeline({
-	errorMessage,
+	message,
+	details,
 	reset,
 }: {
-	errorMessage: string
-	reset?: () => void
+	message: string;
+	details?: string;
+	reset?: () => void;
 }) {
 	return (
 		<EventsTimelineWrapper>
 			<EventsTimelineChartWrapper>
-				<ComponentError
-					errorMessage={errorMessage}
-					reset={reset}
-					announcement="There was an error loading events"
-				/>
+				<div
+					className={cn(
+						"w-full h-[var(--protest-timeline-height)]",
+						"flex justify-center items-center",
+						"bg-grayUltraLight border border-grayLight",
+					)}
+				>
+					<ComponentError
+						errorMessage={message}
+						reset={reset}
+						errorDetails={details}
+					/>
+				</div>
 			</EventsTimelineChartWrapper>
 		</EventsTimelineWrapper>
-	)
+	);
 }

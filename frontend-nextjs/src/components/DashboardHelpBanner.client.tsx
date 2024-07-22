@@ -21,12 +21,12 @@ function ExpandedHelpBanner({ onCollapse }: HelpBannerActions) {
 						"flex items-center mb-1 antialiased gap-2",
 					)}
 				>
-					The Impact Motinor's dashboard
+					The Impact Monitor dashboard
 				</h1>
 				<p className="max-w-prose mt-2 mb-1 text-fg">
-					Welcome to the Impact Motinor's dashboard. Here you can see protests
-					over time, media coverage and sentiment in climate-related topics, an
-					the impact of protest organisations on the media landscape.
+					Welcome to the Impact Monitor dashboard. Here you can see protests
+					over time, topics and sentiments within the media, and how protest
+					organizations have an impact on the media landscape.
 				</p>
 				<p className="max-w-prose mt-2 mb-5 text-fg">
 					Start by setting the filters in the top of the page, and scroll down

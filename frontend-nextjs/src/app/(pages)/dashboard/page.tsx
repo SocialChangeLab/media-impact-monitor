@@ -10,22 +10,71 @@ export default function EventsPageWithSuspense() {
 		<>
 			<DashboardHelpBanner />
 			<SectionHeadlineWithExplanation
-				headline="Protest Timeline"
-				description="See protests over time for each of the selected organisations"
+				headline="What protests are happening?"
+				description={
+					<>
+						<p>
+							See protests over time for each of the selected organisations.
+						</p>
+						<p>
+							Hover and click on the bubbles for more information on the
+							individual protest events.
+						</p>
+						<p>Currently, we cover only climate protests in Germany.</p>
+					</>
+				}
 				helpSlug="protestTimeline"
 			>
 				<EventsTimeline />
 			</SectionHeadlineWithExplanation>
 			<SectionHeadlineWithExplanation
-				headline="Coverage of climate change in German newspapers"
-				description="See the media coverage of climate-related topics in germany over time"
+				headline="What topics are the focus of public discourse?"
+				description={
+					<>
+						<p>
+							See how many articles are published on various topics over time.
+						</p>
+						<p>
+							Use the filters to switch between online newspaper articles, print
+							newspaper articles, and queries that people search for on Google.
+						</p>
+					</>
+				}
 				helpSlug="mediaTrend"
 			>
 				<MediaCoverageChartWithData />
 			</SectionHeadlineWithExplanation>
+			{/* Maybe the impact section below can also be integrated with the above section */}
 			<SectionHeadlineWithExplanation
-				headline="Media Sentiment of climate change in German newspapers"
-				description="See the media sentiment of climate-related topics in germany over time"
+				headline="How do the protests influence the topic focus?"
+				description={
+					<>
+						<p>
+							See how the protests bring more (or less) focus on the issues that
+							they advocate for, and compare how different organizations have
+							different impacts on public discourse.
+						</p>
+						<p>
+							For this chart we connect the protest data and the media data from
+							above, and compute impact statistics.
+						</p>
+					</>
+				}
+				helpSlug="mediaTrend"
+			>
+				(I am not an impact chart!)
+			</SectionHeadlineWithExplanation>
+			<SectionHeadlineWithExplanation
+				headline="What sentiment does the media have towards the protests?"
+				description="See whether the media's coverage of the protests is positive, negative, or neutral."
+				helpSlug="sentimentTrend"
+			>
+				<MediaSentimentChart />
+				{/* <ImpactChartWithData /> */}
+			</SectionHeadlineWithExplanation>
+			<SectionHeadlineWithExplanation
+				headline="What stance does the media have towards progressive climate policies?"
+				description="See whether the media supports or opposes policies aimed at mitigating climate change."
 				helpSlug="sentimentTrend"
 			>
 				<MediaSentimentChart />

@@ -16,7 +16,7 @@ export default function OrganisationsOverviewPage() {
 			orgsCount > 0
 				? `the ${orgsCount} selected organisation${orgsCount > 1 ? "s" : ""}`
 				: "all organisations";
-		return `An overview of ${organizersCount} with protests ${formattedDate}.`;
+		return `An overview of ${organizersCount} with protests ${formattedDate}. You can use the filters above to change the date range or select specific organisations.`;
 	});
 	return (
 		<>

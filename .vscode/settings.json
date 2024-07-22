@@ -1,8 +1,13 @@
 {
   "python.defaultInterpreterPath": "${workspaceFolder}/backend-python/.venv",
-    "workbench.colorCustomizations": {
-      "titleBar.activeBackground": "#042F2D",
-      "titleBar.activeForeground": "#ffffff"
-    },
-    "jupyter.notebookFileRoot": "${workspaceFolder}/backend-python/media_impact_monitor"
+  "workbench.colorCustomizations": {
+    "titleBar.activeBackground": "#042F2D",
+    "titleBar.activeForeground": "#ffffff"
+  },
+  "jupyter.notebookFileRoot": "${workspaceFolder}/backend-python/media_impact_monitor",
+  "python.testing.pytestArgs": [
+    "backend-python/media_impact_monitor"
+  ],
+  "python.testing.unittestEnabled": false,
+  "python.testing.pytestEnabled": true
 }

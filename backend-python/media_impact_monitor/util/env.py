@@ -2,7 +2,10 @@ from os import environ
 
 from dotenv import load_dotenv
 
-load_dotenv()
+# read environment variables from .env file
+# see .env.example for the required variables
+# override any existing environment variables
+load_dotenv(override=True)
 
 ACLED_EMAIL = environ["ACLED_EMAIL"]
 ACLED_KEY = environ["ACLED_KEY"]

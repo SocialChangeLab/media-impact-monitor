@@ -1,5 +1,4 @@
 "use client";
-import type { EventOrganizerSlugType } from "@/utility/eventsUtil";
 import type { icons } from "lucide-react";
 import { OrganisationsSelect } from "../OrganisationsSelect";
 import Icon from "../ui/icon";
@@ -9,26 +8,36 @@ type ImpactType = {
 	impact: number;
 	uncertainty: number | null;
 	color: string;
+	limitations?: string[];
 };
 
 type ImpactChartRowProps = {
-	impacts: ImpactType[];
+	impacts: ImpactType[] | null;
 	icon: keyof typeof icons;
 	unitLabel: string;
-	initialOrg?: EventOrganizerSlugType;
+	limitations?: string[];
 };
 
 function ImpactChartRow({
 	impacts,
 	unitLabel,
 	icon,
-	initialOrg,
+	limitations,
 }: ImpactChartRowProps) {
-	const impactsWithUncertainty = impacts.filter((i) => i.uncertainty !== null);
+	const impactsWithUncertainty =
+		impacts?.filter((i) => i.uncertainty !== null) ?? [];
 	return (
 		<div className="flex flex-col gap-6">
 			<div className="flex flex-col gap-6">
 				<OrganisationsSelect />
+
+				{limitations && (
+					<div className="flex flex-col gap-2">
+						{limitations.map((l) => (
+							<p key={l}>{l}</p>
+						))}
+					</div>
+				)}
 				{impactsWithUncertainty.map((i) => {
 					const impactShare = `${i.impact > 0 ? "+" : "-"}${Math.round(
 						Math.abs((i.impact / 1) * 100),
@@ -38,7 +47,7 @@ function ImpactChartRow({
 						<div key={i.label} className="flex flex-col gap-2">
 							<p className="font-light">
 								causes <strong className="font-bold">{`${incdeclabel}`}</strong>
-								{` of `}
+								{" of "}
 								<strong className="font-bold">
 									{`${Math.round(Math.abs(i.impact)).toLocaleString(
 										"en-GB",

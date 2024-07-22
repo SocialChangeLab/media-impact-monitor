@@ -44,7 +44,9 @@ function SectionHeadlineWithExplanation({
 								{headline}
 							</H>
 						)}
-						{description && <p className="text-grayDark">{description}</p>}
+						{description && (
+							<p className="text-grayDark max-w-prose">{description}</p>
+						)}
 					</div>
 					{helpSlug && (
 						<DialogTrigger asChild>

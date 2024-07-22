@@ -11,14 +11,35 @@ export default function EventsPageWithSuspense() {
 			<DashboardHelpBanner />
 			<SectionHeadlineWithExplanation
 				headline="What protests are happening?"
-				description="See protests over time for each of the selected organisations. Hover and click on the bubbles for more information on the individual protest events. Currently, we cover only climate protests in Germany."
+				description={
+					<>
+						<p>
+							See protests over time for each of the selected organisations.
+						</p>
+						<p>
+							Hover and click on the bubbles for more information on the
+							individual protest events.
+						</p>
+						<p>Currently, we cover only climate protests in Germany.</p>
+					</>
+				}
 				helpSlug="protestTimeline"
 			>
 				<EventsTimeline />
 			</SectionHeadlineWithExplanation>
 			<SectionHeadlineWithExplanation
 				headline="What topics are the focus of public discourse?"
-				description="See how many articles are published on various topics over time. Use the filters to switch between online newspaper articles, print newspaper articles, and queries that people search for on Google."
+				description={
+					<>
+						<p>
+							See how many articles are published on various topics over time.
+						</p>
+						<p>
+							Use the filters to switch between online newspaper articles, print
+							newspaper articles, and queries that people search for on Google.
+						</p>
+					</>
+				}
 				helpSlug="mediaTrend"
 			>
 				<MediaCoverageChartWithData />
@@ -26,8 +47,19 @@ export default function EventsPageWithSuspense() {
 			{/* Maybe the impact section below can also be integrated with the above section */}
 			<SectionHeadlineWithExplanation
 				headline="How do the protests influence the topic focus?"
-				description="See how the protests bring more (or less) focus on the issues that they advocate for, and compare how different organizations have different impacts on public discourse.
-				For this chart we connect the protest data and the media data from above, and compute impact statistics."
+				description={
+					<>
+						<p>
+							See how the protests bring more (or less) focus on the issues that
+							they advocate for, and compare how different organizations have
+							different impacts on public discourse.
+						</p>
+						<p>
+							For this chart we connect the protest data and the media data from
+							above, and compute impact statistics.
+						</p>
+					</>
+				}
 				helpSlug="mediaTrend"
 			>
 				(I am not an impact chart!)

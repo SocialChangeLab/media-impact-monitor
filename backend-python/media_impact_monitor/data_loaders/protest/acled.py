@@ -1,4 +1,5 @@
 from datetime import date
+import re
 
 import pandas as pd
 
@@ -120,7 +121,7 @@ def process_orgs(df: pd.DataFrame) -> pd.DataFrame:
         .str.split("; ")
         .apply(lambda x: [] if x == [""] else x)
         # remove country-specific suffixes like " (Germany)":
-        .str.replace(r" \(.+\)$", "", regex=True)
+        .apply(lambda x: [re.sub(r" \(.+\)$", "", org) for org in x])
         # remove descriptors that are not actual organizations:
         .apply(lambda x: [org for org in x if org not in group_blocklist])
     )

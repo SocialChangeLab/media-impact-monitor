@@ -68,6 +68,7 @@ const filtersZodSchema = z
 			.boolean()
 			.default(defaultInitState.isDefaultTimeRange),
 		organizers: z.array(z.string()).default(defaultInitState.organizers),
+		mediaSource: z.enum(["news_online", "news_print", "web_google"]),
 	})
 	.default(defaultInitState);
 

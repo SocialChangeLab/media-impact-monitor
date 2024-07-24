@@ -74,18 +74,21 @@ const trend_plot = (trend, title) => ({
 const keyword_trend = await queryApi('trend', {
   trend_type: 'keywords',
   media_source: media_source,
+  topic: 'climate_change',
+  start_date: '2024-07-24'
+})
+const trend_plots = [
+  trend_plot(keyword_trend.trends, media_sources[media_source])
+]
+const sentiment_trend = await queryApi('trend', {
+  trend_type: 'sentiment',
+  media_source: media_source,
   topic: 'climate_change'
 })
-const trend_plots = [trend_plot(keyword_trend, media_sources[media_source])]
-if (media_source === 'news_online') {
-  const sentiment_trend = await queryApi('trend', {
-    trend_type: 'sentiment',
-    media_source: media_source,
-    topic: 'climate_change'
-  })
+if (sentiment_trend.applicability) {
   trend_plots.push(
     trend_plot(
-      sentiment_trend,
+      sentiment_trend.trends,
       media_sources[media_source].replace(/coverage of/, 'sentiment of')
     )
   )

@@ -39,14 +39,18 @@ def setup_cron():
 @monitor(monitor_slug="data-processing-cron-job")
 def fill_cache():
     print("Filling cache...")
+    errors = []
     events = {}
     for data_source in ["acled", "press_releases"]:
         print(f"Retrieving {data_source} events...")
-        events[data_source] = get_events(
-            EventSearch(
-                source=data_source, topic="climate_change", end_date=date.today()
+        try:
+            events[data_source] = get_events(
+                EventSearch(
+                    source=data_source, topic="climate_change", end_date=date.today()
+                )
             )
-        )
+        except Exception as e:
+            errors.append(f"events {data_source}: {e}")
     for media_source in ["news_online", "news_print", "web_google"]:
         for trend_type in ["keywords", "sentiment"]:
             for aggregation in ["daily", "weekly"]:
@@ -54,29 +58,35 @@ def fill_cache():
                     continue
                 if trend_type == "sentiment" and media_source != "news_online":
                     continue
-                if media_source == "news_online":
-                    continue
                 print(f"Retrieving {media_source} {trend_type} {aggregation} trend...")
-                get_trend(
-                    TrendSearch(
-                        trend_type=trend_type,
-                        media_source=media_source,
-                        topic="climate_change",
-                        aggregation=aggregation,
-                        end_date=date.today(),
+                try:
+                    get_trend(
+                        TrendSearch(
+                            trend_type=trend_type,
+                            media_source=media_source,
+                            topic="climate_change",
+                            aggregation=aggregation,
+                            end_date=date.today(),
+                        )
                     )
-                )
+                except Exception as e:
+                    errors.append(f"trend {media_source} {trend_type} {aggregation}: {e}")
     events = events["acled"]  # TODO: include press_releases
     recent_events = events[events["date"] >= date.today() - timedelta(days=70)]
     for event in tqdm(
         list(recent_events.itertuples()),
         desc="Retrieving event fulltexts",
     ):
-        get_fulltexts(
-            FulltextSearch(
-                media_source="news_online",
-                event_id=event.event_id,
+        try:
+            get_fulltexts(
+                FulltextSearch(
+                    media_source="news_online",
+                    event_id=event.event_id,
+                )
             )
-        )
+        except Exception as e:
+            errors.append(f"fulltexts {event.event_id}: {e}")
+    if errors:
+        raise ValueError(f"Errors occurred: {'; '.join(errors)}")
     print("Successfully filled cache!")
     return

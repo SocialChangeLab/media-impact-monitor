@@ -30,6 +30,10 @@ def get_sentiment_trend(
         media_source == "news_online"
     ), "Only news_online has fulltexts, which are necessary for sentiment analysis."
     query = '"letzte generation"'  # TODO
+    start_date = max(start_date, date(2024, 5, 1)) # don't get too many fulltexts
+    if start_date >= end_date:
+        return pd.DataFrame(columns=["negative", "neutral", "positive"])
+
     print(start_date, end_date, query)
     fulltexts = get_mediacloud_fulltexts(
         query=query, start_date=start_date, end_date=end_date, countries=["Germany"]

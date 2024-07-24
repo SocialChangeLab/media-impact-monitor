@@ -74,8 +74,7 @@ const trend_plot = (trend, title) => ({
 const keyword_trend = await queryApi('trend', {
   trend_type: 'keywords',
   media_source: media_source,
-  topic: 'climate_change',
-  start_date: '2024-07-24'
+  topic: 'climate_change'
 })
 const trend_plots = [
   trend_plot(keyword_trend.trends, media_sources[media_source])

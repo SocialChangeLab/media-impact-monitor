@@ -29,9 +29,10 @@ def get_sentiment_trend(
     if media_source != "news_online":
         return f"Sentiment trend requires fulltext analysis, which is only available for news_online, not {media_source}."
     query = '"letzte generation"'  # TODO
-    start_date = max(start_date or date(2024, 5,), date(2024, 5, 1)) # don't get too many fulltexts
-    if start_date >= end_date:
+    cutoff = date(2024, 5, 1)
+    if end_date < cutoff:
         return f"Sentiments are only available from {start_date} onwards."
+    start_date = max(start_date or cutoff, cutoff) # don't get too many fulltexts
 
     print(start_date, end_date, query)
     fulltexts = get_mediacloud_fulltexts(

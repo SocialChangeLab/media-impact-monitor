@@ -1,4 +1,4 @@
-from datetime import timedelta
+from datetime import date, timedelta
 
 import pandas as pd
 import yaml
@@ -65,6 +65,8 @@ def get_fulltexts(q: FulltextSearch) -> pd.DataFrame | None:
             # MediaCloud only goes back until 2022
             return None
         orgs = add_quotes(add_aliases(event["organizers"]))
+        if not orgs:
+            return None
         query = xs_with_ys(orgs, keywords["activism"], q.media_source)
 
     print(f"Looking for news fulltexts that match: '{query}'")

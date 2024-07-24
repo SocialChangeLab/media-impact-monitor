@@ -104,7 +104,7 @@ def get_acled_events(
     ]
 
 
-def process_orgs(df: pd.DataFrame, return_ids: bool) -> pd.DataFrame:
+def process_orgs(df: pd.DataFrame) -> pd.DataFrame:
     group_blocklist = [
         "Students",
         "Labor Group",

@@ -62,3 +62,25 @@ def test_fff_api():
             start_date="2022-09-14",
         )
     )
+
+def test_impact_empty_trend():
+    response = _get_impact(
+        ImpactSearch(
+            end_date="2023-11-04",
+            impacted_trend=TrendSearch(
+                end_date="2023-11-04",
+                media_source="news_online",
+                organizers=["Fridays for Future"],
+                start_date="2023-02-23",
+                topic="climate_change",
+                trend_type="sentiment",
+            ),
+            method="time_series_regression",
+            organizer="Fridays for Future",
+            start_date="2023-02-23",
+        )
+    )
+    data = response.data
+    assert data.method_applicability == False
+    assert data.method_limitations[0].startswith("No media data available")
+    assert data.impact_estimates == None

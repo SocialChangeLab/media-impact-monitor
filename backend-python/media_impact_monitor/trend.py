@@ -14,6 +14,7 @@ def get_trend(q: TrendSearch) -> pd.DataFrame:
         case "sentiment":
             return get_sentiment_trend(
                 query=q.query,
+                start_date=q.start_date,
                 end_date=q.end_date,
                 media_source=q.media_source,
             )

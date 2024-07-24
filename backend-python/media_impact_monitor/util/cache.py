@@ -58,6 +58,13 @@ client = ZenRowsClient(ZENROWS_API_KEY, retries=2, concurrency=10)
 
 @cache
 async def get_proxied_async(url, **kwargs):
+    if not "timeout" in kwargs:
+        kwargs["timeout"] = 10
+    try:
+        response = get(url, **kwargs)
+        return response
+    except Exception:
+        pass
     response = await client.get_async(url, **kwargs)
     if response.text.startswith('{"code":'):
         zenrows_errors = [
@@ -81,6 +88,7 @@ async def get_proxied_async(url, **kwargs):
             "RESP003",
         ]
         if any(error in response.text for error in zenrows_errors):
+
             # problem with zenrows -> inform the developer
             raise Exception(response.text)
         # otherwise, problem with the site itself -> just don't use this site

@@ -69,15 +69,13 @@ export function formatInput(
 	};
 	if (!from || !to)
 		return {
-			...input,
+			...normalizedInput,
 			start_date: format(datasetStartDate, "yyyy-MM-dd"),
 			end_date: format(datasetEndDate, "yyyy-MM-dd"),
-			...normalizedInput,
 		};
 	return {
-		...input,
+		...normalizedInput,
 		start_date: format(from, "yyyy-MM-dd"),
 		end_date: format(to, "yyyy-MM-dd"),
-		...normalizedInput,
 	};
 }

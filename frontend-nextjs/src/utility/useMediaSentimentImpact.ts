@@ -2,11 +2,10 @@
 import { useFiltersStore } from "@/providers/FiltersStoreProvider";
 import { useQuery } from "@tanstack/react-query";
 import { endOfDay, format } from "date-fns";
-import { useEffect } from "react";
-import { toast } from "sonner";
 import type { EventOrganizerSlugType } from "./eventsUtil";
 import { getMediaSentimentImpactData } from "./mediaSentimentImpactUtil";
 import useEvents from "./useEvents";
+import useQueryErrorToast from "./useQueryErrorToast";
 
 function useMediaSentimentImpactData(
 	organizer: EventOrganizerSlugType | undefined,
@@ -39,19 +38,10 @@ function useMediaSentimentImpactData(
 			);
 		},
 		staleTime: endOfDay(new Date()).getTime() - new Date().getTime(),
-		enabled: organizer !== undefined,
+		enabled: organizer !== undefined && data?.organisations?.length > 0,
 	});
-	const { error } = query;
 
-	useEffect(() => {
-		if (!error) return;
-		toast.error(`Error fetching media sentiment impact data: ${error}`, {
-			important: true,
-			dismissible: true,
-			duration: 1000000,
-			closeButton: true,
-		});
-	}, [error]);
+	useQueryErrorToast("media sentiment impact", query.error);
 
 	return query;
 }

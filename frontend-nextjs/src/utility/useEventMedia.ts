@@ -2,8 +2,6 @@
 import { useFiltersStore } from "@/providers/FiltersStoreProvider";
 import { queryOptions, useQuery } from "@tanstack/react-query";
 import { endOfDay } from "date-fns";
-import { useEffect } from "react";
-import { toast } from "sonner";
 import {
 	type EventMediaInputQueryType,
 	eventMediaInputQueryZodSchema,
@@ -11,6 +9,7 @@ import {
 } from "./eventMediaUtil";
 import type { OrganisationType, ParsedEventType } from "./eventsUtil";
 import useEvents from "./useEvents";
+import useQueryErrorToast from "./useQueryErrorToast";
 
 export function getEventMediaQueryOptions(
 	allOrganisations: OrganisationType[],
@@ -58,15 +57,7 @@ function useEventMedia(eventId?: ParsedEventType["event_id"]) {
 		}),
 	);
 
-	useEffect(() => {
-		if (!query.error) return;
-		toast.error(`Error fetching events: ${query.error}`, {
-			important: true,
-			dismissible: true,
-			duration: 1000000,
-			closeButton: true,
-		});
-	}, [query.error]);
+	useQueryErrorToast("event media", query.error);
 
 	return query;
 }

@@ -2,11 +2,11 @@
 import { useFiltersStore } from "@/providers/FiltersStoreProvider";
 import { useQuery } from "@tanstack/react-query";
 import { endOfDay, format } from "date-fns";
-import { useEffect, useMemo } from "react";
+import { useMemo } from "react";
 import slugify from "slugify";
-import { toast } from "sonner";
 import { getMediaSentimentData } from "./mediaSentimentUtil";
 import useEvents from "./useEvents";
+import useQueryErrorToast from "./useQueryErrorToast";
 
 function useMediaSentimentData() {
 	const { from, to, organizers, mediaSource } = useFiltersStore(
@@ -44,17 +44,8 @@ function useMediaSentimentData() {
 			),
 		staleTime: endOfDay(new Date()).getTime() - new Date().getTime(),
 	});
-	const { error } = query;
 
-	useEffect(() => {
-		if (!error) return;
-		toast.error(`Error fetching media sentiment data: ${error}`, {
-			important: true,
-			dismissible: true,
-			duration: 1000000,
-			closeButton: true,
-		});
-	}, [error]);
+	useQueryErrorToast("media sentiment", query.error);
 
 	return query;
 }

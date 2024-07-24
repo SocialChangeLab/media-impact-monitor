@@ -7,13 +7,13 @@ import {
 } from "@tanstack/react-query";
 import { endOfDay } from "date-fns";
 import { useEffect, useMemo } from "react";
-import { toast } from "sonner";
 import {
 	type OrganisationType,
 	type ParsedEventType,
 	extractEventOrganisations,
 	getEventsData,
 } from "./eventsUtil";
+import useQueryErrorToast from "./useQueryErrorToast";
 
 export type UseEventsReturnType = Omit<
 	UseQueryResult<ParsedEventType[], unknown>,
@@ -50,15 +50,7 @@ function useEvents({
 	});
 	const { data, error } = query;
 
-	useEffect(() => {
-		if (!error) return;
-		toast.error(`Error fetching events: ${error}`, {
-			important: true,
-			dismissible: true,
-			duration: 1000000,
-			closeButton: true,
-		});
-	}, [error]);
+	useQueryErrorToast("protests", error);
 
 	const organisersKey = useMemo(
 		() => filterStore.organizers.sort().join("-"),

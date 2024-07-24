@@ -2,11 +2,11 @@
 import { useFiltersStore } from "@/providers/FiltersStoreProvider";
 import { useQuery } from "@tanstack/react-query";
 import { endOfDay, format } from "date-fns";
-import { useEffect, useMemo } from "react";
+import { useMemo } from "react";
 import slugify from "slugify";
-import { toast } from "sonner";
 import { getMediaCoverageData } from "./mediaCoverageUtil";
 import useEvents from "./useEvents";
+import useQueryErrorToast from "./useQueryErrorToast";
 
 function useMediaCoverageData() {
 	const { from, to, organizers, mediaSource } = useFiltersStore(
@@ -47,15 +47,7 @@ function useMediaCoverageData() {
 		staleTime: endOfDay(new Date()).getTime() - new Date().getTime(),
 	});
 
-	useEffect(() => {
-		if (!query.error) return;
-		toast.error(`Error fetching media coverage data: ${query.error}`, {
-			important: true,
-			dismissible: true,
-			duration: 1000000,
-			closeButton: true,
-		});
-	}, [query.error]);
+	useQueryErrorToast("event", query.error);
 
 	return query;
 }

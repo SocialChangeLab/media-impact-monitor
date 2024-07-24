@@ -1,13 +1,13 @@
 "use client";
 import { queryOptions, useQuery } from "@tanstack/react-query";
 import { endOfDay } from "date-fns";
-import { useEffect, useMemo } from "react";
-import { toast } from "sonner";
+import { useMemo } from "react";
 import {
 	type ParsedEventType,
 	extractEventOrganisations,
 	getEventData,
 } from "./eventsUtil";
+import useQueryErrorToast from "./useQueryErrorToast";
 
 export function getEventQueryOptions(id?: ParsedEventType["event_id"]) {
 	return queryOptions({
@@ -21,15 +21,7 @@ export function getEventQueryOptions(id?: ParsedEventType["event_id"]) {
 function useEvent(id?: ParsedEventType["event_id"]) {
 	const query = useQuery(getEventQueryOptions(id));
 
-	useEffect(() => {
-		if (!query.error) return;
-		toast.error(`Error fetching events: ${query.error}`, {
-			important: true,
-			dismissible: true,
-			duration: 1000000,
-			closeButton: true,
-		});
-	}, [query.error]);
+	useQueryErrorToast("event", query.error);
 
 	const organisations = useMemo(
 		() => (query.data ? extractEventOrganisations([query.data]) : []),

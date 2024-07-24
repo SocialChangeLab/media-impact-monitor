@@ -40,15 +40,18 @@ export type MediaSentimentImpactType = z.infer<
 
 const parsedMediaSentimentImpactZodSchema = z.object({
 	id: z.string(),
-	data: z.union([z.null(), z.array(
-		z.object({
-			impact: z.number(),
-			uncertainty: z.number().nullable(),
-			label: z.string(),
-			color: z.string(),
-			uniqueId: z.string(),
-		}),
-	)]),
+	data: z.union([
+		z.null(),
+		z.array(
+			z.object({
+				impact: z.number(),
+				uncertainty: z.number().nullable(),
+				label: z.string(),
+				color: z.string(),
+				uniqueId: z.string(),
+			}),
+		),
+	]),
 	limitations: z.array(z.string()).optional().default([]),
 });
 type ParsedMediaSentimentImpactType = z.infer<
@@ -76,6 +79,7 @@ function getMediaSentimentImpactQuery(
 	},
 	allOrganisations: OrganisationType[],
 ) {
+	const formattedInput = formatInput(params, allOrganisations);
 	return {
 		method: "time_series_regression",
 		impacted_trend: getMediaSentimentQuery(
@@ -85,7 +89,10 @@ function getMediaSentimentImpactQuery(
 			},
 			allOrganisations,
 		),
-		...formatInput(params, allOrganisations),
+		...formattedInput,
+		organizer:
+			allOrganisations.find(({ slug }) => slug === params.organizer)?.name ||
+			"",
 	};
 }
 

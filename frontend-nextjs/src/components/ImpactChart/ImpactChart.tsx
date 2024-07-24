@@ -1,7 +1,7 @@
 import { cn } from "@/utility/classNames";
 import type { icons } from "lucide-react";
 import { Fragment, useCallback, useMemo } from "react";
-import ImpactBar from "./ImpactBar";
+import ImpactBar, { isTooUncertain } from "./ImpactBar";
 import ImpactChartRow from "./ImpactChartRow";
 
 type ImpactChartColumnItem = {
@@ -30,24 +30,31 @@ function ImpactChart(props: ImpactChartProps) {
 
 	const columnItems = useMemo(
 		() =>
-			props.columns
-				.flatMap((columnItem) => {
-					const itemsPerGroup = Math.max(
-						...props.columns.map((item) => item?.data?.length ?? 1),
-					);
-					if (!columnItem.data) return new Array(itemsPerGroup).fill(null);
-					return columnItem.data;
-				}),
+			props.columns.flatMap((columnItem) => {
+				const itemsPerGroup = Math.max(
+					...props.columns.map((item) => item?.data?.length ?? 1),
+				);
+				if (!columnItem.data) return new Array(itemsPerGroup).fill(null);
+				return columnItem.data;
+			}) as (ImpactChartColumnItem | null)[],
 		[props.columns],
 	);
 
 	const impactScale = useCallback(
 		(impact: number) => {
 			const lowestImpact = Math.min(
-				...columnItems.map((item) => item?.impact ?? 0),
+				...columnItems.map(
+					(item) =>
+						(item?.impact ?? 0) -
+						Math.abs(item?.uncertainty ? item.uncertainty / 2 : 0),
+				),
 			);
 			const highestImpact = Math.max(
-				...columnItems.map((item) => item?.impact ?? 0),
+				...columnItems.map(
+					(item) =>
+						(item?.impact ?? 0) +
+						Math.abs(item?.uncertainty ? item.uncertainty / 2 : 0),
+				),
 			);
 			const impactRange = Math.abs(lowestImpact) + Math.abs(highestImpact);
 			const highImpactsPercentage = highestImpact / impactRange;
@@ -109,11 +116,11 @@ function ImpactChart(props: ImpactChartProps) {
 			`}</style>
 			<div
 				className={cn(
-					"impact-chart-container",
-					"grid grid-flow-col grid-rows-[1fr_auto] w-full",
+					"impact-chart-container bg-grayUltraLight overflow-clip border border-grayLight",
+					"grid grid-flow-col grid-rows-[1fr_minmax(4rem,auto)] w-full h-full",
 				)}
 				style={{
-					maxHeight: `${height}px`,
+					height: `${height}px`,
 					gridTemplateColumns: items
 						.map(({ type }) => (type === "separator" ? "3px" : "1fr"))
 						.join(" "),
@@ -140,36 +147,45 @@ function ImpactChart(props: ImpactChartProps) {
 							</Fragment>
 						);
 					}
-					const columnItem = item;
-					const impactInHeightPercentage = impactScale(columnItem?.impact ?? 0);
-					const itemClass = `${columnItem?.uniqueId ?? "unknown"}-item`;
+					const impactInHeightPercentage = impactScale(item?.impact ?? 0);
+					const uncertaintyInHeightPercentage = impactScale(
+						item?.uncertainty ?? 0,
+					);
+					const itemClass = `${item?.uniqueId ?? "unknown"}-item`;
+					const tooUncertain = isTooUncertain(item?.impact ?? 999);
+					const itemIsCertainAndPositive =
+						!!item && !tooUncertain && item.impact > 0;
+					const itemIsCertainAndNegative =
+						!!item && !tooUncertain && item.impact < 0;
 					return (
 						<Fragment key={key}>
-							{(!columnItem || columnItem.impact < 0) && (
+							{itemIsCertainAndNegative && (
 								<div
 									className={cn(itemClass, commonCSSClasses, oddCSSClasses)}
 								/>
 							)}
-							{!!columnItem && (
+							{!!item && (
 								<div
-									key={columnItem.uniqueId}
+									key={item.uniqueId}
 									className={cn(
 										itemClass,
 										commonCSSClasses,
 										"flex items-end px-4 group",
-										columnItem.impact < 0 && "-scale-y-100",
-										columnItem.impact > 0 && oddCSSClasses,
+										itemIsCertainAndNegative && "-scale-y-100",
+										(itemIsCertainAndPositive || tooUncertain) && oddCSSClasses,
 									)}
 									style={{ paddingTop: `${padding}px` }}
 								>
 									<ImpactBar
-										{...columnItem}
+										{...item}
+										uncertainty={item?.uncertainty}
 										totalHeight={height - padding * 2}
 										barHeight={Math.abs(impactInHeightPercentage)}
+										uncertaintyHeight={Math.abs(uncertaintyInHeightPercentage)}
 									/>
 								</div>
 							)}
-							{(!columnItem || columnItem.impact >= 0) && (
+							{(itemIsCertainAndPositive || tooUncertain) && (
 								<div className={cn(itemClass, commonCSSClasses)} />
 							)}
 						</Fragment>
@@ -182,7 +198,7 @@ function ImpactChart(props: ImpactChartProps) {
 			>
 				{props.columns.map(({ id, data, limitations }) => {
 					return (
-						<div key={`column-${id}`} className="p-4">
+						<div key={`column-${id}`} className="pt-6">
 							<ImpactChartRow
 								icon={props.icon}
 								impacts={data}

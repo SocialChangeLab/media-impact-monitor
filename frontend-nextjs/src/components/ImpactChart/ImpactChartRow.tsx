@@ -2,6 +2,7 @@
 import type { icons } from "lucide-react";
 import { OrganisationsSelect } from "../OrganisationsSelect";
 import Icon from "../ui/icon";
+import { isTooUncertain } from "./ImpactBar";
 
 type ImpactType = {
 	label: string;
@@ -25,13 +26,13 @@ function ImpactChartRow({
 	limitations,
 }: ImpactChartRowProps) {
 	const impactsWithUncertainty =
-		impacts?.filter((i) => i.uncertainty !== null) ?? [];
+		impacts?.filter((i) => !isTooUncertain(i.uncertainty)) ?? [];
 	return (
 		<div className="flex flex-col gap-6">
-			<div className="flex flex-col gap-6">
+			<div className="flex flex-col gap-4">
 				<OrganisationsSelect />
 
-				{limitations && (
+				{limitations && limitations.length > 0 && (
 					<div className="flex flex-col gap-2">
 						{limitations.map((l) => (
 							<p key={l}>{l}</p>

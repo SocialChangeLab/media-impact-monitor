@@ -1,5 +1,6 @@
 import type { MediaSourceType } from "@/stores/filtersStore";
 import { z } from "zod";
+import { slugifyCssClass } from "./cssSlugify";
 import {
 	type EventOrganizerSlugType,
 	type OrganisationType,
@@ -127,12 +128,14 @@ function validateGetDataResponse(
 		return parsedMediaSentimentImpactZodSchema.parse({
 			id: parsedResponse.query.organizer,
 			data: Object.entries(parsedResponse.data.impact_estimates).map(
-				([key, { absolute_impact }]) => ({
-					impact: absolute_impact.mean,
-					uncertainty: absolute_impact.ci_upper - absolute_impact.mean,
+				([key, { absolute_impact: a }]) => ({
+					impact: a.mean,
+					uncertainty: Math.abs(
+						Math.max(a.ci_lower - a.mean, a.ci_upper - a.mean),
+					),
 					label: key,
 					color: `var(--sentiment-${key})`,
-					uniqueId: `${key}-${absolute_impact.mean}`,
+					uniqueId: `${key}-${slugifyCssClass(parsedResponse.query.organizer)}`,
 				}),
 			),
 		});

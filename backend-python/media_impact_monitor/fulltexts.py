@@ -60,7 +60,7 @@ def get_fulltexts(q: FulltextSearch) -> pd.DataFrame | None:
         event = events.iloc[0]
         # TODO: handle start_date and end_date
         q.start_date = event["date"]
-        q.end_date = q.end_date or event["date"] + timedelta(days=7)
+        q.end_date = min(q.end_date or event["date"] + timedelta(days=7), date.today())
         if q.start_date.year < 2022:
             # MediaCloud only goes back until 2022
             return None

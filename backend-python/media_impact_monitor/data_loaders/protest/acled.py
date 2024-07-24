@@ -104,18 +104,23 @@ def get_acled_events(
     ]
 
 
-def process_orgs(df):
+def process_orgs(df: pd.DataFrame, return_ids: bool) -> pd.DataFrame:
     group_blocklist = [
-        "Students (Germany)",
-        "Labor Group (Germany)",
-        "Women (Germany)",
-        "Christian Group (Germany)",
+        "Students",
+        "Labor Group",
+        "Women",
+        "Christian Group",
+        "Government of Germany (2021-)",
+        "Civilians",
+        "Protesters",
     ]
     df = df.rename(columns={"assoc_actor_1": "organizers"})
     df["organizers"] = (
         df["organizers"]
         .str.split("; ")
         .apply(lambda x: [] if x == [""] else x)
+        # remove country-specific suffixes like " (Germany)":
+        .str.replace(r" \(.+\)$", "", regex=True)
         # remove descriptors that are not actual organizations:
         .apply(lambda x: [org for org in x if org not in group_blocklist])
     )
@@ -139,9 +144,5 @@ def rename_org(row):
         .replace("NB: Emergency Break", "Emergency Break")
         for org in row["organizers"]
     ]
-    if row["country"] == "United Kingdom":
-        orgs = [org.replace("Just Stop Oil", "Just Stop Oil (UK)") for org in orgs]
-    if row["country"] == "Norway":
-        orgs = [org.replace("Just Stop Oil", "Just Stop Oil (Norway)") for org in orgs]
     row["organizers"] = orgs
     return row

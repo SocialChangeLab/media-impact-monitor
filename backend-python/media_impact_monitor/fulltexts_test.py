@@ -15,7 +15,7 @@ def test_get_fulltexts_for_org():
             media_source="news_online",
             start_date=date(2024, 5, 1),
             end_date=date(2024, 5, 2),
-            organizers=["Last Generation (Germany)"],
+            organizers=["Last Generation"],
         )
     )
     assert texts is not None

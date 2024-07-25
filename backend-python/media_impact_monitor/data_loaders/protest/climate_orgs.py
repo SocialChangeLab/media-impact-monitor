@@ -20,7 +20,7 @@ climate_orgs_aliases = {
     "Just Stop Oil (UK)": [],
     "Just Stop Oil (Norway)": ["Stopp Oljeletinga"],
     "Last Renovation": ["Dernière Rénovation"],
-    "Last Generation (Germany)": ["Letzte Generation"],
+    "Last Generation": ["Letzte Generation"],
     "Last Generation (Austria)": ["Letzte Generation"],
     "Last Generation (Italy)": ["Ultima Generazione"],
     "Last Generation (Czech Republic)": ["Poslední generace"],

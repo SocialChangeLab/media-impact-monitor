@@ -40,7 +40,7 @@ const dataSourceInsertions: DataSourceInsertionType[] = [
 	},
 	{
 		date: dateToComparableDateItem(new Date("2024-05-10T00:00:00.000Z")),
-		name: "Press Releases by Last Generation (Germany)",
+		name: "Press Releases by Last Generation",
 	},
 	{
 		date: dateToComparableDateItem(new Date("2020-05-20T00:00:00.000Z")),

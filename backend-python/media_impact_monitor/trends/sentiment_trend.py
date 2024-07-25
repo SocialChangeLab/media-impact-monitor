@@ -33,8 +33,6 @@ def get_sentiment_trend(
     if end_date < cutoff:
         return f"Sentiments are only available from {start_date} onwards."
     start_date = max(start_date or cutoff, cutoff) # don't get too many fulltexts
-
-    print(start_date, end_date, query)
     fulltexts = get_mediacloud_fulltexts(
         query=query, start_date=start_date, end_date=end_date, countries=["Germany"]
     )

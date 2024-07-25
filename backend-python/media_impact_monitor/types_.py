@@ -1,7 +1,6 @@
-import datetime
 from dataclasses import dataclass
 from datetime import date
-from typing import Generic, Literal, Optional, TypeVar
+from typing import Generic, Literal, TypeVar
 
 from pydantic import BaseModel, Field
 
@@ -111,6 +110,12 @@ class CategoryCount(BaseModel):
     date: date
     topic: str
     n_articles: int
+
+
+class Trend(BaseModel):
+    applicability: bool
+    limitations: list[str]
+    trends: list[CategoryCount] | None
 
 
 #### Policy types ####

@@ -42,12 +42,28 @@ def get_impact(q: ImpactSearch) -> Impact:
         )
     q.impacted_trend.start_date = q.start_date
     q.impacted_trend.end_date = q.end_date
-    trends = get_trend(TrendSearch(**dict(q.impacted_trend)))
+    trends_or_limitation = get_trend(
+        TrendSearch(**dict(q.impacted_trend)), as_json=False
+    )
+    if isinstance(trends_or_limitation, str):
+        return Impact(
+            method_applicability=False,
+            method_limitations=[
+                "There is a problem with the trend data that the impact should be estimated on.",
+                trends_or_limitation,
+            ],
+            impact_estimates=None,
+        )
+    trends = trends_or_limitation
     applicabilities = []
     lims_list = []
     dfs = dict()
     for topic in trends.columns:
         trend = trends[topic]
+        if trend.empty:
+            applicabilities.append(False)
+            lims_list.append([f"No media data available for {q.impacted_trend}."])
+            continue
         trend.name = "count"
         appl, limitations, impact = get_impact_for_single_trend(
             events=events,
@@ -85,7 +101,9 @@ def get_impact(q: ImpactSearch) -> Impact:
                 # relative_impact_time_series=[],
             )
             for topic, impact in dfs.items()
-        },
+        }
+        if applicabilities[0]
+        else None,
     )
 
 
@@ -94,7 +112,7 @@ def get_impact_for_single_trend(
     trend: pd.DataFrame,
     method: Method,
     aggregation="daily",
-) -> tuple[str, str, pd.DataFrame]:
+) -> tuple[bool, list[str], pd.DataFrame]:
     hidden_days_before_protest = 7
     horizon = 28
     match method:

@@ -86,9 +86,9 @@ def code_press_releases(end_date: date) -> pd.DataFrame:
     df = pd.DataFrame(data)
     df["date"] = pd.to_datetime(df["date"], format="%Y-%m-%d").dt.date
     df["description"] = press_releases["title"] + "\n\n" + press_releases["content"]
-    df["organizers"] = [["Last Generation (Germany)"] for _ in range(len(df))]
+    df["organizers"] = [["Last Generation"] for _ in range(len(df))]
     df["source"] = (
-        "Press releases by Last Generation (Germany); scraped from "
+        "Press releases by Last Generation Germany; scraped from "
         + press_releases["url"]
     )
     df = df[(df["event_type"] == "protest") & df["date"].notnull()]

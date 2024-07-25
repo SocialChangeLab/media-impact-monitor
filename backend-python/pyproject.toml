@@ -33,10 +33,6 @@ pandas = "^2.1" # not higher due to causalpy requirements
 causalpy = {git = "https://github.com/SocialChangeLab/CausalPy.git", branch = "davidpomerenke-patch-1" }
 statsforecast = "^1.7.3"
 altair = "^5.3.0"
-dash = "^2.17.0"
-dash-vega-components = "^0.10.0"
-dash-treeview-antd = "^0.0.1"
-dash-bootstrap-components = "^1.6.0"
 number-parser = "^0.3.2"
 litellm = "^1.40.4"
 mediacloud-metadata = "^1.0.2"

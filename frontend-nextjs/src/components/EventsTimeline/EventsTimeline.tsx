@@ -35,16 +35,12 @@ type DataSourceInsertionType = {
 
 const dataSourceInsertions: DataSourceInsertionType[] = [
 	{
-		date: dateToComparableDateItem(new Date("2023-05-01T00:00:00.000Z")),
+		date: dateToComparableDateItem(new Date("2022-01-01T00:00:00.000Z")),
 		name: "ACLED (Armed Conflict Location & Event Data Project)",
 	},
 	{
-		date: dateToComparableDateItem(new Date("2024-05-10T00:00:00.000Z")),
+		date: dateToComparableDateItem(new Date("2022-07-01T00:00:00.000Z")),
 		name: "Press Releases by Last Generation",
-	},
-	{
-		date: dateToComparableDateItem(new Date("2020-05-20T00:00:00.000Z")),
-		name: "GENIOS (German News Online)",
 	},
 ];
 

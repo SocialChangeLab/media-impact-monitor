@@ -47,7 +47,7 @@ function useMediaCoverageData() {
 		staleTime: endOfDay(new Date()).getTime() - new Date().getTime(),
 	});
 
-	useQueryErrorToast("event", query.error);
+	useQueryErrorToast("media coverage", query.error);
 
 	return query;
 }

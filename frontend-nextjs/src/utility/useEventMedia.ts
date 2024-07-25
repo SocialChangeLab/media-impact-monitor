@@ -57,7 +57,7 @@ function useEventMedia(eventId?: ParsedEventType["event_id"]) {
 		}),
 	);
 
-	useQueryErrorToast("event media", query.error);
+	useQueryErrorToast("articles & media", query.error);
 
 	return query;
 }

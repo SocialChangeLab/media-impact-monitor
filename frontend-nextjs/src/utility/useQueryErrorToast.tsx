@@ -1,4 +1,5 @@
 import { useEffect } from "react";
+import slugify from "slugify";
 import { toast } from "sonner";
 import { parseErrorMessage } from "./errorHandlingUtil";
 
@@ -10,7 +11,8 @@ function useQueryErrorToast(
 	useEffect(() => {
 		if (!error || !chartName) return;
 		const { message, details } = parseErrorMessage(error);
-		toast.error(`Error fetching ${chartName}`, {
+		toast.error(`Error fetching the ${chartName} data`, {
+			id: slugify(message, { lower: true, strict: true }),
 			important: true,
 			dismissible: true,
 			duration: 1000000,

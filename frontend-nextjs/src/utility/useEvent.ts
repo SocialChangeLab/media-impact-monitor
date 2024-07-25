@@ -21,7 +21,7 @@ export function getEventQueryOptions(id?: ParsedEventType["event_id"]) {
 function useEvent(id?: ParsedEventType["event_id"]) {
 	const query = useQuery(getEventQueryOptions(id));
 
-	useQueryErrorToast("event", query.error);
+	useQueryErrorToast("protest", query.error);
 
 	const organisations = useMemo(
 		() => (query.data ? extractEventOrganisations([query.data]) : []),

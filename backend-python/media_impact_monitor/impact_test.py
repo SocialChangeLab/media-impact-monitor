@@ -63,6 +63,7 @@ def test_fff_api():
         )
     )
 
+
 def test_impact_empty_trend():
     response = _get_impact(
         ImpactSearch(
@@ -81,6 +82,8 @@ def test_impact_empty_trend():
         )
     )
     data = response.data
-    assert data.method_applicability == False
-    assert data.method_limitations[0].startswith("No media data available")
-    assert data.impact_estimates == None
+    assert not data.method_applicability
+    assert data.method_limitations[0].startswith(
+        "There is a problem with the trend data"
+    )
+    assert data.impact_estimates is None

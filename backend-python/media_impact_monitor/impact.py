@@ -42,14 +42,19 @@ def get_impact(q: ImpactSearch) -> Impact:
         )
     q.impacted_trend.start_date = q.start_date
     q.impacted_trend.end_date = q.end_date
-    trends_or_limitations = get_trend(TrendSearch(**dict(q.impacted_trend)), as_json=False)
-    if isinstance(trends_or_limitations, str):
+    trends_or_limitation = get_trend(
+        TrendSearch(**dict(q.impacted_trend)), as_json=False
+    )
+    if isinstance(trends_or_limitation, str):
         return Impact(
             method_applicability=False,
-            method_limitations=["There is a problem with the trend data that the impact should be estimated on."] + trends_or_limitations,
+            method_limitations=[
+                "There is a problem with the trend data that the impact should be estimated on.",
+                trends_or_limitation,
+            ],
             impact_estimates=None,
         )
-    trends = trends_or_limitations
+    trends = trends_or_limitation
     applicabilities = []
     lims_list = []
     dfs = dict()
@@ -96,7 +101,9 @@ def get_impact(q: ImpactSearch) -> Impact:
                 # relative_impact_time_series=[],
             )
             for topic, impact in dfs.items()
-        } if applicabilities[0] else None,
+        }
+        if applicabilities[0]
+        else None,
     )
 
 

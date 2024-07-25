@@ -40,13 +40,11 @@ def test_estimate_impact():
 
 
 def test_estimate_impacts():
-    # get events and article counts for "Last Generation (Germany)" in 2023
+    # get events and article counts for "Last Generation" in 2023
     events = get_acled_events(
         countries=["Germany"], start_date=date(2023, 7, 1), end_date=date(2023, 12, 31)
     )
-    events = events[
-        events["organizers"].apply(lambda x: "Last Generation (Germany)" in x)
-    ]
+    events = events[events["organizers"].apply(lambda x: "Last Generation" in x)]
     article_counts = get_mediacloud_counts(
         '"Letzte Generation"', start_date=date(2023, 1, 1), end_date=date(2024, 3, 31)
     )
@@ -67,13 +65,11 @@ def test_estimate_impacts():
 
 
 def test_mean_impact_estimates():
-    # get events and article counts for "Last Generation (Germany)" in 2023
+    # get events and article counts for "Last Generation" in 2023
     events = get_acled_events(
         countries=["Germany"], start_date=date(2023, 7, 1), end_date=date(2023, 12, 31)
     )
-    events = events[
-        events["organizers"].apply(lambda x: "Last Generation (Germany)" in x)
-    ]
+    events = events[events["organizers"].apply(lambda x: "Last Generation" in x)]
     article_counts = get_mediacloud_counts(
         '"Letzte Generation"', start_date=date(2023, 1, 1), end_date=date(2024, 3, 31)
     )

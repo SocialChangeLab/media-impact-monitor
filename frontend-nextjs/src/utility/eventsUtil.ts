@@ -109,15 +109,15 @@ function validateGetDataResponse(response: unknown): ParsedEventType[] {
 export const distinctiveColorsMap = Object.fromEntries(
 	Object.entries({
 		"Fridays for Future": `var(--categorical-color-1)`,
-		"Last Generation (Germany)": `var(--categorical-color-2)`,
+		"Last Generation": `var(--categorical-color-2)`,
 		"Extinction Rebellion": `var(--categorical-color-3)`,
 		BUND: `var(--categorical-color-4)`,
 		Greenpeace: `var(--categorical-color-5)`,
 		"Ver.di: United Services Union": `var(--categorical-color-6)`,
 		"Ende Gelaende": `var(--categorical-color-7)`,
-		"The Greens (Germany)": `var(--categorical-color-8)`,
+		"The Greens": `var(--categorical-color-8)`,
 		"MLPD: Marxist-Leninist Party of Germany": `var(--categorical-color-9)`,
-		"The Left (Germany)": `var(--categorical-color-10)`,
+		"The Left": `var(--categorical-color-10)`,
 		"ADFC: German Bicycle Club": `var(--categorical-color-11)`,
 		"SPD: Social Democratic Party of Germany": `var(--categorical-color-12)`,
 		"Government of Germany (2021-)": "var(--categorical-color-13)",

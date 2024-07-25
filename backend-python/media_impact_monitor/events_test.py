@@ -9,7 +9,7 @@ from media_impact_monitor.types_ import EventSearch
 
 def test_events_basic():
     df = get_events(EventSearch(source="acled", end_date=date(2024, 1, 1)))
-    df = df[df["organizers"].apply(lambda x: "Last Generation (Germany)" in x)]
+    df = df[df["organizers"].apply(lambda x: "Last Generation" in x)]
     assert len(df) > 100
 
 

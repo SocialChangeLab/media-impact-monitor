@@ -15,7 +15,7 @@ def test_get_fulltexts_for_org():
             media_source="news_online",
             start_date=date(2024, 5, 1),
             end_date=date(2024, 5, 2),
-            organizers=["Last Generation (Germany)"],
+            organizers=["Last Generation"],
         )
     )
     assert texts is not None
@@ -24,8 +24,8 @@ def test_get_fulltexts_for_org():
 
 def test_get_fulltexts_for_event():
     for event_id in [
-        "f25981c7511ef5fcf091e43c8ccd1fe6",
-        "d77d63eab7282efe7f7ce0e57b43c9ff",
+        "5599ac04e1fab5e59639d5646ed331ec",  # LG event on 2024-05-17
+        "7c46b5c07afe076ee58ae1c79eccc367",  # LG event on 2024-05-18
     ]:
         texts = get_fulltexts(
             FulltextSearch(

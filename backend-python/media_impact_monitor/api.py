@@ -9,7 +9,6 @@ import logging
 import os
 from contextlib import asynccontextmanager
 
-import pandas as pd
 import sentry_sdk
 from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse
@@ -24,7 +23,6 @@ from media_impact_monitor.impact import get_impact
 from media_impact_monitor.policy import get_policy
 from media_impact_monitor.trend import get_trend
 from media_impact_monitor.types_ import (
-    CategoryCount,
     Event,
     EventSearch,
     Fulltext,
@@ -34,6 +32,7 @@ from media_impact_monitor.types_ import (
     Organizer,
     PolicySearch,
     Response,
+    Trend,
     TrendSearch,
 )
 from media_impact_monitor.util.date import get_latest_data
@@ -122,13 +121,10 @@ def _get_events(q: EventSearch) -> Response[EventSearch, list[Event]]:
 
 
 @app.post("/trend")
-def _get_trend(q: TrendSearch) -> Response[TrendSearch, list[CategoryCount]]:
+def _get_trend(q: TrendSearch) -> Response[TrendSearch, Trend]:
     """Fetch media item counts from the Media Impact Monitor database."""
-    df = get_latest_data(get_trend, q)
-    long_df = pd.melt(
-        df.reset_index(), id_vars=["date"], var_name="topic", value_name="n_articles"
-    )
-    return Response(query=q, data=long_df.to_dict(orient="records"))
+    data = get_latest_data(get_trend, q)
+    return Response(query=q, data=data)
 
 
 @app.post("/fulltexts")

@@ -49,7 +49,7 @@ def test_get_trend_success(client):
         },
     )
     assert response.status_code == 200
-    assert isinstance(response.json()["data"], list)
+    assert isinstance(response.json()["data"], dict)
 
 
 @pytest.mark.filterwarnings("ignore::DeprecationWarning")

@@ -43,19 +43,19 @@ def code_fulltext(text: str) -> float | None:
             tools=tools,
             tool_choice={"type": "function", "function": {"name": "score_sentiment"}},
             temperature=0.0,
+            max_tokens=1000,
         )
     except BadRequestError as e:
         print("error coding sentiment:", e)
         return
     try:
-        result = json.loads(
-            response.choices[0].message.tool_calls[0].function.arguments
-        )
-        assert "sentiment_reasoning" in result and "sentiment" in result
-        assert isinstance(result["sentiment"], int)
-        return result
-    except json.JSONDecodeError as e:
-        print("error coding sentiment:", e)
+        result = response.choices[0].message.tool_calls[0].function.arguments
+        data = json.loads(result)
+        assert "sentiment_reasoning" in data and "sentiment" in data
+        data["sentiment"] = int(data["sentiment"])
+        return data
+    except (json.JSONDecodeError, AssertionError):
+        print(f"error coding sentiment. text: {text[:50]}, response: {result}")
         return
 
 

@@ -64,6 +64,7 @@ def get_mediacloud_fulltexts(
     start_date: date = date(2024, 5, 1),
     countries: list | None = None,
     platform: Platform = "onlinenews-mediacloud",
+    sample: bool = False,
 ) -> pd.DataFrame | None:
     """
     Retrieves fulltexts of news articles from MediaCloud based on the given query and params.
@@ -111,6 +112,9 @@ def get_mediacloud_fulltexts(
         return None
     df = pd.DataFrame(all_stories)
     df["publish_date"] = pd.to_datetime(df["publish_date"]).dt.date
+    if sample and len(df) > 1_000:
+        df = df.sample(1_000, random_state=0)
+        df.to_csv("sample.csv", index=False)
     responses = get_proxied_many(df["url"], desc="Retrieving fulltexts")
     df["text"] = [
         _extract(url, response.text) if response else None

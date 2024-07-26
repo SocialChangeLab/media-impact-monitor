@@ -25,7 +25,7 @@ from media_impact_monitor.util.paths import src
 
 
 @cache
-def get_fulltexts(q: FulltextSearch) -> pd.DataFrame | None:
+def get_fulltexts(q: FulltextSearch, sample: bool = False) -> pd.DataFrame | None:
     assert (
         q.topic or q.organizers or q.query or q.event_id
     ), "One of 'topic', 'organizers', 'query', or 'event_id' must be provided."
@@ -82,6 +82,7 @@ def get_fulltexts(q: FulltextSearch) -> pd.DataFrame | None:
                 start_date=q.start_date,
                 end_date=q.end_date,
                 countries=["Germany"],
+                sample=sample,
             )
         case _:
             raise ValueError(

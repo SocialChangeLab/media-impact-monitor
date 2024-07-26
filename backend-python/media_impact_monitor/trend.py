@@ -10,12 +10,7 @@ def get_trend(q: TrendSearch, as_json=True) -> Trend:
         case "keywords":
             df = get_keyword_trend(q)
         case "sentiment":
-            df = get_sentiment_trend(
-                query=q.query,
-                start_date=q.start_date,
-                end_date=q.end_date,
-                media_source=q.media_source,
-            )
+            df = get_sentiment_trend(q)
         case _:
             raise ValueError(f"Unsupported trend type: {q.trend_type}")
     if not as_json:
@@ -23,9 +18,15 @@ def get_trend(q: TrendSearch, as_json=True) -> Trend:
     match df:
         case pd.DataFrame():
             long_df = pd.melt(
-                df.reset_index(), id_vars=["date"], var_name="topic", value_name="n_articles"
+                df.reset_index(),
+                id_vars=["date"],
+                var_name="topic",
+                value_name="n_articles",
             )
-            return Trend(applicability=True, limitations=[], trends=long_df.to_dict(orient="records"))
+            return Trend(
+                applicability=True,
+                limitations=[],
+                trends=long_df.to_dict(orient="records"),
+            )
         case str:
             return Trend(applicability=False, limitations=[df], trends=None)
-    

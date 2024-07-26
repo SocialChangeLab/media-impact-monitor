@@ -83,7 +83,7 @@ Aggregation = Literal["daily", "weekly", "monthly"]
 
 class TrendSearch(BaseModel):
     trend_type: TrendType = Field(
-        description="What type of trend to obtain: the frequency of a keyword, the value of a sentiment, or the frequencies of multiple sub-topics. Depending on the type, you have further configuration options. Currently only keyword frequencies are supported."
+        description="What type of trend to obtain: the frequency of a keyword, the value of a sentiment, or the frequencies of multiple sub-topics. Depending on the type, you have further configuration options. Currently only keyword frequencies and sentiments are supported."
     )
     media_source: MediaSource = Field(
         description="The data source for the media data (i.e., online news, print news, etc.)."
@@ -91,7 +91,8 @@ class TrendSearch(BaseModel):
     start_date: date | None = StartDateField
     end_date: date | None = EndDateField
     topic: Topic | None = Field(
-        description="When retrieving keyword frequencies, this automatically sets relevant sets of keywords. Currently only _climate_change_ is supported."
+        default=None,
+        description="When retrieving keyword frequencies, this automatically sets relevant sets of keywords. Currently only _climate_change_ is supported.",
     )
     aggregation: Aggregation = Field(
         default="daily", description="The time aggregation of the trend."

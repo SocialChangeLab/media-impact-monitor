@@ -35,7 +35,7 @@ export default function HomePageWithSuspense() {
 							"flex items-center gap-3 not-prose",
 						)}
 					>
-						<AppLogo showType={false} className="text-brandWhite" />{" "}
+						<AppLogo hideType className="text-brandWhite" />{" "}
 						<span className="text-brandWhite opacity-50 text-sm">alpha</span>
 					</span>
 					<h1 className="text-4xl font-bold font-headlines antialiased text-brandWhite pr-12 md:pr-0 mt-8 mb-6 text-balance">

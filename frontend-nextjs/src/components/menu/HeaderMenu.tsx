@@ -2,8 +2,12 @@
 import ThemeToggle from "@/components/ThemeToggle";
 import AppLogo from "@/components/logos/AppLogo";
 import { cn } from "@/utility/classNames";
-import { memo } from "react";
+import useMediaQuery from "@custom-react-hooks/use-media-query";
+import { MenuIcon } from "lucide-react";
+import { memo, useEffect, useState } from "react";
 import InternalLink from "../InternalLink";
+import { Button } from "../ui/button";
+import { Drawer, DrawerContent, DrawerTrigger } from "../ui/drawer";
 import HeaderMenuLink from "./HeaderMenuLink";
 
 type MenuItemType = {
@@ -76,7 +80,101 @@ export function doesPathnameShowTimeFilter(pathname: string) {
 	return menuItem.showTimeFilter;
 }
 
+const MobileNavigation = memo(
+	({
+		menuItems,
+		currentPage,
+		isOpened = false,
+		onOpenChange,
+	}: {
+		menuItems: MenuItemType[];
+		currentPage: string;
+		isOpened?: boolean;
+		onOpenChange?: (isOpened: boolean) => void;
+	}) => (
+		<ul
+			className={cn(`flex flex-row-reverse gap-4 items-center lg:hidden`)}
+			aria-label="Main menu items"
+		>
+			<Drawer direction="right" onOpenChange={onOpenChange} open={isOpened}>
+				<li aria-label="Main mobile navigation">
+					<DrawerTrigger>
+						<Button variant="ghost" size="icon">
+							<MenuIcon />
+						</Button>
+					</DrawerTrigger>
+				</li>
+				<DrawerContent>
+					<strong className="text-xl font-headlines font-semibold px-8 py-7">
+						Menu
+					</strong>
+					<ul
+						className={cn(`flex flex-col gap-4 p-4`)}
+						aria-label="Main menu items"
+					>
+						{menuItems.map((item) => (
+							<HeaderMenuLink
+								key={item.name}
+								href={item.route}
+								title={item.label}
+								active={currentPage === item.name}
+							/>
+						))}
+					</ul>
+				</DrawerContent>
+			</Drawer>
+			<li aria-label="Main menu link: Other actions">
+				<div className="text-fg inline-flex items-center">
+					<ThemeToggle />
+				</div>
+			</li>
+		</ul>
+	),
+);
+
+const DesktopNavigation = memo(
+	({
+		menuItems,
+		currentPage,
+	}: { menuItems: MenuItemType[]; currentPage: string }) => (
+		<ul
+			className={cn(
+				`flex-col md:flex-row md:gap-4 items-center`,
+				`hidden lg:flex`,
+			)}
+			aria-label="Main menu items"
+		>
+			{menuItems.map((item) => (
+				<HeaderMenuLink
+					key={item.name}
+					href={item.route}
+					title={item.label}
+					active={currentPage === item.name}
+				/>
+			))}
+			<li
+				aria-label="Main menu link: Other actions"
+				className={cn(
+					`w-full md:w-auto py-5 md:p-0 text-grayDark`,
+					`flex justify-between items-center pr-5 md:pr-0`,
+				)}
+			>
+				<div className="text-fg inline-flex items-center">
+					<ThemeToggle />
+				</div>
+			</li>
+		</ul>
+	),
+);
+
 function HeaderMenu({ currentPage }: { currentPage: string }) {
+	const isDesktop = useMediaQuery("(min-width: 1024px)");
+	const [isMenuOpen, setIsMenuOpen] = useState(false);
+
+	useEffect(() => {
+		isDesktop && setIsMenuOpen(false);
+	}, [isDesktop]);
+
 	return (
 		<nav
 			className={cn(
@@ -90,35 +188,18 @@ function HeaderMenu({ currentPage }: { currentPage: string }) {
 				title="Home"
 				className={cn(
 					"opacity-100 motion-safe:transition-opacity hover:opacity-80 focusable",
-					"flex items-start gap-3",
+					"flex items-center lg:items-start gap-3",
 				)}
 			>
 				<AppLogo /> <span className="text-grayDark text-sm">alpha</span>
 			</InternalLink>
-			<ul
-				className={cn(`flex flex-col md:flex-row md:gap-4 items-center`)}
-				aria-label="Main menu items"
-			>
-				{menuItems.map((item) => (
-					<HeaderMenuLink
-						key={item.name}
-						href={item.route}
-						title={item.label}
-						active={currentPage === item.name}
-					/>
-				))}
-				<li
-					aria-label="Main menu link: Other actions"
-					className={cn(
-						`w-full md:w-auto py-5 md:p-0 text-grayDark`,
-						`flex justify-between items-center pr-5 md:pr-0`,
-					)}
-				>
-					<div className="text-fg inline-flex items-center">
-						<ThemeToggle />
-					</div>
-				</li>
-			</ul>
+			<DesktopNavigation menuItems={menuItems} currentPage={currentPage} />
+			<MobileNavigation
+				menuItems={menuItems}
+				currentPage={currentPage}
+				isOpened={isMenuOpen}
+				onOpenChange={setIsMenuOpen}
+			/>
 		</nav>
 	);
 }

@@ -1,15 +1,18 @@
+import { cn } from "@/utility/classNames";
 import type { SVGProps } from "react";
 
 function Logo({
-	showType = true,
+	hideType = false,
 	...props
 }: SVGProps<SVGSVGElement> & {
-	showType?: boolean;
+	hideType?: boolean;
 }) {
 	return (
 		<div
-			className="overflow-clip"
-			style={{ height: 41, width: showType ? 344 : 41 }}
+			className={cn(
+				"overflow-clip h-[41px] w-[41px] lg:w-[344px]",
+				hideType && "lg:w-[41px]",
+			)}
 		>
 			<svg
 				width="344"
@@ -38,7 +41,7 @@ function Logo({
 				<mask id="path-3-inside-1_141_208" fill="white">
 					<path d="M39 0H133V41H39V0Z" />
 				</mask>
-				{showType && (
+				{!hideType && (
 					<>
 						<path
 							d="M39 0V-1.5H37.5V0H39ZM133 0H134.5V-1.5H133V0ZM133 41V42.5H134.5V41H133ZM39 41H37.5V42.5H39V41ZM39 1.5H133V-1.5H39V1.5ZM131.5 0V41H134.5V0H131.5ZM133 39.5H39V42.5H133V39.5ZM40.5 41V0H37.5V41H40.5Z"

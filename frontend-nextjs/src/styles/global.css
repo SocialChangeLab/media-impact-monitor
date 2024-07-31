@@ -3,6 +3,11 @@
 @tailwind utilities;
 
 @layer base {
+	html {
+		font-size: clamp(0.88rem, 0.282353vi + 0.81rem, 1rem);
+		line-height: calc(2px + 2ex + 2px);
+	}
+
 	::-moz-selection,
 	::selection {
 		@apply text-alt bg-fg;

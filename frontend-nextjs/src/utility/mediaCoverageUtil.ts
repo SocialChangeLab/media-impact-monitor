@@ -23,10 +23,37 @@ export type ParsedMediaCoverageType = z.infer<
 	typeof parsedMediaCoverageZodSchema
 >;
 
-const mediaDataTypeZodSchema = z.array(parsedMediaCoverageZodSchema);
+const mediaDataTypeZodSchema = z.union([
+	z.object({
+		applicability: z.literal(true),
+		limitations: z.array(z.string()),
+		trends: z.array(mediaCoverageZodSchema),
+	}),
+	z.object({
+		applicability: z.literal(false),
+		limitations: z.array(z.string()),
+		trends: z.null(),
+	}),
+]);
+
+const parsedMediaCoverageResponseTypeZodSchema = z.union([
+	z.object({
+		applicability: z.literal(true),
+		limitations: z.array(z.string()),
+		trends: z.array(parsedMediaCoverageZodSchema),
+	}),
+	z.object({
+		applicability: z.literal(false),
+		limitations: z.array(z.string()),
+		trends: z.null(),
+	}),
+]);
+export type ParsedMediaCoverageResponseType = z.infer<
+	typeof parsedMediaCoverageResponseTypeZodSchema
+>;
 
 const mediaCoverageDataResponseTypeZodSchema = z.object({
-	data: mediaCoverageZodSchema.array(),
+	data: mediaDataTypeZodSchema,
 	isPending: z.boolean().optional(),
 	error: z.union([z.string(), z.null()]).optional(),
 });
@@ -39,7 +66,7 @@ export async function getMediaCoverageData(
 		organizers: EventOrganizerSlugType[];
 		mediaSource: MediaSourceType;
 	},
-): Promise<ParsedMediaCoverageType[]> {
+): Promise<ParsedMediaCoverageResponseType> {
 	const json = await fetchApiData({
 		endpoint: "trend",
 		body: {
@@ -50,18 +77,24 @@ export async function getMediaCoverageData(
 	return validateGetDataResponse(json);
 }
 
-function validateGetDataResponse(response: unknown): ParsedMediaCoverageType[] {
+function validateGetDataResponse(
+	response: unknown,
+): ParsedMediaCoverageResponseType {
 	try {
 		const parsedResponse =
 			mediaCoverageDataResponseTypeZodSchema.parse(response);
-		const sortedMedia = parsedResponse.data
-			.filter((x) => isValidISODateString(x.date))
+		const sortedMedia = parsedResponse.data.trends
+			?.filter((x) => isValidISODateString(x.date))
 			.map((x) => ({
 				...x,
 				...dateToComparableDateItem(x.date),
 			}))
 			.sort((a, b) => dateSortCompare(a.date, b.date));
-		return mediaDataTypeZodSchema.parse(sortedMedia);
+		return parsedMediaCoverageResponseTypeZodSchema.parse({
+			applicability: parsedResponse.data.applicability,
+			limitations: parsedResponse.data.limitations,
+			data: sortedMedia,
+		});
 	} catch (error) {
 		throw formatZodError(error);
 	}

@@ -24,7 +24,9 @@ import { slugifyCssClass } from "@/utility/cssSlugify";
 import { parseErrorMessage } from "@/utility/errorHandlingUtil";
 import useMediaCoverageData from "@/utility/useKeywords";
 import { QueryErrorResetBoundary } from "@tanstack/react-query";
+import { LineChartIcon } from "lucide-react";
 import { ErrorBoundary } from "next/dist/client/components/error-boundary";
+import ChartLimitations from "../ChartLimitations";
 import MediaCoverageChartEmpty from "./MediaCoverageChartEmpty";
 import MediaCoverageChartError from "./MediaCoverageChartError";
 import MediaCoverageChartLegend from "./MediaCoverageChartLegend";
@@ -206,7 +208,12 @@ function MediaCoverageChartWithData({ reset }: { reset?: () => void }) {
 		return (
 			<MediaCoverageChartError {...parseErrorMessage(isError)} reset={reset} />
 		);
-	if (isSuccess && data.length > 0) return <MediaCoverageChart data={data} />;
+	if (isSuccess && data.applicability === false && data.limitations.length > 0)
+		return (
+			<ChartLimitations limitations={data.limitations} Icon={LineChartIcon} />
+		);
+	if (isSuccess && data.applicability && data.trends.length > 0)
+		return <MediaCoverageChart data={data.trends} />;
 	return <MediaCoverageChartEmpty />;
 }
 export default function MediaCoverageChartWithErrorBoundary() {

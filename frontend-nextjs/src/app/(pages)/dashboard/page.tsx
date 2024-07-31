@@ -13,17 +13,18 @@ export default function EventsPageWithSuspense() {
 				headline="What protests are happening?"
 				description={
 					<>
-						<p>
+						<p className="text-pretty">
 							See protests over time for each of the selected organisations.
 						</p>
-						<p>
+						<p className="text-pretty">
 							Hover and click on the bubbles for more information on the
 							individual protest events.
 						</p>
-						<p>Currently, we cover only climate protests in Germany.</p>
+						<p className="text-pretty">
+							Currently, we cover only climate protests in Germany.
+						</p>
 					</>
 				}
-				helpSlug="protestTimeline"
 			>
 				<EventsTimeline />
 			</SectionHeadlineWithExplanation>
@@ -31,10 +32,10 @@ export default function EventsPageWithSuspense() {
 				headline="What topics are the focus of public discourse?"
 				description={
 					<>
-						<p>
+						<p className="text-pretty">
 							See how many articles are published on various topics over time.
 						</p>
-						<p>
+						<p className="text-pretty">
 							Use the filters to switch between online newspaper articles, print
 							newspaper articles, and queries that people search for on Google.
 						</p>
@@ -49,12 +50,12 @@ export default function EventsPageWithSuspense() {
 				headline="How do the protests influence the topic focus?"
 				description={
 					<>
-						<p>
+						<p className="text-pretty">
 							See how the protests bring more (or less) focus on the issues that
 							they advocate for, and compare how different organizations have
 							different impacts on public discourse.
 						</p>
-						<p>
+						<p className="text-pretty">
 							For this chart we connect the protest data and the media data from
 							above, and compute impact statistics.
 						</p>

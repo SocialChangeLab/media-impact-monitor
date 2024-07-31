@@ -17,7 +17,7 @@ function useQueryErrorToast(
 			dismissible: true,
 			duration: 1000000,
 			closeButton: true,
-			description: message,
+			description: details || message,
 		});
 	}, [error]);
 }

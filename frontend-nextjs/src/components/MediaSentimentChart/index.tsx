@@ -23,7 +23,9 @@ import { slugifyCssClass } from "@/utility/cssSlugify";
 import { parseErrorMessage } from "@/utility/errorHandlingUtil";
 import useMediaSentimentData from "@/utility/useMediaSentiment";
 import { QueryErrorResetBoundary } from "@tanstack/react-query";
+import { BarChartIcon } from "lucide-react";
 import { ErrorBoundary } from "next/dist/client/components/error-boundary";
+import ChartLimitations from "../ChartLimitations";
 import TopicChartTooltip from "../TopicChartTooltip";
 import MediaSentimentChartEmpty from "./MediaSentimentChartEmpty";
 import MediaSentimentChartError from "./MediaSentimentChartError";
@@ -204,7 +206,12 @@ function MediaSentimentChartWithData({ reset }: { reset?: () => void }) {
 		return (
 			<MediaSentimentChartError {...parseErrorMessage(isError)} reset={reset} />
 		);
-	if (isSuccess && data.length > 0) return <MediaSentimentChart data={data} />;
+	if (isSuccess && data.applicability === false && data.limitations.length > 0)
+		return (
+			<ChartLimitations limitations={data.limitations} Icon={BarChartIcon} />
+		);
+	if (isSuccess && data.applicability && data.trends.length > 0)
+		return <MediaSentimentChart data={data.trends} />;
 	return <MediaSentimentChartEmpty />;
 }
 export default function MediaCoverageChartWithErrorBoundary() {

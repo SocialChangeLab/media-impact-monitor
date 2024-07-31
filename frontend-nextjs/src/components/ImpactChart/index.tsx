@@ -7,6 +7,7 @@ import { QueryErrorResetBoundary } from "@tanstack/react-query";
 import type { icons } from "lucide-react";
 import { ErrorBoundary } from "next/dist/client/components/error-boundary";
 import { Suspense } from "react";
+import ChartLoadingPlaceholder from "../ChartLoadingPlaceholder";
 import ComponentError from "../ComponentError";
 import ImpactChart from "./ImpactChart";
 
@@ -37,16 +38,7 @@ function ImpactChartError(props: ImpactChartErrorProps) {
 }
 
 function ImpactChartLoading() {
-	return (
-		<div
-			className={cn(
-				"w-full min-h-96 p-8 border border-grayLight",
-				"flex items-center justify-center bg-grayUltraLight",
-			)}
-		>
-			<span>Loading data...</span>
-		</div>
-	);
+	return <ChartLoadingPlaceholder />;
 }
 
 function ImpactChartEmpty() {

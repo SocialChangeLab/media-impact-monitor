@@ -10,6 +10,8 @@ export function formatZodError(error: unknown) {
 			.join(", ");
 		return `ZodError&&&${errorMessage}`;
 	}
-	if (error instanceof Error) return `${error.name}&&&${error.name}`;
+	if (error instanceof Error) {
+		return `${error.name}&&&${error.name}`;
+	}
 	return `UnknownError&&&${error}`;
 }

@@ -1,10 +1,8 @@
 "use client";
 import { cn } from "@/utility/classNames";
 import { parseErrorMessage } from "@/utility/errorHandlingUtil";
-import type {
-	EventOrganizerSlugType,
-	OrganisationType,
-} from "@/utility/eventsUtil";
+import type { EventOrganizerSlugType } from "@/utility/eventsUtil";
+import { getOrgStats } from "@/utility/orgsUtil";
 import useEvents from "@/utility/useEvents";
 import { QueryErrorResetBoundary } from "@tanstack/react-query";
 import { ArrowLeft } from "lucide-react";
@@ -25,7 +23,14 @@ const PlaceholderSkeleton = memo(
 );
 
 const OrganisationPageWithPopulatedData = memo(
-	({ org }: { org?: OrganisationType }) => {
+	({
+		slug,
+		data,
+	}: {
+		data?: ReturnType<typeof useEvents>["data"];
+		slug: EventOrganizerSlugType;
+	}) => {
+		const org = data?.organisations.find((x) => x.slug === slug);
 		const title = useMemo(
 			() => (
 				<>
@@ -40,12 +45,21 @@ const OrganisationPageWithPopulatedData = memo(
 					{org ? (
 						<span>{org.name}</span>
 					) : (
-						<PlaceholderSkeleton width={180} height={30} />
+						<PlaceholderSkeleton width={180} height={36} />
 					)}
 				</>
 			),
 			[org],
 		);
+
+		const stats = useMemo(() => {
+			if (!data || !org) return;
+			return getOrgStats({
+				events: data.events,
+				organisations: data.organisations,
+				organisation: org,
+			});
+		}, [data, org]);
 		return (
 			<div className="grid md:grid-cols-[3fr,1fr] lg:grid-cols-[2fr,1fr] border-b border-grayLight min-h-56">
 				<div className="px-[max(1rem,2vmax)] pt-[max(1.25rem,2.5vmax)] pb-[max(1.25rem,4vmax)] flex flex-col gap-4 min-h-full">
@@ -59,9 +73,50 @@ const OrganisationPageWithPopulatedData = memo(
 					<h1 className="text-3xl font-bold font-headlines flex gap-3 items-center">
 						{title}
 					</h1>
-					<InternalLink href={`/organisations/extinction-rebellion`}>
-						Extincion Rebellion
-					</InternalLink>
+					<dl className="inline-grid grid-cols-[auto,1fr] gap-x-6 gap-y-2 items-center">
+						<dt>Total Events</dt>
+						<dd>
+							{stats ? (
+								Math.round(stats.totalEvents).toLocaleString("en-GB")
+							) : (
+								<PlaceholderSkeleton height="1rem" width={30} />
+							)}
+						</dd>
+						<dt>Total Participants</dt>
+						<dd>
+							{stats ? (
+								Math.round(stats.totalParticipants).toLocaleString("en-GB")
+							) : (
+								<PlaceholderSkeleton height="1rem" width={60} />
+							)}
+						</dd>
+						<dt>Avg. Participants</dt>
+						<dd>
+							{stats ? (
+								Math.round(stats.avgParticipantsPerEvent).toLocaleString(
+									"en-GB",
+								)
+							) : (
+								<PlaceholderSkeleton height="1rem" width={50} />
+							)}
+						</dd>
+						<dt>Avg. Partners</dt>
+						<dd>
+							{stats ? (
+								Math.round(stats.avgPartnerOrgsPerEvent).toLocaleString("en-GB")
+							) : (
+								<PlaceholderSkeleton height="1rem" width={20} />
+							)}
+						</dd>
+						<dt>Total Partners</dt>
+						<dd>
+							{stats ? (
+								Math.round(stats.totalPartners).toLocaleString("en-GB")
+							) : (
+								<PlaceholderSkeleton height="1rem" width={30} />
+							)}
+						</dd>
+					</dl>
 				</div>
 				<div className="relative border-l border-grayLight bg-grayUltraLight">
 					<Image
@@ -84,8 +139,7 @@ const OrganisationPageWithPopulatedData = memo(
 const OrganisationPageHeader = memo(
 	({ slug }: { slug: EventOrganizerSlugType }) => {
 		const { data } = useEvents();
-		const org = data?.organisations.find((x) => x.slug === slug);
-		return <OrganisationPageWithPopulatedData org={org} />;
+		return <OrganisationPageWithPopulatedData data={data} slug={slug} />;
 	},
 );
 
@@ -107,7 +161,9 @@ export default function OrganisationPageHeaderWithData({
 						);
 					}}
 				>
-					<Suspense fallback={<OrganisationPageWithPopulatedData />}>
+					<Suspense
+						fallback={<OrganisationPageWithPopulatedData slug={slug} />}
+					>
 						<OrganisationPageHeader slug={slug} />
 					</Suspense>
 				</ErrorBoundary>

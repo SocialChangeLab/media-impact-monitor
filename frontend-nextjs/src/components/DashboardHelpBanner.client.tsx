@@ -134,7 +134,7 @@ function DashboardHelpBannerClient({
 			initial={isExpanded ? "expanded" : "collapsed"}
 			animate={isExpanded ? "expanded" : "collapsed"}
 			className={cn(
-				"px-[max(1rem,2vmax)] overflow-clip",
+				"px-[var(--pagePadding)] overflow-clip",
 				"border-b border-grayLight last-of-type:border-b-0",
 			)}
 		>

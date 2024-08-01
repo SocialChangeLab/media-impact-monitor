@@ -136,7 +136,7 @@ const MediaCoverageChart = memo(
 							className="bg-pattern-soft"
 							margin={{
 								top: 0,
-								right: 30,
+								right: 0,
 								left: 0,
 								bottom: 24,
 							}}

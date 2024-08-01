@@ -1,7 +1,6 @@
 "use client";
 
 import Footer from "@/components/Footer";
-import { useUiStore } from "@/providers/UiStoreProvider";
 import "@/styles/global.css";
 import { cn } from "@/utility/classNames";
 import { motion } from "framer-motion";
@@ -21,10 +20,6 @@ export function BaseLayout({
 	const currentPage = pathname.split("/")[1] || "home";
 	const showFilters = doesPathnameShowAnyFilter(pathname);
 	const previouslyShown = useRef(showFilters);
-	const { scrollThreshold, filtersHeight } = useUiStore((state) => ({
-		scrollThreshold: state.scrollThresholdConsideredTheTop,
-		filtersHeight: state.filtersAreaHeightDesktop,
-	}));
 
 	const shouldExit = useMemo(() => {
 		if (!previouslyShown.current) return showFilters;
@@ -42,9 +37,9 @@ export function BaseLayout({
 					"maxPage:border-x maxPage:border-grayLight min-h-screen grid-rows-[1fr_auto]",
 				)}
 				variants={{
-					withoutFilters: { paddingTop: scrollThreshold },
+					withoutFilters: { paddingTop: `var(--headerHeight)` },
 					withFilters: {
-						paddingTop: scrollThreshold + filtersHeight,
+						paddingTop: `calc(var(--headerHeight) + var(--filtersHeight)`,
 					},
 				}}
 				initial={showFilters ? "withFilters" : "withoutFilters"}

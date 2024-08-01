@@ -10,13 +10,10 @@ import { type ReactNode, Suspense } from "react";
 
 function DocsLayout({ children }: { children: ReactNode }) {
 	const docsPagesToc = getDocsToc();
-	const uiState = useUiStore(
-		({ isScrolledToTop, isScrollingUp, scrollThresholdConsideredTheTop }) => ({
-			isScrolledToTop,
-			isScrollingUp,
-			scrollThresholdConsideredTheTop,
-		}),
-	);
+	const uiState = useUiStore(({ isScrolledToTop, isScrollingUp }) => ({
+		isScrolledToTop,
+		isScrollingUp,
+	}));
 	return (
 		<main className={cn("grid grid-cols-[20rem_1fr_20rem]", "min-h-content")}>
 			<nav

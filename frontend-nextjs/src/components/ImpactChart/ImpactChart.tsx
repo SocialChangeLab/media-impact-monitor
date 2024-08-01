@@ -197,7 +197,7 @@ function ImpactChart(props: ImpactChartProps) {
 				className="grid"
 				style={{ gridTemplateColumns: `repeat(${props.columns.length}, 1fr)` }}
 			>
-				{props.columns.map(({ id, data, limitations }) => {
+				{props.columns.map(({ id, data, limitations, error }) => {
 					return (
 						<div key={`column-${id}`} className="pt-6">
 							<ImpactChartRow
@@ -205,6 +205,7 @@ function ImpactChart(props: ImpactChartProps) {
 								impacts={data}
 								unitLabel={props.unitLabel}
 								limitations={limitations}
+								error={error}
 							/>
 						</div>
 					);

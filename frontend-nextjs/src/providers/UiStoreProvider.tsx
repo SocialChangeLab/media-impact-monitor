@@ -43,6 +43,9 @@ export const useUiStore = <T,>(selector: (store: UiStore) => T): T => {
 			if (typeof window === "undefined" || typeof document === "undefined")
 				return;
 			if (!filtersStoreContext) return;
+			const header = document.getElementById("main-navigation");
+			const headerHeight =
+				Math.floor(header?.getBoundingClientRect().height ?? 76) - 1;
 			const currentScroll =
 				window.scrollY ??
 				document.documentElement.scrollTop ??
@@ -51,14 +54,10 @@ export const useUiStore = <T,>(selector: (store: UiStore) => T): T => {
 			const lastScrollValue = lastScroll.current;
 			lastScroll.current = currentScroll;
 
-			const {
-				scrollThresholdConsideredTheTop,
-				isScrollingUp,
-				isScrolledToTop,
-			} = filtersStoreContext.getState() || defaultInitState;
+			const { isScrollingUp, isScrolledToTop } =
+				filtersStoreContext.getState() || defaultInitState;
 
-			const newIsScrolledToTop =
-				currentScroll <= scrollThresholdConsideredTheTop;
+			const newIsScrolledToTop = currentScroll <= headerHeight;
 			if (isScrolledToTop !== newIsScrolledToTop) {
 				filtersStoreContext.setState({ isScrolledToTop: newIsScrolledToTop });
 			}

@@ -1,7 +1,7 @@
 "use client";
 import { useUiStore } from "@/providers/UiStoreProvider";
 import { cn } from "@/utility/classNames";
-import { motion } from "framer-motion";
+import { motion, useAnimationFrame } from "framer-motion";
 import { usePathname } from "next/navigation";
 import { type ReactNode, memo, useMemo, useRef } from "react";
 import MediaSourceSelect from "../DataSourceSelect";
@@ -19,6 +19,7 @@ function FiltersArea() {
 	const pathname = usePathname();
 	const lastPathname = useRef(pathname);
 	const isScrolledToTop = useUiStore((state) => state.isScrolledToTop);
+	const parentRef = useRef<HTMLElement>(null);
 
 	const display = useMemo(() => {
 		const any = doesPathnameShowAnyFilter(pathname);
@@ -45,13 +46,27 @@ function FiltersArea() {
 		return wasShown && !display.any;
 	}, [display.any]);
 
+	useAnimationFrame(() => {
+		if (!parentRef.current) return;
+		const height = parentRef.current.getBoundingClientRect().height;
+		document.documentElement.style.setProperty(
+			"--filtersHeight",
+			`${Math.floor(height)}px`,
+		);
+	});
+
 	return (
 		<motion.nav
+			ref={parentRef}
 			initial={previouslyShown ? "visible" : "hidden"}
 			animate={display.any ? "visible" : "hidden"}
 			exit="hidden"
 			variants={{
-				hidden: { transform: "translateY(-100%)", opacity: 0 },
+				hidden: {
+					transform: "translateY(-100%)",
+					opacity: 0,
+					pointerEvents: "none",
+				},
 				visible: { transform: "translateY(0%)", opacity: 1 },
 			}}
 			transition={{
@@ -61,8 +76,9 @@ function FiltersArea() {
 			aria-label="Page filters"
 			className={cn(
 				`w-screen flex flex-col relative z-40`,
-				`px-[clamp(2rem,2vmax,4rem)] mx-auto maxPage:border-x maxPage:border-grayLight`,
+				`px-[var(--pagePadding)] mx-auto maxPage:border-x maxPage:border-grayLight`,
 				`border-b bg-pattern-soft max-w-page`,
+				isScrolledToTop && `pointer-events-none`,
 				isScrolledToTop ? `py-[max(0.25rem,1vmax)]` : `py-2`,
 				isScrolledToTop ? `gap-[max(0.25rem,0.75vmax)]` : `gap-2`,
 				isScrolledToTop
@@ -77,7 +93,7 @@ function FiltersArea() {
 				)}
 			>
 				{(display.media || display.organisations) && (
-					<ul className="flex gap-6 items-center flex-wrap">
+					<ul className="flex gap-4 lg:gap-6 items-center flex-wrap">
 						{display.media && (
 							<li className="flex flex-col gap-1 text-sm">
 								<FilterLabel show={isScrolledToTop}>Media source:</FilterLabel>
@@ -106,7 +122,13 @@ function FiltersArea() {
 
 const FilterLabel = memo(
 	({ children, show }: { children: ReactNode; show: boolean }) => (
-		<div className={cn("overflow-clip transition-all", show ? "h-5" : "h-0")}>
+		<div
+			className={cn(
+				"overflow-clip transition-all hidden lg:block",
+				`pointer-events-auto`,
+				show ? "h-5" : "h-0",
+			)}
+		>
 			<span className="text-sm">{children}</span>
 		</div>
 	),

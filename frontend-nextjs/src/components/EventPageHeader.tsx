@@ -69,7 +69,7 @@ const EventPageWithPopulatedData = memo(
 		);
 		return (
 			<div className="grid md:grid-cols-[3fr,1fr] lg:grid-cols-[2fr,1fr] border-b border-grayLight">
-				<div className="px-[max(1rem,2vmax)] pt-[max(1.25rem,2.5vmax)] pb-[max(1.25rem,4vmax)] flex flex-col gap-4 min-h-full">
+				<div className="px-[var(--pagePadding)] pt-[max(1.25rem,2.5vmax)] pb-[max(1.25rem,4vmax)] flex flex-col gap-4 min-h-full">
 					<h1 className="text-3xl font-bold font-headlines">{title}</h1>
 					<dl className="inline-grid grid-cols-[auto,1fr] gap-x-6 gap-y-2 items-center">
 						<dt className="w-fit">City</dt>

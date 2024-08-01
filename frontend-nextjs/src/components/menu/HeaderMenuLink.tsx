@@ -26,7 +26,7 @@ function HeaderMenuLink({
 				href={href ?? "/"}
 				aria-label={`Header menu link: ${ariaLabel || title} page`}
 				className={cn(
-					`py-1.5 px-4 motion-safe:transition-colors`,
+					`py-1.5 px-3 xl:px-4 motion-safe:transition-colors`,
 					`inline-block border border-transparent`,
 					`focusable`,
 					!active &&

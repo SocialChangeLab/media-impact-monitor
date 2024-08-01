@@ -102,26 +102,34 @@ export const DatePickerWithRange = memo(
 						<Button
 							id="date"
 							variant={"outline"}
-							className={cn("font-normal", !date && "text-grayDark")}
+							className={cn(
+								"font-normal max-lg:px-2 max-lg:py-1",
+								!date && "text-grayDark",
+							)}
 							onClick={() => setIsOpen(true)}
 						>
-							<CalendarDays className="mr-2 w-6 h-6" />
-							{date?.from ? (
-								date.to ? (
-									<>
-										{format(date.from, "LLL dd, y")} -{" "}
-										{format(date.to, "LLL dd, y")}
-									</>
+							<CalendarDays className="lg:mr-2 size-5 md:size-6" />
+							<span className="hidden md:block text-sm lg:text-base">
+								{date?.from ? (
+									date.to ? (
+										<>
+											{format(date.from, "LLL dd, y")} -{" "}
+											{format(date.to, "LLL dd, y")}
+										</>
+									) : (
+										format(date.from, "LLL dd, y")
+									)
 								) : (
-									format(date.from, "LLL dd, y")
-								)
-							) : (
-								<span>Pick a date</span>
-							)}
+									<span>Pick a date</span>
+								)}
+							</span>
 						</Button>
 					</PopoverTrigger>
 					{isOpen && (
-						<PopoverContent className="w-auto p-0 z-[70]" align="end">
+						<PopoverContent
+							className="w-auto max-w-[calc(100vw-(2*var(--pagePadding)))] p-0 z-[70]"
+							align="end"
+						>
 							<div className="flex gap-4 p-3 border-b border-grayUltraLight items-center justify-end">
 								<span className="grow">Presets:</span>
 								<LastTwelveMonthButton
@@ -201,7 +209,8 @@ const LastSixMonthButton = memo(
 			}}
 			onChange={onChange}
 		>
-			Last 6 months
+			<span className="hidden md:inline">Last 6 months</span>
+			<span className="inline md:hidden">-6M</span>
 		</PresetButton>
 	),
 );
@@ -222,7 +231,8 @@ const LastTwelveMonthButton = memo(
 			}}
 			onChange={onChange}
 		>
-			Last 12 months
+			<span className="hidden md:inline">Last 12 months</span>
+			<span className="inline md:hidden">-12M</span>
 		</PresetButton>
 	),
 );
@@ -243,7 +253,8 @@ const LastMonthButton = memo(
 			}}
 			onChange={onChange}
 		>
-			Last 30 days
+			<span className="hidden md:inline">Last 30 days</span>
+			<span className="inline md:hidden">-30D</span>
 		</PresetButton>
 	),
 );

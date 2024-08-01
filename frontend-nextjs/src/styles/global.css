@@ -25,8 +25,9 @@
 	:root[data-theme='light'] {
 		--pageMaxWidth: 1920px;
 		--pageFullWidth: min(100vw,var(--pageMaxWidth));
-		--pagePadding: clamp(2rem,2vmax,4rem);
+		--pagePadding: clamp(1.5rem,2vmax,4rem);
 		--headerHeight: 76px;
+		--filtersHeight: 137px;
 		--footerHeight: 216px;
 
 		--fg: var(--brandGreen);
@@ -57,9 +58,9 @@
 		--sentiment-negative: #D55E00;
 		--sentiment-neutral: #E69F00;
 
-		--protest-timeline-height: max(100vh - 32rem, 400px);
-		--media-coverage-chart-height: max(40vh, 440px);
-		--media-sentiment-chart-height: max(40vh, 440px);
+		--protest-timeline-height: max(30vh, 20rem);
+		--media-coverage-chart-height: max(30vh, 20rem);
+		--media-sentiment-chart-height: max(30vh, 20rem);
 	}
 
 	:root[data-theme='dark'] {

@@ -3,8 +3,9 @@ import ThemeToggle from "@/components/ThemeToggle";
 import AppLogo from "@/components/logos/AppLogo";
 import { cn } from "@/utility/classNames";
 import useMediaQuery from "@custom-react-hooks/use-media-query";
+import { useAnimationFrame } from "framer-motion";
 import { MenuIcon } from "lucide-react";
-import { memo, useEffect, useState } from "react";
+import { memo, useEffect, useRef, useState } from "react";
 import InternalLink from "../InternalLink";
 import { Button } from "../ui/button";
 import { Drawer, DrawerContent, DrawerTrigger } from "../ui/drawer";
@@ -101,7 +102,10 @@ const MobileNavigation = memo(
 		onOpenChange?: (isOpened: boolean) => void;
 	}) => (
 		<ul
-			className={cn(`flex flex-row-reverse gap-4 items-center lg:hidden`)}
+			className={cn(
+				`flex flex-row-reverse gap-4 items-center lg:hidden`,
+				`pointer-events-auto`,
+			)}
 			aria-label="Main menu items"
 		>
 			<Drawer direction="right" onOpenChange={onOpenChange} open={isOpened}>
@@ -146,10 +150,7 @@ const DesktopNavigation = memo(
 		currentPage,
 	}: { menuItems: MenuItemType[]; currentPage: string }) => (
 		<ul
-			className={cn(
-				`flex-col md:flex-row md:gap-4 items-center`,
-				`hidden lg:flex`,
-			)}
+			className={cn(`flex-row gap-2 xl:gap-3 items-center`, `hidden lg:flex`)}
 			aria-label="Main menu items"
 		>
 			{menuItems.map((item) => (
@@ -176,17 +177,32 @@ const DesktopNavigation = memo(
 );
 
 function HeaderMenu({ currentPage }: { currentPage: string }) {
-	const isDesktop = useMediaQuery("(min-width: 1024px)");
+	const mediaQuery = useMediaQuery("(max-width: 1024px)");
+	const [isMobile, setIsMobile] = useState(false);
 	const [isMenuOpen, setIsMenuOpen] = useState(false);
+	const mainNavRef = useRef<HTMLElement>(null);
 
 	useEffect(() => {
-		isDesktop && setIsMenuOpen(false);
-	}, [isDesktop]);
+		!isMobile && setIsMenuOpen(false);
+	}, [isMobile]);
+
+	useEffect(() => setIsMobile(mediaQuery), [mediaQuery]);
+
+	useAnimationFrame(() => {
+		if (!mainNavRef.current) return;
+		const height = mainNavRef.current.getBoundingClientRect().height;
+		document.documentElement.style.setProperty(
+			"--headerHeight",
+			`${Math.floor(height)}px`,
+		);
+	});
 
 	return (
 		<nav
+			ref={mainNavRef}
+			id="main-navigation"
 			className={cn(
-				"px-[clamp(1rem,2vmax,4rem)] py-4 flex gap-6 flex-wrap items-center justify-between",
+				"px-[var(--pagePadding)] py-4 flex gap-6 flex-wrap items-center justify-between",
 				"border-b border-grayLight w-screen overflow-clip z-50 relative",
 				`max-w-page mx-auto maxPage:border-x maxPage:border-grayLight bg-bg z-50`,
 			)}
@@ -202,12 +218,14 @@ function HeaderMenu({ currentPage }: { currentPage: string }) {
 				<AppLogo /> <span className="text-grayDark text-sm">alpha</span>
 			</InternalLink>
 			<DesktopNavigation menuItems={menuItems} currentPage={currentPage} />
-			<MobileNavigation
-				menuItems={menuItems}
-				currentPage={currentPage}
-				isOpened={isMenuOpen}
-				onOpenChange={setIsMenuOpen}
-			/>
+			{isMobile && (
+				<MobileNavigation
+					menuItems={menuItems}
+					currentPage={currentPage}
+					isOpened={isMenuOpen}
+					onOpenChange={setIsMenuOpen}
+				/>
+			)}
 		</nav>
 	);
 }

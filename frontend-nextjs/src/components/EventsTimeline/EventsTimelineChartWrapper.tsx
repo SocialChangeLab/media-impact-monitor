@@ -12,7 +12,7 @@ function EventsTimelineChartWrapper({
 }) {
 	return (
 		<div
-			className={cn("w-auto min-w-full", className)}
+			className={cn("w-auto min-w-full border-r border-grayLight", className)}
 			style={{ width: `max(${columnsCount}rem, 100%)` }}
 		>
 			<div className="min-w-full min-h-full relative flex items-stretch justify-center">

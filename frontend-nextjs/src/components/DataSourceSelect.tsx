@@ -98,16 +98,18 @@ export default function MediaSourceSelect() {
 				<Button
 					variant="outline"
 					role="combobox"
-					className="w-fit justify-between"
+					className="w-fit justify-between max-lg:px-2 max-lg:py-1 max-md:gap-0"
 				>
 					<div className="flex items-center gap-3">
 						{selectedValue && (
 							<selectedValue.Icon
 								size={20}
-								className="mt-0 shrink-0 text-grayDark"
+								className="mt-0 shrink-0 text-grayDark size-5 lg:size-6"
 							/>
 						)}
-						<span>{selectedValue?.name || "Select data source"}</span>
+						<span className="hidden md:inline text-sm lg:text-base">
+							{selectedValue?.name || "Select data source"}
+						</span>
 					</div>
 					<ChevronsUpDownIcon className="ml-2 h-4 w-4 shrink-0 opacity-50" />
 				</Button>

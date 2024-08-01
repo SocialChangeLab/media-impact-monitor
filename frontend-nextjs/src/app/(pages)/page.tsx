@@ -11,9 +11,8 @@ export default function HomePageWithSuspense() {
 	return (
 		<div
 			className={cn(
-				"w-full sm:min-h-[calc(100vh-4rem)] bg-brandGreen bg-blend-screen relative z-0",
-				"overflow-clip",
-				"grid grid-cols-1 xl:grid-cols-[2fr_3fr] gap-12 items-center justify-center",
+				"w-full sm:min-h-[calc(100vh-var(--headerHeight))] bg-brandGreen bg-blend-screen relative z-0",
+				"overflow-clip grid grid-cols-1 xl:grid-cols-[2fr_3fr] gap-12 items-center justify-center",
 			)}
 		>
 			<div className="flex flex-col gap-4 justify-center items-center px-[clamp(1rem,2vmax,4rem)] py-[clamp(2rem,4vmax,8rem)]">
@@ -92,14 +91,14 @@ export default function HomePageWithSuspense() {
 					</div>
 				</div>
 			</div>
-			<div className="w-full h-[calc(100vh-4rem)] relative">
+			<div className="w-full h-[50vh] lg:h-[calc(100vh-4rem)] relative">
 				<Image
 					src={dashboardScreenshotLight}
 					alt="A screenshot of the dashboard (light mode)"
 					priority
 					className={cn(
-						"absolute inset-y-0 inset-x-4 xl:inset-0 object-cover object-left-top h-full",
-						"translate-y-24 rounded-tl-lg shadow-black/30 shadow-xl",
+						"absolute inset-y-0 inset-x-[var(--pagePadding)] xl:inset-0 object-cover object-left-top h-full",
+						"xl:translate-y-24 rounded-tl-lg shadow-black/30 shadow-xl",
 						"dark:hidden",
 					)}
 				/>
@@ -108,8 +107,8 @@ export default function HomePageWithSuspense() {
 					alt="A screenshot of the dashboard (dark mode)"
 					priority
 					className={cn(
-						"absolute inset-y-0 inset-x-4 xl:inset-0 object-cover object-left-top h-full",
-						"translate-y-24 rounded-tl-lg shadow-black/30 shadow-xl",
+						"absolute inset-y-0 inset-x-[var(--pagePadding)] xl:inset-0 object-cover object-left-top h-full",
+						"xl:translate-y-24 rounded-tl-lg shadow-black/30 shadow-xl",
 						"hidden dark:block",
 					)}
 				/>

@@ -1,5 +1,7 @@
 "use client";
+import { parseErrorMessage } from "@/utility/errorHandlingUtil";
 import type { icons } from "lucide-react";
+import ComponentError from "../ComponentError";
 import { OrganisationsSelect } from "../OrganisationsSelect";
 import Icon from "../ui/icon";
 import { isTooUncertain } from "./ImpactBar";
@@ -17,6 +19,7 @@ type ImpactChartRowProps = {
 	icon: keyof typeof icons;
 	unitLabel: string;
 	limitations?: string[];
+	error?: Error | null;
 };
 
 function ImpactChartRow({
@@ -24,6 +27,7 @@ function ImpactChartRow({
 	unitLabel,
 	icon,
 	limitations,
+	error,
 }: ImpactChartRowProps) {
 	const impactsWithUncertainty =
 		impacts?.filter((i) => !isTooUncertain(i.uncertainty)) ?? [];
@@ -38,6 +42,16 @@ function ImpactChartRow({
 							<p key={l}>{l}</p>
 						))}
 					</div>
+				)}
+				{error && (
+					<ComponentError
+						errorMessage={
+							parseErrorMessage(error, `Organisation impact`).message
+						}
+						errorDetails={
+							parseErrorMessage(error, `Organisation impact`).details
+						}
+					/>
 				)}
 				{impactsWithUncertainty.map((i) => {
 					const impactShare = `${i.impact > 0 ? "+" : "-"}${Math.round(

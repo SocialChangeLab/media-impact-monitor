@@ -1,6 +1,11 @@
 "use client";
 
-import { Check, ChevronsUpDown, Loader2 } from "lucide-react";
+import {
+	Check,
+	ChevronsUpDown,
+	HeartHandshakeIcon,
+	Loader2,
+} from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -73,20 +78,26 @@ export function OrganisationsSelect({
 					role="combobox"
 					aria-expanded={open}
 					className={cn(
-						"w-fit justify-between rounded-none h-[38px]",
+						"w-fit justify-between rounded-none max-md:gap-0",
 						"hover:bg-grayLight hover:text-fg border-grayMed",
-						"group transition-colors",
+						"group transition-colors max-lg:px-2 max-lg:py-1",
 						isPending && "text-grayDark",
 						className,
 					)}
 				>
 					{(isPending || organizerSlugs.length === 0) && (
 						<>
-							Select organisations
+							<div className="flex items-center gap-3">
+								<HeartHandshakeIcon className="shrink-0 text-grayDark size-5 lg:size-6" />
+								<span className="hidden md:inline text-sm lg:text-base">
+									Select organisations
+								</span>
+							</div>
 							<Loader2
 								className={cn(
-									"mr-2 h-4 w-4 animate-spin duration-1000 text-grayMed transition-opacity opacity-0",
-									isPending && "opacity-100",
+									"w-0 h-3 lg:h-4 animate-spin duration-1000 text-grayMed transition-all opacity-0",
+									"overflow-clip",
+									isPending && "opacity-100 w-3 lg:w-4",
 								)}
 								aria-hidden="true"
 							/>
@@ -108,7 +119,7 @@ export function OrganisationsSelect({
 									<RoundedColorPill
 										key={color}
 										color={color}
-										className="-mr-1 ring-2 ring-bg group-hover:ring-grayLight"
+										className="-mr-2 xs:-mr-1 ring-2 ring-bg group-hover:ring-grayLight"
 									/>
 								);
 							})}

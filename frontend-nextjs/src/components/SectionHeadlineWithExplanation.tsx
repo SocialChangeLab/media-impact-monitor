@@ -21,7 +21,7 @@ function SectionHeadlineWithExplanation({
 	return (
 		<section
 			className={cn(
-				"px-[max(1rem,2vmax)] py-[max(1.25rem,2.5vmax)]",
+				"px-[var(--pagePadding)] py-[max(1.25rem,2.5vmax)]",
 				children && "pb-[max(1.5rem,4vmax)]",
 				"border-b border-grayLight last-of-type:border-b-0",
 			)}
@@ -29,7 +29,7 @@ function SectionHeadlineWithExplanation({
 			<Dialog>
 				<div
 					className={cn(
-						"flex justify-between items-center",
+						"flex justify-between items-center flex-wrap gap-3",
 						children && "mb-8",
 					)}
 				>
@@ -37,20 +37,21 @@ function SectionHeadlineWithExplanation({
 						{headline && (
 							<H
 								className={cn(
-									"font-headlines text-3xl font-bold",
-									"flex items-center mb-1 antialiased gap-2",
+									"font-headlines text-2xl lg:text-3xl font-bold",
+									"flex items-center mb-3 antialiased gap-2",
+									"leading-7",
 								)}
 							>
 								{headline}
 							</H>
 						)}
 						{!!description && typeof description === "string" && (
-							<p className="text-grayDark max-w-prose text-pretty">
+							<p className="text-sm lg:text-base text-grayDark max-w-prose text-pretty">
 								{description}
 							</p>
 						)}
 						{!!description && typeof description !== "string" && (
-							<div className="text-grayDark max-w-prose flex flex-col gap-1">
+							<div className="text-sm lg:text-base text-grayDark max-w-prose flex flex-col gap-2">
 								{description}
 							</div>
 						)}
@@ -60,7 +61,7 @@ function SectionHeadlineWithExplanation({
 							<Button
 								variant="ghost"
 								size="sm"
-								className="text-grayDark pl-3 pr-1 rounded-full flex gap-2 items-center group"
+								className="text-grayDark pl-3 pr-1 rounded-full flex gap-2 items-center group -ml-3 md:ml-0"
 							>
 								<span
 									className={cn(
@@ -70,7 +71,7 @@ function SectionHeadlineWithExplanation({
 								>
 									How to read this
 								</span>
-								<HelpCircle />
+								<HelpCircle className="size-5 lg:size-6" />
 							</Button>
 						</DialogTrigger>
 					)}

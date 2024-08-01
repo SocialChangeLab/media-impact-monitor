@@ -21,12 +21,17 @@ Platform = Literal["onlinenews-mediacloud", "onlinenews-waybackmachine"]
 
 
 @cache
+def _story_count_over_time(**kwargs):
+    return search.story_count_over_time(**kwargs)
+
+
+@cache
 def get_mediacloud_counts(
     query: str,
     end_date: date,
     start_date: date = date(2022, 1, 1),
     countries: list | None = None,
-    platform: Platform = "onlinenews-mediacloud",
+    platform: Platform = "onlinenews-waybackmachine",
 ) -> pd.Series:
     """
     Retrieves the MediaCloud counts for a given query and parameters.
@@ -45,10 +50,10 @@ def get_mediacloud_counts(
     assert verify_dates(start_date, end_date)
 
     collection_ids = [_resolve_country(c) for c in countries] if countries else []
-    data = search.story_count_over_time(
+    data = _story_count_over_time(
         query=query,
-        start_date=start_date,
-        end_date=end_date,
+        start_date=date(2022, 1, 1),
+        end_date=date.today(),
         collection_ids=collection_ids,
         platform=platform,
     )
@@ -56,6 +61,7 @@ def get_mediacloud_counts(
     df = df[["date", "count"]]  # ignore total_count and ratio
     df["date"] = pd.to_datetime(df["date"]).dt.date
     df = df.set_index("date")
+    df = df[(df.index >= start_date) & (df.index <= end_date)]
     return df["count"]
 
 

@@ -57,7 +57,7 @@ export function BaseLayout({
 							"absolute inset-0 bg-[url(/images/doc-shadow.webp)] bg-no-repeat bg-right-top ",
 							"dark:mix-blend-normal dark:invert",
 							`pointer-events-none`,
-							currentPage.startsWith("docs") && "right-80",
+							currentPage.startsWith("docs") && "2xl:right-80",
 						)}
 					/>
 					<div
@@ -67,7 +67,7 @@ export function BaseLayout({
 							"dark:mix-blend-normal dark:invert",
 							"scale-x-[-1]",
 							`pointer-events-none`,
-							currentPage.startsWith("docs") && "left-80",
+							currentPage.startsWith("docs") && "xl:left-80",
 						)}
 					/>
 					{/* <WelcomeMessage currentPage={currentPage} /> */}

@@ -1,11 +1,9 @@
-import re
-from itertools import chain
-from math import ceil
-
-import matplotlib.pyplot as plt
+import numpy as np
 import pandas as pd
 import statsmodels.api as sm
-from tqdm.auto import tqdm
+from sklearn.metrics import mean_squared_error
+from sklearn.model_selection import TimeSeriesSplit
+from media_impact_monitor.util.cache import cache
 
 from media_impact_monitor.types_ import Aggregation
 
@@ -58,7 +56,6 @@ def regress(
     outcome = "count"
     df[outcome] = df[outcome].shift(-day)
     if cumulative:
-        # TODO write tests for this
         if day < 0:
             indexer = pd.api.indexers.FixedForwardWindowIndexer(window_size=-day)
             df[outcome] = -df[outcome].rolling(window=indexer).sum()
@@ -70,6 +67,21 @@ def regress(
         df[treatment] = df.sample(frac=1)[treatment].to_list()
     X = df.drop(columns=[outcome])
     y = df[outcome]
+
+    # Time Series Cross-Validation
+    tscv = TimeSeriesSplit(n_splits=5)
+    rmse_scores = []
+
+    for train_index, test_index in tscv.split(X):
+        X_train, X_test = X.iloc[train_index], X.iloc[test_index]
+        y_train, y_test = y.iloc[train_index], y.iloc[test_index]
+        model = sm.OLS(y_train, sm.add_constant(X_train)).fit(cov_type="HC3")
+        y_pred = model.predict(sm.add_constant(X_test))
+        rmse = np.sqrt(mean_squared_error(y_test, y_pred))
+        rmse_scores.append(rmse)
+    rmse = np.mean(rmse_scores)
+
+    # regression on full dataset
     model = sm.OLS(y, sm.add_constant(X))
     model = model.fit(cov_type="HC3")
     alpha = 0.1
@@ -79,7 +91,11 @@ def regress(
         "p": model.pvalues[treatment],
         "ci_lower": model.conf_int(alpha=alpha)[0][treatment],
         "ci_upper": model.conf_int(alpha=alpha)[1][treatment],
+        "rmse": rmse,
     }
+
+
+# Note: The helper functions (add_lags, add_emws, add_weekday_dummies) are assumed to be defined elsewhere
 
 
 def agg_protests(df: pd.DataFrame):
@@ -91,6 +107,7 @@ def agg_protests(df: pd.DataFrame):
     return df
 
 
+@cache
 def estimate_impact(
     events: pd.DataFrame,
     article_counts: pd.Series,
@@ -116,5 +133,5 @@ def estimate_impact(
             for day in outcome_days
         ]
     )
-    impacts = impacts.set_index("date")[["mean", "ci_lower", "ci_upper"]]
+    impacts = impacts.set_index("date")
     return impacts, limitations

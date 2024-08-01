@@ -122,7 +122,7 @@ def estimate_impacts(
         )
 
     estimates = parallel_tqdm(
-        _estimate_impact, _events.iterrows(), total=_events.shape[0], n_jobs=1
+        _estimate_impact, _events.iterrows(), total=_events.shape[0], n_jobs=8
     )
     actuals, counterfactuals, impacts = zip(*estimates)
     if len(events) != len(_events):

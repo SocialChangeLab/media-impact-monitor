@@ -52,7 +52,7 @@ def fill_cache():
         except Exception as e:
             errors.append(f"events {data_source}: {e}")
     for media_source in ["news_online", "news_print", "web_google"]:
-        for trend_type in ["keywords", "sentiment"]:
+        for trend_type in ["keywords"]:  # , "sentiment"]:
             for aggregation in ["daily", "weekly"]:
                 if aggregation == "daily" and media_source == "web_google":
                     continue
@@ -70,22 +70,24 @@ def fill_cache():
                         )
                     )
                 except Exception as e:
-                    errors.append(f"trend {media_source} {trend_type} {aggregation}: {e}")
+                    errors.append(
+                        f"trend {media_source} {trend_type} {aggregation}: {e}"
+                    )
     events = events["acled"]  # TODO: include press_releases
     recent_events = events[events["date"] >= date.today() - timedelta(days=70)]
-    for event in tqdm(
-        list(recent_events.itertuples()),
-        desc="Retrieving event fulltexts",
-    ):
-        try:
-            get_fulltexts(
-                FulltextSearch(
-                    media_source="news_online",
-                    event_id=event.event_id,
-                )
-            )
-        except Exception as e:
-            errors.append(f"fulltexts {event.event_id}: {e}")
+    # for event in tqdm(
+    #     list(recent_events.itertuples()),
+    #     desc="Retrieving event fulltexts",
+    # ):
+    #     try:
+    #         get_fulltexts(
+    #             FulltextSearch(
+    #                 media_source="news_online",
+    #                 event_id=event.event_id,
+    #             )
+    #         )
+    #     except Exception as e:
+    #         errors.append(f"fulltexts {event.event_id}: {e}")
     if errors:
         raise ValueError(f"Errors occurred: {'; '.join(errors)}")
     print("Successfully filled cache!")

@@ -9,6 +9,9 @@ from media_impact_monitor.impact_estimators.interrupted_time_series import (
 from media_impact_monitor.impact_estimators.time_series_regression import (
     estimate_impact as time_series_regression,
 )
+from media_impact_monitor.impact_estimators.correlation import (
+    estimate_impact as correlation,
+)
 from media_impact_monitor.trend import get_trend
 from media_impact_monitor.types_ import (
     DatedMeanWithUncertainty,

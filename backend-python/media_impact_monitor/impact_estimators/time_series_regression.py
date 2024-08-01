@@ -104,9 +104,6 @@ def regress(
     }
 
 
-# Note: The helper functions (add_lags, add_emws, add_weekday_dummies) are assumed to be defined elsewhere
-
-
 def agg_protests(df: pd.DataFrame):
     start = df["date"].min()  # HACK
     end = df["date"].max()  # HACK
@@ -120,7 +117,6 @@ def agg_protests(df: pd.DataFrame):
 def estimate_impact(
     events: pd.DataFrame,
     article_counts: pd.Series,
-    aggregation: Aggregation,
     cumulative: bool = True,
     lags: list[int] = [],
     emws: list[int] = [],

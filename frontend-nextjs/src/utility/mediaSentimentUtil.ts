@@ -23,39 +23,24 @@ export type ParsedMediaSentimentType = z.infer<
 	typeof parsedMediaSentimentZodSchema
 >;
 
-const mediaDataTypeZodSchema = z.union([
-	z.object({
-		applicability: z.literal(true),
-		limitations: z.array(z.string()),
-		trends: z.array(mediaSentimentZodSchema),
-	}),
-	z.object({
-		applicability: z.literal(false),
-		limitations: z.array(z.string()),
-		trends: z.null(),
-	}),
-]);
+const rawResponseDataZodSchema = z.object({
+	applicability: z.boolean(),
+	limitations: z.array(z.string()),
+	trends: z.array(mediaSentimentZodSchema).default([]),
+});
 
-const parsedMediaSentimentResponseTypeZodSchema = z.union([
-	z.object({
-		applicability: z.literal(true),
-		limitations: z.array(z.string()),
-		trends: z.array(parsedMediaSentimentZodSchema),
-	}),
-	z.object({
-		applicability: z.literal(false),
-		limitations: z.array(z.string()),
-		trends: z.null(),
-	}),
-]);
+const parsedResponseDataZodSchema = z.object({
+	applicability: z.boolean(),
+	limitations: z.array(z.string()),
+	trends: z.array(parsedMediaSentimentZodSchema).default([]),
+});
+
 export type ParsedMediaSentimentResponseType = z.infer<
-	typeof parsedMediaSentimentResponseTypeZodSchema
+	typeof parsedResponseDataZodSchema
 >;
 
-const mediaSentimentDataResponseTypeZodSchema = z.object({
-	data: mediaDataTypeZodSchema,
-	isPending: z.boolean().optional(),
-	error: z.union([z.string(), z.null()]).optional(),
+const rawResponseZodSchema = z.object({
+	data: rawResponseDataZodSchema,
 });
 
 export function getMediaSentimentQuery(
@@ -93,8 +78,7 @@ function validateGetDataResponse(
 	response: unknown,
 ): ParsedMediaSentimentResponseType {
 	try {
-		const parsedResponse =
-			mediaSentimentDataResponseTypeZodSchema.parse(response);
+		const parsedResponse = rawResponseZodSchema.parse(response);
 		const sortedMedia = parsedResponse.data.trends
 			?.filter((x) => isValidISODateString(x.date))
 			.map((x) => ({
@@ -102,10 +86,10 @@ function validateGetDataResponse(
 				...dateToComparableDateItem(x.date),
 			}))
 			.sort((a, b) => dateSortCompare(a.date, b.date));
-		return parsedMediaSentimentResponseTypeZodSchema.parse({
+		return parsedResponseDataZodSchema.parse({
 			applicability: parsedResponse.data.applicability,
 			limitations: parsedResponse.data.limitations,
-			data: sortedMedia,
+			trends: sortedMedia,
 		});
 	} catch (error) {
 		throw formatZodError(error);

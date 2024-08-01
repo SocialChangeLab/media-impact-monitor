@@ -208,7 +208,7 @@ function MediaCoverageChartWithData({ reset }: { reset?: () => void }) {
 		return (
 			<MediaCoverageChartError {...parseErrorMessage(isError)} reset={reset} />
 		);
-	if (isSuccess && data.applicability === false && data.limitations.length > 0)
+	if (isSuccess && data.limitations.length > 0)
 		return (
 			<ChartLimitations limitations={data.limitations} Icon={LineChartIcon} />
 		);

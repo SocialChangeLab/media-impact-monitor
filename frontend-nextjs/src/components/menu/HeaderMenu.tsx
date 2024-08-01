@@ -21,6 +21,14 @@ type MenuItemType = {
 
 const menuItems: MenuItemType[] = [
 	{
+		name: "home",
+		label: "Home",
+		route: "/",
+		showMediaFilter: false,
+		showOrganisationsFilter: false,
+		showTimeFilter: false,
+	},
+	{
 		name: "dashboard",
 		label: "Dashboard",
 		route: "/dashboard",

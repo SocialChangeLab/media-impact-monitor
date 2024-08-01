@@ -65,6 +65,10 @@ function ImpactChartWithData({
 	const xrQuery = useMediaSentimentImpactData(
 		"extinction-rebellion" as EventOrganizerSlugType,
 	);
+	const queries = {
+		fridaysForFuture: fffQuery,
+		extinctionRebellion: xrQuery,
+	};
 	const data = {
 		fridaysForFuture: fffQuery.data,
 		extinctionRebellion: xrQuery.data,
@@ -72,7 +76,7 @@ function ImpactChartWithData({
 	const isEmpty = Object.entries(data).every(
 		([_key, data]) => data?.data && data.data.length === 0,
 	);
-	const isError = fffQuery.isError || xrQuery.isError;
+	const isError = fffQuery.isError && xrQuery.isError;
 	const isSuccess = fffQuery.isSuccess && xrQuery.isSuccess;
 	const isPending = fffQuery.isPending || xrQuery.isPending;
 	const error = fffQuery.error || xrQuery.error;
@@ -82,10 +86,11 @@ function ImpactChartWithData({
 	if (isSuccess && isEmpty) return <ImpactChartEmpty />;
 	return (
 		<ImpactChart
-			columns={Object.entries(data).map(([key, data]) => ({
+			columns={Object.entries(data).map(([key, d]) => ({
 				id: key,
-				data: data?.data || null,
-				limitations: data?.limitations,
+				data: d?.data || null,
+				limitations: d?.limitations,
+				error: queries[key as keyof typeof queries]?.error,
 			}))}
 			unitLabel={unitLabel}
 			icon={icon}

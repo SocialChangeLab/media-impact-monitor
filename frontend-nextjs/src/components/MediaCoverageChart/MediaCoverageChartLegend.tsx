@@ -21,7 +21,7 @@ function MediaCoverageChartLegend({
 				storageType="session"
 			>
 				<div className="flex flex-col gap-2">
-					<ul className="grid grid-cols-[repeat(auto-fill,minmax(min(10rem,100%),1fr));] gap-x-8 relative z-20">
+					<ul className="flex flex-wrap gap-x-8 relative z-20">
 						{topics.map(({ topic, color, sum }) => (
 							<li
 								key={topic}

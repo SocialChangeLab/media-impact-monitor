@@ -16,6 +16,7 @@ type ImpactChartColumn = {
 	data: ImpactChartColumnItem[] | null;
 	id: string;
 	limitations?: string[];
+	error: Error | null;
 };
 
 type ImpactChartProps = {

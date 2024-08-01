@@ -23,39 +23,24 @@ export type ParsedMediaCoverageType = z.infer<
 	typeof parsedMediaCoverageZodSchema
 >;
 
-const mediaDataTypeZodSchema = z.union([
-	z.object({
-		applicability: z.literal(true),
-		limitations: z.array(z.string()),
-		trends: z.array(mediaCoverageZodSchema),
-	}),
-	z.object({
-		applicability: z.literal(false),
-		limitations: z.array(z.string()),
-		trends: z.null(),
-	}),
-]);
+const rawResponseDataZodSchema = z.object({
+	applicability: z.boolean(),
+	limitations: z.array(z.string()),
+	trends: z.array(mediaCoverageZodSchema).default([]),
+});
 
-const parsedMediaCoverageResponseTypeZodSchema = z.union([
-	z.object({
-		applicability: z.literal(true),
-		limitations: z.array(z.string()),
-		trends: z.array(parsedMediaCoverageZodSchema),
-	}),
-	z.object({
-		applicability: z.literal(false),
-		limitations: z.array(z.string()),
-		trends: z.null(),
-	}),
-]);
+const parsedResponseDataZodSchema = z.object({
+	applicability: z.boolean(),
+	limitations: z.array(z.string()),
+	trends: z.array(parsedMediaCoverageZodSchema).default([]),
+});
+
 export type ParsedMediaCoverageResponseType = z.infer<
-	typeof parsedMediaCoverageResponseTypeZodSchema
+	typeof parsedResponseDataZodSchema
 >;
 
-const mediaCoverageDataResponseTypeZodSchema = z.object({
-	data: mediaDataTypeZodSchema,
-	isPending: z.boolean().optional(),
-	error: z.union([z.string(), z.null()]).optional(),
+const rawResponseZodSchema = z.object({
+	data: rawResponseDataZodSchema,
 });
 
 export async function getMediaCoverageData(
@@ -67,6 +52,14 @@ export async function getMediaCoverageData(
 		mediaSource: MediaSourceType;
 	},
 ): Promise<ParsedMediaCoverageResponseType> {
+	// return {
+	// 	applicability: false,
+	// 	limitations: [
+	// 		"This time range is not supported when using online media sources.",
+	// 		"Fridays for Futures is the only supported organisation.",
+	// 	],
+	// 	trends: null,
+	// };
 	const json = await fetchApiData({
 		endpoint: "trend",
 		body: {
@@ -81,8 +74,7 @@ function validateGetDataResponse(
 	response: unknown,
 ): ParsedMediaCoverageResponseType {
 	try {
-		const parsedResponse =
-			mediaCoverageDataResponseTypeZodSchema.parse(response);
+		const parsedResponse = rawResponseZodSchema.parse(response);
 		const sortedMedia = parsedResponse.data.trends
 			?.filter((x) => isValidISODateString(x.date))
 			.map((x) => ({
@@ -90,10 +82,10 @@ function validateGetDataResponse(
 				...dateToComparableDateItem(x.date),
 			}))
 			.sort((a, b) => dateSortCompare(a.date, b.date));
-		return parsedMediaCoverageResponseTypeZodSchema.parse({
+		return parsedResponseDataZodSchema.parse({
 			applicability: parsedResponse.data.applicability,
 			limitations: parsedResponse.data.limitations,
-			data: sortedMedia,
+			trends: sortedMedia,
 		});
 	} catch (error) {
 		throw formatZodError(error);

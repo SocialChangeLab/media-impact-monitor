@@ -17,18 +17,19 @@ function ExpandedHelpBanner({ onCollapse }: HelpBannerActions) {
 			<div className="w-fit flex flex-col ">
 				<h1
 					className={cn(
-						"font-headlines text-3xl font-bold",
-						"flex items-center mb-1 antialiased gap-2",
+						"font-headlines text-2xl lg:text-3xl font-bold",
+						"flex items-center mb-1 lg:mb-3 antialiased gap-2",
+						"leading-7",
 					)}
 				>
 					The Impact Monitor dashboard
 				</h1>
-				<p className="max-w-prose mt-2 mb-1 text-fg">
-					Welcome to the Impact Monitor dashboard. Here you can see protests
-					over time, topics and sentiments within the media, and how protest
-					organizations have an impact on the media landscape.
+				<p className="text-sm lg:text-base max-w-prose text-pretty mt-1 mb-1 text-fg">
+					Welcome to the Impact Monitor dashboard. View protests over time,
+					media topics and sentiments, and how organizations impact the media
+					landscape.
 				</p>
-				<p className="max-w-prose mt-2 mb-5 text-fg">
+				<p className="text-sm lg:text-base max-w-prose text-pretty mt-2 mb-5 text-fg">
 					Start by setting the filters in the top of the page, and scroll down
 					to explore the data.
 				</p>
@@ -48,7 +49,10 @@ function ExpandedHelpBanner({ onCollapse }: HelpBannerActions) {
 				</span>
 			</div>
 			<span
-				className="absolute flex gap-1 top-4 right-1/3 pointer-events-none"
+				className={cn(
+					"absolute gap-1 top-4 right-0 2xl:right-1/3 pointer-events-none",
+					"hidden lg:flex",
+				)}
 				aria-hidden="true"
 			>
 				<CornerLeftUp
@@ -64,7 +68,10 @@ function ExpandedHelpBanner({ onCollapse }: HelpBannerActions) {
 				</div>
 			</span>
 			<span
-				className="absolute flex gap-1 bottom-4 right-[15%] pointer-events-none"
+				className={cn(
+					"absolute flex gap-1 bottom-4 right-0 2xl:right-[15%] pointer-events-none",
+					"hidden lg:flex",
+				)}
 				aria-hidden="true"
 			>
 				<CornerLeftDown
@@ -121,20 +128,20 @@ function DashboardHelpBannerClient({
 		<motion.section
 			variants={{
 				collapsed: {
-					height: 67,
-					paddingTop: 16,
-					paddingBottom: 16,
+					height: `3.6875rem`,
+					paddingTop: `0.75rem`,
+					paddingBottom: `0.75rem`,
 				},
 				expanded: {
-					height: 280,
-					paddingTop: 32,
-					paddingBottom: 32,
+					height: `20rem`,
+					paddingTop: `1rem`,
+					paddingBottom: `1rem`,
 				},
 			}}
 			initial={isExpanded ? "expanded" : "collapsed"}
 			animate={isExpanded ? "expanded" : "collapsed"}
 			className={cn(
-				"px-[var(--pagePadding)] overflow-clip",
+				"px-[var(--pagePadding)] overflow-clip flex flex-col justify-center",
 				"border-b border-grayLight last-of-type:border-b-0",
 			)}
 		>

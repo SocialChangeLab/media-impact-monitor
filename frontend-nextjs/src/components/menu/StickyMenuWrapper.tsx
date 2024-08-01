@@ -15,7 +15,7 @@ export const StickyMenuWrapper = memo(
 			<header
 				className={cn(
 					`fixed top-0 z-40 transition-transform left-0 w-screen`,
-					`main-header pointer-events-none`,
+					`main-header pointer-events-none duration-1000 ease-smooth-out`,
 				)}
 				style={{
 					transform:

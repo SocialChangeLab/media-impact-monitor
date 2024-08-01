@@ -26,9 +26,9 @@
 		--pageMaxWidth: 1920px;
 		--pageFullWidth: min(100vw,var(--pageMaxWidth));
 		--pagePadding: clamp(1.5rem,2vmax,4rem);
-		--headerHeight: 76px;
-		--filtersHeight: 137px;
-		--footerHeight: 216px;
+    --filtersHeight: 80px;
+    --footerHeight: 400px;
+    --headerHeight: 70px;
 
 		--fg: var(--brandGreen);
 		--bg: var(--brandWhite);

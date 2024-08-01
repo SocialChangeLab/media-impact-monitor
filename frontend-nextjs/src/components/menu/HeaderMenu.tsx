@@ -102,10 +102,7 @@ const MobileNavigation = memo(
 		onOpenChange?: (isOpened: boolean) => void;
 	}) => (
 		<ul
-			className={cn(
-				`flex flex-row-reverse gap-4 items-center lg:hidden`,
-				`pointer-events-auto`,
-			)}
+			className={cn(`flex flex-row-reverse gap-4 items-center lg:hidden`)}
 			aria-label="Main menu items"
 		>
 			<Drawer direction="right" onOpenChange={onOpenChange} open={isOpened}>
@@ -205,6 +202,7 @@ function HeaderMenu({ currentPage }: { currentPage: string }) {
 				"px-[var(--pagePadding)] py-4 flex gap-6 flex-wrap items-center justify-between",
 				"border-b border-grayLight w-screen overflow-clip z-50 relative",
 				`max-w-page mx-auto maxPage:border-x maxPage:border-grayLight bg-bg z-50`,
+				"pointer-events-auto",
 			)}
 		>
 			<InternalLink

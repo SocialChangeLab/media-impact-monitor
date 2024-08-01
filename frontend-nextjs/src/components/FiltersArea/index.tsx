@@ -75,7 +75,7 @@ function FiltersArea() {
 			}}
 			aria-label="Page filters"
 			className={cn(
-				`w-screen flex flex-col relative z-40`,
+				`w-screen flex flex-col relative z-40 pointer-events-auto`,
 				`px-[var(--pagePadding)] mx-auto maxPage:border-x maxPage:border-grayLight`,
 				`border-b bg-pattern-soft max-w-page`,
 				isScrolledToTop && `pointer-events-none`,
@@ -125,7 +125,7 @@ const FilterLabel = memo(
 		<div
 			className={cn(
 				"overflow-clip transition-all hidden lg:block",
-				`pointer-events-auto`,
+				`duration-1000 ease-smooth-out`,
 				show ? "h-5" : "h-0",
 			)}
 		>

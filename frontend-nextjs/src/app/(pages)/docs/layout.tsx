@@ -8,7 +8,7 @@ import { useUiStore } from "@/providers/UiStoreProvider";
 import { cn } from "@/utility/classNames";
 import { getDocsToc } from "@/utility/docsUtil";
 import { SidebarCloseIcon, SidebarOpenIcon } from "lucide-react";
-import { type ReactNode, Suspense, useState } from "react";
+import { type ReactNode, Suspense, useEffect, useState } from "react";
 
 function DocsLayout({ children }: { children: ReactNode }) {
 	const docsPagesToc = getDocsToc();
@@ -19,6 +19,14 @@ function DocsLayout({ children }: { children: ReactNode }) {
 		isScrolledToTop: state.isScrolledToTop,
 		isScrollingUp: state.isScrollingUp,
 	}));
+
+	useEffect(() => {
+		if (showLeftSidebar || showRightSidebar) {
+			document.body.classList.add("overflow-clip");
+		} else {
+			document.body.classList.remove("overflow-clip");
+		}
+	}, [showLeftSidebar, showRightSidebar]);
 
 	return (
 		<>
@@ -104,12 +112,17 @@ function DocsLayout({ children }: { children: ReactNode }) {
 					</div>
 				</nav>
 			</main>
-			<div
+			<button
 				className={cn(
 					"fixed inset-0 bg-bgOverlay opacity-0 pointer-events-none transition-opacity z-10",
 					(showLeftSidebar || showRightSidebar) &&
 						"max-xl:opacity-100 max-xl:pointer-events-auto",
 				)}
+				type="button"
+				onClick={() => {
+					setShowLeftSidebar(false);
+					setShowRightSidebar(false);
+				}}
 			/>
 			<Button
 				size="icon"

@@ -15,7 +15,7 @@ export default function HomePageWithSuspense() {
 				"overflow-clip grid grid-cols-1 xl:grid-cols-[2fr_3fr] gap-12 items-center justify-center",
 			)}
 		>
-			<div className="flex flex-col gap-4 justify-center items-center px-[clamp(1rem,2vmax,4rem)] py-[clamp(2rem,4vmax,8rem)]">
+			<div className="flex flex-col gap-4 justify-center items-center px-[var(--pagePadding)] py-[clamp(2rem,4vmax,8rem)]">
 				<Image
 					src={headerImage}
 					alt="A decorative header image of a crowd protesting"

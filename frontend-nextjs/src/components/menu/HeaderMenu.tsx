@@ -127,6 +127,7 @@ const MobileNavigation = memo(
 								href={item.route}
 								title={item.label}
 								active={currentPage === item.name}
+								onClick={() => onOpenChange?.(false)}
 							/>
 						))}
 					</ul>

@@ -1,11 +1,8 @@
-import random
 import warnings
 from datetime import date, timedelta
 from typing import Literal
 
-import numpy as np
 import pandas as pd
-from sklearn.metrics import mean_squared_error
 
 from media_impact_monitor.util.cache import cache
 from media_impact_monitor.util.parallel import parallel_tqdm
@@ -108,9 +105,7 @@ def estimate_impacts(
     horizon: int,
     hidden_days_before_protest: int,
     aggregation: Aggregation,
-) -> tuple[
-    pd.DataFrame, pd.DataFrame, pd.DataFrame, list[float], list[float], list[str]
-]:
+) -> tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame, list[str]]:
     min_training_days = 90
     _events = events[
         events["date"] >= article_counts.index[0] + timedelta(days=min_training_days)
@@ -130,27 +125,13 @@ def estimate_impacts(
         _estimate_impact, _events.iterrows(), total=_events.shape[0], n_jobs=8
     )
     actuals, counterfactuals, impacts = zip(*estimates)
-
-    # Evaluation
-    random_dates = random.sample(article_counts.index.tolist(), 100)
-
-    def evaluate(date):
-        actual, counterfactual, _ = estimate_impact(
-            date, article_counts, horizon, hidden_days_before_protest, aggregation
-        )
-        rmse = np.sqrt(mean_squared_error(actual, counterfactual))
-        ame = np.mean(np.abs(actual - counterfactual))
-        return rmse, ame
-
-    rmses, ames = zip(*parallel_tqdm(evaluate, random_dates, n_jobs=8))
-
     if len(events) != len(_events):
         warnings = [
             f"Only {len(_events)} out of {len(events)} events were used for estimating the impact, because for the other {len(events) - len(_events)} events there is less than {min_training_days} days of data available, since the media time series starts on {article_counts.index[0].isoformat()}."
         ]
     else:
         warnings = []
-    return actuals, counterfactuals, impacts, rmses, ames, warnings
+    return actuals, counterfactuals, impacts, warnings
 
 
 @cache
@@ -164,7 +145,7 @@ def estimate_mean_impact(
 ) -> tuple[pd.DataFrame, list[str]]:
     # output: dataframe with columns mean, ci_upper, ci_lower
     # and index from -hidden_days_before_protest to horizon
-    actuals, counterfactuals, impacts, rmses, ames, warnings = estimate_impacts(
+    actuals, counterfactuals, impacts, warnings = estimate_impacts(
         events, article_counts, horizon, hidden_days_before_protest, aggregation
     )
     impacts_df = pd.concat([df.reset_index(drop=True) for df in impacts], axis=1)

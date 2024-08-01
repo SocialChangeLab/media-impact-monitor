@@ -132,7 +132,7 @@ export function OrganisationsSelect({
 				</Button>
 			</PopoverTrigger>
 			<PopoverContent
-				className="w-fit max-w-96 p-0 max-h-[70vh] overflow-y-auto z-[70]"
+				className="w-fit max-w-[min(320px,100vw-(var(--pagePadding)*2))] p-0 max-h-[70vh] overflow-y-auto z-[70] -translate-x-7 md:translate-x-0"
 				align="start"
 			>
 				{!isPending && (

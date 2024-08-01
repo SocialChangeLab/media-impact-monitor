@@ -67,7 +67,11 @@ function FiltersArea() {
 					opacity: 0,
 					pointerEvents: "none",
 				},
-				visible: { transform: "translateY(0%)", opacity: 1 },
+				visible: {
+					transform: "translateY(0%)",
+					opacity: 1,
+					pointerEvents: "auto",
+				},
 			}}
 			transition={{
 				duration: shouldExit ? 0.3 : 0,

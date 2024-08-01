@@ -71,6 +71,7 @@ def regress(
     # Time Series Cross-Validation
     tscv = TimeSeriesSplit(n_splits=5)
     rmse_scores = []
+    ame_scores = []
 
     for train_index, test_index in tscv.split(X):
         X_train, X_test = X.iloc[train_index], X.iloc[test_index]
@@ -79,7 +80,12 @@ def regress(
         y_pred = model.predict(sm.add_constant(X_test))
         rmse = np.sqrt(mean_squared_error(y_test, y_pred))
         rmse_scores.append(rmse)
+        ame = np.mean(np.abs(y_test - y_pred))
+        ame_scores.append(ame)
     rmse = np.mean(rmse_scores)
+    rmse_std = np.std(rmse_scores)
+    ame = np.mean(ame_scores)
+    ame_std = np.std(ame_scores)
 
     # regression on full dataset
     model = sm.OLS(y, sm.add_constant(X))
@@ -92,6 +98,9 @@ def regress(
         "ci_lower": model.conf_int(alpha=alpha)[0][treatment],
         "ci_upper": model.conf_int(alpha=alpha)[1][treatment],
         "rmse": rmse,
+        "rmse_std": rmse_std,
+        "ame": ame,
+        "ame_std": ame_std,
     }
 
 

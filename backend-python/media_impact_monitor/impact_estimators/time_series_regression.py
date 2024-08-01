@@ -12,6 +12,8 @@ from media_impact_monitor.types_ import Aggregation
 
 def add_lags(df: pd.DataFrame, lags: list[int]):
     """Add new columns with lagged values."""
+    if lags == []:
+        return df
     lags = pd.concat([df.shift(lag).add_suffix(f"_lag{lag}") for lag in lags], axis=1)
     return pd.concat([df, lags], axis=1)
 
@@ -40,14 +42,13 @@ def regress(
     protest_df: pd.DataFrame,
     media_df: pd.DataFrame,
     day: int = 0,
-    lags: int = 14,
+    lags: list[int] = [],
     cumulative: bool = False,
 ):
     """Get regression result where the outcome is `day` days after the treatment."""
-    lags = range(1, lags + 1)
     media_df = pd.DataFrame(media_df, columns=["count"])
     # protest_df = add_lags(protest_df, lags=[])
-    media_df = add_lags(media_df, lags=[4,5,6,7,8])
+    media_df = add_lags(media_df, lags=lags)
     # protest_df = add_emws(protest_df)
     # media_df = add_emws(media_df, spans=[14])
     df = pd.concat([protest_df, media_df], axis=1)
@@ -94,7 +95,7 @@ def estimate_impact(
     article_counts: pd.Series,
     aggregation: Aggregation,
     cumulative: bool = True,
-    lags: int = 14,
+    lags: list[int] = [],
     outcome_days: list[int] = range(-14, 14),
 ):
     protest_df = agg_protests(events)

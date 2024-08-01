@@ -50,7 +50,7 @@ def correlate(
 
     return {
         "date": day,
-        "correlation": overall_corr,
+        "mean": overall_corr,
         "p_value": p_value,
         "ci_lower": ci_lower,
         "ci_upper": ci_upper,

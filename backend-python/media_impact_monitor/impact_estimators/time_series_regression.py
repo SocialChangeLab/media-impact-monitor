@@ -43,14 +43,15 @@ def regress(
     media_df: pd.DataFrame,
     day: int = 0,
     lags: list[int] = [],
+    emws: list[int] = [],
     cumulative: bool = False,
 ):
     """Get regression result where the outcome is `day` days after the treatment."""
     media_df = pd.DataFrame(media_df, columns=["count"])
-    # protest_df = add_lags(protest_df, lags=[])
+    protest_df = add_lags(protest_df, lags=lags)
     media_df = add_lags(media_df, lags=lags)
-    # protest_df = add_emws(protest_df)
-    # media_df = add_emws(media_df, spans=[14])
+    protest_df = add_emws(protest_df, spans=emws)
+    media_df = add_emws(media_df, spans=emws)
     df = pd.concat([protest_df, media_df], axis=1)
     df = add_weekday_dummies(df)
     treatment = "protest"
@@ -96,6 +97,7 @@ def estimate_impact(
     aggregation: Aggregation,
     cumulative: bool = True,
     lags: list[int] = [],
+    emws: list[int] = [],
     outcome_days: list[int] = range(-14, 14),
 ):
     protest_df = agg_protests(events)
@@ -104,7 +106,12 @@ def estimate_impact(
     impacts = pd.DataFrame(
         [
             regress(
-                protest_df, article_counts, day=day, lags=lags, cumulative=cumulative
+                protest_df,
+                article_counts,
+                day=day,
+                lags=lags,
+                emws=emws,
+                cumulative=cumulative,
             )
             for day in outcome_days
         ]

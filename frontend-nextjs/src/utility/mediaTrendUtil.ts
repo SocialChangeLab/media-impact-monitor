@@ -9,33 +9,31 @@ import type { EventOrganizerSlugType, OrganisationType } from "./eventsUtil";
 import { fetchApiData, formatInput } from "./fetchUtil";
 import { formatZodError } from "./zodUtil";
 
-export const mediaSentimentZodSchema = z.object({
+export const mediaTrendZodSchema = z.object({
 	date: z.string(),
 	topic: z.string(),
 	n_articles: z.number().nullable(),
 });
-export type MediaSentimentType = z.infer<typeof mediaSentimentZodSchema>;
+export type MediaTrendType = z.infer<typeof mediaTrendZodSchema>;
 
-const parsedMediaSentimentZodSchema = mediaSentimentZodSchema
+const parsedMediaTrendZodSchema = mediaTrendZodSchema
 	.omit({ date: true })
 	.merge(comparableDateItemSchema);
-export type ParsedMediaSentimentType = z.infer<
-	typeof parsedMediaSentimentZodSchema
->;
+export type ParsedMediaTrendType = z.infer<typeof parsedMediaTrendZodSchema>;
 
 const rawResponseDataZodSchema = z.object({
 	applicability: z.boolean(),
 	limitations: z.array(z.string()),
-	trends: z.array(mediaSentimentZodSchema).default([]),
+	trends: z.array(mediaTrendZodSchema).default([]),
 });
 
 const parsedResponseDataZodSchema = z.object({
 	applicability: z.boolean(),
 	limitations: z.array(z.string()),
-	trends: z.array(parsedMediaSentimentZodSchema).default([]),
+	trends: z.array(parsedMediaTrendZodSchema).default([]),
 });
 
-export type ParsedMediaSentimentResponseType = z.infer<
+export type ParsedMediaTrendResponseType = z.infer<
 	typeof parsedResponseDataZodSchema
 >;
 
@@ -43,7 +41,8 @@ const rawResponseZodSchema = z.object({
 	data: rawResponseDataZodSchema,
 });
 
-export function getMediaSentimentQuery(
+export function getMediaTrendQuery(
+	trend_type: "keywords" | "sentiment",
 	params: {
 		from?: Date;
 		to?: Date;
@@ -53,12 +52,13 @@ export function getMediaSentimentQuery(
 	allOrganisations: OrganisationType[],
 ) {
 	return {
-		trend_type: "sentiment",
+		trend_type,
 		...formatInput(params, allOrganisations),
 	};
 }
 
-export async function getMediaSentimentData(
+export async function getMediaTrendData(
+	type: "keywords" | "sentiment",
 	params: {
 		from?: Date;
 		to?: Date;
@@ -66,17 +66,17 @@ export async function getMediaSentimentData(
 		mediaSource: MediaSourceType;
 	},
 	allOrganisations: OrganisationType[],
-): Promise<ParsedMediaSentimentResponseType> {
+): Promise<ParsedMediaTrendResponseType> {
 	const json = await fetchApiData({
 		endpoint: "trend",
-		body: getMediaSentimentQuery(params, allOrganisations),
+		body: getMediaTrendQuery(type, params, allOrganisations),
 	});
 	return validateGetDataResponse(json);
 }
 
 function validateGetDataResponse(
 	response: unknown,
-): ParsedMediaSentimentResponseType {
+): ParsedMediaTrendResponseType {
 	try {
 		const parsedResponse = rawResponseZodSchema.parse(response);
 		const sortedMedia = parsedResponse.data.trends

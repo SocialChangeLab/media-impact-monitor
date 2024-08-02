@@ -1,5 +1,5 @@
 "use client";
-import type { ParsedMediaSentimentType } from "@/utility/mediaSentimentUtil";
+import type { ParsedMediaTrendType } from "@/utility/mediaTrendUtil";
 import useTimeIntervals, {
 	isInSameAggregationUnit,
 } from "@/utility/useTimeIntervals";
@@ -21,7 +21,7 @@ import useAggregationUnit, {
 import type { ComparableDateItemType } from "@/utility/comparableDateItemSchema";
 import { slugifyCssClass } from "@/utility/cssSlugify";
 import { parseErrorMessage } from "@/utility/errorHandlingUtil";
-import useMediaSentimentData from "@/utility/useMediaSentiment";
+import useMediaTrends from "@/utility/useMediaTrends";
 import { QueryErrorResetBoundary } from "@tanstack/react-query";
 import { BarChartIcon } from "lucide-react";
 import { ErrorBoundary } from "next/dist/client/components/error-boundary";
@@ -36,7 +36,7 @@ export const MediaSentimentChart = memo(
 	({
 		data,
 	}: {
-		data: ParsedMediaSentimentType[];
+		data: ParsedMediaTrendType[];
 	}) => {
 		const [parentRef, size] = useElementSize();
 		const aggregationUnit = useAggregationUnit(size.width);
@@ -200,7 +200,7 @@ export const MediaSentimentChart = memo(
 );
 
 function MediaSentimentChartWithData({ reset }: { reset?: () => void }) {
-	const { data, isError, isSuccess, isPending } = useMediaSentimentData();
+	const { data, isError, isSuccess, isPending } = useMediaTrends("sentiment");
 	if (isPending) return <MediaSentimentChartLoading />;
 	if (isError)
 		return (

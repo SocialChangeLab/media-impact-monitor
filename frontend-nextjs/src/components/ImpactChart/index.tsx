@@ -2,7 +2,7 @@
 import { cn } from "@/utility/classNames";
 import { parseErrorMessage } from "@/utility/errorHandlingUtil";
 import type { EventOrganizerSlugType } from "@/utility/eventsUtil";
-import useMediaSentimentImpactData from "@/utility/useMediaSentimentImpact";
+import useMediaImpactData from "@/utility/useMediaImpact";
 import { QueryErrorResetBoundary } from "@tanstack/react-query";
 import type { icons } from "lucide-react";
 import { ErrorBoundary } from "next/dist/client/components/error-boundary";
@@ -12,6 +12,7 @@ import ComponentError from "../ComponentError";
 import ImpactChart from "./ImpactChart";
 
 type ImpactChartWithDataProps = {
+	type: "keywords" | "sentiment";
 	reset?: () => void;
 	unitLabel?: string;
 	icon?: keyof typeof icons;
@@ -58,12 +59,15 @@ function ImpactChartWithData({
 	reset,
 	unitLabel = "articles & media",
 	icon = "LineChart",
+	type = "keywords",
 }: ImpactChartWithDataProps) {
-	const fffQuery = useMediaSentimentImpactData(
+	const fffQuery = useMediaImpactData(
 		"fridays-for-future" as EventOrganizerSlugType,
+		type,
 	);
-	const xrQuery = useMediaSentimentImpactData(
+	const xrQuery = useMediaImpactData(
 		"extinction-rebellion" as EventOrganizerSlugType,
+		type,
 	);
 	const queries = {
 		fridaysForFuture: fffQuery,
@@ -98,7 +102,11 @@ function ImpactChartWithData({
 	);
 }
 
-export default function ImpactChartWithErrorBoundary() {
+export default function ImpactChartWithErrorBoundary({
+	type = "keywords",
+}: {
+	type?: "keywords" | "sentiment";
+}) {
 	return (
 		<QueryErrorResetBoundary>
 			{({ reset }) => (
@@ -108,7 +116,7 @@ export default function ImpactChartWithErrorBoundary() {
 					)}
 				>
 					<Suspense fallback={<ImpactChartLoading />}>
-						<ImpactChartWithData reset={reset} />
+						<ImpactChartWithData reset={reset} type={type} />
 					</Suspense>
 				</ErrorBoundary>
 			)}

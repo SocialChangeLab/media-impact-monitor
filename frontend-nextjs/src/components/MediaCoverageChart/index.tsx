@@ -1,5 +1,5 @@
 "use client";
-import type { ParsedMediaCoverageType } from "@/utility/mediaCoverageUtil";
+import type { ParsedMediaTrendType } from "@/utility/mediaTrendUtil";
 import useTimeIntervals, {
 	isInSameAggregationUnit,
 } from "@/utility/useTimeIntervals";
@@ -22,7 +22,7 @@ import TopicChartTooltip from "@/components/TopicChartTooltip";
 import type { ComparableDateItemType } from "@/utility/comparableDateItemSchema";
 import { slugifyCssClass } from "@/utility/cssSlugify";
 import { parseErrorMessage } from "@/utility/errorHandlingUtil";
-import useMediaCoverageData from "@/utility/useKeywords";
+import useMediaTrends from "@/utility/useMediaTrends";
 import { QueryErrorResetBoundary } from "@tanstack/react-query";
 import { LineChartIcon } from "lucide-react";
 import { ErrorBoundary } from "next/dist/client/components/error-boundary";
@@ -36,7 +36,7 @@ const MediaCoverageChart = memo(
 	({
 		data,
 	}: {
-		data: ParsedMediaCoverageType[];
+		data: ParsedMediaTrendType[];
 	}) => {
 		const [parentRef, size] = useElementSize();
 		const aggregationUnit = useAggregationUnit(size.width);
@@ -202,7 +202,7 @@ const MediaCoverageChart = memo(
 );
 
 function MediaCoverageChartWithData({ reset }: { reset?: () => void }) {
-	const { data, isError, isSuccess, isPending } = useMediaCoverageData();
+	const { data, isError, isSuccess, isPending } = useMediaTrends("keywords");
 	if (isPending) return <MediaCoverageChartLoading />;
 	if (isError)
 		return (

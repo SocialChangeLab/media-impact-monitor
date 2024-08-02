@@ -3,12 +3,13 @@ import { useFiltersStore } from "@/providers/FiltersStoreProvider";
 import { useQuery } from "@tanstack/react-query";
 import { endOfDay, format } from "date-fns";
 import type { EventOrganizerSlugType } from "./eventsUtil";
-import { getMediaSentimentImpactData } from "./mediaSentimentImpactUtil";
+import { getMediaImpactData } from "./mediaImpactUtil";
 import useEvents from "./useEvents";
 import useQueryErrorToast from "./useQueryErrorToast";
 
-function useMediaSentimentImpactData(
+function useMediaImpactData(
 	organizer: EventOrganizerSlugType | undefined,
+	type: "keywords" | "sentiment",
 ) {
 	const { from, to, mediaSource } = useFiltersStore(
 		({ from, to, mediaSource }) => ({ from, to, mediaSource }),
@@ -16,7 +17,8 @@ function useMediaSentimentImpactData(
 	const fromDateString = format(from, "yyyy-MM-dd");
 	const toDateString = format(to, "yyyy-MM-dd");
 	const queryKey = [
-		"mediaSentimentImpact",
+		"mediaImpact",
+		type,
 		organizer,
 		fromDateString,
 		toDateString,
@@ -27,7 +29,8 @@ function useMediaSentimentImpactData(
 		queryKey,
 		queryFn: async () => {
 			if (organizer === undefined) return undefined;
-			return await getMediaSentimentImpactData(
+			return await getMediaImpactData(
+				type,
 				{
 					from,
 					to,
@@ -41,9 +44,9 @@ function useMediaSentimentImpactData(
 		enabled: organizer !== undefined && data?.organisations?.length > 0,
 	});
 
-	useQueryErrorToast("media sentiment impact", query.error);
+	useQueryErrorToast(`media ${type} impact`, query.error);
 
 	return query;
 }
 
-export default useMediaSentimentImpactData;
+export default useMediaImpactData;

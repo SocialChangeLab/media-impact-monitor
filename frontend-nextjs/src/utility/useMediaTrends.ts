@@ -4,11 +4,11 @@ import { useQuery } from "@tanstack/react-query";
 import { endOfDay, format } from "date-fns";
 import { useMemo } from "react";
 import slugify from "slugify";
-import { getMediaSentimentData } from "./mediaSentimentUtil";
+import { getMediaTrendData } from "./mediaTrendUtil";
 import useEvents from "./useEvents";
 import useQueryErrorToast from "./useQueryErrorToast";
 
-function useMediaSentimentData() {
+function useMediaTrends(type: "keywords" | "sentiment") {
 	const { from, to, organizers, mediaSource } = useFiltersStore(
 		({ from, to, organizers, mediaSource }) => ({
 			from,
@@ -27,27 +27,34 @@ function useMediaSentimentData() {
 				.join("-"),
 		[organizers],
 	);
+	const { data } = useEvents();
 	const queryKey = [
-		"mediaSentiment",
+		"mediaTrends",
+		type,
 		fromDateString,
 		toDateString,
 		organizersKey,
 		mediaSource,
 	];
-	const { data } = useEvents();
 	const query = useQuery({
 		queryKey,
 		queryFn: async () =>
-			await getMediaSentimentData(
-				{ from, to, organizers, mediaSource },
-				data?.organisations || [],
+			await getMediaTrendData(
+				type,
+				{
+					from,
+					to,
+					organizers,
+					mediaSource,
+				},
+				data.organisations || [],
 			),
 		staleTime: endOfDay(new Date()).getTime() - new Date().getTime(),
 	});
 
-	useQueryErrorToast("media sentiment", query.error);
+	useQueryErrorToast(`media ${type} trends`, query.error);
 
 	return query;
 }
 
-export default useMediaSentimentData;
+export default useMediaTrends;

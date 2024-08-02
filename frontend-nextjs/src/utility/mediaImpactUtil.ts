@@ -7,10 +7,10 @@ import {
 	eventOrganizerSlugZodSchema,
 } from "./eventsUtil";
 import { fetchApiData, formatInput } from "./fetchUtil";
-import { getMediaSentimentQuery } from "./mediaSentimentUtil";
+import { getMediaTrendQuery } from "./mediaTrendUtil";
 import { formatZodError } from "./zodUtil";
 
-const mediaSentimentImpactZodSchema = z.object({
+const mediaImpactZodSchema = z.object({
 	method_applicability: z.boolean(),
 	method_limitations: z.array(z.string()),
 	impact_estimates: z.union([
@@ -35,11 +35,9 @@ const mediaSentimentImpactZodSchema = z.object({
 		),
 	]),
 });
-export type MediaSentimentImpactType = z.infer<
-	typeof mediaSentimentImpactZodSchema
->;
+export type MediaImpactType = z.infer<typeof mediaImpactZodSchema>;
 
-const parsedMediaSentimentImpactZodSchema = z.object({
+const parsedMediaImpactZodSchema = z.object({
 	id: z.string(),
 	data: z.union([
 		z.null(),
@@ -55,9 +53,7 @@ const parsedMediaSentimentImpactZodSchema = z.object({
 	]),
 	limitations: z.array(z.string()).optional().default([]),
 });
-type ParsedMediaSentimentImpactType = z.infer<
-	typeof parsedMediaSentimentImpactZodSchema
->;
+type ParsedMediaImpactType = z.infer<typeof parsedMediaImpactZodSchema>;
 
 const mediaSentimentQueryZodSchema = z.object({
 	organizer: eventOrganizerSlugZodSchema,
@@ -65,13 +61,12 @@ const mediaSentimentQueryZodSchema = z.object({
 
 const mediaImpactDataTypeZodSchema = z.object({
 	query: mediaSentimentQueryZodSchema,
-	data: mediaSentimentImpactZodSchema,
+	data: mediaImpactZodSchema,
 });
-export type MediaSentimentImpactDataType = z.infer<
-	typeof mediaImpactDataTypeZodSchema
->;
+export type MediaImpactDataType = z.infer<typeof mediaImpactDataTypeZodSchema>;
 
-function getMediaSentimentImpactQuery(
+function getMediaImpactQuery(
+	type: "keywords" | "sentiment",
 	params: {
 		organizer: EventOrganizerSlugType;
 		mediaSource: MediaSourceType;
@@ -83,7 +78,8 @@ function getMediaSentimentImpactQuery(
 	const formattedInput = formatInput(params, allOrganisations);
 	return {
 		method: "time_series_regression",
-		impacted_trend: getMediaSentimentQuery(
+		impacted_trend: getMediaTrendQuery(
+			type,
 			{
 				...params,
 				organizers: [params.organizer],
@@ -97,7 +93,8 @@ function getMediaSentimentImpactQuery(
 	};
 }
 
-export async function getMediaSentimentImpactData(
+export async function getMediaImpactData(
+	type: "keywords" | "sentiment",
 	params: {
 		organizer: EventOrganizerSlugType;
 		mediaSource: MediaSourceType;
@@ -105,17 +102,18 @@ export async function getMediaSentimentImpactData(
 		to?: Date;
 	},
 	allOrganisations: OrganisationType[],
-): Promise<ParsedMediaSentimentImpactType> {
+): Promise<ParsedMediaImpactType> {
 	const json = await fetchApiData({
 		endpoint: "impact",
-		body: getMediaSentimentImpactQuery(params || {}, allOrganisations),
+		body: getMediaImpactQuery(type, params || {}, allOrganisations),
 	});
-	return validateGetDataResponse(json);
+	return validateGetDataResponse(type, json);
 }
 
 function validateGetDataResponse(
+	type: "keywords" | "sentiment",
 	response: unknown,
-): ParsedMediaSentimentImpactType {
+): ParsedMediaImpactType {
 	try {
 		const parsedResponse = mediaImpactDataTypeZodSchema.parse(response);
 		if (parsedResponse.data.impact_estimates === null) {
@@ -125,7 +123,7 @@ function validateGetDataResponse(
 				limitations: parsedResponse.data.method_limitations,
 			};
 		}
-		return parsedMediaSentimentImpactZodSchema.parse({
+		return parsedMediaImpactZodSchema.parse({
 			id: parsedResponse.query.organizer,
 			data: Object.entries(parsedResponse.data.impact_estimates).map(
 				([key, { absolute_impact: a }]) => ({
@@ -134,7 +132,7 @@ function validateGetDataResponse(
 						Math.max(a.ci_lower - a.mean, a.ci_upper - a.mean),
 					),
 					label: key,
-					color: `var(--sentiment-${key})`,
+					color: `var(--${type}-${key})`,
 					uniqueId: `${key}-${slugifyCssClass(parsedResponse.query.organizer)}`,
 				}),
 			),

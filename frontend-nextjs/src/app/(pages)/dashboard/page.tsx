@@ -63,7 +63,7 @@ export default function EventsPageWithSuspense() {
 				}
 				helpSlug="mediaTrend"
 			>
-				<ImpactChartWithData />
+				<ImpactChartWithData type="keywords" />
 			</SectionHeadlineWithExplanation>
 			<SectionHeadlineWithExplanation
 				headline="What sentiment does the media have towards the protests?"

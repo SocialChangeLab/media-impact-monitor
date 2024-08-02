@@ -109,7 +109,9 @@ export function OrganisationsSelect({
 								color={firstOrg?.color ?? "transparent"}
 								className="shrink-0"
 							/>
-							<span className="truncate">{firstOrg?.name}</span>
+							<span className="truncate hidden sm:inline max-w-56 text-sm lg:text-base">
+								{firstOrg?.name}
+							</span>
 						</span>
 					)}
 					{!isPending && organizerSlugs.length > 1 && (

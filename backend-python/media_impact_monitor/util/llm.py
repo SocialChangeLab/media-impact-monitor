@@ -11,7 +11,7 @@ from media_impact_monitor.util.env import (
 
 completion = partial(
     cache(litellm.completion),
-    model="azure/gpt-35-turbo",  # model = azure/<your-azure-deployment-name>
+    model="azure/gpt-4o-mini",  # model = azure/<your-azure-deployment-name>
     api_base=AZURE_API_BASE,
     api_version=AZURE_API_VERSION,
     api_key=AZURE_API_KEY,

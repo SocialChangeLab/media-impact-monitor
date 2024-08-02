@@ -2,14 +2,16 @@ import base64
 from datetime import date
 from typing import Literal
 
+from media_impact_monitor.util.parallel import parallel_tqdm
 import mediacloud.api
 import pandas as pd
 from mcmetadata import extract
 from mcmetadata.exceptions import BadContentError
 
-from media_impact_monitor.util.cache import cache, get_proxied_many
+from media_impact_monitor.util.cache import cache, get_proxied
 from media_impact_monitor.util.date import verify_dates
 from media_impact_monitor.util.env import MEDIACLOUD_API_TOKEN
+from tqdm import tqdm
 
 search = mediacloud.api.SearchApi(MEDIACLOUD_API_TOKEN)
 directory = mediacloud.api.DirectoryApi(MEDIACLOUD_API_TOKEN)
@@ -112,13 +114,16 @@ def get_mediacloud_fulltexts(
         return None
     df = pd.DataFrame(all_stories)
     df["publish_date"] = pd.to_datetime(df["publish_date"]).dt.date
+    df = df[~df["url"].str.contains("news.de")]
     if sample and len(df) > 1_000:
         df = df.sample(1_000, random_state=0)
         df.to_csv("sample.csv", index=False)
-    responses = get_proxied_many(df["url"], desc="Retrieving fulltexts")
+    responses = parallel_tqdm(
+        get_proxied, df["url"].tolist(), desc="Downloading fulltexts", n_jobs=8
+    )
     df["text"] = [
         _extract(url, response.text) if response else None
-        for url, response in zip(df["url"], responses)
+        for url, response in tqdm(zip(df["url"], responses))
     ]
     df = df.dropna(subset=["text"]).rename(columns={"publish_date": "date"})
     df = df[

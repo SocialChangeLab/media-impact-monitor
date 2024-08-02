@@ -1,4 +1,6 @@
+import { useFiltersStore } from "@/providers/FiltersStoreProvider";
 import { cn } from "@/utility/classNames";
+import type { EventOrganizerSlugType } from "@/utility/eventsUtil";
 import type { icons } from "lucide-react";
 import { Fragment, useCallback, useMemo } from "react";
 import ImpactBar, { isTooUncertain } from "./ImpactBar";
@@ -17,6 +19,7 @@ type ImpactChartColumn = {
 	id: string;
 	limitations?: string[];
 	error: Error | null;
+	onOrgChange?: (organiser: EventOrganizerSlugType) => void;
 };
 
 type ImpactChartProps = {
@@ -28,6 +31,9 @@ type ImpactChartProps = {
 function ImpactChart(props: ImpactChartProps) {
 	const height = 400;
 	const padding = 32;
+	const selectedOrganizers = useFiltersStore((state) =>
+		state.organizers.sort(),
+	);
 
 	const columnItems = useMemo(
 		() =>
@@ -197,19 +203,23 @@ function ImpactChart(props: ImpactChartProps) {
 				className="grid"
 				style={{ gridTemplateColumns: `repeat(${props.columns.length}, 1fr)` }}
 			>
-				{props.columns.map(({ id, data, limitations, error }) => {
-					return (
-						<div key={`column-${id}`} className="pt-6">
-							<ImpactChartRow
-								icon={props.icon}
-								impacts={data}
-								unitLabel={props.unitLabel}
-								limitations={limitations}
-								error={error}
-							/>
-						</div>
-					);
-				})}
+				{props.columns.map(
+					({ id, data, limitations, error, onOrgChange }, idx) => {
+						return (
+							<div key={`column-${id}`} className="pt-6">
+								<ImpactChartRow
+									icon={props.icon}
+									impacts={data}
+									unitLabel={props.unitLabel}
+									limitations={limitations}
+									error={error}
+									defaultOrganizer={selectedOrganizers[idx]}
+									onOrgChange={onOrgChange}
+								/>
+							</div>
+						);
+					},
+				)}
 			</div>
 		</div>
 	);

@@ -20,9 +20,11 @@ import {
 	PopoverContent,
 	PopoverTrigger,
 } from "@/components/ui/popover";
-import { useFiltersStore } from "@/providers/FiltersStoreProvider";
 import { cn } from "@/utility/classNames";
-import type { EventOrganizerSlugType } from "@/utility/eventsUtil";
+import type {
+	EventOrganizerSlugType,
+	OrganisationType,
+} from "@/utility/eventsUtil";
 import useEvents from "@/utility/useEvents";
 import { endOfToday, parse, startOfDay } from "date-fns";
 import { useMemo, useState } from "react";
@@ -31,44 +33,56 @@ import RoundedColorPill from "./RoundedColorPill";
 export function OrganisationsSelect({
 	className,
 	multiple = true,
+	organisations,
+	selectedOrganisations,
+	onChange = () => {},
 }: {
 	className?: string;
 	multiple?: boolean;
+	organisations?: EventOrganizerSlugType[];
+	selectedOrganisations: EventOrganizerSlugType[];
+	onChange?: (orgs: EventOrganizerSlugType[]) => void;
 }) {
-	const {
-		isPending,
-		data: { organisations: allOrgsObjects },
-	} = useEvents({
+	const [open, setOpen] = useState(false);
+	const { isPending, data } = useEvents({
 		from: startOfDay(parse("01-01-2020", "dd-MM-yyyy", new Date())),
 		to: endOfToday(),
 	});
-	const [open, setOpen] = useState(false);
-	const { organizerSlugs, setOrganizers } = useFiltersStore(
-		({ organizers, setOrganizers }) => ({
-			organizerSlugs: organizers,
-			setOrganizers,
-		}),
-	);
 
-	const orgSlugs = useMemo(
-		() => allOrgsObjects.map(({ slug }) => slug),
-		[allOrgsObjects],
+	const selectedOrgs = useMemo(() => {
+		return selectedOrganisations
+			.map((slug) => data.organisations.find(({ slug: s }) => s === slug))
+			.filter(Boolean) as OrganisationType[];
+	}, [data?.organisations, selectedOrganisations]);
+
+	const orgsToSelectFrom = useMemo(() => {
+		if (typeof organisations === "undefined") return data?.organisations || [];
+		return (
+			organisations.map((slug) =>
+				data?.organisations.find(({ slug: s }) => s === slug),
+			) || []
+		).filter(Boolean) as OrganisationType[];
+	}, [organisations, data?.organisations]);
+
+	const selectedOrganizerSlugs = useMemo(
+		() => selectedOrgs?.map(({ slug }) => slug),
+		[selectedOrgs],
 	);
-	const firstOrg = useMemo(
-		() => allOrgsObjects.find(({ slug }) => slug === organizerSlugs[0]),
-		[organizerSlugs, allOrgsObjects],
+	const firstSelectedOrg = useMemo(
+		() => selectedOrgs?.find(({ slug }) => slug === selectedOrganizerSlugs[0]),
+		[selectedOrganizerSlugs, selectedOrgs],
 	);
 	const selectedColors = useMemo(() => {
 		const colors = Array.from(
-			organizerSlugs.reduce((acc, orgSlug) => {
-				const org = allOrgsObjects.find(({ slug }) => slug === orgSlug);
+			selectedOrganizerSlugs.reduce((acc, orgSlug) => {
+				const org = selectedOrgs.find(({ slug }) => slug === orgSlug);
 				if (!org) return acc;
 				acc.add(org.color);
 				return acc;
 			}, new Set<string>()),
 		);
 		return colors;
-	}, [organizerSlugs, allOrgsObjects]);
+	}, [selectedOrganizerSlugs, selectedOrgs]);
 
 	return (
 		<Popover open={open} onOpenChange={setOpen}>
@@ -85,12 +99,12 @@ export function OrganisationsSelect({
 						className,
 					)}
 				>
-					{(isPending || organizerSlugs.length === 0) && (
+					{(isPending || selectedOrganisations.length === 0) && (
 						<>
 							<div className="flex items-center gap-3">
 								<HeartHandshakeIcon className="shrink-0 text-grayDark size-5 lg:size-6" />
 								<span className="hidden md:inline text-sm lg:text-base">
-									Select organisations
+									Select organisation{multiple ? "s" : ""}
 								</span>
 							</div>
 							<Loader2
@@ -103,18 +117,18 @@ export function OrganisationsSelect({
 							/>
 						</>
 					)}
-					{!isPending && organizerSlugs.length === 1 && (
+					{!isPending && selectedOrganisations.length === 1 && (
 						<span className="grid grid-cols-[auto_1fr] gap-2 items-center">
 							<RoundedColorPill
-								color={firstOrg?.color ?? "transparent"}
+								color={firstSelectedOrg?.color ?? "transparent"}
 								className="shrink-0"
 							/>
 							<span className="truncate hidden sm:inline max-w-56 text-sm lg:text-base">
-								{firstOrg?.name}
+								{firstSelectedOrg?.name}
 							</span>
 						</span>
 					)}
-					{!isPending && organizerSlugs.length > 1 && (
+					{!isPending && selectedOrganisations.length > 1 && (
 						<span className="flex items-center">
 							{selectedColors.map((color) => {
 								return (
@@ -150,35 +164,37 @@ export function OrganisationsSelect({
 									value="all"
 									onSelect={() => {
 										const newSlugs =
-											organizerSlugs.length === allOrgsObjects.length
+											selectedOrganizerSlugs.length === selectedOrgs.length
 												? []
-												: orgSlugs;
-										setOrganizers(newSlugs);
+												: selectedOrganizerSlugs;
+										onChange(newSlugs);
 									}}
 								>
 									Toggle all/none
 								</CommandItem>
 							)}
-							{allOrgsObjects.map((org) => (
+							{orgsToSelectFrom.map((org) => (
 								<CommandItem
 									key={org.slug}
 									value={org.slug}
 									onSelect={(currentValue: string) => {
-										const alreadySelected = organizerSlugs.includes(
+										const alreadySelected = selectedOrganizerSlugs.includes(
 											currentValue as EventOrganizerSlugType,
 										);
 										const newValues = alreadySelected
-											? organizerSlugs.filter((slug) => slug !== currentValue)
-											: [...organizerSlugs, org.slug];
+											? selectedOrganizerSlugs.filter(
+													(slug) => slug !== currentValue,
+												)
+											: [...selectedOrganizerSlugs, org.slug];
 										const uniqueValues = Array.from(new Set(newValues));
-										setOrganizers(multiple ? uniqueValues : [org.slug]);
+										onChange(multiple ? uniqueValues : [org.slug]);
 										!multiple && setOpen(false);
 									}}
 								>
 									<Check
 										className={cn(
 											"mr-2 h-4 w-4 shrink-0",
-											organizerSlugs.find((o) => o === org.slug)
+											selectedOrganisations.find((o) => o === org.slug)
 												? "opacity-100"
 												: "opacity-0",
 										)}

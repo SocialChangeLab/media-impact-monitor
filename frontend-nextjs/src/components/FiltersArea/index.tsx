@@ -1,4 +1,5 @@
 "use client";
+import { useFiltersStore } from "@/providers/FiltersStoreProvider";
 import { useUiStore } from "@/providers/UiStoreProvider";
 import { cn } from "@/utility/classNames";
 import { motion, useAnimationFrame } from "framer-motion";
@@ -19,6 +20,8 @@ function FiltersArea() {
 	const pathname = usePathname();
 	const lastPathname = useRef(pathname);
 	const isScrolledToTop = useUiStore((state) => state.isScrolledToTop);
+	const organizerSlugs = useFiltersStore(({ organizers }) => organizers);
+	const setOrganizers = useFiltersStore(({ setOrganizers }) => setOrganizers);
 	const parentRef = useRef<HTMLElement>(null);
 
 	const display = useMemo(() => {
@@ -107,7 +110,11 @@ function FiltersArea() {
 						{display.organisations && (
 							<li className="flex flex-col gap-1 text-sm">
 								<FilterLabel show={isScrolledToTop}>Organisations:</FilterLabel>
-								<OrganisationsSelect />
+								<OrganisationsSelect
+									multiple
+									selectedOrganisations={organizerSlugs}
+									onChange={setOrganizers}
+								/>
 							</li>
 						)}
 					</ul>

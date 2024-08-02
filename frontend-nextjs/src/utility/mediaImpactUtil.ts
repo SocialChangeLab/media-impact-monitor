@@ -107,12 +107,14 @@ export async function getMediaImpactData(
 		endpoint: "impact",
 		body: getMediaImpactQuery(type, params || {}, allOrganisations),
 	});
-	return validateGetDataResponse(type, json);
+	const org = allOrganisations.find(({ slug }) => slug === params.organizer);
+	return validateGetDataResponse(type, json, org?.color);
 }
 
 function validateGetDataResponse(
 	type: "keywords" | "sentiment",
 	response: unknown,
+	fallbackColor?: string,
 ): ParsedMediaImpactType {
 	try {
 		const parsedResponse = mediaImpactDataTypeZodSchema.parse(response);
@@ -126,13 +128,14 @@ function validateGetDataResponse(
 		return parsedMediaImpactZodSchema.parse({
 			id: parsedResponse.query.organizer,
 			data: Object.entries(parsedResponse.data.impact_estimates).map(
-				([key, { absolute_impact: a }]) => ({
+				([key, { absolute_impact: a }], idx) => ({
 					impact: a.mean,
 					uncertainty: Math.abs(
 						Math.max(a.ci_lower - a.mean, a.ci_upper - a.mean),
 					),
 					label: key,
-					color: `var(--${type}-${key})`,
+					color:
+						key === "sentiment" ? `var(--sentiment-${key})` : fallbackColor,
 					uniqueId: `${key}-${slugifyCssClass(parsedResponse.query.organizer)}`,
 				}),
 			),

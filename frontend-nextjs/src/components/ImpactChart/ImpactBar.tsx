@@ -90,7 +90,7 @@ function ImpactBar(props: ImpactBarProps) {
 }
 
 export function isTooUncertain(uncertainty: number | null) {
-	return uncertainty === null || Math.abs(uncertainty) > 0.6;
+	return uncertainty === null || Math.abs(uncertainty) > 100;
 }
 
 function getUncertaintyLabel(uncertainty: number | null) {

@@ -128,7 +128,7 @@ function validateGetDataResponse(
 		return parsedMediaImpactZodSchema.parse({
 			id: parsedResponse.query.organizer,
 			data: Object.entries(parsedResponse.data.impact_estimates).map(
-				([key, { absolute_impact: a }], idx) => ({
+				([key, { absolute_impact: a }]) => ({
 					impact: a.mean,
 					uncertainty: Math.abs(
 						Math.max(a.ci_lower - a.mean, a.ci_upper - a.mean),
@@ -136,7 +136,7 @@ function validateGetDataResponse(
 					label: key,
 					color:
 						key === "sentiment" ? `var(--sentiment-${key})` : fallbackColor,
-					uniqueId: `${key}-${slugifyCssClass(parsedResponse.query.organizer)}`,
+					uniqueId: slugifyCssClass(`${key}-${parsedResponse.query.organizer}`),
 				}),
 			),
 		});

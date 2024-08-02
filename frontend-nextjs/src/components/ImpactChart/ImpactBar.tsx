@@ -26,6 +26,7 @@ function ImpactBar(props: ImpactBarProps) {
 	const impactHeight = Math.max(barHeight, PART_MIN_HEIGHT);
 	const uncertaintyHeight = Math.max(PART_MIN_HEIGHT, props.uncertaintyHeight);
 	const negativeImpact = impact < 0;
+	const labelOffset = Math.min(barHeight / 2, uncertaintyHeight / 2);
 	return (
 		<div
 			className={cn(
@@ -72,10 +73,8 @@ function ImpactBar(props: ImpactBarProps) {
 						transform: tooUncertain
 							? `translate(-50%, -8px)`
 							: impactHeight < 80
-								? `translate(-50%, -${uncertaintyHeight / 2}px)`
-								: `translate(-50%, ${
-										uncertaintyHeight / 2 + (impact >= 0 ? 6 : 14)
-									}px)`,
+								? `translate(-50%, -${labelOffset}px)`
+								: `translate(-50%, ${labelOffset + (impact >= 0 ? 6 : 14)}px)`,
 					}}
 				>
 					<div

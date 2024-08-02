@@ -28,6 +28,11 @@ type ImpactChartProps = {
 	icon: keyof typeof icons;
 };
 
+const itemIsTooUncertain = (item: ImpactChartColumnItem | null) =>
+	item?.uncertainty && !isTooUncertain(item.uncertainty);
+const getItemsImpacts = (items: (ImpactChartColumnItem | null)[]) =>
+	items.filter(itemIsTooUncertain).map((item) => item?.impact ?? 0);
+
 function ImpactChart(props: ImpactChartProps) {
 	const height = 400;
 	const padding = 32;
@@ -49,20 +54,9 @@ function ImpactChart(props: ImpactChartProps) {
 
 	const impactScale = useCallback(
 		(impact: number) => {
-			const lowestImpact = Math.min(
-				...columnItems.map(
-					(item) =>
-						(item?.impact ?? 0) -
-						Math.abs(item?.uncertainty ? item.uncertainty / 2 : 0),
-				),
-			);
-			const highestImpact = Math.max(
-				...columnItems.map(
-					(item) =>
-						(item?.impact ?? 0) +
-						Math.abs(item?.uncertainty ? item.uncertainty / 2 : 0),
-				),
-			);
+			const impacts = getItemsImpacts(columnItems);
+			const lowestImpact = Math.min(...impacts);
+			const highestImpact = Math.max(...impacts);
 			const impactRange = Math.abs(lowestImpact) + Math.abs(highestImpact);
 			const highImpactsPercentage = highestImpact / impactRange;
 			const lowImpactsPercentage = Math.abs(lowestImpact) / impactRange;

@@ -1,5 +1,6 @@
 import json
 
+import json_repair
 from litellm import BadRequestError
 
 from media_impact_monitor.util.llm import completion
@@ -50,7 +51,7 @@ def code_fulltext(text: str) -> float | None:
         return
     try:
         result = response.choices[0].message.tool_calls[0].function.arguments
-        data = json.loads(result)
+        data = json_repair.repair_json(result, return_objects=True)
         assert "sentiment_reasoning" in data and "sentiment" in data
         data["sentiment"] = int(data["sentiment"])
         return data

@@ -16,3 +16,11 @@ completion = partial(
     api_version=AZURE_API_VERSION,
     api_key=AZURE_API_KEY,
 )
+
+acompletion = partial(
+    cache(litellm.acompletion),
+    model="azure/gpt-4o-mini",  # model = azure/<your-azure-deployment-name>
+    api_base=AZURE_API_BASE,
+    api_version=AZURE_API_VERSION,
+    api_key=AZURE_API_KEY,
+)

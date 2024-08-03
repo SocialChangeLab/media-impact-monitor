@@ -11,7 +11,7 @@ from media_impact_monitor.data_loaders.protest.climate_orgs import (
     climate_orgs,
 )
 from media_impact_monitor.events import get_events_by_id
-from media_impact_monitor.fulltext_coding import code_fulltext
+from media_impact_monitor.fulltext_coding import code_fulltext, code_many_fulltexts
 from media_impact_monitor.trends.keyword_trend import (
     add_quotes,
     load_keywords,
@@ -92,8 +92,7 @@ def get_fulltexts(q: FulltextSearch, sample: bool = False) -> pd.DataFrame | Non
     if df is None:
         return None
 
-    # TODO: use asyncio
-    responses = parallel_tqdm(code_fulltext, df["text"], desc="Processing fulltexts")
+    # coded = code_many_fulltexts(df["text"].tolist())
     df["sentiment"] = [
         r["sentiment"] if r and "sentiment" in r else None for r in responses
     ]

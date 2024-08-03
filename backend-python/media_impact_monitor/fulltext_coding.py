@@ -60,8 +60,25 @@ def code_fulltext(text: str) -> float | None:
         return
 
 
-# aspect-based sentiment analysis (ABSA) - see Wang et al. (2024)
-# TODO: needs more extensive validation
+async def code_many_fulltexts_async(texts: list[str]) -> list[dict | None]:
+    acompletions = [code_fulltext(text) for text in texts]
+    completions = await tqdm_asyncio.gather(
+        *acompletions, desc="Coding sentiment of fulltexts with AI"
+    )
+    completions = [
+        completion["choices"][0]["message"]["content"] if completion else None
+        for completion in completions
+    ]
+    completions = [
+        json.loads(completion) if completion else None for completion in completions
+    ]
+    return completions
+
+
+def code_many_fulltexts(texts: list[str]) -> list[dict | None]:
+    return asyncio.run(code_many_fulltexts_async(texts))
+
+
 def get_aspect_sentiment(text: str, aspect: str) -> float:
     assert aspect in [
         "protest",

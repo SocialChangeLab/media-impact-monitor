@@ -28,7 +28,6 @@ def get(url, sleep=None, **kwargs):
     :rtype: requests.Response
     """
     response = _get(url, **kwargs)
-    response.raise_for_status()
     if sleep is not None:
         _sleep(sleep)
     return response

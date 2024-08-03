@@ -2,10 +2,42 @@ from datetime import date
 
 import pandas as pd
 import pytest
+from freezegun import freeze_time
 
 from media_impact_monitor.data_loaders.news_online.mediacloud_ import (
     get_mediacloud_counts,
+    _slice_date_range,
 )
+
+
+@freeze_time("2023-06-15")
+def test_slicing_normal_case():
+    start = date(2023, 4, 15)
+    end = date(2023, 6, 20)
+    expected = [
+        (date(2023, 4, 1), date(2023, 4, 30)),
+        (date(2023, 5, 1), date(2023, 5, 31)),
+        (date(2023, 6, 1), date(2023, 6, 15)),  # Note: last day is today
+    ]
+    assert _slice_date_range(start, end) == expected
+
+
+@freeze_time("2023-06-15")
+def test_slicing_future_end_date():
+    start = date(2023, 5, 1)
+    end = date(2023, 7, 15)
+    expected = [
+        (date(2023, 5, 1), date(2023, 5, 31)),
+        (date(2023, 6, 1), date(2023, 6, 15)),  # Note: last day is today
+    ]
+    assert _slice_date_range(start, end) == expected
+
+
+def test_slicing_same_month():
+    start = date(2023, 3, 10)
+    end = date(2023, 3, 20)
+    expected = [(date(2023, 3, 1), date(2023, 3, 20))]
+    assert _slice_date_range(start, end) == expected
 
 
 @pytest.mark.skip("Currently unavailable")

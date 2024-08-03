@@ -1,21 +1,22 @@
 import base64
-from datetime import date
+from datetime import date, datetime, timedelta
 from typing import Literal
 
-from media_impact_monitor.util.parallel import parallel_tqdm
 import mediacloud.api
 import pandas as pd
+from dateutil.relativedelta import relativedelta
 from mcmetadata import extract
 from mcmetadata.exceptions import BadContentError
+from tqdm import tqdm
 
-from media_impact_monitor.util.cache import cache, get_proxied
+from media_impact_monitor.util.cache import cache, get
 from media_impact_monitor.util.date import verify_dates
 from media_impact_monitor.util.env import MEDIACLOUD_API_TOKEN
-from tqdm import tqdm
+from media_impact_monitor.util.parallel import parallel_tqdm
 
 search = mediacloud.api.SearchApi(MEDIACLOUD_API_TOKEN)
 directory = mediacloud.api.DirectoryApi(MEDIACLOUD_API_TOKEN)
-search.TIMEOUT_SECS = 10
+search.TIMEOUT_SECS = 60
 
 Platform = Literal["onlinenews-mediacloud", "onlinenews-waybackmachine"]
 
@@ -33,19 +34,6 @@ def get_mediacloud_counts(
     countries: list | None = None,
     platform: Platform = "onlinenews-waybackmachine",
 ) -> pd.Series:
-    """
-    Retrieves the MediaCloud counts for a given query and parameters.
-
-    Args:
-        query (str): The query string to search for.
-        start_date (date, optional): The start date of the time range. Defaults to January 1, 2022.
-        end_date (date, optional): The end date of the time range. Defaults to the current date.
-        countries (list, optional): A list of country names or ISO codes to filter the results by. Defaults to None.
-        platform (Platform, optional): The platform to search on. Defaults to "onlinenews-mediacloud".
-
-    Returns:
-        pd.Series: A pandas Series containing the MediaCloud counts for each date in the time range.
-    """
     assert start_date.year >= 2022, "MediaCloud currently only goes back to 2022"
     assert verify_dates(start_date, end_date)
 
@@ -66,40 +54,22 @@ def get_mediacloud_counts(
 
 
 @cache
-def get_mediacloud_fulltexts(
+def _story_list(**kwargs):
+    return search.story_list(**kwargs)
+
+
+def _story_list_all_pages(
     query: str,
+    start_date: date,
     end_date: date,
-    start_date: date = date(2024, 5, 1),
-    countries: list | None = None,
+    collection_ids: list[int] | None = None,
     platform: Platform = "onlinenews-mediacloud",
-    sample: bool = False,
-) -> pd.DataFrame | None:
-    """
-    Retrieves fulltexts of news articles from MediaCloud based on the given query and params.
-
-    Args:
-        query (str): The search query to retrieve news articles.
-        start_date (date, optional): The start date to filter news articles. Defaults to January 1, 2022.
-        end_date (date, optional): The end date to filter news articles. Defaults to the current date.
-        countries (list, optional): A list of country names to filter news articles. Defaults to None.
-        platform (Platform, optional): The platform to search for news articles. Defaults to "onlinenews-mediacloud".
-
-    Returns:
-        pd.DataFrame: A DataFrame containing the retrieved news articles with full texts.
-
-    Raises:
-        AssertionError: If the start_date is before 2022.
-        NotImplementedError: If pagination is needed.
-    """
-    assert start_date.year >= 2022, "MediaCloud currently only goes back to 2022"
-    assert verify_dates(start_date, end_date)
-    assert isinstance(countries, list) or countries is None
-    collection_ids = [_resolve_country(c) for c in countries] if countries else None
+):
     all_stories = []
     more_stories = True
     pagination_token = None
     while more_stories:
-        page, pagination_token = search.story_list(
+        page, pagination_token = _story_list(
             query=query,
             start_date=start_date,
             end_date=end_date,
@@ -113,24 +83,92 @@ def get_mediacloud_fulltexts(
             decoded_token = base64.urlsafe_b64decode(pagination_token + "==").decode(
                 "utf-8"
             )
-            print(f"{len(all_stories)=} {pagination_token=} {decoded_token=}")
+            # decode strings like 20240527T135136Z
+            dt = datetime.strptime(decoded_token, "%Y%m%dT%H%M%SZ").strftime(
+                "%Y-%m-%d %H:%M:%S"
+            )
+        else:
+            dt = end_date
+        print(
+            f"retrieved metadata for {len(all_stories)} stories for month {start_date.year}-{start_date.month}, currently at {dt}"
+        )
         # https://github.com/mediacloud/api-tutorial-notebooks/blob/main/MC02%20-%20attention.ipynb:
         # > As you may have noted, this can take a while for long time periods. If you look closely you'll notice that it can't be easily parallelized, because it requires content in the results to make the next call. A workaround is to divide you query up by time and query in parallel for something like each day. This can speed up the response. Also just contact us directly if you are trying to do larger data dumps, or hit up against your API quota.
-    if len(all_stories) == 0:
+    return all_stories
+
+
+def _slice_date_range(start: date, end: date) -> list[tuple[date, date]]:
+    result = []
+    current = start.replace(day=1)
+    while current <= end:
+        next_month = current + relativedelta(months=1)
+        last_day = min(next_month - timedelta(days=1), date.today())
+        result.append((current, last_day))
+        current = next_month
+    return result
+
+
+def _story_list_split_monthly(
+    query: str,
+    start_date: date,
+    end_date: date,
+    collection_ids: list[int] | None = None,
+    platform: Platform = "onlinenews-mediacloud",
+):
+    def func(start_and_end):
+        start, end = start_and_end
+        return _story_list_all_pages(
+            query=query,
+            start_date=start,
+            end_date=end,
+            collection_ids=collection_ids,
+            platform=platform,
+        )
+
+    stories_lists = parallel_tqdm(
+        func,
+        _slice_date_range(start_date, end_date),
+        desc="Downloading metadata by month",
+        n_jobs=8,
+    )
+    stories = [s for sl in stories_lists for s in sl]
+    if len(stories) == 0:
         return None
-    df = pd.DataFrame(all_stories)
+    df = pd.DataFrame(stories)
     df["publish_date"] = pd.to_datetime(df["publish_date"]).dt.date
+    return df
+
+
+@cache
+def get_mediacloud_fulltexts(
+    query: str,
+    end_date: date,
+    start_date: date = date(2024, 5, 1),
+    countries: list | None = None,
+    platform: Platform = "onlinenews-mediacloud",
+    sample: bool = False,
+) -> pd.DataFrame | None:
+    assert start_date.year >= 2022, "MediaCloud currently only goes back to 2022"
+    assert verify_dates(start_date, end_date)
+    assert isinstance(countries, list) or countries is None
+    collection_ids = [_resolve_country(c) for c in countries] if countries else None
+    df = _story_list_split_monthly(
+        query=query,
+        start_date=start_date,
+        end_date=end_date,
+        collection_ids=collection_ids,
+        platform=platform,
+    )
     df = df[~df["url"].str.contains("news.de")]
     if sample and len(df) > 1_000:
         df = df.sample(1_000, random_state=0)
-        df.to_csv("sample.csv", index=False)
     responses = parallel_tqdm(
-        get_proxied, df["url"].tolist(), desc="Downloading fulltexts", n_jobs=8
+        get, df["url"].tolist(), desc="Downloading fulltexts", n_jobs=8
     )
-    df["text"] = [
-        _extract(url, response.text) if response else None
-        for url, response in tqdm(zip(df["url"], responses))
-    ]
+    urls_and_responses = list(zip(df["url"], responses))
+    df["text"] = parallel_tqdm(
+        _extract, urls_and_responses, desc="Extracting fulltexts"
+    )
     df = df.dropna(subset=["text"]).rename(columns={"publish_date": "date"})
     df = df[
         [
@@ -148,10 +186,13 @@ def get_mediacloud_fulltexts(
     return df
 
 
-def _extract(url, html):
+def _extract(url_and_response):
+    url, response = url_and_response
+    if response.status_code != 200:
+        return None
     try:
         # this also contains additional metadata (title, language, extraction method, ...) that could be used
-        return extract(url, html)["text_content"]
+        return cache(extract)(url, response.text)["text_content"]
     except BadContentError:
         return None
 

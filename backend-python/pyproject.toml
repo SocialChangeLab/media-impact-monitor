@@ -42,6 +42,7 @@ faker = "^25.3.0"
 sentry-sdk = {extras = ["fastapi"], version = "^2.5.1"}
 python-slugify = "^8.0.4"
 json-repair = "^0.26.0"
+freezegun = "^1.5.1"
 
 [tool.poetry.group.dev.dependencies]
 pytest = "^8.0.2"

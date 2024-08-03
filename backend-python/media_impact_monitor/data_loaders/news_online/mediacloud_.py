@@ -142,11 +142,12 @@ def _story_list_split_monthly(
 def get_mediacloud_fulltexts(
     query: str,
     end_date: date,
-    start_date: date = date(2024, 5, 1),
+    start_date: date | None = None,
     countries: list | None = None,
     platform: Platform = "onlinenews-mediacloud",
     sample: bool = False,
 ) -> pd.DataFrame | None:
+    start_date = start_date or date(2022, 1, 1)
     assert start_date.year >= 2022, "MediaCloud currently only goes back to 2022"
     assert verify_dates(start_date, end_date)
     assert isinstance(countries, list) or countries is None

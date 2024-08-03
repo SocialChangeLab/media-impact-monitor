@@ -68,8 +68,8 @@ def get_fulltexts(q: FulltextSearch, sample: bool = False) -> pd.DataFrame | Non
         query = xs_with_ys(orgs, keywords["activism"], q.media_source)
 
     assert (
-        q.start_date and q.end_date
-    ), "Both start_date and end_date must be provided; either explicitly or through the event_id."
+        q.end_date
+    ), "end_date must be provided; either explicitly or through the event_id."
 
     match q.media_source:
         case "news_online":

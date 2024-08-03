@@ -28,5 +28,5 @@ def get_trend(q: TrendSearch, as_json=True) -> Trend:
                 limitations=[],
                 trends=long_df.to_dict(orient="records"),
             )
-        case str:
+        case str():
             return Trend(applicability=False, limitations=[df], trends=None)

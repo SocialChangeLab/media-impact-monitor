@@ -9,7 +9,7 @@ const sentiment_trend = await queryApi('trend', {
   trend_type: 'sentiment',
   media_source: 'news_online',
   topic: 'climate_change',
-  start_date: '2024-01-01',
+  start_date: '2022-01-01',
   end_date: '2024-07-31'
 })
 display(sentiment_trend)

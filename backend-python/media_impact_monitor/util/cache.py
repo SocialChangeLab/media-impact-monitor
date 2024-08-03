@@ -1,12 +1,10 @@
 """Cache functions."""
 
-import asyncio
 from time import sleep as _sleep
 
 from joblib import Memory
 from requests import get as _get
 from requests import post as _post
-from tqdm.asyncio import tqdm_asyncio
 from zenrows import ZenRowsClient
 
 from media_impact_monitor.util.env import ZENROWS_API_KEY

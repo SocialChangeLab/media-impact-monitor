@@ -7,7 +7,6 @@ import pandas as pd
 from dateutil.relativedelta import relativedelta
 from mcmetadata import extract
 from mcmetadata.exceptions import BadContentError
-from tqdm import tqdm
 
 from media_impact_monitor.util.cache import cache, get
 from media_impact_monitor.util.date import verify_dates

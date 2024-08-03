@@ -5,7 +5,6 @@ import pandas as pd
 from media_impact_monitor.data_loaders.news_online.mediacloud_ import (
     get_mediacloud_counts,
 )
-from media_impact_monitor.data_loaders.news_print.genios import get_genios_counts
 from media_impact_monitor.data_loaders.protest.acled import get_acled_events
 from media_impact_monitor.impact_estimators.interrupted_time_series import (
     estimate_impact,

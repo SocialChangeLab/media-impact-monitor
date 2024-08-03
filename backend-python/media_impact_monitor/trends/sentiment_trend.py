@@ -1,13 +1,8 @@
-from datetime import date
+
+import pandas as pd
 
 from media_impact_monitor.fulltexts import get_fulltexts
 from media_impact_monitor.types_ import FulltextSearch, TrendSearch
-import pandas as pd
-
-from media_impact_monitor.data_loaders.news_online.mediacloud_ import (
-    get_mediacloud_fulltexts,
-)
-from media_impact_monitor.fulltext_coding import code_fulltext
 from media_impact_monitor.util.cache import cache
 
 

@@ -1,14 +1,10 @@
 from datetime import date
 
-from media_impact_monitor.types_ import TrendSearch
 import pandas as pd
 
-from media_impact_monitor.fulltext_coding import (
-    code_fulltext,
-    get_aspect_sentiment,
-)
-from media_impact_monitor.trends.sentiment_trend import get_sentiment_trend
 from media_impact_monitor.api import _get_trend
+from media_impact_monitor.trends.sentiment_trend import get_sentiment_trend
+from media_impact_monitor.types_ import TrendSearch
 
 
 def test_get_sentiment_trend_valid_input():

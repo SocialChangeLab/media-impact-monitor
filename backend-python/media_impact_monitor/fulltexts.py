@@ -17,10 +17,9 @@ from media_impact_monitor.trends.keyword_trend import (
     xs,
     xs_with_ys,
 )
-from media_impact_monitor.types_ import Fulltext, FulltextSearch
+from media_impact_monitor.types_ import FulltextSearch
 from media_impact_monitor.util.cache import cache
 from media_impact_monitor.util.parallel import parallel_tqdm
-from media_impact_monitor.util.paths import src
 
 
 @cache

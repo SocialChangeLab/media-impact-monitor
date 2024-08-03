@@ -5,8 +5,8 @@ import pytest
 from freezegun import freeze_time
 
 from media_impact_monitor.data_loaders.news_online.mediacloud_ import (
-    get_mediacloud_counts,
     _slice_date_range,
+    get_mediacloud_counts,
 )
 
 

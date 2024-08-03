@@ -1,9 +1,8 @@
 import pytest
 
 from media_impact_monitor.api import _get_impact
-from media_impact_monitor.events import get_events
 from media_impact_monitor.impact import get_impact
-from media_impact_monitor.types_ import EventSearch, Impact, ImpactSearch, TrendSearch
+from media_impact_monitor.types_ import ImpactSearch, TrendSearch
 
 
 def test_xr():
@@ -26,7 +25,7 @@ def test_xr():
 
 
 def test_xr_api():
-    response = _get_impact(
+    _get_impact(
         ImpactSearch(
             end_date="2024-06-25",
             impacted_trend=TrendSearch(
@@ -46,7 +45,7 @@ def test_xr_api():
 
 @pytest.mark.skip()
 def test_fff_api():
-    response = _get_impact(
+    _get_impact(
         ImpactSearch(
             end_date="2023-02-19",
             impacted_trend=TrendSearch(

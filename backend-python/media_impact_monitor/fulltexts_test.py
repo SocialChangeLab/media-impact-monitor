@@ -1,12 +1,9 @@
-from datetime import date, timedelta
+from datetime import date
 
 import pytest
 
-from media_impact_monitor.data_loaders.news_online.mediacloud_ import (
-    get_mediacloud_fulltexts,
-)
 from media_impact_monitor.fulltexts import get_fulltexts
-from media_impact_monitor.types_ import Fulltext, FulltextSearch
+from media_impact_monitor.types_ import FulltextSearch
 
 
 def test_get_fulltexts_for_org():

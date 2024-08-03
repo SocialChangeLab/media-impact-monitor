@@ -1,11 +1,9 @@
-import asyncio
 import json
 
 import backoff
 import json_repair
 from litellm import BadRequestError
 from litellm.exceptions import RateLimitError
-from tqdm.asyncio import tqdm_asyncio
 
 from media_impact_monitor.util.llm import completion
 

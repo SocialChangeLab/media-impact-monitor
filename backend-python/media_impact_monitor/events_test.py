@@ -1,7 +1,5 @@
 from datetime import date
 
-import pytest
-from pytest import raises
 
 from media_impact_monitor.events import get_events, get_events_by_id
 from media_impact_monitor.types_ import EventSearch

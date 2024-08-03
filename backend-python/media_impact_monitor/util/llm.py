@@ -9,6 +9,8 @@ from media_impact_monitor.util.env import (
     AZURE_API_VERSION,
 )
 
+# litellm.set_verbose = True # for debugging
+
 completion = partial(
     cache(litellm.completion),
     model="azure/gpt-4o-mini",  # model = azure/<your-azure-deployment-name>

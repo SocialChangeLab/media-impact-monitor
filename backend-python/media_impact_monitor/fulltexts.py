@@ -1,7 +1,6 @@
 from datetime import date, timedelta
 
 import pandas as pd
-import yaml
 
 from media_impact_monitor.data_loaders.news_online.mediacloud_ import (
     get_mediacloud_fulltexts,
@@ -69,8 +68,6 @@ def get_fulltexts(q: FulltextSearch, sample: bool = False) -> pd.DataFrame | Non
             return None
         query = xs_with_ys(orgs, keywords["activism"], q.media_source)
 
-    print(f"Looking for news fulltexts that match: '{query}'")
-
     assert (
         q.start_date and q.end_date
     ), "Both start_date and end_date must be provided; either explicitly or through the event_id."
@@ -92,10 +89,11 @@ def get_fulltexts(q: FulltextSearch, sample: bool = False) -> pd.DataFrame | Non
     if df is None:
         return None
 
-    # TODO: use asyncio
-    responses = parallel_tqdm(code_fulltext, df["text"], desc="Processing fulltexts")
+    coded = parallel_tqdm(
+        code_fulltext, df["text"], desc="Coding sentiments using AI", n_jobs=32
+    )
     df["sentiment"] = [
-        r["sentiment"] if r and "sentiment" in r else None for r in responses
+        r["sentiment"] if r and "sentiment" in r else None for r in coded
     ]
     df["sentiment"] = df["sentiment"].fillna(0).astype(int)
 

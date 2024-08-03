@@ -1,7 +1,11 @@
+import asyncio
 import json
 
+import backoff
 import json_repair
 from litellm import BadRequestError
+from litellm.exceptions import RateLimitError
+from tqdm.asyncio import tqdm_asyncio
 
 from media_impact_monitor.util.llm import completion
 
@@ -32,8 +36,9 @@ tools = [
 ]
 
 
-# classic trinary sentiment classification
-def code_fulltext(text: str) -> float | None:
+@backoff.on_exception(backoff.expo, RateLimitError, max_time=120)
+def code_fulltext(text: str) -> dict | None:
+    """classic trinary sentiment classification"""
     messages = [
         {"role": "system", "content": system_prompt},
         {"role": "user", "content": text},
@@ -63,6 +68,8 @@ def code_fulltext(text: str) -> float | None:
 # aspect-based sentiment analysis (ABSA) - see Wang et al. (2024)
 # TODO: needs more extensive validation
 def get_aspect_sentiment(text: str, aspect: str) -> float:
+    """aspect-based sentiment analysis (ABSA) - see Wang et al. (2024)
+    TODO: needs more extensive validation"""
     assert aspect in [
         "protest",
         "climate change",

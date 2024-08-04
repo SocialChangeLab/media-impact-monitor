@@ -89,7 +89,7 @@ def get_fulltexts(q: FulltextSearch, sample: bool = False) -> pd.DataFrame | Non
         return None
 
     coded = parallel_tqdm(
-        code_fulltext, df["text"], desc="Coding fulltexts using AI", n_jobs=16
+        code_fulltext, df["text"], desc="Coding fulltexts using AI", n_jobs=32
     )
     for field in ["activism_sentiment", "policy_sentiment"]:
         df[field] = [r[field] if r and field in r else None for r in coded]

@@ -1,4 +1,5 @@
 import base64
+import random
 from datetime import date, datetime, timedelta
 from typing import Literal
 
@@ -93,6 +94,10 @@ def _story_list_all_pages(
         )
         # https://github.com/mediacloud/api-tutorial-notebooks/blob/main/MC02%20-%20attention.ipynb:
         # > As you may have noted, this can take a while for long time periods. If you look closely you'll notice that it can't be easily parallelized, because it requires content in the results to make the next call. A workaround is to divide you query up by time and query in parallel for something like each day. This can speed up the response. Also just contact us directly if you are trying to do larger data dumps, or hit up against your API quota.
+    # take a 1% sample of stories
+    sample_size = len(all_stories) // 100
+    random.seed(0)
+    all_stories = random.sample(all_stories, sample_size)
     return all_stories
 
 
@@ -160,8 +165,6 @@ def get_mediacloud_fulltexts(
         platform=platform,
     )
     df = df[~df["url"].str.contains("news.de")]
-    if sample and len(df) > 1_000:
-        df = df.sample(1_000, random_state=0)
     responses = parallel_tqdm(
         get, df["url"].tolist(), desc="Downloading fulltexts", n_jobs=8
     )

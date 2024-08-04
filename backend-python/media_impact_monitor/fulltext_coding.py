@@ -146,9 +146,8 @@ async def code_fulltext(text: str) -> dict | None:
 
 async def code_many_fulltexts_async(texts: list[str]) -> list[dict | None]:
     acompletions = [code_fulltext(text) for text in texts]
-    completions = await tqdm_asyncio.gather(
-        *acompletions, desc="Coding sentiment of fulltexts with AI"
-    )
+    label = "Coding sentiment of fulltexts with AI"
+    completions = await tqdm_asyncio.gather(*acompletions, desc=f"{label:<{40}}")
     return completions
 
 

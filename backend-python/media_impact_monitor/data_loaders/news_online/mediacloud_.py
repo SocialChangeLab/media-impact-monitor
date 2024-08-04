@@ -132,10 +132,11 @@ def _story_list_split_monthly(
             sample_frac=sample_frac,
         )
 
+    label = "Downloading metadata by month"
     stories_lists = parallel_tqdm(
         func,
         _slice_date_range(start_date, end_date),
-        desc="Downloading metadata by month",
+        desc=f"{label:<{40}}",
         n_jobs=8,
     )
     stories = [s for sl in stories_lists for s in sl]
@@ -169,13 +170,11 @@ def get_mediacloud_fulltexts(
         sample_frac=sample_frac,
     )
     df = df[~df["url"].str.contains("news.de")]
-    responses = parallel_tqdm(
-        get, df["url"].tolist(), desc="Downloading fulltexts", n_jobs=8
-    )
+    label = "Downloading fulltexts"
+    responses = parallel_tqdm(get, df["url"].tolist(), desc=f"{label:<{40}}", n_jobs=8)
     urls_and_responses = list(zip(df["url"], responses))
-    df["text"] = parallel_tqdm(
-        _extract, urls_and_responses, desc="Extracting fulltexts"
-    )
+    label = "Extracting fulltexts"
+    df["text"] = parallel_tqdm(_extract, urls_and_responses, desc=f"{label:<{40}}")
     df = df.dropna(subset=["text"]).rename(columns={"publish_date": "date"})
     df = df[
         [

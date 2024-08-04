@@ -1,11 +1,16 @@
+import asyncio
 import json
 
 import backoff
 import json_repair
+from aiolimiter import AsyncLimiter
 from litellm import BadRequestError
-from litellm.exceptions import RateLimitError
+from litellm.exceptions import RateLimitError as RateLimitError1
+from tqdm.asyncio import tqdm_asyncio
+from openai import RateLimitError as RateLimitError2
+from media_impact_monitor.util.cache import cache
 
-from media_impact_monitor.util.llm import completion
+from media_impact_monitor.util.llm import acompletion, completion
 
 system_prompt = """You are an assistant professor in political science at Stanford University. You have great expertise and intuition on the topics of climate change, activism, policy, and science. You can argue in a very open-ended manner and come to sharp conclusions. Your writing style is super concise and super down-to-earth.
 
@@ -98,20 +103,25 @@ tools = [
 ]
 
 
-@backoff.on_exception(backoff.expo, RateLimitError, max_time=120)
-def code_fulltext(text: str) -> dict | None:
+rate_limit = AsyncLimiter(max_rate=1000, time_period=60)
+
+
+# @cache
+# @backoff.on_exception(backoff.expo, [RateLimitError1, RateLimitError2], max_time=120)
+async def code_fulltext(text: str) -> dict | None:
     messages = [
         {"role": "system", "content": system_prompt},
         {"role": "user", "content": text},
     ]
     try:
-        response = completion(
-            messages=messages,
-            tools=tools,
-            tool_choice={"type": "function", "function": {"name": "code_text"}},
-            temperature=0.0,
-            max_tokens=4000,
-        )
+        async with rate_limit:
+            response = await acompletion(
+                messages=messages,
+                tools=tools,
+                tool_choice={"type": "function", "function": {"name": "code_text"}},
+                temperature=0.0,
+                max_tokens=4000,
+            )
     except BadRequestError as e:
         print("Error while coding the text with AI:", e)
         return
@@ -132,6 +142,18 @@ def code_fulltext(text: str) -> dict | None:
             f'Error parsing the JSON code by the AI. Text: "{text[:50]+" ..."}", Response: {result}'
         )
         return
+
+
+async def code_many_fulltexts_async(texts: list[str]) -> list[dict | None]:
+    acompletions = [code_fulltext(text) for text in texts]
+    completions = await tqdm_asyncio.gather(
+        *acompletions, desc="Coding sentiment of fulltexts with AI"
+    )
+    return completions
+
+
+def code_many_fulltexts(texts: list[str]) -> list[dict | None]:
+    return asyncio.run(code_many_fulltexts_async(texts))
 
 
 def get_aspect_sentiment(text: str, aspect: str) -> float:

@@ -64,6 +64,7 @@ def _story_list_all_pages(
     end_date: date,
     collection_ids: list[int] | None = None,
     platform: Platform = "onlinenews-mediacloud",
+    sample_frac: float = 1,
 ):
     all_stories = []
     more_stories = True
@@ -95,7 +96,7 @@ def _story_list_all_pages(
         # https://github.com/mediacloud/api-tutorial-notebooks/blob/main/MC02%20-%20attention.ipynb:
         # > As you may have noted, this can take a while for long time periods. If you look closely you'll notice that it can't be easily parallelized, because it requires content in the results to make the next call. A workaround is to divide you query up by time and query in parallel for something like each day. This can speed up the response. Also just contact us directly if you are trying to do larger data dumps, or hit up against your API quota.
     # take a 1% sample of stories
-    sample_size = len(all_stories) // 100
+    sample_size = int(sample_frac * len(all_stories))
     random.seed(0)
     all_stories = random.sample(all_stories, sample_size)
     return all_stories
@@ -118,6 +119,7 @@ def _story_list_split_monthly(
     end_date: date,
     collection_ids: list[int] | None = None,
     platform: Platform = "onlinenews-mediacloud",
+    sample_frac: float = 1,
 ):
     def func(start_and_end):
         start, end = start_and_end
@@ -127,6 +129,7 @@ def _story_list_split_monthly(
             end_date=end,
             collection_ids=collection_ids,
             platform=platform,
+            sample_frac=sample_frac,
         )
 
     stories_lists = parallel_tqdm(
@@ -150,7 +153,7 @@ def get_mediacloud_fulltexts(
     start_date: date | None = None,
     countries: list | None = None,
     platform: Platform = "onlinenews-mediacloud",
-    sample: bool = False,
+    sample_frac: float = 1,
 ) -> pd.DataFrame | None:
     start_date = start_date or date(2022, 1, 1)
     assert start_date.year >= 2022, "MediaCloud currently only goes back to 2022"
@@ -163,6 +166,7 @@ def get_mediacloud_fulltexts(
         end_date=end_date,
         collection_ids=collection_ids,
         platform=platform,
+        sample_frac=sample_frac,
     )
     df = df[~df["url"].str.contains("news.de")]
     responses = parallel_tqdm(

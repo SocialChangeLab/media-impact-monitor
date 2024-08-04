@@ -10,7 +10,7 @@ from media_impact_monitor.data_loaders.protest.climate_orgs import (
     climate_orgs,
 )
 from media_impact_monitor.events import get_events_by_id
-from media_impact_monitor.fulltext_coding import code_fulltext
+from media_impact_monitor.fulltext_coding import code_fulltext, code_many_fulltexts
 from media_impact_monitor.trends.keyword_trend import (
     add_quotes,
     load_keywords,
@@ -23,7 +23,7 @@ from media_impact_monitor.util.parallel import parallel_tqdm
 
 
 @cache
-def get_fulltexts(q: FulltextSearch, sample: bool = False) -> pd.DataFrame | None:
+def get_fulltexts(q: FulltextSearch) -> pd.DataFrame | None:
     assert (
         q.topic or q.organizers or q.query or q.event_id
     ), "One of 'topic', 'organizers', 'query', or 'event_id' must be provided."
@@ -78,7 +78,7 @@ def get_fulltexts(q: FulltextSearch, sample: bool = False) -> pd.DataFrame | Non
                 start_date=q.start_date,
                 end_date=q.end_date,
                 countries=["Germany"],
-                sample=sample,
+                sample_frac=0.01,
             )
         case _:
             raise ValueError(
@@ -88,9 +88,7 @@ def get_fulltexts(q: FulltextSearch, sample: bool = False) -> pd.DataFrame | Non
     if df is None:
         return None
 
-    coded = parallel_tqdm(
-        code_fulltext, df["text"], desc="Coding fulltexts using AI", n_jobs=32
-    )
+    coded = code_many_fulltexts(df["text"])
     for field in ["activism_sentiment", "policy_sentiment"]:
         df[field] = [r[field] if r and field in r else None for r in coded]
         df[field] = df[field].fillna(0).astype(int)

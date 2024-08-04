@@ -105,7 +105,7 @@ def _story_list_all_pages(
 def _slice_date_range(start: date, end: date) -> list[tuple[date, date]]:
     result = []
     current = start.replace(day=1)
-    while current <= end:
+    while current <= min(end, date.today()):
         next_month = current + relativedelta(months=1)
         last_day = min(next_month - timedelta(days=1), date.today())
         result.append((current, last_day))

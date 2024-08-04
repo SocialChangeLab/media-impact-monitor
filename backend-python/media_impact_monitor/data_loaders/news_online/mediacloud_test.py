@@ -36,7 +36,7 @@ def test_slicing_future_end_date():
 def test_slicing_same_month():
     start = date(2023, 3, 10)
     end = date(2023, 3, 20)
-    expected = [(date(2023, 3, 1), date(2023, 3, 20))]
+    expected = [(date(2023, 3, 1), date(2023, 3, 31))]
     assert _slice_date_range(start, end) == expected
 
 

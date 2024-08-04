@@ -7,27 +7,91 @@ from litellm.exceptions import RateLimitError
 
 from media_impact_monitor.util.llm import completion
 
-system_prompt = """You're a sentiment analysis tool. For a given user input, always return the sentiment of the input. Return -1 for negative, 0 for neutral, and 1 for positive. Before you make your decision, reason about the decision. Stick exactly to the specified JSON schema including the "sentiment_reasoning" and "sentiment" fields."""
+system_prompt = """You are an assistant professor in political science at Stanford University. You have great expertise and intuition on the topics of climate change, activism, policy, and science. You can argue in a very open-ended manner and come to sharp conclusions. Your writing style is super concise and super down-to-earth.
+
+You are given a text from a newspaper source and are asked to code it according to the criteria in the "code_text" function. You provide your answer in the expected JSON format, and are extra diligent to make sure that the format is correct, and that the answers are reliable and well-argued."""
 
 tools = [
     {
         "type": "function",
         "function": {
-            "name": "score_sentiment",
+            "name": "code_text",
             "description": "",
             "parameters": {
                 "type": "object",
                 "properties": {
-                    "sentiment_reasoning": {
+                    "topics_reasoning": {
                         "type": "string",
-                        "description": "The reasoning for the sentiment",
+                        "description": "The reasoning for the choice of topics (1-3 sentences)",
                     },
-                    "sentiment": {
+                    "topics": {
+                        "type": "array",
+                        "items": {
+                            "type": "string",
+                            "description": "A very concise free-text topic descriptor of 1-3 words, e.g. 'international relations', 'energy policy', 'olaf scholz', 'biodiversity', 'ukraine war', ...",
+                        },
+                        "description": "A list of the 10 most dominant topics in the text",
+                    },
+                    "activism_reasoning": {
+                        "type": "string",
+                        "description": "The reasoning for the activism extent (1 sentence)",
+                    },
+                    "activism": {
                         "type": "number",
-                        "description": "The sentiment: -1 for negative, 0 for neutral, 1 for positive",
+                        "enum": [0, 1, 2, 3, 4],
+                        "description": "To what extent is the text about activism? 0: not at all, 1: a little, 2: somewhat, 3: mostly, 4: entirely",
+                    },
+                    "activism_sentiment_reasoning": {
+                        "type": ["string", "null"],
+                        "description": "The reasoning for the activism sentiment (1-2 sentences). If the text is not about activism, this field should be null.",
+                    },
+                    "activism_sentiment": {
+                        "type": ["number", "null"],
+                        "enum": [-1, 0, 1],
+                        "description": "What sentiment does the text have towards the activists/protester? -1: negative, 0: neutral, 1: positive. If the text is not about activism, this field should be null.",
+                    },
+                    "policy_reasoning": {
+                        "type": "string",
+                        "description": "The reasoning for the policy extent (1 sentence)",
+                    },
+                    "policy": {
+                        "type": "number",
+                        "enum": [0, 1, 2, 3, 4],
+                        "description": "To what extent is the text about policy? 0: not at all, 1: a little, 2: somewhat, 3: mostly, 4: entirely",
+                    },
+                    "policy_sentiment_reasoning": {
+                        "type": ["string", "null"],
+                        "description": "The reasoning for the policy sentiment (1-5 sentences). If the text is not about policy, this field should be null.",
+                    },
+                    "policy_sentiment": {
+                        "type": ["number", "null"],
+                        "enum": [-1, 0, 1],
+                        "description": "Does the text point out the insufficiency of existing policies and support progressive policy changes? -1: it supports the status quo or suggests regressive policy changes, 0: neutral, 1: it points out the insufficiency of existing policies or supports progressive policy changes. If the text is not about policy, this field should be null.",
+                    },
+                    "science_reasoning": {
+                        "type": "string",
+                        "description": "The reasoning for the science extent (1 sentence)",
+                    },
+                    "science": {
+                        "type": "number",
+                        "enum": [0, 1, 2, 3, 4],
+                        "description": "To what extent is the text about natural phenomena or scientific research? 0: not at all, 1: a little, 2: somewhat, 3: mostly, 4: entirely",
                     },
                 },
-                "required": ["sentiment_reasoning", "sentiment"],
+                "required": [
+                    "topics_reasoning",
+                    "topics",
+                    "activism_reasoning",
+                    "activism",
+                    "activism_sentiment_reasoning",
+                    "activism_sentiment",
+                    "policy_reasoning",
+                    "policy",
+                    "policy_sentiment_reasoning",
+                    "policy_sentiment",
+                    "science_reasoning",
+                    "science",
+                ],
             },
         },
     }
@@ -36,7 +100,6 @@ tools = [
 
 @backoff.on_exception(backoff.expo, RateLimitError, max_time=120)
 def code_fulltext(text: str) -> dict | None:
-    """classic trinary sentiment classification"""
     messages = [
         {"role": "system", "content": system_prompt},
         {"role": "user", "content": text},
@@ -45,26 +108,32 @@ def code_fulltext(text: str) -> dict | None:
         response = completion(
             messages=messages,
             tools=tools,
-            tool_choice={"type": "function", "function": {"name": "score_sentiment"}},
+            tool_choice={"type": "function", "function": {"name": "code_text"}},
             temperature=0.0,
-            max_tokens=1000,
+            max_tokens=4000,
         )
     except BadRequestError as e:
-        print("error coding sentiment:", e)
+        print("Error while coding the text with AI:", e)
         return
     try:
         result = response.choices[0].message.tool_calls[0].function.arguments
         data = json_repair.repair_json(result, return_objects=True)
-        assert "sentiment_reasoning" in data and "sentiment" in data
-        data["sentiment"] = int(data["sentiment"])
+        for topic in ["activism", "policy"]:
+            data[topic] = (
+                int(data[topic]) if topic in data and data[topic] is not None else None
+            )
+            sent = f"{topic}_sentiment"
+            data[sent] = (
+                int(data[sent]) if sent in data and data[sent] is not None else None
+            )
         return data
     except (json.JSONDecodeError, AssertionError):
-        print(f"error coding sentiment. text: {text[:50]}, response: {result}")
+        print(
+            f'Error parsing the JSON code by the AI. Text: "{text[:50]+" ..."}", Response: {result}'
+        )
         return
 
 
-# aspect-based sentiment analysis (ABSA) - see Wang et al. (2024)
-# TODO: needs more extensive validation
 def get_aspect_sentiment(text: str, aspect: str) -> float:
     """aspect-based sentiment analysis (ABSA) - see Wang et al. (2024)
     TODO: needs more extensive validation"""

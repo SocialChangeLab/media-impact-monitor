@@ -89,12 +89,11 @@ def get_fulltexts(q: FulltextSearch, sample: bool = False) -> pd.DataFrame | Non
         return None
 
     coded = parallel_tqdm(
-        code_fulltext, df["text"], desc="Coding sentiments using AI", n_jobs=32
+        code_fulltext, df["text"], desc="Coding fulltexts using AI", n_jobs=16
     )
-    df["sentiment"] = [
-        r["sentiment"] if r and "sentiment" in r else None for r in coded
-    ]
-    df["sentiment"] = df["sentiment"].fillna(0).astype(int)
+    for field in ["activism_sentiment", "policy_sentiment"]:
+        df[field] = [r[field] if r and field in r else None for r in coded]
+        df[field] = df[field].fillna(0).astype(int)
 
     if q.event_id:
         # TODO filter by only those articles that refer to the event

@@ -52,7 +52,10 @@ def get_fulltexts(q: FulltextSearch) -> pd.DataFrame | None:
         query = xs_with_ys(orgs, keywords["activism"], q.media_source)
     if q.query:
         query = q.query
+    sample_frac = 0.01  # generally use only 1% of articles
     if q.event_id:
+        sample_frac = 0.1  # use more articles when looking at a specific event
+        # TODO filter to only those articles that actually refer to the event
         events = get_events_by_id([q.event_id])
         assert len(events) == 1
         event = events.iloc[0]
@@ -78,7 +81,7 @@ def get_fulltexts(q: FulltextSearch) -> pd.DataFrame | None:
                 start_date=q.start_date,
                 end_date=q.end_date,
                 countries=["Germany"],
-                sample_frac=0.01,
+                sample_frac=sample_frac,
             )
         case _:
             raise ValueError(
@@ -92,9 +95,5 @@ def get_fulltexts(q: FulltextSearch) -> pd.DataFrame | None:
     for field in ["activism_sentiment", "policy_sentiment"]:
         df[field] = [r[field] if r and field in r else None for r in coded]
         df[field] = df[field].fillna(0).astype(int)
-
-    if q.event_id:
-        # TODO filter by only those articles that refer to the event
-        pass
 
     return df

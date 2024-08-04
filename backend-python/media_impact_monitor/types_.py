@@ -191,7 +191,8 @@ class Fulltext(BaseModel):
     date: date
     url: str
     text: str
-    sentiment: float | None
+    activism_sentiment: float | None
+    policy_sentiment: float | None
 
 
 #### Impact types ####

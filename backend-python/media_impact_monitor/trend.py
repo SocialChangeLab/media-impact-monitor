@@ -13,10 +13,17 @@ def get_trend(q: TrendSearch, as_json=True) -> Trend:
             df = get_sentiment_trend(q)
         case _:
             raise ValueError(f"Unsupported trend type: {q.trend_type}")
-    if not as_json:
-        return df
     match df:
         case pd.DataFrame():
+            df.index = pd.to_datetime(df.index)
+            if q.aggregation == "weekly":
+                df = df.resample("W").sum()
+            elif q.aggregation == "monthly":
+                df = df.resample("M").sum()
+            df.index = df.index.date
+            df.index.name = "date"
+            if not as_json:
+                return df
             long_df = pd.melt(
                 df.reset_index(),
                 id_vars=["date"],
@@ -29,4 +36,6 @@ def get_trend(q: TrendSearch, as_json=True) -> Trend:
                 trends=long_df.to_dict(orient="records"),
             )
         case str():
+            if not as_json:
+                return df
             return Trend(applicability=False, limitations=[df], trends=None)

@@ -10,7 +10,8 @@ const trend_activism = await queryApi('trend', {
   media_source: 'news_online',
   topic: 'activism',
   start_date: '2022-01-01',
-  end_date: '2024-08-03'
+  end_date: '2024-08-03',
+  aggregation: 'weekly'
 })
 display(trend_activism)
 
@@ -46,7 +47,8 @@ const trend_policy = await queryApi('trend', {
   media_source: 'news_online',
   topic: 'policy',
   start_date: '2022-01-01',
-  end_date: '2024-08-03'
+  end_date: '2024-08-03',
+  aggregation: 'weekly'
 })
 display(trend_policy)
 display(await embed(spec(trend_policy.trends, 'Sentiment towards policy')))

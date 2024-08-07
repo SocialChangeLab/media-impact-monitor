@@ -11,6 +11,7 @@ def test_get_sentiment_trend_valid_input():
     df = get_sentiment_trend(
         TrendSearch(
             trend_type="sentiment",
+            topic="activism",
             media_source="news_online",
             query='"letzte generation"',
             start_date=date(2024, 6, 1),

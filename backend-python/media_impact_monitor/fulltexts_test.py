@@ -13,7 +13,8 @@ def test_get_fulltexts_for_org():
             start_date=date(2024, 5, 1),
             end_date=date(2024, 5, 2),
             organizers=["Last Generation"],
-        )
+        ),
+        sample_frac=0.1,
     )
     assert texts is not None
     assert len(texts) > 0
@@ -28,12 +29,12 @@ def test_get_fulltexts_for_event():
             FulltextSearch(
                 media_source="news_online",
                 event_id=event_id,
-                end_date=date(2024, 5, 18),
-            )
+                end_date=date(2024, 5, 18),  # end_date is ignored
+            ),
+            sample_frac=0.1,
         )
         assert texts is not None
         assert len(texts) > 0
-        assert (texts["date"] <= date(2024, 5, 18)).all()
 
 
 def test_get_fulltexts_with_too_many_params():

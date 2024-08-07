@@ -23,7 +23,7 @@ from media_impact_monitor.util.parallel import parallel_tqdm
 
 
 @cache
-def get_fulltexts(q: FulltextSearch) -> pd.DataFrame | None:
+def get_fulltexts(q: FulltextSearch, sample_frac: float = 0.01) -> pd.DataFrame | None:
     assert (
         q.topic or q.organizers or q.query or q.event_id
     ), "One of 'topic', 'organizers', 'query', or 'event_id' must be provided."
@@ -52,9 +52,7 @@ def get_fulltexts(q: FulltextSearch) -> pd.DataFrame | None:
         query = xs_with_ys(orgs, keywords["activism"], q.media_source)
     if q.query:
         query = q.query
-    sample_frac = 0.01  # generally use only 1% of articles
     if q.event_id:
-        sample_frac = 0.1  # use more articles when looking at a specific event
         # TODO filter to only those articles that actually refer to the event
         events = get_events_by_id([q.event_id])
         assert len(events) == 1

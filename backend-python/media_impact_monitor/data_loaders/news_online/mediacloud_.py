@@ -169,6 +169,8 @@ def get_mediacloud_fulltexts(
         platform=platform,
         sample_frac=sample_frac,
     )
+    if df is None:
+        return None
     df = df[~df["url"].str.contains("news.de")]
     label = "Downloading fulltexts"
     responses = parallel_tqdm(get, df["url"].tolist(), desc=f"{label:<{40}}", n_jobs=8)

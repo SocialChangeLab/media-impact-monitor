@@ -41,7 +41,7 @@ def fill_cache():
     print("Filling cache...")
     errors = []
     events = {}
-    for data_source in ["acled"]:  # , "press_releases"]:
+    for data_source in ["acled", "press_releases"]:
         print(f"Retrieving {data_source} events...")
         try:
             events[data_source] = get_events(
@@ -92,6 +92,3 @@ def fill_cache():
         raise ValueError(f"Errors occurred: {'; '.join(errors)}")
     print("Successfully filled cache!")
     return
-
-
-fill_cache()

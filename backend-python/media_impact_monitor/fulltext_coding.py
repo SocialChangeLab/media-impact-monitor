@@ -109,7 +109,7 @@ rate_limit = AsyncLimiter(max_rate=1000, time_period=60)
 # @cache
 # @backoff.on_exception(backoff.expo, [RateLimitError1, RateLimitError2], max_time=120)
 async def code_fulltext(text: str) -> dict | None:
-    if len(text) < 50:
+    if len(text) < 20:
         return None
     messages = [
         {"role": "system", "content": system_prompt},

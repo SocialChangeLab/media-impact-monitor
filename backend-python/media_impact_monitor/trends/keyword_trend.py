@@ -27,10 +27,6 @@ def get_keyword_trend(q: TrendSearch) -> pd.DataFrame:
             case _:
                 raise ValueError(f"Unsupported media source: {q.media_source}")
         ds.index = pd.to_datetime(ds.index)
-        if q.aggregation == "weekly":
-            ds = ds.resample("W").sum()
-        elif q.aggregation == "monthly":
-            ds = ds.resample("M").sum()
         ds.index = ds.index.date
         ds.index.name = "date"
         dss[topic] = ds

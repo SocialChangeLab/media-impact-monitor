@@ -5,7 +5,7 @@ def test_topic_queries():
     for media_source in ["news_online", "news_print"]:
         queries = topic_queries(media_source)
         assert queries["climate science"].startswith(
-            'klimaforsch* OR klimawissenschaft*'
+            "klimaforsch* OR klimawissenschaft*"
         )
         assert queries["climate policy"].startswith(
             "klimapoliti* OR klimaneutral* OR klimaziel*"

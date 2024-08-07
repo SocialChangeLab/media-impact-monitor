@@ -8,7 +8,6 @@ from datetime import date
 import pandas as pd
 import pytest
 from pydantic import ValidationError
-from pytest import raises
 
 from media_impact_monitor.policy import get_policy
 from media_impact_monitor.types_ import PolicySearch

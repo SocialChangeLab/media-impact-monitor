@@ -7,11 +7,11 @@ from functools import partial
 
 from apscheduler.schedulers.background import BackgroundScheduler
 from apscheduler.triggers.cron import CronTrigger
-from media_impact_monitor.fulltexts import get_fulltexts
 from sentry_sdk.crons import monitor
 from tqdm import tqdm
 
 from media_impact_monitor.events import get_events
+from media_impact_monitor.fulltexts import get_fulltexts
 from media_impact_monitor.impact import get_impact
 from media_impact_monitor.trend import get_trend
 from media_impact_monitor.types_ import (

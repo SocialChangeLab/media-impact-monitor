@@ -1,5 +1,4 @@
 from datetime import date
-from time import sleep
 
 import pandas as pd
 from bs4 import BeautifulSoup

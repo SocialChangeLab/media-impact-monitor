@@ -1,7 +1,6 @@
 from datetime import date
 
 import pandas as pd
-import pytest
 
 from media_impact_monitor.data_loaders.news_print.genios import get_genios_counts
 

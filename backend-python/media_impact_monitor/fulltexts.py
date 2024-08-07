@@ -1,7 +1,6 @@
 from datetime import date, timedelta
 
 import pandas as pd
-import yaml
 
 from media_impact_monitor.data_loaders.news_online.mediacloud_ import (
     get_mediacloud_fulltexts,
@@ -11,32 +10,22 @@ from media_impact_monitor.data_loaders.protest.climate_orgs import (
     climate_orgs,
 )
 from media_impact_monitor.events import get_events_by_id
-from media_impact_monitor.fulltext_coding import code_fulltext
+from media_impact_monitor.fulltext_coding import code_fulltext, code_many_fulltexts
 from media_impact_monitor.trends.keyword_trend import (
     add_quotes,
     load_keywords,
     xs,
     xs_with_ys,
 )
-from media_impact_monitor.types_ import Fulltext, FulltextSearch
+from media_impact_monitor.types_ import FulltextSearch
 from media_impact_monitor.util.cache import cache
 from media_impact_monitor.util.parallel import parallel_tqdm
-from media_impact_monitor.util.paths import src
 
 
 @cache
-def get_fulltexts(q: FulltextSearch) -> pd.DataFrame | None:
-    assert (
-        q.topic or q.organizers or q.query or q.event_id
-    ), "One of 'topic', 'organizers', 'query', or 'event_id' must be provided."
+def get_fulltexts(q: FulltextSearch, sample_frac: float = 0.01) -> pd.DataFrame | None:
     keywords = load_keywords()
-    num_filters = sum(
-        [bool(q.topic), bool(q.organizers), bool(q.query), bool(q.event_id)]
-    )
-    if num_filters > 1:
-        raise ValueError(
-            "Only one of 'topic', 'organizers', 'query', 'event_id' is allowed."
-        )
+    queries = []
     if q.topic:
         assert (
             q.topic == "climate_change"
@@ -47,20 +36,23 @@ def get_fulltexts(q: FulltextSearch) -> pd.DataFrame | None:
             + keywords["climate_urgency"],
             q.media_source,
         )
+        queries.append(query)
     if q.organizers:
         for org in q.organizers:
             assert org in climate_orgs, f"Unknown organization: {org}"
         orgs = add_quotes(add_aliases(q.organizers))
         query = xs_with_ys(orgs, keywords["activism"], q.media_source)
+        queries.append(query)
     if q.query:
-        query = q.query
+        queries.append(q.query)
     if q.event_id:
+        # TODO filter to only those articles that actually refer to the event
         events = get_events_by_id([q.event_id])
         assert len(events) == 1
         event = events.iloc[0]
         # TODO: handle start_date and end_date
         q.start_date = event["date"]
-        q.end_date = min(q.end_date or event["date"] + timedelta(days=7), date.today())
+        q.end_date = min(event["date"] + timedelta(days=7), date.today())
         if q.start_date.year < 2022:
             # MediaCloud only goes back until 2022
             return None
@@ -68,12 +60,19 @@ def get_fulltexts(q: FulltextSearch) -> pd.DataFrame | None:
         if not orgs:
             return None
         query = xs_with_ys(orgs, keywords["activism"], q.media_source)
-
-    print(f"Looking for news fulltexts that match: '{query}'")
+        queries.append(query)
+    assert (
+        len(queries) > 0
+    ), "At least one of the filters (`topic`, `organizers`, `query` or `event_id`) must be set."
+    if len(queries) == 1:
+        query = queries[0]
+    else:
+        # HACK: this only works for mediacloud
+        query = " AND ".join(f"({q})" for q in queries)
 
     assert (
-        q.start_date and q.end_date
-    ), "Both start_date and end_date must be provided; either explicitly or through the event_id."
+        q.end_date
+    ), "end_date must be provided; either explicitly or through the event_id."
 
     match q.media_source:
         case "news_online":
@@ -82,6 +81,7 @@ def get_fulltexts(q: FulltextSearch) -> pd.DataFrame | None:
                 start_date=q.start_date,
                 end_date=q.end_date,
                 countries=["Germany"],
+                sample_frac=sample_frac,
             )
         case _:
             raise ValueError(
@@ -91,15 +91,9 @@ def get_fulltexts(q: FulltextSearch) -> pd.DataFrame | None:
     if df is None:
         return None
 
-    # TODO: use asyncio
-    responses = parallel_tqdm(code_fulltext, df["text"], desc="Processing fulltexts")
-    df["sentiment"] = [
-        r["sentiment"] if r and "sentiment" in r else None for r in responses
-    ]
-    df["sentiment"] = df["sentiment"].fillna(0).astype(int)
-
-    if q.event_id:
-        # TODO filter by only those articles that refer to the event
-        pass
+    coded = code_many_fulltexts(df["text"])
+    for field in ["activism_sentiment", "policy_sentiment"]:
+        df[field] = [r[field] if r and field in r else None for r in coded]
+        df[field] = df[field].fillna(0).astype(int)
 
     return df

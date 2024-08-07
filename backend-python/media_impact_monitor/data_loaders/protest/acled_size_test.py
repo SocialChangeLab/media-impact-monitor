@@ -1,4 +1,5 @@
 import pytest
+
 from media_impact_monitor.data_loaders.protest.acled_size import get_size_number
 
 

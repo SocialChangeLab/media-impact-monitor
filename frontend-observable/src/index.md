@@ -79,20 +79,40 @@ const keyword_trend = await queryApi('trend', {
 const trend_plots = [
   trend_plot(keyword_trend.trends, media_sources[media_source])
 ]
-const sentiment_trend = await queryApi('trend', {
+const sentiment_trend_a = await queryApi('trend', {
   trend_type: 'sentiment',
   media_source: media_source,
-  topic: 'climate_change'
+  topic: 'climate_change',
+  sentiment_target: 'activism'
 })
-if (sentiment_trend.applicability) {
+if (sentiment_trend_a.applicability) {
   trend_plots.push(
     trend_plot(
-      sentiment_trend.trends,
-      media_sources[media_source].replace(/coverage of/, 'sentiment of')
+      sentiment_trend_a.trends,
+      media_sources[media_source].replace(
+        /coverage of climate/,
+        'sentiment on climate activism'
+      )
     )
   )
 }
-// display(Inputs.table(trend))
+const sentiment_trend_b = await queryApi('trend', {
+  trend_type: 'sentiment',
+  media_source: media_source,
+  topic: 'climate_change',
+  sentiment_target: 'policy'
+})
+if (sentiment_trend_b.applicability) {
+  trend_plots.push(
+    trend_plot(
+      sentiment_trend_b.trends,
+      media_sources[media_source].replace(
+        /coverage of climate/,
+        'sentiment on climate policy'
+      )
+    )
+  )
+}
 ```
 
 ```js

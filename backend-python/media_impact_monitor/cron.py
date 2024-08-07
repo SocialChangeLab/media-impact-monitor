@@ -41,7 +41,7 @@ def fill_cache():
     print("Filling cache...")
     errors = []
     events = {}
-    for data_source in ["acled", "press_releases"]:
+    for data_source in ["acled"]:  # , "press_releases"]:
         print(f"Retrieving {data_source} events...")
         try:
             events[data_source] = get_events(
@@ -75,20 +75,23 @@ def fill_cache():
                     )
     events = events["acled"]  # TODO: include press_releases
     recent_events = events[events["date"] >= date.today() - timedelta(days=70)]
-    # for event in tqdm(
-    #     list(recent_events.itertuples()),
-    #     desc="Retrieving event fulltexts",
-    # ):
-    #     try:
-    #         get_fulltexts(
-    #             FulltextSearch(
-    #                 media_source="news_online",
-    #                 event_id=event.event_id,
-    #             )
-    #         )
-    #     except Exception as e:
-    #         errors.append(f"fulltexts {event.event_id}: {e}")
+    for event in tqdm(
+        list(recent_events.itertuples()),
+        desc="Retrieving event fulltexts",
+    ):
+        try:
+            get_fulltexts(
+                FulltextSearch(
+                    media_source="news_online",
+                    event_id=event.event_id,
+                )
+            )
+        except Exception as e:
+            errors.append(f"fulltexts {event.event_id}: {e}")
     if errors:
         raise ValueError(f"Errors occurred: {'; '.join(errors)}")
     print("Successfully filled cache!")
     return
+
+
+fill_cache()

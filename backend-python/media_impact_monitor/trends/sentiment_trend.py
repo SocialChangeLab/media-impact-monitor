@@ -24,7 +24,7 @@ def get_sentiment_trend(q: TrendSearch) -> pd.DataFrame | str:
     params = dict(q)
     del params["trend_type"]
     del params["aggregation"]
-    fulltexts = get_fulltexts(FulltextSearch(**params))
+    fulltexts = get_fulltexts(FulltextSearch(**params), sample_frac=0.01)
 
     # aggregate positive, neutral, negative sentiments by day
     df = fulltexts.groupby("date")[field].agg(

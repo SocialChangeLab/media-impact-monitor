@@ -23,7 +23,7 @@ from media_impact_monitor.util.parallel import parallel_tqdm
 
 
 @cache
-def get_fulltexts(q: FulltextSearch, sample_frac: float = 0.01) -> pd.DataFrame | None:
+def get_fulltexts(q: FulltextSearch, sample_frac: float = 0.1) -> pd.DataFrame | None:
     keywords = load_keywords()
     queries = []
     if q.topic:

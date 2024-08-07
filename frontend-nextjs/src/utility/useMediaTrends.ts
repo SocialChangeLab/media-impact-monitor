@@ -4,11 +4,14 @@ import { useQuery } from "@tanstack/react-query";
 import { endOfDay, format } from "date-fns";
 import { useMemo } from "react";
 import slugify from "slugify";
-import { getMediaTrendData } from "./mediaTrendUtil";
+import { type TrendQueryProps, getMediaTrendData } from "./mediaTrendUtil";
 import useEvents from "./useEvents";
 import useQueryErrorToast from "./useQueryErrorToast";
 
-function useMediaTrends(type: "keywords" | "sentiment") {
+function useMediaTrends({
+	trend_type,
+	sentiment_target,
+}: Pick<TrendQueryProps, "trend_type" | "sentiment_target">) {
 	const { from, to, organizers, mediaSource } = useFiltersStore(
 		({ from, to, organizers, mediaSource }) => ({
 			from,
@@ -30,7 +33,8 @@ function useMediaTrends(type: "keywords" | "sentiment") {
 	const { data } = useEvents();
 	const queryKey = [
 		"mediaTrends",
-		type,
+		trend_type,
+		sentiment_target,
 		fromDateString,
 		toDateString,
 		organizersKey,
@@ -39,20 +43,21 @@ function useMediaTrends(type: "keywords" | "sentiment") {
 	const query = useQuery({
 		queryKey,
 		queryFn: async () =>
-			await getMediaTrendData(
-				type,
-				{
+			await getMediaTrendData({
+				trend_type,
+				sentiment_target,
+				params: {
 					from,
 					to,
 					organizers,
 					mediaSource,
 				},
-				data.organisations || [],
-			),
+				allOrganisations: data.organisations || [],
+			}),
 		staleTime: endOfDay(new Date()).getTime() - new Date().getTime(),
 	});
 
-	useQueryErrorToast(`media ${type} trends`, query.error);
+	useQueryErrorToast(`media ${trend_type} trends`, query.error);
 
 	return query;
 }

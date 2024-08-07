@@ -201,8 +201,14 @@ const MediaCoverageChart = memo(
 	},
 );
 
-function MediaCoverageChartWithData({ reset }: { reset?: () => void }) {
-	const { data, isError, isSuccess, isPending } = useMediaTrends("keywords");
+function MediaCoverageChartWithData({
+	reset,
+}: {
+	reset?: () => void;
+}) {
+	const { data, isError, isSuccess, isPending } = useMediaTrends({
+		trend_type: "keywords",
+	});
 	if (isPending) return <MediaCoverageChartLoading />;
 	if (isError)
 		return (

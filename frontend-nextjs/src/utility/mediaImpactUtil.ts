@@ -1,13 +1,11 @@
-import type { MediaSourceType } from "@/stores/filtersStore";
 import { z } from "zod";
 import { slugifyCssClass } from "./cssSlugify";
 import {
 	type EventOrganizerSlugType,
-	type OrganisationType,
 	eventOrganizerSlugZodSchema,
 } from "./eventsUtil";
 import { fetchApiData, formatInput } from "./fetchUtil";
-import { getMediaTrendQuery } from "./mediaTrendUtil";
+import { type TrendQueryProps, getMediaTrendQuery } from "./mediaTrendUtil";
 import { formatZodError } from "./zodUtil";
 
 const mediaImpactZodSchema = z.object({
@@ -65,50 +63,39 @@ const mediaImpactDataTypeZodSchema = z.object({
 });
 export type MediaImpactDataType = z.infer<typeof mediaImpactDataTypeZodSchema>;
 
-function getMediaImpactQuery(
-	type: "keywords" | "sentiment",
-	params: {
+type SingleOrgTrendQueryType = Omit<TrendQueryProps, "params"> & {
+	params: Omit<TrendQueryProps["params"], "organizers"> & {
 		organizer: EventOrganizerSlugType;
-		mediaSource: MediaSourceType;
-		from?: Date;
-		to?: Date;
-	},
-	allOrganisations: OrganisationType[],
-) {
-	const formattedInput = formatInput(params, allOrganisations);
+	};
+};
+function getMediaImpactQuery(props: SingleOrgTrendQueryType) {
+	const formattedInput = formatInput(props.params, props.allOrganisations);
 	return {
 		method: "time_series_regression",
-		impacted_trend: getMediaTrendQuery(
-			type,
-			{
-				...params,
-				organizers: [params.organizer],
+		impacted_trend: getMediaTrendQuery({
+			...props,
+			params: {
+				...props.params,
+				organizers: [props.params.organizer],
 			},
-			allOrganisations,
-		),
+		}),
 		...formattedInput,
 		organizer:
-			allOrganisations.find(({ slug }) => slug === params.organizer)?.name ||
-			"",
+			props.allOrganisations.find(({ slug }) => slug === props.params.organizer)
+				?.name || "",
 	};
 }
 
 export async function getMediaImpactData(
-	type: "keywords" | "sentiment",
-	params: {
-		organizer: EventOrganizerSlugType;
-		mediaSource: MediaSourceType;
-		from?: Date;
-		to?: Date;
-	},
-	allOrganisations: OrganisationType[],
+	props: SingleOrgTrendQueryType,
 ): Promise<ParsedMediaImpactType> {
+	const { params, allOrganisations, trend_type } = props;
 	const json = await fetchApiData({
 		endpoint: "impact",
-		body: getMediaImpactQuery(type, params || {}, allOrganisations),
+		body: getMediaImpactQuery(props),
 	});
 	const org = allOrganisations.find(({ slug }) => slug === params.organizer);
-	return validateGetDataResponse(type, json, org?.color);
+	return validateGetDataResponse(trend_type, json, org?.color);
 }
 
 function validateGetDataResponse(

@@ -4,13 +4,19 @@ import { useQuery } from "@tanstack/react-query";
 import { endOfDay, format } from "date-fns";
 import type { EventOrganizerSlugType } from "./eventsUtil";
 import { getMediaImpactData } from "./mediaImpactUtil";
+import type { TrendQueryProps } from "./mediaTrendUtil";
 import useEvents from "./useEvents";
 import useQueryErrorToast from "./useQueryErrorToast";
 
-function useMediaImpactData(
-	organizer: EventOrganizerSlugType | undefined,
-	type: "keywords" | "sentiment",
-) {
+function useMediaImpactData({
+	organizer,
+	trend_type,
+	sentiment_target,
+}: {
+	organizer: EventOrganizerSlugType | undefined;
+	trend_type: TrendQueryProps["trend_type"];
+	sentiment_target: TrendQueryProps["sentiment_target"];
+}) {
 	const { from, to, mediaSource } = useFiltersStore(
 		({ from, to, mediaSource }) => ({ from, to, mediaSource }),
 	);
@@ -18,7 +24,8 @@ function useMediaImpactData(
 	const toDateString = format(to, "yyyy-MM-dd");
 	const queryKey = [
 		"mediaImpact",
-		type,
+		trend_type,
+		sentiment_target,
 		organizer,
 		fromDateString,
 		toDateString,
@@ -29,22 +36,23 @@ function useMediaImpactData(
 		queryKey,
 		queryFn: async () => {
 			if (organizer === undefined) return undefined;
-			return await getMediaImpactData(
-				type,
-				{
+			return await getMediaImpactData({
+				trend_type,
+				sentiment_target,
+				params: {
 					from,
 					to,
 					organizer,
 					mediaSource,
 				},
-				data?.organisations || [],
-			);
+				allOrganisations: data?.organisations || [],
+			});
 		},
 		staleTime: endOfDay(new Date()).getTime() - new Date().getTime(),
 		enabled: organizer !== undefined && data?.organisations?.length > 0,
 	});
 
-	useQueryErrorToast(`media ${type} impact`, query.error);
+	useQueryErrorToast(`media ${trend_type} impact`, query.error);
 
 	return query;
 }

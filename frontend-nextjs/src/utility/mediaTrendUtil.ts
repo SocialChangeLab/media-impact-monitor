@@ -41,35 +41,36 @@ const rawResponseZodSchema = z.object({
 	data: rawResponseDataZodSchema,
 });
 
-export function getMediaTrendQuery(
-	trend_type: "keywords" | "sentiment",
+export type TrendQueryProps = {
+	trend_type: "keywords" | "sentiment";
+	sentiment_target?: "activism" | "policy" | null;
 	params: {
 		from?: Date;
 		to?: Date;
 		organizers: EventOrganizerSlugType[];
 		mediaSource: MediaSourceType;
-	},
-	allOrganisations: OrganisationType[],
-) {
+	};
+	allOrganisations: OrganisationType[];
+};
+export function getMediaTrendQuery({
+	trend_type,
+	sentiment_target = null,
+	params,
+	allOrganisations,
+}: TrendQueryProps) {
 	return {
-		trend_type,
+		trend_type: trend_type,
+		sentiment_target: sentiment_target,
 		...formatInput(params, allOrganisations),
 	};
 }
 
 export async function getMediaTrendData(
-	type: "keywords" | "sentiment",
-	params: {
-		from?: Date;
-		to?: Date;
-		organizers: EventOrganizerSlugType[];
-		mediaSource: MediaSourceType;
-	},
-	allOrganisations: OrganisationType[],
+	props: TrendQueryProps,
 ): Promise<ParsedMediaTrendResponseType> {
 	const json = await fetchApiData({
 		endpoint: "trend",
-		body: getMediaTrendQuery(type, params, allOrganisations),
+		body: getMediaTrendQuery(props),
 	});
 	return validateGetDataResponse(json);
 }

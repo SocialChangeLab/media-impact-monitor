@@ -3,6 +3,7 @@ import { useFiltersStore } from "@/providers/FiltersStoreProvider";
 import { cn } from "@/utility/classNames";
 import { parseErrorMessage } from "@/utility/errorHandlingUtil";
 import type { EventOrganizerSlugType } from "@/utility/eventsUtil";
+import type { TrendQueryProps } from "@/utility/mediaTrendUtil";
 import useEvents from "@/utility/useEvents";
 import useMediaImpactData from "@/utility/useMediaImpact";
 import { QueryErrorResetBoundary } from "@tanstack/react-query";
@@ -14,7 +15,8 @@ import ComponentError from "../ComponentError";
 import ImpactChart from "./ImpactChart";
 
 type ImpactChartWithDataProps = {
-	type: "keywords" | "sentiment";
+	trend_type: TrendQueryProps["trend_type"];
+	sentiment_target: TrendQueryProps["sentiment_target"];
 	reset?: () => void;
 	unitLabel?: string;
 	icon?: keyof typeof icons;
@@ -61,7 +63,8 @@ function ImpactChartWithData({
 	reset,
 	unitLabel = "articles & media",
 	icon = "LineChart",
-	type = "keywords",
+	trend_type = "keywords",
+	sentiment_target = null,
 }: ImpactChartWithDataProps) {
 	const {
 		data: { organisations },
@@ -87,9 +90,21 @@ function ImpactChartWithData({
 
 	const orgChangeHandlers = [setOrg1, setOrg2, setOrg3];
 
-	const org1Query = useMediaImpactData(org1, type);
-	const org2Query = useMediaImpactData(org2, type);
-	const org3Query = useMediaImpactData(org3, type);
+	const org1Query = useMediaImpactData({
+		organizer: org1,
+		trend_type,
+		sentiment_target,
+	});
+	const org2Query = useMediaImpactData({
+		organizer: org2,
+		trend_type,
+		sentiment_target,
+	});
+	const org3Query = useMediaImpactData({
+		organizer: org3,
+		trend_type,
+		sentiment_target,
+	});
 
 	const queries = {} as Record<string, ReturnType<typeof useMediaImpactData>>;
 	if (org1) queries[org1] = org1Query;
@@ -133,10 +148,9 @@ function ImpactChartWithData({
 }
 
 export default function ImpactChartWithErrorBoundary({
-	type = "keywords",
-}: {
-	type?: "keywords" | "sentiment";
-}) {
+	trend_type = "keywords",
+	sentiment_target = null,
+}: Pick<TrendQueryProps, "trend_type" | "sentiment_target">) {
 	return (
 		<QueryErrorResetBoundary>
 			{({ reset }) => (
@@ -146,7 +160,11 @@ export default function ImpactChartWithErrorBoundary({
 					)}
 				>
 					<Suspense fallback={<ImpactChartLoading />}>
-						<ImpactChartWithData reset={reset} type={type} />
+						<ImpactChartWithData
+							reset={reset}
+							trend_type={trend_type}
+							sentiment_target={sentiment_target}
+						/>
 					</Suspense>
 				</ErrorBoundary>
 			)}

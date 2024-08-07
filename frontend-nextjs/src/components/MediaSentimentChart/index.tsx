@@ -1,5 +1,8 @@
 "use client";
-import type { ParsedMediaTrendType } from "@/utility/mediaTrendUtil";
+import type {
+	ParsedMediaTrendType,
+	TrendQueryProps,
+} from "@/utility/mediaTrendUtil";
 import useTimeIntervals, {
 	isInSameAggregationUnit,
 } from "@/utility/useTimeIntervals";
@@ -199,8 +202,17 @@ export const MediaSentimentChart = memo(
 	},
 );
 
-function MediaSentimentChartWithData({ reset }: { reset?: () => void }) {
-	const { data, isError, isSuccess, isPending } = useMediaTrends("sentiment");
+function MediaSentimentChartWithData({
+	reset,
+	sentiment_target,
+}: {
+	reset?: () => void;
+	sentiment_target: TrendQueryProps["sentiment_target"];
+}) {
+	const { data, isError, isSuccess, isPending } = useMediaTrends({
+		trend_type: "sentiment",
+		sentiment_target,
+	});
 	if (isPending) return <MediaSentimentChartLoading />;
 	if (isError)
 		return (
@@ -214,7 +226,11 @@ function MediaSentimentChartWithData({ reset }: { reset?: () => void }) {
 		return <MediaSentimentChart data={data.trends} />;
 	return <MediaSentimentChartEmpty />;
 }
-export default function MediaCoverageChartWithErrorBoundary() {
+export default function MediaCoverageChartWithErrorBoundary({
+	sentiment_target,
+}: {
+	sentiment_target: TrendQueryProps["sentiment_target"];
+}) {
 	return (
 		<QueryErrorResetBoundary>
 			{({ reset }) => (
@@ -227,7 +243,10 @@ export default function MediaCoverageChartWithErrorBoundary() {
 					)}
 				>
 					<Suspense fallback={<MediaSentimentChartLoading />}>
-						<MediaSentimentChartWithData reset={reset} />
+						<MediaSentimentChartWithData
+							reset={reset}
+							sentiment_target={sentiment_target}
+						/>
 					</Suspense>
 				</ErrorBoundary>
 			)}

@@ -63,21 +63,24 @@ export default function EventsPageWithSuspense() {
 				}
 				helpSlug="mediaTrend"
 			>
-				<ImpactChartWithData type="keywords" />
+				<ImpactChartWithData
+					trend_type="keywords"
+					sentiment_target="activism"
+				/>
 			</SectionHeadlineWithExplanation>
 			<SectionHeadlineWithExplanation
 				headline="What sentiment does the media have towards the protests?"
 				description="See whether the media's coverage of the protests is positive, negative, or neutral."
 				helpSlug="sentimentTrend"
 			>
-				<MediaSentimentChart />
+				<MediaSentimentChart sentiment_target="activism" />
 			</SectionHeadlineWithExplanation>
 			<SectionHeadlineWithExplanation
 				headline="What stance does the media have towards progressive climate policies?"
 				description="See whether the media supports or opposes policies aimed at mitigating climate change."
 				helpSlug="sentimentTrend"
 			>
-				<MediaSentimentChart />
+				<MediaSentimentChart sentiment_target="policy" />
 				{/* <ImpactChartWithData /> */}
 			</SectionHeadlineWithExplanation>
 		</>

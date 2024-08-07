@@ -2,6 +2,7 @@ import CollapsableSection from "@/components/CollapsableSection";
 import DataCreditLegend from "@/components/DataCreditLegend";
 import { cn } from "@/utility/classNames";
 import { slugifyCssClass } from "@/utility/cssSlugify";
+import { titleCase } from "@/utility/textUtil";
 import { memo } from "react";
 
 function MediaCoverageChartLegend({
@@ -41,7 +42,7 @@ function MediaCoverageChartLegend({
 									aria-hidden="true"
 								/>
 								<span className="truncate flex gap-4 items-baseline">
-									{`${topic.charAt(0).toUpperCase()}${topic.slice(1)}`}
+									{titleCase(topic)}
 									<span className="font-mono text-xs text-grayDark">
 										({sum.toLocaleString("en-GB")})
 									</span>

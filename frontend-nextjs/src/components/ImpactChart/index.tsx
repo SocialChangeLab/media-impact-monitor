@@ -62,8 +62,8 @@ function ImpactChartEmpty() {
 function ImpactChartWithData({
 	reset,
 	unitLabel = "articles & media",
-	icon = "LineChart",
 	trend_type = "keywords",
+	icon = trend_type === "keywords" ? "LineChart" : undefined,
 	sentiment_target = null,
 }: ImpactChartWithDataProps) {
 	const {

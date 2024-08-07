@@ -121,8 +121,9 @@ function validateGetDataResponse(
 						Math.max(a.ci_lower - a.mean, a.ci_upper - a.mean),
 					),
 					label: key,
-					color:
-						key === "sentiment" ? `var(--sentiment-${key})` : fallbackColor,
+					color: ["positive", "negative", "neutral"].includes(key)
+						? `var(--sentiment-${key})`
+						: fallbackColor,
 					uniqueId: slugifyCssClass(`${key}-${parsedResponse.query.organizer}`),
 				}),
 			),

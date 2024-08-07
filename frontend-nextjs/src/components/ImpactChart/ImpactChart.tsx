@@ -25,7 +25,7 @@ type ImpactChartColumn = {
 type ImpactChartProps = {
 	columns: ImpactChartColumn[];
 	unitLabel: string;
-	icon: keyof typeof icons;
+	icon?: keyof typeof icons;
 };
 
 const itemIsTooUncertain = (item: ImpactChartColumnItem | null) =>

@@ -75,6 +75,17 @@ export default function EventsPageWithSuspense() {
 			>
 				<MediaSentimentChart sentiment_target="activism" />
 			</SectionHeadlineWithExplanation>
+			{/* Maybe the impact section below can also be integrated with the above section */}
+			<SectionHeadlineWithExplanation
+				headline="Impact Sentiment Activism"
+				description={<p className="text-pretty">TBD</p>}
+				helpSlug="mediaSentimentImpactActivism"
+			>
+				<ImpactChartWithData
+					trend_type="sentiment"
+					sentiment_target="activism"
+				/>
+			</SectionHeadlineWithExplanation>
 			<SectionHeadlineWithExplanation
 				headline="What stance does the media have towards progressive climate policies?"
 				description="See whether the media supports or opposes policies aimed at mitigating climate change."
@@ -82,6 +93,13 @@ export default function EventsPageWithSuspense() {
 			>
 				<MediaSentimentChart sentiment_target="policy" />
 				{/* <ImpactChartWithData /> */}
+			</SectionHeadlineWithExplanation>
+			<SectionHeadlineWithExplanation
+				headline="Impact Sentiment Policy"
+				description={<p className="text-pretty">TBD</p>}
+				helpSlug="mediaSentimentImpactActivism"
+			>
+				<ImpactChartWithData trend_type="sentiment" sentiment_target="policy" />
 			</SectionHeadlineWithExplanation>
 		</>
 	);

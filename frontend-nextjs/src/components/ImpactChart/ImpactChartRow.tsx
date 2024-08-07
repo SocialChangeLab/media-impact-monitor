@@ -1,11 +1,14 @@
 "use client";
 import { useFiltersStore } from "@/providers/FiltersStoreProvider";
+import { cn } from "@/utility/classNames";
 import { parseErrorMessage } from "@/utility/errorHandlingUtil";
 import type { EventOrganizerSlugType } from "@/utility/eventsUtil";
+import { titleCase } from "@/utility/textUtil";
 import type { icons } from "lucide-react";
 import { useEffect, useState } from "react";
 import ComponentError from "../ComponentError";
 import { OrganisationsSelect } from "../OrganisationsSelect";
+import RoundedColorPill from "../RoundedColorPill";
 import Icon from "../ui/icon";
 import { isTooUncertain } from "./ImpactBar";
 
@@ -19,7 +22,7 @@ type ImpactType = {
 
 type ImpactChartRowProps = {
 	impacts: ImpactType[] | null;
-	icon: keyof typeof icons;
+	icon?: keyof typeof icons;
 	unitLabel: string;
 	limitations?: string[];
 	error?: Error | null;
@@ -99,9 +102,20 @@ function ImpactChartRow({
 								</strong>{" "}
 								about
 							</p>
-							<div className="grid grid-cols-[auto_1fr] items-center gap-1">
-								<Icon name={icon} style={{ color: i.color }} />
-								<span className="text-lg font-semibold">{i.label}</span>
+							<div
+								className={cn(
+									"grid grid-cols-[auto_1fr] items-center",
+									icon ? "gap-1" : "gap-2",
+								)}
+							>
+								{icon ? (
+									<Icon name={icon} style={{ color: i.color }} />
+								) : (
+									<RoundedColorPill color={i.color} />
+								)}
+								<span className="text-lg font-semibold">
+									{titleCase(i.label)}
+								</span>
 							</div>
 						</div>
 					);

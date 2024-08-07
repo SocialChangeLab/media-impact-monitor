@@ -11,7 +11,8 @@ def test_get_sentiment_trend_valid_input():
     df = get_sentiment_trend(
         TrendSearch(
             trend_type="sentiment",
-            topic="activism",
+            topic="climate_change",
+            sentiment_target="activism",
             media_source="news_online",
             query='"letzte generation"',
             start_date=date(2024, 6, 1),
@@ -24,22 +25,3 @@ def test_get_sentiment_trend_valid_input():
         "neutral",
         "positive",
     }, "DataFrame should have sentiment columns"
-
-
-def test_get_sentiment_trend_topic():
-    df = _get_trend(
-        TrendSearch(
-            trend_type="sentiment",
-            media_source="news_online",
-            topic="climate_change",
-            start_date=date(2024, 5, 25),
-            end_date=date(2024, 7, 24),
-        )
-    )
-    assert isinstance(df, pd.DataFrame)
-    assert set(df.columns) == {
-        "negative",
-        "neutral",
-        "positive",
-    }, "DataFrame should have sentiment columns"
-    assert len(df) > 0

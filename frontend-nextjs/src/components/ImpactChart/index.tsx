@@ -9,7 +9,7 @@ import useMediaImpactData from "@/utility/useMediaImpact";
 import { QueryErrorResetBoundary } from "@tanstack/react-query";
 import type { icons } from "lucide-react";
 import { ErrorBoundary } from "next/dist/client/components/error-boundary";
-import { Suspense, useEffect, useMemo, useState } from "react";
+import { Suspense, useCallback, useEffect, useMemo, useState } from "react";
 import ChartLoadingPlaceholder from "../ChartLoadingPlaceholder";
 import ComponentError from "../ComponentError";
 import ImpactChart from "./ImpactChart";
@@ -88,8 +88,17 @@ function ImpactChartWithData({
 		setOrg3(orgs[2]);
 	}, [orgs]);
 
-	const orgChangeHandlers = [setOrg1, setOrg2, setOrg3];
+	const getUpdateOrgHandler = useCallback(
+		(idx: number) => (slug: EventOrganizerSlugType) => {
+			const orgChangeHandlers = [setOrg1, setOrg2, setOrg3];
+			if (orgs.length === 0 || !slug) return;
+			const handler = orgChangeHandlers[idx] ?? (() => undefined);
+			handler(slug);
+		},
+		[orgs],
+	);
 
+	const orgValues = [org1, org2, org3];
 	const org1Query = useMediaImpactData({
 		organizer: org1,
 		trend_type,
@@ -139,7 +148,8 @@ function ImpactChartWithData({
 				data: d?.data || null,
 				limitations: d?.limitations,
 				error: queries[key as keyof typeof queries]?.error ?? null,
-				onOrgChange: orgChangeHandlers[idx],
+				org: orgValues[idx] as EventOrganizerSlugType,
+				onOrgChange: getUpdateOrgHandler(idx),
 			}))}
 			unitLabel={unitLabel}
 			icon={icon}

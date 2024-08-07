@@ -4,30 +4,34 @@ import ImpactChartWithData from "@/components/ImpactChart";
 import MediaCoverageChartWithData from "@/components/MediaCoverageChart";
 import MediaSentimentChart from "@/components/MediaSentimentChart";
 import SectionHeadlineWithExplanation from "@/components/SectionHeadlineWithExplanation";
+import { showProtestsTimeline } from "@/flags";
 
-export default function EventsPageWithSuspense() {
+export default async function EventsPageWithSuspense() {
+	const protestsTimelineFlagEnabled = await showProtestsTimeline();
 	return (
 		<>
 			<DashboardHelpBanner />
-			<SectionHeadlineWithExplanation
-				headline="What protests are happening?"
-				description={
-					<>
-						<p className="text-pretty">
-							See protests over time for each of the selected organisations.
-						</p>
-						<p className="text-pretty">
-							Hover and click on the bubbles for more information on the
-							individual protest events.
-						</p>
-						<p className="text-pretty">
-							Currently, we cover only climate protests in Germany.
-						</p>
-					</>
-				}
-			>
-				<EventsTimeline />
-			</SectionHeadlineWithExplanation>
+			{protestsTimelineFlagEnabled && (
+				<SectionHeadlineWithExplanation
+					headline="What protests are happening?"
+					description={
+						<>
+							<p className="text-pretty">
+								See protests over time for each of the selected organisations.
+							</p>
+							<p className="text-pretty">
+								Hover and click on the bubbles for more information on the
+								individual protest events.
+							</p>
+							<p className="text-pretty">
+								Currently, we cover only climate protests in Germany.
+							</p>
+						</>
+					}
+				>
+					<EventsTimeline />
+				</SectionHeadlineWithExplanation>
+			)}
 			<SectionHeadlineWithExplanation
 				headline="What topics are the focus of public discourse?"
 				description={

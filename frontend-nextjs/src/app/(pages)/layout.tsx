@@ -3,6 +3,7 @@ import { BaseLayout } from "@/components/BaseLayout";
 import "@/styles/global.css";
 import { cn } from "@/utility/classNames";
 import { inter, neueRegrade } from "@/utility/fonts";
+import { VercelToolbar } from "@vercel/toolbar/next";
 import type { ReactNode } from "react";
 
 export default function RootLayout({
@@ -28,6 +29,7 @@ export default function RootLayout({
 				<Providers>
 					<BaseLayout modal={modal}>{children}</BaseLayout>
 				</Providers>
+				<VercelToolbar />
 			</body>
 		</html>
 	);

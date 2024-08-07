@@ -24,17 +24,8 @@ from media_impact_monitor.util.parallel import parallel_tqdm
 
 @cache
 def get_fulltexts(q: FulltextSearch, sample_frac: float = 0.01) -> pd.DataFrame | None:
-    assert (
-        q.topic or q.organizers or q.query or q.event_id
-    ), "One of 'topic', 'organizers', 'query', or 'event_id' must be provided."
     keywords = load_keywords()
-    num_filters = sum(
-        [bool(q.topic), bool(q.organizers), bool(q.query), bool(q.event_id)]
-    )
-    if num_filters > 1:
-        raise ValueError(
-            "Only one of 'topic', 'organizers', 'query', 'event_id' is allowed."
-        )
+    queries = []
     if q.topic:
         assert (
             q.topic == "climate_change"
@@ -45,13 +36,15 @@ def get_fulltexts(q: FulltextSearch, sample_frac: float = 0.01) -> pd.DataFrame 
             + keywords["climate_urgency"],
             q.media_source,
         )
+        queries.append(query)
     if q.organizers:
         for org in q.organizers:
             assert org in climate_orgs, f"Unknown organization: {org}"
         orgs = add_quotes(add_aliases(q.organizers))
         query = xs_with_ys(orgs, keywords["activism"], q.media_source)
+        queries.append(query)
     if q.query:
-        query = q.query
+        queries.append(q.query)
     if q.event_id:
         # TODO filter to only those articles that actually refer to the event
         events = get_events_by_id([q.event_id])
@@ -67,6 +60,15 @@ def get_fulltexts(q: FulltextSearch, sample_frac: float = 0.01) -> pd.DataFrame 
         if not orgs:
             return None
         query = xs_with_ys(orgs, keywords["activism"], q.media_source)
+        queries.append(query)
+    assert (
+        len(queries) > 0
+    ), "At least one of the filters (`topic`, `organizers`, `query` or `event_id`) must be set."
+    if len(queries) == 1:
+        query = queries[0]
+    else:
+        # HACK: this only works for mediacloud
+        query = " AND ".join(f"({q})" for q in queries)
 
     assert (
         q.end_date

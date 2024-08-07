@@ -19,12 +19,11 @@ def get_sentiment_trend(q: TrendSearch) -> pd.DataFrame | str:
     """
     if q.media_source != "news_online":
         return f"Sentiment trend requires fulltext analysis, which is only available for news_online, not {q.media_source}."
-    assert q.topic in ["activism", "policy"]
-    field = f"{q.topic}_sentiment"
+    assert q.sentiment_target in ["activism", "policy"]
+    field = f"{q.sentiment_target}_sentiment"
     params = dict(q)
     del params["trend_type"]
     del params["aggregation"]
-    params["topic"] = "climate_change"
     fulltexts = get_fulltexts(FulltextSearch(**params))
 
     # aggregate positive, neutral, negative sentiments by day

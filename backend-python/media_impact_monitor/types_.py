@@ -78,7 +78,7 @@ class Event:
 #### Trend types ####
 
 TrendType = Literal["keywords", "topic", "sentiment"]
-SentimentTopic = Literal["activism", "policy"]
+SentimentTarget = Literal["activism", "policy"]
 Aggregation = Literal["daily", "weekly", "monthly"]
 
 
@@ -91,21 +91,17 @@ class TrendSearch(BaseModel):
     )
     start_date: date | None = StartDateField
     end_date: date | None = EndDateField
-    topic: Topic | SentimentTopic | None = Field(
+    topic: Topic | None = Field(
         default=None,
-        description="When the trend type is `keywords`, this automatically sets relevant sets of keywords; currently only `climate_change` is supported as topic for this. When the trend type is `sentiment`, then you can define what aspect the sentiment should be about; currently `activism` and `policy` are supported.",
+        description="When the trend type is `keywords`, this automatically sets relevant sets of keywords; currently only `climate_change` is supported as topic for this.",
+    )
+    sentiment_target: SentimentTarget | None = Field(
+        default=None,
+        description="When the trend type is `sentiment`, then you can define what aspect the sentiment should be about; currently `activism` and `policy` are supported. This parameter must be used if and only if the trend type is `sentiment`.",
     )
     aggregation: Aggregation = Field(
         default="daily", description="The time aggregation of the trend."
     )
-    query: Query | None = Field(default=None, description="Custom query.")
-    organizers: list[str] | None = Field(
-        default=None, description="The organizations involved in the event."
-    )
-    event_ids: list[EventId] | None = Field(
-        default=None,
-        description="The ids of the protest events that the trend should be related to.",
-    )  # TODO: this is not compatible with "keyword"
 
 
 class CategoryCount(BaseModel):

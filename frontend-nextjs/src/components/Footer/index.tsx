@@ -7,7 +7,7 @@ import PrototypeFundLogo from "@/components/logos/PrototypeFundLogo";
 import SocialChangeLabLogo from "@/components/logos/SocialChangeLabLogo";
 import { cn } from "@/utility/classNames";
 import { useAnimationFrame } from "framer-motion";
-import { ArrowUp } from "lucide-react";
+import { ArrowUp, ExternalLink, GithubIcon } from "lucide-react";
 import { useRef } from "react";
 import InternalLink from "../InternalLink";
 
@@ -49,6 +49,16 @@ function Footer() {
 							Logo assets
 						</InternalLink>
 						<UptimeStatusLink />
+						<a
+							href="https://github.com/SocialChangeLab/media-impact-monitor"
+							target="_blank"
+							rel="noopener noreferrer"
+							className="no-underline focusable hover:text-fg transition-colors w-fit flex gap-1 items-center"
+						>
+							<GithubIcon className="size-4 text-grayDark" />
+							GitHub
+							<ExternalLink className="size-4 opacity-50" />
+						</a>
 						<span aria-label={`Copyright ${year}`}>
 							© {year} - Social Change Lab
 						</span>

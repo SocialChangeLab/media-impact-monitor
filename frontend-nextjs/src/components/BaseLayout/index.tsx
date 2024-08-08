@@ -35,6 +35,7 @@ export function BaseLayout({
 				className={cn(
 					"layout grid grid-rows-[auto_1fr_auto] w-screen overflow-x-clip max-w-page",
 					"maxPage:border-x maxPage:border-grayLight min-h-screen grid-rows-[1fr_auto]",
+					"transition-all duration-1000 ease-smooth-out",
 				)}
 				variants={{
 					withoutFilters: { paddingTop: `var(--headerHeight)` },

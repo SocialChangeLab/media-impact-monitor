@@ -2,6 +2,7 @@
 import { slugifyCssClass } from "@/utility/cssSlugify";
 import useTopics from "@/utility/useTopics";
 import useElementSize from "@custom-react-hooks/use-element-size";
+import { AnimatePresence, motion } from "framer-motion";
 import dynamic from "next/dynamic";
 import { type ReactNode, Suspense, useState } from "react";
 import TopicsLegend from "./TopicsLegend";
@@ -55,19 +56,39 @@ function TrendWithImpactChartWrapper({
 					.join("")}
 			`}</style>
 			{children}
-			<Button
-				onClick={() => setShowComputedImpact((prev) => !prev)}
-				className="my-6"
-			>
-				{showComputedImpact ? "Hide computed impact" : "Compute impact"}
-			</Button>
-			<Suspense>
+			<div className="relative py-6">
 				{showComputedImpact && (
-					<LazyLoadedImpactChart
-						trend_type={trend_type}
-						sentiment_target={sentiment_target}
-					/>
+					<span className="absolute top-1/2 left-0 w-full h-px bg-gradient-to-r from-grayLight to-bg" />
 				)}
+				<span className="pr-6 bg-bg relative z-10">
+					<Button onClick={() => setShowComputedImpact((prev) => !prev)}>
+						{showComputedImpact ? "Hide computed impact" : "Compute impact"}
+					</Button>
+				</span>
+			</div>
+			<Suspense>
+				<AnimatePresence initial={false}>
+					{showComputedImpact && (
+						<motion.div
+							className="w-full overflow-clip"
+							initial={{ height: 0 }}
+							animate={{ height: "auto" }}
+							exit={{ height: 0 }}
+							transition={{
+								duration: 0.3,
+								ease: "easeInOut",
+							}}
+						>
+							<h3 className="text-xl font-semibold font-headlines mb-4">
+								Computed impact
+							</h3>
+							<LazyLoadedImpactChart
+								trend_type={trend_type}
+								sentiment_target={sentiment_target}
+							/>
+						</motion.div>
+					)}
+				</AnimatePresence>
 			</Suspense>
 			<TopicsLegend
 				topics={topics}

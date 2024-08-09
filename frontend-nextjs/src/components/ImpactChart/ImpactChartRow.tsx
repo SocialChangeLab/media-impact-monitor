@@ -104,10 +104,12 @@ function ImpactChartRowSentence(
 	},
 ) {
 	const incdeclabel = i.impact.lower > 0 ? "increases" : "decreases";
-	const unclearTendency = i.impact.upper > 0 && i.impact.lower < 0;
-	const isSentiment = topicIsSentiment(i.label);
 	const formattedLowerBound = formatValue(i.impact.lower);
 	const formattedUpperBound = formatValue(i.impact.upper);
+	const unclearTendency =
+		(i.impact.upper > 0 && i.impact.lower < 0) ||
+		(formattedLowerBound === "0" && formattedUpperBound === "0");
+	const isSentiment = topicIsSentiment(i.label);
 	const leastBound =
 		incdeclabel === "increases" ? formattedLowerBound : formattedUpperBound;
 	const mostBound =

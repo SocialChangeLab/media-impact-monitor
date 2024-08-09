@@ -57,7 +57,7 @@ function TopicsLegend({
 									<li
 										key={topic}
 										className={cn(
-											"grid grid-cols-[auto_1fr_auto] gap-x-3 py-2",
+											"grid grid-cols-[auto_1fr_auto] gap-x-1.5 py-2",
 											"items-center",
 											`legend-topic legend-topic-${slugifyCssClass(topic)}`,
 											`cursor-pointer`,
@@ -67,7 +67,7 @@ function TopicsLegend({
 											color={color}
 											className={cn("size-6 shrink-0 text-grayDark")}
 										/>
-										<span className="truncate flex gap-4 items-baseline">
+										<span className="truncate flex gap-3 items-baseline">
 											{isSentiment && titleCase(topic)}
 											{!isSentiment && (
 												<ImpactKeywordLabelTooltip

@@ -1,4 +1,5 @@
 import { cn } from "@/utility/classNames";
+import { slugifyCssClass } from "@/utility/cssSlugify";
 import { titleCase } from "@/utility/textUtil";
 import { topicIsSentiment } from "@/utility/topicsUtil";
 import { type ReactNode, memo } from "react";
@@ -9,7 +10,10 @@ export const ImpactKeywordLabel = memo(
 		const isSentiment = topicIsSentiment(label);
 		return (
 			<span
-				className="font-semibold underline underline-offset-2 decoration-2 text-fg"
+				className={cn(
+					"font-semibold underline underline-offset-2 decoration-2 text-fg",
+					`legend-topic legend-topic-${slugifyCssClass(label)}`,
+				)}
 				style={{ textDecorationColor: color }}
 			>
 				{isSentiment ? label : titleCase(label)}

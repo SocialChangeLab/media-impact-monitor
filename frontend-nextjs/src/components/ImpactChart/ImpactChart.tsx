@@ -91,22 +91,6 @@ function ImpactChart(props: ImpactChartProps) {
 
 	return (
 		<div className="flex flex-col mb-6">
-			<style jsx global>{`
-				${columnItems
-					.map((item) =>
-						item
-							? `
-						.impact-chart-container:has(.${item.uniqueId}-item:hover) .${item.uniqueId}-show {
-							opacity: 1;
-						}
-						.impact-chart-container:has(.${item.uniqueId}-item:hover) .${item.uniqueId}-hide {
-							opacity: 0;
-						}
-					`
-							: "",
-					)
-					.join("\n")}
-			`}</style>
 			<div
 				className={cn(
 					"impact-chart-container bg-grayUltraLight overflow-clip border border-grayLight",
@@ -165,11 +149,9 @@ function ImpactChart(props: ImpactChartProps) {
 								>
 									<ImpactBar
 										{...item}
-										impact={item?.impact.mean ?? 0}
-										uncertainty={0}
+										impact={item?.impact}
 										totalHeight={height - padding * 2}
 										barHeight={Math.abs(impactInHeightPercentage)}
-										uncertaintyHeight={0}
 									/>
 								</div>
 							)}

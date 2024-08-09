@@ -1,6 +1,7 @@
 "use client";
 import { useFiltersStore } from "@/providers/FiltersStoreProvider";
 import { cn } from "@/utility/classNames";
+import { slugifyCssClass } from "@/utility/cssSlugify";
 import { parseErrorMessage } from "@/utility/errorHandlingUtil";
 import type { EventOrganizerSlugType } from "@/utility/eventsUtil";
 import type { ParsedMediaImpactItemType } from "@/utility/mediaImpactUtil";
@@ -132,7 +133,12 @@ function ImpactChartRowSentence(
 	);
 
 	return (
-		<p className="mt-2 pl-5 relative text-grayDark text-balance">
+		<p
+			className={cn(
+				"mt-2 pl-5 relative text-grayDark text-balance",
+				`legend-topic legend-topic-${slugifyCssClass(i.label)}`,
+			)}
+		>
 			<ChangeIcon
 				className={cn(
 					"absolute left-0 top-0 text-grayDark size-4 translate-y-0.5",

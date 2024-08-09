@@ -45,6 +45,7 @@ const parsedMediaImpactItemZodSchema = z.object({
 	}),
 	label: z.string(),
 	color: z.string(),
+	topicSlug: z.string(),
 	uniqueId: z.string(),
 });
 export type ParsedMediaImpactItemType = z.infer<
@@ -125,6 +126,7 @@ function validateGetDataResponse(response: unknown): ParsedMediaImpactType {
 					},
 					label: key,
 					color: getTopicColor(key),
+					topicSlug: slugifyCssClass(key),
 					uniqueId: slugifyCssClass(`${key}-${parsedResponse.query.organizer}`),
 				}),
 			),

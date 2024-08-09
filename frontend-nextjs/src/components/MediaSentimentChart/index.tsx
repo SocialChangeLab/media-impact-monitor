@@ -101,31 +101,6 @@ export const MediaSentimentChart = memo(
 
 		return (
 			<div className="media-sentiment-chart">
-				<style jsx global>{`
-				.media-sentiment-chart .recharts-cartesian-grid-vertical {
-					transition: opacity 150ms cubic-bezier(0.4, 0, 0.2, 1);
-					opacity: 0 !important;
-				}
-				.media-sentiment-chart svg:hover .recharts-cartesian-grid-vertical {
-					opacity: 1 !important;
-				}
-				.media-sentiment-chart:has(.legend-topic:hover) .media-sentiment-item {
-					opacity: 0.2 !important;
-					filter: grayscale(100%) !important;
-				}
-				${topics
-					.map(({ topic }) => {
-						const slug = slugifyCssClass(topic);
-						return `
-							.media-sentiment-chart:has(.legend-topic-${slug}:hover)
-								.media-sentiment-item-topic-${slug} {
-									opacity: 1 !important;
-									filter: grayscale(0%) !important;
-								}
-						`;
-					})
-					.join("")}
-			`}</style>
 				<div
 					className="w-full h-[var(--media-sentiment-chart-height)] bg-grayUltraLight"
 					ref={parentRef}
@@ -187,7 +162,7 @@ export const MediaSentimentChart = memo(
 									dataKey={topic}
 									stroke={color}
 									fill={color}
-									className={`media-sentiment-item media-sentiment-item-topic-${slugifyCssClass(
+									className={`topic-chart-item topic-chart-item-topic-${slugifyCssClass(
 										topic,
 									)} transition-all`}
 								/>

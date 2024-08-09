@@ -33,32 +33,7 @@ const MediaCoverageChart = memo(() => {
 	});
 
 	return (
-		<div className="media-coverage-chart max-w-content">
-			<style jsx global>{`
-				.media-coverage-chart .recharts-cartesian-grid-vertical {
-					transition: opacity 150ms cubic-bezier(0.4, 0, 0.2, 1);
-					opacity: 0 !important;
-				}
-				.media-coverage-chart svg:hover .recharts-cartesian-grid-vertical {
-					opacity: 1 !important;
-				}
-				.media-coverage-chart:has(.legend-topic:hover) .media-coverage-item {
-					opacity: 0.2 !important;
-					filter: grayscale(100%) !important;
-				}
-				${topics
-					.map(({ topic }) => {
-						const slug = slugifyCssClass(topic);
-						return `
-							.media-coverage-chart:has(.legend-topic-${slug}:hover)
-								.media-coverage-item-topic-${slug} {
-									opacity: 1 !important;
-									filter: grayscale(0%) !important;
-								}
-						`;
-					})
-					.join("")}
-			`}</style>
+		<div className="max-w-content">
 			<div
 				className="w-full h-[var(--media-coverage-chart-height)] bg-grayUltraLight"
 				ref={parentRef}
@@ -121,7 +96,7 @@ const MediaCoverageChart = memo(() => {
 								dataKey={topic}
 								stroke={color}
 								fill={color}
-								className={`media-coverage-item media-coverage-item-topic-${slugifyCssClass(
+								className={`topic-chart-item topic-chart-item-topic-${slugifyCssClass(
 									topic,
 								)} transition-all`}
 								activeDot={{ r: 6, stroke: "var(--grayUltraLight)" }}

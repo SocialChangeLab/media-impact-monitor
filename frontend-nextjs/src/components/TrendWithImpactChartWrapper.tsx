@@ -56,11 +56,9 @@ function TrendWithImpactChartWrapper({
 					.join("")}
 			`}</style>
 			{children}
-			<div className="relative py-6">
-				{showComputedImpact && (
-					<span className="absolute top-1/2 left-0 w-full h-px bg-gradient-to-r from-grayLight to-bg" />
-				)}
-				<span className="pr-6 bg-bg relative z-10">
+			<div className="relative py-6 flex justify-end">
+				<span className="absolute top-1/2 left-0 w-full h-px bg-gradient-to-r from-bg to-grayLight" />
+				<span className="pl-6 bg-bg relative z-20">
 					<Button onClick={() => setShowComputedImpact((prev) => !prev)}>
 						{showComputedImpact ? "Hide computed impact" : "Compute impact"}
 					</Button>
@@ -70,7 +68,7 @@ function TrendWithImpactChartWrapper({
 				<AnimatePresence initial={false}>
 					{showComputedImpact && (
 						<motion.div
-							className="w-full overflow-clip"
+							className="w-full overflow-clip -translate-y-[3.75rem] relative z-10"
 							initial={{ height: 0 }}
 							animate={{ height: "auto" }}
 							exit={{ height: 0 }}
@@ -79,7 +77,7 @@ function TrendWithImpactChartWrapper({
 								ease: "easeInOut",
 							}}
 						>
-							<h3 className="text-xl font-semibold font-headlines mb-4">
+							<h3 className="text-xl font-semibold font-headlines mb-6">
 								Computed impact
 							</h3>
 							<LazyLoadedImpactChart

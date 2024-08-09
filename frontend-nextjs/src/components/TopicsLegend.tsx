@@ -3,8 +3,12 @@ import DataCreditLegend from "@/components/DataCreditLegend";
 import { cn } from "@/utility/classNames";
 import { slugifyCssClass } from "@/utility/cssSlugify";
 import { titleCase } from "@/utility/textUtil";
-import { getTopicIcon } from "@/utility/topicsUtil";
+import { getTopicIcon, topicIsSentiment } from "@/utility/topicsUtil";
 import { memo } from "react";
+import {
+	ImpactKeywordLabel,
+	ImpactKeywordLabelTooltip,
+} from "./ImpactChart/ImpactKeywordLabel";
 
 function TopicsLegend({
 	id,
@@ -43,6 +47,7 @@ function TopicsLegend({
 					<ul className="flex flex-wrap gap-x-8 relative z-20">
 						{topics.map(({ topic, color, sum }) => {
 							const Icon = getTopicIcon(topic);
+							const isSentiment = topicIsSentiment(topic);
 							return (
 								<li
 									key={topic}
@@ -58,7 +63,16 @@ function TopicsLegend({
 										className={cn("size-6 shrink-0 text-grayDark")}
 									/>
 									<span className="truncate flex gap-4 items-baseline">
-										{titleCase(topic)}
+										{isSentiment && titleCase(topic)}
+										{!isSentiment && (
+											<ImpactKeywordLabelTooltip
+												unitLabel="articles"
+												keywords={undefined}
+											>
+												{/* TODO: Add real keywords */}
+												<ImpactKeywordLabel label={topic} color={color} />
+											</ImpactKeywordLabelTooltip>
+										)}
 										<span className="font-mono text-xs text-grayDark">
 											({sum.toLocaleString("en-GB")})
 										</span>

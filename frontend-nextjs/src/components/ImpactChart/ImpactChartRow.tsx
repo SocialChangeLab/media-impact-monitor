@@ -4,7 +4,6 @@ import { cn } from "@/utility/classNames";
 import { parseErrorMessage } from "@/utility/errorHandlingUtil";
 import type { EventOrganizerSlugType } from "@/utility/eventsUtil";
 import type { ParsedMediaImpactItemType } from "@/utility/mediaImpactUtil";
-import { titleCase } from "@/utility/textUtil";
 import { topicIsSentiment } from "@/utility/topicsUtil";
 import {
 	ArrowDown,
@@ -12,9 +11,13 @@ import {
 	ChevronsUpDownIcon,
 	type icons,
 } from "lucide-react";
-import { ReactNode, useEffect, useMemo, useState } from "react";
+import { type ReactNode, useEffect, useMemo, useState } from "react";
 import ComponentError from "../ComponentError";
 import { OrganisationsSelect } from "../OrganisationsSelect";
+import {
+	ImpactKeywordLabel,
+	ImpactKeywordLabelTooltip,
+} from "./ImpactKeywordLabel";
 
 type ImpactChartRowProps = {
 	impacts: ParsedMediaImpactItemType[] | null;
@@ -111,16 +114,19 @@ function ImpactChartRowSentence(
 		return i.impact.mean > 0 ? ArrowUp : ArrowDown;
 	}, [unclearTendency, i.impact.mean]);
 
+	const topicNodeWithoutTooltip = useMemo(
+		() => <ImpactKeywordLabel {...i} />,
+		[i],
+	);
+
 	const topicNode = useMemo(
 		() => (
-			<span
-				className="font-semibold underline underline-offset-2 decoration-2 text-fg"
-				style={{ textDecorationColor: i.color }}
-			>
-				{isSentiment ? i.label : titleCase(i.label)}
-			</span>
+			<ImpactKeywordLabelTooltip unitLabel={i.unitLabel} keywords={undefined}>
+				{/* TODO: Add real keywords */}
+				{topicNodeWithoutTooltip}
+			</ImpactKeywordLabelTooltip>
 		),
-		[isSentiment, i.label, i.color],
+		[i.unitLabel, topicNodeWithoutTooltip],
 	);
 
 	return (

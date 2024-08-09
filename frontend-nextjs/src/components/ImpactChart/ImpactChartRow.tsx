@@ -37,7 +37,9 @@ function ImpactChartRow({
 	defaultOrganizer,
 	onOrgChange = () => {},
 }: ImpactChartRowProps) {
-	const impactsWithUncertainty = impacts ?? [];
+	const impactsWithUncertainty = (impacts ?? []).sort((a, b) =>
+		a.label.localeCompare(b.label),
+	);
 	const [organizer, setOrganizer] = useState<
 		EventOrganizerSlugType | undefined
 	>(defaultOrganizer);

@@ -22,7 +22,7 @@ function TrendWithImpactChartWrapper({
 }) {
 	const [showComputedImpact, setShowComputedImpact] = useState(false);
 	const [parentRef, size] = useElementSize();
-	const { topics } = useTopics({
+	const { topics, applicability } = useTopics({
 		containerWidth: size.width,
 		trend_type,
 		sentiment_target,
@@ -56,17 +56,19 @@ function TrendWithImpactChartWrapper({
 					.join("")}
 			`}</style>
 			{children}
-			<div className="relative py-6 flex justify-end">
-				<span className="absolute top-1/2 left-0 w-full h-px bg-gradient-to-r from-bg to-grayLight" />
-				<span className="pl-6 bg-bg relative z-20">
-					<Button onClick={() => setShowComputedImpact((prev) => !prev)}>
-						{showComputedImpact ? "Hide computed impact" : "Compute impact"}
-					</Button>
-				</span>
-			</div>
+			{applicability && (
+				<div className="relative py-6 flex justify-end">
+					<span className="absolute top-1/2 left-0 w-full h-px bg-gradient-to-r from-bg to-grayLight" />
+					<span className="pl-6 bg-bg relative z-20">
+						<Button onClick={() => setShowComputedImpact((prev) => !prev)}>
+							{showComputedImpact ? "Hide computed impact" : "Compute impact"}
+						</Button>
+					</span>
+				</div>
+			)}
 			<Suspense>
 				<AnimatePresence initial={false}>
-					{showComputedImpact && (
+					{showComputedImpact && applicability && (
 						<motion.div
 							className="w-full overflow-clip -translate-y-[3.75rem] relative z-10"
 							initial={{ height: 0 }}
@@ -88,10 +90,12 @@ function TrendWithImpactChartWrapper({
 					)}
 				</AnimatePresence>
 			</Suspense>
-			<TopicsLegend
-				topics={topics}
-				id={`trend-with-impact-chart-${trend_type}-${sentiment_target || "none"}`}
-			/>
+			{applicability && (
+				<TopicsLegend
+					topics={topics}
+					id={`trend-with-impact-chart-${trend_type}-${sentiment_target || "none"}`}
+				/>
+			)}
 		</div>
 	);
 }

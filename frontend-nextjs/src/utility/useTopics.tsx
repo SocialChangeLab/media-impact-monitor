@@ -69,7 +69,7 @@ function useTopics({
 			);
 		});
 		return {
-			topics: allTopics.sort().map((topic, idx) => ({
+			topics: allTopics.sort().map((topic) => ({
 				topic,
 				color: getTopicColor(topic),
 				sum: filteredData.reduce((acc, day) => acc + day[topic], 0),
@@ -79,6 +79,8 @@ function useTopics({
 	}, [data, intervals, isInSameUnit, aggregationUnit]);
 
 	return {
+		applicability: query.data?.applicability ?? true,
+		limitations: query.data?.limitations ?? [],
 		topics,
 		filteredData,
 		aggregationUnit,

@@ -24,13 +24,13 @@ export type ParsedMediaTrendType = z.infer<typeof parsedMediaTrendZodSchema>;
 const rawResponseDataZodSchema = z.object({
 	applicability: z.boolean(),
 	limitations: z.array(z.string()),
-	trends: z.array(mediaTrendZodSchema).default([]),
+	trends: z.array(mediaTrendZodSchema).nullable().default([]),
 });
 
 const parsedResponseDataZodSchema = z.object({
 	applicability: z.boolean(),
 	limitations: z.array(z.string()),
-	trends: z.array(parsedMediaTrendZodSchema).default([]),
+	trends: z.array(parsedMediaTrendZodSchema).nullable().default([]),
 });
 
 export type ParsedMediaTrendResponseType = z.infer<

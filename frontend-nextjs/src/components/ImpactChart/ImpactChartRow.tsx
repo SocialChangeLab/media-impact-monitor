@@ -149,22 +149,24 @@ function ImpactChartRowSentence(
 				<>
 					{`leads to `}
 					<B>no clear evidence</B>
-					{` of an increase or decrease in `}
+					{` of an increase or decrease in the production of `}
 					{isSentiment && <> {topicNode} </>}
-					{` ${i.unitLabel} produced `}
+					{` ${i.unitLabel} `}
 					{!isSentiment && <>about {topicNode}</>}
 				</>
 			)}
 			{!unclearTendency && (
 				<>
 					<B>{incdeclabel}</B>
+					{` the production of `}
 					{isSentiment && <> {topicNode} </>}
-					{` ${i.unitLabel} produced `}
+					{` ${i.unitLabel}  `}
 					{!isSentiment && <>about {topicNode}</>}
 					{" by at least "}
 					<B>{leastBound}</B>
 					{` and up to `}
 					<B>{mostBound}</B>
+					{` ${i.unitLabel}`}
 				</>
 			)}
 		</p>

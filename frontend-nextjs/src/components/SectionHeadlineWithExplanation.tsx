@@ -23,7 +23,7 @@ function SectionHeadlineWithExplanation({
 			className={cn(
 				"px-[var(--pagePadding)] py-[max(1.25rem,2.5vmax)]",
 				children && "pb-[max(1.5rem,4vmax)]",
-				"border-b border-grayLight last-of-type:border-b-0",
+				"border-b border-grayMed last-of-type:border-b-0",
 			)}
 		>
 			<Dialog>

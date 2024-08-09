@@ -32,7 +32,6 @@ import ChartLimitations from "../ChartLimitations";
 import TopicChartTooltip from "../TopicChartTooltip";
 import MediaSentimentChartEmpty from "./MediaSentimentChartEmpty";
 import MediaSentimentChartError from "./MediaSentimentChartError";
-import MediaSentimentChartLegend from "./MediaSentimentChartLegend";
 import MediaSentimentChartLoading from "./MediaSentimentChartLoading";
 
 export const MediaSentimentChart = memo(
@@ -196,7 +195,6 @@ export const MediaSentimentChart = memo(
 						</BarChart>
 					</ResponsiveContainer>
 				</div>
-				<MediaSentimentChartLegend topics={topics} />
 			</div>
 		);
 	},

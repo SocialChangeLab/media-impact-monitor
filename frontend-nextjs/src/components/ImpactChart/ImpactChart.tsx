@@ -1,20 +1,14 @@
 import { cn } from "@/utility/classNames";
 import type { EventOrganizerSlugType } from "@/utility/eventsUtil";
-import type { icons } from "lucide-react";
+import type { ParsedMediaImpactItemType } from "@/utility/mediaImpactUtil";
 import { Fragment, useCallback, useMemo } from "react";
-import ImpactBar, { isTooUncertain } from "./ImpactBar";
+import ImpactBar from "./ImpactBar";
 import ImpactChartRow from "./ImpactChartRow";
 
-type ImpactChartColumnItem = {
-	impact: number;
-	uncertainty: number | null;
-	label: string;
-	color: string;
-	uniqueId: string;
-};
+type ImpactChartColumnItem = ParsedMediaImpactItemType;
 
 type ImpactChartColumn = {
-	data: ImpactChartColumnItem[] | null;
+	data: ParsedMediaImpactItemType[] | null;
 	id: string;
 	limitations?: string[];
 	error: Error | null;
@@ -25,13 +19,14 @@ type ImpactChartColumn = {
 type ImpactChartProps = {
 	columns: ImpactChartColumn[];
 	unitLabel: string;
-	icon?: keyof typeof icons;
 };
 
-const itemIsTooUncertain = (item: ImpactChartColumnItem | null) =>
-	item?.uncertainty && !isTooUncertain(item.uncertainty);
-const getItemsImpacts = (items: (ImpactChartColumnItem | null)[]) =>
-	items.filter(itemIsTooUncertain).map((item) => item?.impact ?? 0);
+const getItemsImpacts = (items: (ParsedMediaImpactItemType | null)[]) => {
+	const nonNullItems = items.filter(
+		(item) => item !== null,
+	) as ParsedMediaImpactItemType[];
+	return nonNullItems.map((item) => item.impact.mean ?? 0) ?? [];
+};
 
 function ImpactChart(props: ImpactChartProps) {
 	const height = 400;
@@ -95,7 +90,7 @@ function ImpactChart(props: ImpactChartProps) {
 	}, [props.columns, columnItems]);
 
 	return (
-		<div className="flex flex-col">
+		<div className="flex flex-col mb-6">
 			<style jsx global>{`
 				${columnItems
 					.map((item) =>
@@ -145,16 +140,10 @@ function ImpactChart(props: ImpactChartProps) {
 							</Fragment>
 						);
 					}
-					const impactInHeightPercentage = impactScale(item?.impact ?? 0);
-					const uncertaintyInHeightPercentage = impactScale(
-						item?.uncertainty ?? 0,
-					);
+					const impactInHeightPercentage = impactScale(item?.impact.mean ?? 0);
 					const itemClass = `${item?.uniqueId ?? "unknown"}-item`;
-					const tooUncertain = isTooUncertain(item?.impact ?? 999);
-					const itemIsCertainAndPositive =
-						!!item && !tooUncertain && item.impact > 0;
-					const itemIsCertainAndNegative =
-						!!item && !tooUncertain && item.impact < 0;
+					const itemIsCertainAndPositive = !!item && item.impact.mean > 0;
+					const itemIsCertainAndNegative = !!item && item.impact.mean < 0;
 					return (
 						<Fragment key={key}>
 							{itemIsCertainAndNegative && (
@@ -170,20 +159,21 @@ function ImpactChart(props: ImpactChartProps) {
 										commonCSSClasses,
 										"flex items-end px-4 group",
 										itemIsCertainAndNegative && "-scale-y-100",
-										(itemIsCertainAndPositive || tooUncertain) && oddCSSClasses,
+										itemIsCertainAndPositive && oddCSSClasses,
 									)}
 									style={{ paddingTop: `${padding}px` }}
 								>
 									<ImpactBar
 										{...item}
-										uncertainty={item?.uncertainty}
+										impact={item?.impact.mean ?? 0}
+										uncertainty={0}
 										totalHeight={height - padding * 2}
 										barHeight={Math.abs(impactInHeightPercentage)}
-										uncertaintyHeight={Math.abs(uncertaintyInHeightPercentage)}
+										uncertaintyHeight={0}
 									/>
 								</div>
 							)}
-							{(itemIsCertainAndPositive || tooUncertain) && (
+							{itemIsCertainAndPositive && (
 								<div className={cn(itemClass, commonCSSClasses)} />
 							)}
 						</Fragment>
@@ -199,7 +189,6 @@ function ImpactChart(props: ImpactChartProps) {
 						return (
 							<div key={`column-${id}`} className="pt-6">
 								<ImpactChartRow
-									icon={props.icon}
 									impacts={data}
 									unitLabel={props.unitLabel}
 									limitations={limitations}

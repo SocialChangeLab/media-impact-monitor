@@ -119,10 +119,12 @@ export function OrganisationsSelect({
 					)}
 					{!isPending && selectedOrganisations.length === 1 && (
 						<span className="grid grid-cols-[auto_1fr] gap-2 items-center">
-							<RoundedColorPill
-								color={firstSelectedOrg?.color ?? "transparent"}
-								className="shrink-0"
-							/>
+							{multiple && (
+								<RoundedColorPill
+									color={firstSelectedOrg?.color ?? "transparent"}
+									className="shrink-0"
+								/>
+							)}
 							<span className="truncate hidden sm:inline max-w-56 text-sm lg:text-base">
 								{firstSelectedOrg?.name}
 							</span>

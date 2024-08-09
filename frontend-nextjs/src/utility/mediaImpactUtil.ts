@@ -6,6 +6,7 @@ import {
 } from "./eventsUtil";
 import { fetchApiData, formatInput } from "./fetchUtil";
 import { type TrendQueryProps, getMediaTrendQuery } from "./mediaTrendUtil";
+import { getTopicColor } from "./topicsUtil";
 import { formatZodError } from "./zodUtil";
 
 const mediaImpactZodSchema = z.object({
@@ -35,20 +36,24 @@ const mediaImpactZodSchema = z.object({
 });
 export type MediaImpactType = z.infer<typeof mediaImpactZodSchema>;
 
+const parsedMediaImpactItemZodSchema = z.object({
+	impact: z.object({
+		lower: z.number(),
+		upper: z.number(),
+		mean: z.number(),
+		range: z.number(),
+	}),
+	label: z.string(),
+	color: z.string(),
+	uniqueId: z.string(),
+});
+export type ParsedMediaImpactItemType = z.infer<
+	typeof parsedMediaImpactItemZodSchema
+>;
+
 const parsedMediaImpactZodSchema = z.object({
 	id: z.string(),
-	data: z.union([
-		z.null(),
-		z.array(
-			z.object({
-				impact: z.number(),
-				uncertainty: z.number().nullable(),
-				label: z.string(),
-				color: z.string(),
-				uniqueId: z.string(),
-			}),
-		),
-	]),
+	data: z.union([z.null(), z.array(parsedMediaImpactItemZodSchema)]),
 	limitations: z.array(z.string()).optional().default([]),
 });
 type ParsedMediaImpactType = z.infer<typeof parsedMediaImpactZodSchema>;
@@ -95,14 +100,10 @@ export async function getMediaImpactData(
 		body: getMediaImpactQuery(props),
 	});
 	const org = allOrganisations.find(({ slug }) => slug === params.organizer);
-	return validateGetDataResponse(trend_type, json, org?.color);
+	return validateGetDataResponse(json);
 }
 
-function validateGetDataResponse(
-	type: "keywords" | "sentiment",
-	response: unknown,
-	fallbackColor?: string,
-): ParsedMediaImpactType {
+function validateGetDataResponse(response: unknown): ParsedMediaImpactType {
 	try {
 		const parsedResponse = mediaImpactDataTypeZodSchema.parse(response);
 		if (parsedResponse.data.impact_estimates === null) {
@@ -116,14 +117,14 @@ function validateGetDataResponse(
 			id: parsedResponse.query.organizer,
 			data: Object.entries(parsedResponse.data.impact_estimates).map(
 				([key, { absolute_impact: a }]) => ({
-					impact: a.mean,
-					uncertainty: Math.abs(
-						Math.max(a.ci_lower - a.mean, a.ci_upper - a.mean),
-					),
+					impact: {
+						lower: a.ci_lower,
+						upper: a.ci_upper,
+						mean: a.mean,
+						range: Math.abs(a.ci_lower - a.ci_upper),
+					},
 					label: key,
-					color: ["positive", "negative", "neutral"].includes(key)
-						? `var(--sentiment-${key})`
-						: fallbackColor,
+					color: getTopicColor(key),
 					uniqueId: slugifyCssClass(`${key}-${parsedResponse.query.organizer}`),
 				}),
 			),

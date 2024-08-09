@@ -1,9 +1,9 @@
 import DashboardHelpBanner from "@/components/DashboardHelpBanner.server";
 import EventsTimeline from "@/components/EventsTimeline/EventsTimeline";
-import ImpactChartWithData from "@/components/ImpactChart";
-import MediaCoverageChartWithData from "@/components/MediaCoverageChart";
+import MediaCoverageChart from "@/components/MediaCoverageChart";
 import MediaSentimentChart from "@/components/MediaSentimentChart";
 import SectionHeadlineWithExplanation from "@/components/SectionHeadlineWithExplanation";
+import TrendWithImpactChartWrapper from "@/components/TrendWithImpactChartWrapper";
 
 export default function EventsPageWithSuspense() {
 	return (
@@ -43,63 +43,33 @@ export default function EventsPageWithSuspense() {
 				}
 				helpSlug="mediaTrend"
 			>
-				<MediaCoverageChartWithData />
-			</SectionHeadlineWithExplanation>
-			{/* Maybe the impact section below can also be integrated with the above section */}
-			<SectionHeadlineWithExplanation
-				headline="How do the protests influence the topic focus?"
-				description={
-					<>
-						<p className="text-pretty">
-							See how the protests bring more (or less) focus on the issues that
-							they advocate for, and compare how different organizations have
-							different impacts on public discourse.
-						</p>
-						<p className="text-pretty">
-							For this chart we connect the protest data and the media data from
-							above, and compute impact statistics.
-						</p>
-					</>
-				}
-				helpSlug="mediaTrend"
-			>
-				<ImpactChartWithData
-					trend_type="keywords"
-					sentiment_target="activism"
-				/>
+				<TrendWithImpactChartWrapper trend_type="keywords">
+					<MediaCoverageChart />
+				</TrendWithImpactChartWrapper>
 			</SectionHeadlineWithExplanation>
 			<SectionHeadlineWithExplanation
 				headline="What sentiment does the media have towards the protests?"
 				description="See whether the media's coverage of the protests is positive, negative, or neutral."
 				helpSlug="sentimentTrend"
 			>
-				<MediaSentimentChart sentiment_target="activism" />
-			</SectionHeadlineWithExplanation>
-			{/* Maybe the impact section below can also be integrated with the above section */}
-			<SectionHeadlineWithExplanation
-				headline="Impact Sentiment Activism"
-				description={<p className="text-pretty">TBD</p>}
-				helpSlug="mediaSentimentImpactActivism"
-			>
-				<ImpactChartWithData
+				<TrendWithImpactChartWrapper
 					trend_type="sentiment"
 					sentiment_target="activism"
-				/>
+				>
+					<MediaSentimentChart sentiment_target="activism" />
+				</TrendWithImpactChartWrapper>
 			</SectionHeadlineWithExplanation>
 			<SectionHeadlineWithExplanation
 				headline="What stance does the media have towards progressive climate policies?"
 				description="See whether the media supports or opposes policies aimed at mitigating climate change."
 				helpSlug="sentimentTrend"
 			>
-				<MediaSentimentChart sentiment_target="policy" />
-				{/* <ImpactChartWithData /> */}
-			</SectionHeadlineWithExplanation>
-			<SectionHeadlineWithExplanation
-				headline="Impact Sentiment Policy"
-				description={<p className="text-pretty">TBD</p>}
-				helpSlug="mediaSentimentImpactActivism"
-			>
-				<ImpactChartWithData trend_type="sentiment" sentiment_target="policy" />
+				<TrendWithImpactChartWrapper
+					trend_type="sentiment"
+					sentiment_target="policy"
+				>
+					<MediaSentimentChart sentiment_target="policy" />
+				</TrendWithImpactChartWrapper>
 			</SectionHeadlineWithExplanation>
 		</>
 	);

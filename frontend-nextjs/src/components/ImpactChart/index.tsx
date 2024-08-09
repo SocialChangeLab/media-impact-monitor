@@ -61,9 +61,8 @@ function ImpactChartEmpty() {
 
 function ImpactChartWithData({
 	reset,
-	unitLabel = "articles & media",
+	unitLabel = "articles",
 	trend_type = "keywords",
-	icon = trend_type === "keywords" ? "LineChart" : undefined,
 	sentiment_target = null,
 }: ImpactChartWithDataProps) {
 	const {
@@ -152,7 +151,6 @@ function ImpactChartWithData({
 				onOrgChange: getUpdateOrgHandler(idx),
 			}))}
 			unitLabel={unitLabel}
-			icon={icon}
 		/>
 	);
 }

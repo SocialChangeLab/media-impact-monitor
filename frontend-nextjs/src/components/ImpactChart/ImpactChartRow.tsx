@@ -132,7 +132,7 @@ function ImpactChartRowSentence(
 	);
 
 	return (
-		<p className="mt-2 pl-5 relative text-grayDark">
+		<p className="mt-2 pl-5 relative text-grayDark text-balance">
 			<ChangeIcon
 				className={cn(
 					"absolute left-0 top-0 text-grayDark size-4 translate-y-0.5",

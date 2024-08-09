@@ -27,25 +27,25 @@ export const ImpactKeywordLabelTooltip = memo(
 		children,
 		unitLabel,
 		keywords = [
-			"Climate change",
-			"Climate policy",
-			"Climate science",
-			"Climate activism",
-			"Protest",
-			"Activism",
-			"Democracy",
-			"Politics",
-			"Political activism",
-			"Political policy",
-			"Political science",
-			"Social change",
-			"Social activism",
-			"Social policy",
-			"Social science",
-			"Environment",
-			"Environmental activism",
-			"Environmental policy",
-			"Environmental science",
+			"TODO",
+			"TODO",
+			"TODO",
+			"TODO",
+			"TODO",
+			"TODO",
+			"TODO",
+			"TODO",
+			"TODO",
+			"TODO",
+			"TODO",
+			"TODO",
+			"TODO",
+			"TODO",
+			"TODO",
+			"TODO",
+			"TODO",
+			"TODO",
+			"TODO",
 		],
 	}: {
 		children: ReactNode;
@@ -58,8 +58,8 @@ export const ImpactKeywordLabelTooltip = memo(
 				<Portal>
 					<TooltipContent>
 						<p className="mt-3 mb-2 w-96">
-							The category {children} encompasses {unitLabel} including the
-							following {keywords.length} keywords:
+							The category {children} encompasses {unitLabel} including one or
+							more of the following {keywords.length} keywords:
 						</p>
 						<ul className="flex flex-wrap w-96 max-w-full gap-1 mb-2">
 							{keywords.sort().map((keyword) => (

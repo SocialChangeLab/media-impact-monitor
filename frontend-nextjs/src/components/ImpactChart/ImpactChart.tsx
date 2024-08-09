@@ -29,8 +29,7 @@ const getItemsImpacts = (items: (ParsedMediaImpactItemType | null)[]) => {
 };
 
 function ImpactChart(props: ImpactChartProps) {
-	const height = 400;
-	const padding = 32;
+	const height = 360;
 
 	const columnItems = useMemo(
 		() =>
@@ -97,7 +96,7 @@ function ImpactChart(props: ImpactChartProps) {
 					"grid grid-flow-col grid-rows-[1fr_minmax(4rem,auto)] w-full h-full",
 				)}
 				style={{
-					height: `${height}px`,
+					height: `calc(${height}px + 8rem)`,
 					gridTemplateColumns: items
 						.map(({ type }) => (type === "separator" ? "3px" : "1fr"))
 						.join(" "),
@@ -141,16 +140,15 @@ function ImpactChart(props: ImpactChartProps) {
 									className={cn(
 										itemClass,
 										commonCSSClasses,
-										"flex items-end px-4 group",
+										"flex items-end px-4 group pt-16",
 										itemIsCertainAndNegative && "-scale-y-100",
 										itemIsCertainAndPositive && oddCSSClasses,
 									)}
-									style={{ paddingTop: `${padding}px` }}
 								>
 									<ImpactBar
 										{...item}
 										impact={item?.impact}
-										totalHeight={height - padding * 2}
+										totalHeight={height}
 										barHeight={Math.abs(impactInHeightPercentage)}
 									/>
 								</div>

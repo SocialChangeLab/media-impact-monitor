@@ -58,7 +58,7 @@ export const ImpactKeywordLabelTooltip = memo(
 							following {keywords.length} keywords:
 						</p>
 						<ul className="flex flex-wrap w-96 max-w-full gap-1 mb-2">
-							{keywords.map((keyword) => (
+							{keywords.sort().map((keyword) => (
 								<li
 									key={keyword}
 									className={cn(

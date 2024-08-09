@@ -19,7 +19,7 @@ function DataCreditLegend({
 				title={title}
 				storageKey={storageKey}
 				storageType="session"
-				className="flex flex-col gap-4 w-full sm:w-80"
+				className="flex flex-col gap-4 w-full"
 			>
 				<div className="flex gap-8 justify-stretch flex-wrap">
 					{sources.map(({ label, links }) => (

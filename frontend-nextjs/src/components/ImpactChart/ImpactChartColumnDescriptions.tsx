@@ -21,7 +21,7 @@ import {
 	ImpactKeywordLabelTooltip,
 } from "./ImpactKeywordLabel";
 
-type ImpactChartRowProps = {
+type ImpactChartColumnDescriptionsProps = {
 	impacts: ParsedMediaImpactItemType[] | null;
 	icon?: keyof typeof icons;
 	unitLabel: string;
@@ -31,14 +31,14 @@ type ImpactChartRowProps = {
 	onOrgChange?: (organiser: EventOrganizerSlugType) => void;
 };
 
-function ImpactChartRow({
+function ImpactChartColumnDescriptions({
 	impacts,
 	unitLabel,
 	limitations,
 	error,
 	defaultOrganizer,
 	onOrgChange = () => {},
-}: ImpactChartRowProps) {
+}: ImpactChartColumnDescriptionsProps) {
 	const impactsWithUncertainty = (impacts ?? []).sort((a, b) =>
 		a.label.localeCompare(b.label),
 	);
@@ -70,15 +70,21 @@ function ImpactChartRow({
 						onOrgChange(orgs[0]);
 					}}
 				/>
-
+				{limitations && limitations.length > 0 && !!organisation && (
+					<p className="mt-4">
+						The impact of an average protest by{" "}
+						<strong>{organisation.name}</strong> cannot be computed beacause of
+						the following limitations:
+					</p>
+				)}
 				{limitations && limitations.length > 0 && (
-					<div className="flex flex-col gap-2">
+					<ul className="flex flex-col gap-2 list-disc marker:text-grayMed">
 						{limitations.map((l) => (
-							<p key={l} className="mt-4">
+							<li key={l} className="ml-4 pl-1">
 								{l}
-							</p>
+							</li>
 						))}
-					</div>
+					</ul>
 				)}
 				{error && (
 					<ComponentError
@@ -96,7 +102,11 @@ function ImpactChartRow({
 					</p>
 				)}
 				{impactsWithUncertainty.map((i) => (
-					<ImpactChartRowSentence key={i.label} unitLabel={unitLabel} {...i} />
+					<ImpactChartColumnDescriptionsSentence
+						key={i.label}
+						unitLabel={unitLabel}
+						{...i}
+					/>
 				))}
 			</div>
 		</div>
@@ -107,7 +117,7 @@ function formatValue(value: number) {
 	return Number.parseFloat(Math.abs(value).toFixed(2)).toLocaleString("en-GB");
 }
 
-function ImpactChartRowSentence(
+function ImpactChartColumnDescriptionsSentence(
 	i: ParsedMediaImpactItemType & {
 		unitLabel: string;
 	},
@@ -188,4 +198,4 @@ function B(props: { children: ReactNode }) {
 	return <strong className="font-semibold text-fg">{props.children}</strong>;
 }
 
-export default ImpactChartRow;
+export default ImpactChartColumnDescriptions;

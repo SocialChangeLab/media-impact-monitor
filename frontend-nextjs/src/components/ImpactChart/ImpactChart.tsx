@@ -1,6 +1,6 @@
 import type { EventOrganizerSlugType } from "@/utility/eventsUtil";
 import type { ParsedMediaImpactItemType } from "@/utility/mediaImpactUtil";
-import ImpactChartRow from "./ImpactChartRow";
+import ImpactChartColumnDescriptions from "./ImpactChartColumnDescriptions";
 
 type ImpactChartColumnItem = ParsedMediaImpactItemType;
 
@@ -37,7 +37,7 @@ function ImpactChart(props: ImpactChartProps) {
 				({ id, data, limitations, org, error, onOrgChange }) => {
 					return (
 						<div key={`column-${id}`} className="flex flex-col gap-6">
-							<ImpactChartRow
+							<ImpactChartColumnDescriptions
 								impacts={data}
 								unitLabel={props.unitLabel}
 								limitations={limitations}

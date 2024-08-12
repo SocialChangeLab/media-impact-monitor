@@ -12,7 +12,7 @@ function EventPageContent({ id }: { id: string }) {
 				description="See the media sentiment of articles and media related to the event"
 				helpSlug="sentimentTrend"
 			>
-				<MediaSentimentChart />
+				<MediaSentimentChart sentiment_target="activism" />
 			</SectionHeadlineWithExplanation>
 			<SectionHeadlineWithExplanation
 				headline="Event Media Mentions"

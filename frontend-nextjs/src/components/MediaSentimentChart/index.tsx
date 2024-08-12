@@ -1,13 +1,7 @@
 "use client";
-import type {
-	ParsedMediaTrendType,
-	TrendQueryProps,
-} from "@/utility/mediaTrendUtil";
-import useTimeIntervals, {
-	isInSameAggregationUnit,
-} from "@/utility/useTimeIntervals";
+import type { TrendQueryProps } from "@/utility/mediaTrendUtil";
 import useElementSize from "@custom-react-hooks/use-element-size";
-import { Suspense, memo, useCallback, useMemo } from "react";
+import { Suspense, memo } from "react";
 import {
 	Bar,
 	BarChart,
@@ -18,13 +12,10 @@ import {
 	YAxis,
 } from "recharts";
 
-import useAggregationUnit, {
-	formatDateByAggregationUnit,
-} from "@/components/EventsTimeline/useAggregationUnit";
-import type { ComparableDateItemType } from "@/utility/comparableDateItemSchema";
 import { slugifyCssClass } from "@/utility/cssSlugify";
 import { parseErrorMessage } from "@/utility/errorHandlingUtil";
 import useMediaTrends from "@/utility/useMediaTrends";
+import useTopics from "@/utility/useTopics";
 import { QueryErrorResetBoundary } from "@tanstack/react-query";
 import { BarChartIcon } from "lucide-react";
 import { ErrorBoundary } from "next/dist/client/components/error-boundary";
@@ -36,68 +27,16 @@ import MediaSentimentChartLoading from "./MediaSentimentChartLoading";
 
 export const MediaSentimentChart = memo(
 	({
-		data,
+		sentiment_target,
 	}: {
-		data: ParsedMediaTrendType[];
+		sentiment_target: TrendQueryProps["sentiment_target"];
 	}) => {
 		const [parentRef, size] = useElementSize();
-		const aggregationUnit = useAggregationUnit(size.width);
-		const intervals = useTimeIntervals({ aggregationUnit });
-
-		const isInSameUnit = useCallback(
-			(comparableDateObject: ComparableDateItemType, b: Date) =>
-				isInSameAggregationUnit(aggregationUnit, comparableDateObject, b),
-			[aggregationUnit],
-		);
-
-		const { filteredData, topics } = useMemo(() => {
-			const allTopics = Array.from(
-				data
-					.reduce((acc, day) => {
-						acc.add(day.topic);
-						return acc;
-					}, new Set<string>())
-					.values(),
-			);
-			const filteredData = intervals.map((comparableDateObject) => {
-				const daysInUnit = data.filter((day) =>
-					isInSameUnit(comparableDateObject, new Date(day.date)),
-				);
-				return allTopics.reduce(
-					(acc, topic) => {
-						const itemsWithTopics = daysInUnit.filter(
-							(day) => day.topic === topic,
-						);
-						const sum = itemsWithTopics.reduce(
-							(acc, day) => acc + (day.n_articles || 0),
-							0,
-						);
-						acc[topic] = sum;
-						return acc;
-					},
-					{
-						comparableDateObject,
-						dateFormatted: formatDateByAggregationUnit(
-							comparableDateObject.date,
-							aggregationUnit,
-						),
-					} as {
-						comparableDateObject: ComparableDateItemType;
-						dateFormatted: string;
-					} & {
-						[key: string]: number;
-					},
-				);
-			});
-			return {
-				topics: allTopics.sort().map((topic) => ({
-					topic,
-					color: `var(--sentiment-${topic})`,
-					sum: filteredData.reduce((acc, day) => acc + day[topic], 0),
-				})),
-				filteredData,
-			};
-		}, [data, intervals, isInSameUnit, aggregationUnit]);
+		const { topics, filteredData, aggregationUnit } = useTopics({
+			containerWidth: size.width,
+			trend_type: "sentiment",
+			sentiment_target,
+		});
 
 		return (
 			<div className="media-sentiment-chart">
@@ -195,8 +134,8 @@ function MediaSentimentChartWithData({
 		return (
 			<ChartLimitations limitations={data.limitations} Icon={BarChartIcon} />
 		);
-	if (isSuccess && data.applicability && data.trends.length > 0)
-		return <MediaSentimentChart data={data.trends} />;
+	if (isSuccess && data.applicability)
+		return <MediaSentimentChart sentiment_target={sentiment_target} />;
 	return <MediaSentimentChartEmpty />;
 }
 export default function MediaCoverageChartWithErrorBoundary({

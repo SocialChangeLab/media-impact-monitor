@@ -126,8 +126,7 @@ function MediaCoverageChartWithData({
 		return (
 			<ChartLimitations limitations={data.limitations} Icon={LineChartIcon} />
 		);
-	if (isSuccess && data.applicability && data.trends.length > 0)
-		return <MediaCoverageChart />;
+	if (isSuccess && data.applicability) return <MediaCoverageChart />;
 	return <MediaCoverageChartEmpty />;
 }
 export default function MediaCoverageChartWithErrorBoundary() {

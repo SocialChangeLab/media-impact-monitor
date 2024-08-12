@@ -6,6 +6,7 @@ import { parseErrorMessage } from "@/utility/errorHandlingUtil";
 import type { EventOrganizerSlugType } from "@/utility/eventsUtil";
 import type { ParsedMediaImpactItemType } from "@/utility/mediaImpactUtil";
 import { topicIsSentiment } from "@/utility/topicsUtil";
+import { useOrganisation } from "@/utility/useOrganisations";
 import {
 	ArrowDown,
 	ArrowUp,
@@ -41,12 +42,14 @@ function ImpactChartRow({
 	const impactsWithUncertainty = (impacts ?? []).sort((a, b) =>
 		a.label.localeCompare(b.label),
 	);
+
 	const [organizer, setOrganizer] = useState<
 		EventOrganizerSlugType | undefined
 	>(defaultOrganizer);
 	const selectedOrganizers = useFiltersStore((state) =>
 		state.organizers.sort(),
 	);
+	const { organisation } = useOrganisation(organizer);
 
 	useEffect(() => {
 		if (!defaultOrganizer) return;
@@ -56,7 +59,6 @@ function ImpactChartRow({
 	return (
 		<div className="flex flex-col gap-6 pr-6">
 			<div className="flex flex-col gap-2">
-				{impactsWithUncertainty.length > 0 && <p>An average protest by:</p>}
 				<OrganisationsSelect
 					multiple={false}
 					organisations={
@@ -72,7 +74,9 @@ function ImpactChartRow({
 				{limitations && limitations.length > 0 && (
 					<div className="flex flex-col gap-2">
 						{limitations.map((l) => (
-							<p key={l}>{l}</p>
+							<p key={l} className="mt-4">
+								{l}
+							</p>
 						))}
 					</div>
 				)}
@@ -85,6 +89,11 @@ function ImpactChartRow({
 							parseErrorMessage(error, `Organisation impact`).details
 						}
 					/>
+				)}
+				{impactsWithUncertainty.length > 0 && !!organisation && (
+					<p className="mt-4">
+						An average protest by <strong>{organisation.name}</strong>:
+					</p>
 				)}
 				{impactsWithUncertainty.map((i) => (
 					<ImpactChartRowSentence key={i.label} unitLabel={unitLabel} {...i} />

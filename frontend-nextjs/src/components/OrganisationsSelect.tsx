@@ -25,8 +25,7 @@ import type {
 	EventOrganizerSlugType,
 	OrganisationType,
 } from "@/utility/eventsUtil";
-import useEvents from "@/utility/useEvents";
-import { endOfToday, parse, startOfDay } from "date-fns";
+import { useOrganisations } from "@/utility/useOrganisations";
 import { useMemo, useState } from "react";
 import RoundedColorPill from "./RoundedColorPill";
 
@@ -44,25 +43,22 @@ export function OrganisationsSelect({
 	onChange?: (orgs: EventOrganizerSlugType[]) => void;
 }) {
 	const [open, setOpen] = useState(false);
-	const { isPending, data } = useEvents({
-		from: startOfDay(parse("01-01-2020", "dd-MM-yyyy", new Date())),
-		to: endOfToday(),
-	});
+	const { isPending, organisations: allOrganisations } = useOrganisations();
 
 	const selectedOrgs = useMemo(() => {
 		return selectedOrganisations
-			.map((slug) => data.organisations.find(({ slug: s }) => s === slug))
+			.map((slug) => allOrganisations.find(({ slug: s }) => s === slug))
 			.filter(Boolean) as OrganisationType[];
-	}, [data?.organisations, selectedOrganisations]);
+	}, [allOrganisations, selectedOrganisations]);
 
 	const orgsToSelectFrom = useMemo(() => {
-		if (typeof organisations === "undefined") return data?.organisations || [];
+		if (typeof organisations === "undefined") return allOrganisations;
 		return (
 			organisations.map((slug) =>
-				data?.organisations.find(({ slug: s }) => s === slug),
+				allOrganisations.find(({ slug: s }) => s === slug),
 			) || []
 		).filter(Boolean) as OrganisationType[];
-	}, [organisations, data?.organisations]);
+	}, [organisations, allOrganisations]);
 
 	const selectedOrganizerSlugs = useMemo(
 		() => selectedOrgs?.map(({ slug }) => slug),

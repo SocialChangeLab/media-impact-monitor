@@ -119,7 +119,7 @@ function ImpactChartWithData({
 	if (org2) queries[org2] = org1Query;
 	if (org3) queries[org3] = org1Query;
 
-	const queriesArray = Object.values(queries);
+	const queriesArray = Array.from(Object.values(queries));
 	const data = {} as Record<
 		string,
 		ReturnType<typeof useMediaImpactData>["data"]
@@ -128,17 +128,22 @@ function ImpactChartWithData({
 	if (org2) data[org2] = org2Query.data;
 	if (org3) data[org3] = org3Query.data;
 
-	const isEmpty = queriesArray.every(
-		(query) => query?.data?.data && query.data.data.length === 0,
-	);
-	const isError = queriesArray.some((query) => query.isError);
-	const isSuccess = queriesArray.every((query) => query.isSuccess);
-	const isPending = queriesArray.some((query) => query.isPending);
-	const error = queriesArray.find((query) => query.error)?.error;
-	if (isError)
-		return <ImpactChartError reset={reset} {...parseErrorMessage(error)} />;
-	if (isPending) return <ImpactChartLoading />;
-	if (isSuccess && isEmpty) return <ImpactChartEmpty />;
+	const anyLoading =
+		queriesArray.length === 0 || queriesArray.some((query) => query.isPending);
+	const isEmpty =
+		!anyLoading &&
+		queriesArray.every(
+			(query) => query?.data?.data && query.data.data.length === 0,
+		);
+	const allErroring =
+		!anyLoading && queriesArray.every((query) => query.isError === true);
+	if (allErroring) {
+		const firstError = queriesArray.find((query) => query.error)?.error;
+		return (
+			<ImpactChartError reset={reset} {...parseErrorMessage(firstError)} />
+		);
+	}
+	if (isEmpty) return <ImpactChartEmpty />;
 
 	return (
 		<ImpactChart
@@ -149,7 +154,10 @@ function ImpactChartWithData({
 				error: queries[key as keyof typeof queries]?.error ?? null,
 				org: orgValues[idx] as EventOrganizerSlugType,
 				onOrgChange: getUpdateOrgHandler(idx),
+				isPending: queries[key as keyof typeof queries]?.isPending ?? false,
 			}))}
+			columnsCount={3}
+			itemsCountPerColumn={trend_type === "keywords" ? 4 : 3}
 			unitLabel={unitLabel}
 		/>
 	);

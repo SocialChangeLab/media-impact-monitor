@@ -29,6 +29,8 @@ type ImpactChartColumnDescriptionsProps = {
 	error?: Error | null;
 	defaultOrganizer?: EventOrganizerSlugType;
 	onOrgChange?: (organiser: EventOrganizerSlugType) => void;
+	isPending?: boolean;
+	itemsCountPerColumn?: number;
 };
 
 function ImpactChartColumnDescriptions({
@@ -38,8 +40,10 @@ function ImpactChartColumnDescriptions({
 	error,
 	defaultOrganizer,
 	onOrgChange = () => {},
+	isPending = false,
+	itemsCountPerColumn = 1,
 }: ImpactChartColumnDescriptionsProps) {
-	const impactsWithUncertainty = (impacts ?? []).sort((a, b) =>
+	const sortedImpacts = (impacts ?? []).sort((a, b) =>
 		a.label.localeCompare(b.label),
 	);
 
@@ -70,14 +74,17 @@ function ImpactChartColumnDescriptions({
 						onOrgChange(orgs[0]);
 					}}
 				/>
-				{limitations && limitations.length > 0 && !!organisation && (
-					<p className="mt-4">
-						The impact of an average protest by{" "}
-						<strong>{organisation.name}</strong> cannot be computed beacause of
-						the following limitations:
-					</p>
-				)}
-				{limitations && limitations.length > 0 && (
+				{!isPending &&
+					limitations &&
+					limitations.length > 0 &&
+					!!organisation && (
+						<p className="mt-4">
+							The impact of an average protest by{" "}
+							<strong>{organisation.name}</strong> cannot be computed beacause
+							of the following limitations:
+						</p>
+					)}
+				{!isPending && limitations && limitations.length > 0 && (
 					<ul className="flex flex-col gap-2 list-disc marker:text-grayMed">
 						{limitations.map((l) => (
 							<li key={l} className="ml-4 pl-1">
@@ -96,18 +103,44 @@ function ImpactChartColumnDescriptions({
 						}
 					/>
 				)}
-				{impactsWithUncertainty.length > 0 && !!organisation && (
+				{((!error && (!limitations || limitations.length === 0)) ||
+					isPending) && (
 					<p className="mt-4">
-						An average protest by <strong>{organisation.name}</strong>:
+						An average protest by{" "}
+						{!isPending && organisation ? (
+							<strong>{organisation.name}</strong>
+						) : (
+							<span className="h-4 w-32 inline-block rounded bg-grayLight animate-pulse translate-y-[0.15rem]" />
+						)}
 					</p>
 				)}
-				{impactsWithUncertainty.map((i) => (
-					<ImpactChartColumnDescriptionsSentence
-						key={i.label}
-						unitLabel={unitLabel}
-						{...i}
-					/>
-				))}
+				{!isPending &&
+					sortedImpacts.map((i) => (
+						<ImpactChartColumnDescriptionsSentence
+							key={i.label}
+							unitLabel={unitLabel}
+							{...i}
+						/>
+					))}
+				{isPending &&
+					Array.from({ length: itemsCountPerColumn }).map((_, idx) => (
+						<div
+							key={`pending-${
+								// biome-ignore lint/suspicious/noArrayIndexKey: <explanation>
+								idx
+							}`}
+							className="flex flex-col gap-1.5 mb-3 pl-5 relative animate-pulse first-of-type:mt-1.5"
+						>
+							<ChevronsUpDownIcon
+								className={cn(
+									"absolute left-0 top-0.5 text-grayDark size-4 translate-y-0.5",
+									"opacity-50",
+								)}
+							/>
+							<span className="h-4 w-full inline-block rounded bg-grayLight animate-pulse translate-y-1" />
+							<span className="h-4 w-2/3 inline-block rounded bg-grayLight animate-pulse translate-y-1 delay-200" />
+						</div>
+					))}
 			</div>
 		</div>
 	);

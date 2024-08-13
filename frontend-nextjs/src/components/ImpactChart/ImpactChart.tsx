@@ -1,8 +1,7 @@
 import type { EventOrganizerSlugType } from "@/utility/eventsUtil";
 import type { ParsedMediaImpactItemType } from "@/utility/mediaImpactUtil";
 import ImpactChartColumnDescriptions from "./ImpactChartColumnDescriptions";
-
-type ImpactChartColumnItem = ParsedMediaImpactItemType;
+import ImpactChartColumnVisualisation from "./ImpactChartColumnVisualisation";
 
 type ImpactChartColumn = {
 	data: ParsedMediaImpactItemType[] | null;
@@ -11,44 +10,59 @@ type ImpactChartColumn = {
 	error: Error | null;
 	org: EventOrganizerSlugType;
 	onOrgChange?: (organiser: EventOrganizerSlugType) => void;
+	isPending: boolean;
 };
 
 type ImpactChartProps = {
 	columns: ImpactChartColumn[];
+	columnsCount?: number;
+	itemsCountPerColumn?: number;
 	unitLabel: string;
 };
 
-const getItemsImpacts = (items: (ParsedMediaImpactItemType | null)[]) => {
-	const nonNullItems = items.filter(
-		(item) => item !== null,
-	) as ParsedMediaImpactItemType[];
-	return nonNullItems.map((item) => item.impact.mean ?? 0) ?? [];
-};
-
 function ImpactChart(props: ImpactChartProps) {
-	const height = 360;
-
 	return (
-		<div
-			className="grid"
-			style={{ gridTemplateColumns: `repeat(${props.columns.length}, 1fr)` }}
-		>
-			{props.columns.map(
-				({ id, data, limitations, org, error, onOrgChange }) => {
-					return (
-						<div key={`column-${id}`} className="flex flex-col gap-6">
-							<ImpactChartColumnDescriptions
+		<div className="flex flex-col gap-6">
+			<div
+				className="grid gap-x-px bg-grayLight border border-grayLight h-96"
+				style={{ gridTemplateColumns: `repeat(${props.columns.length}, 1fr)` }}
+			>
+				{props.columns.map(
+					({ id, data, limitations, isPending, error, onOrgChange }) => {
+						return (
+							<ImpactChartColumnVisualisation
+								key={`column-${id}`}
 								impacts={data}
+								limitations={limitations}
+								error={error}
+								isPending={isPending}
+							/>
+						);
+					},
+				)}
+			</div>
+			<div
+				className="grid gap-x-px"
+				style={{ gridTemplateColumns: `repeat(${props.columns.length}, 1fr)` }}
+			>
+				{props.columns.map(
+					({ id, data, limitations, org, isPending, error, onOrgChange }) => {
+						return (
+							<ImpactChartColumnDescriptions
+								key={`column-${id}`}
+								impacts={data}
+								isPending={isPending}
 								unitLabel={props.unitLabel}
 								limitations={limitations}
 								error={error}
 								defaultOrganizer={org}
 								onOrgChange={onOrgChange}
+								itemsCountPerColumn={props.itemsCountPerColumn}
 							/>
-						</div>
-					);
-				},
-			)}
+						);
+					},
+				)}
+			</div>
 		</div>
 	);
 }

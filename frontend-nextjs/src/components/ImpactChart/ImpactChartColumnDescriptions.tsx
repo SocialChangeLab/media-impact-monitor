@@ -1,40 +1,38 @@
-'use client'
-import { useFiltersStore } from '@/providers/FiltersStoreProvider'
-import { cn } from '@/utility/classNames'
-import { slugifyCssClass } from '@/utility/cssSlugify'
-import { parseErrorMessage } from '@/utility/errorHandlingUtil'
-import type { EventOrganizerSlugType } from '@/utility/eventsUtil'
-import type { ParsedMediaImpactItemType } from '@/utility/mediaImpactUtil'
-import { topicIsSentiment } from '@/utility/topicsUtil'
-import { useOrganisation } from '@/utility/useOrganisations'
+"use client";
+import { useFiltersStore } from "@/providers/FiltersStoreProvider";
+import { cn } from "@/utility/classNames";
+import { slugifyCssClass } from "@/utility/cssSlugify";
+import { parseErrorMessage } from "@/utility/errorHandlingUtil";
+import type { EventOrganizerSlugType } from "@/utility/eventsUtil";
+import type { ParsedMediaImpactItemType } from "@/utility/mediaImpactUtil";
+import { topicIsSentiment } from "@/utility/topicsUtil";
+import { useOrganisation } from "@/utility/useOrganisations";
 import {
-	AlertTriangle,
 	ArrowDown,
 	ArrowUp,
 	Asterisk,
 	ChevronsUpDownIcon,
 	X,
 	type icons,
-} from 'lucide-react'
-import { type ReactNode, useEffect, useMemo, useState } from 'react'
-import ComponentError from '../ComponentError'
-import { OrganisationsSelect } from '../OrganisationsSelect'
+} from "lucide-react";
+import { type ReactNode, useEffect, useMemo, useState } from "react";
+import { OrganisationsSelect } from "../OrganisationsSelect";
 import {
 	ImpactKeywordLabel,
 	ImpactKeywordLabelTooltip,
-} from './ImpactKeywordLabel'
+} from "./ImpactKeywordLabel";
 
 type ImpactChartColumnDescriptionsProps = {
-	impacts: ParsedMediaImpactItemType[] | null
-	icon?: keyof typeof icons
-	unitLabel: string
-	limitations?: string[]
-	error?: Error | null
-	defaultOrganizer?: EventOrganizerSlugType
-	onOrgChange?: (organiser: EventOrganizerSlugType) => void
-	isPending?: boolean
-	itemsCountPerColumn?: number
-}
+	impacts: ParsedMediaImpactItemType[] | null;
+	icon?: keyof typeof icons;
+	unitLabel: string;
+	limitations?: string[];
+	error?: Error | null;
+	defaultOrganizer?: EventOrganizerSlugType;
+	onOrgChange?: (organiser: EventOrganizerSlugType) => void;
+	isPending?: boolean;
+	itemsCountPerColumn?: number;
+};
 
 function ImpactChartColumnDescriptions({
 	impacts,
@@ -48,23 +46,25 @@ function ImpactChartColumnDescriptions({
 }: ImpactChartColumnDescriptionsProps) {
 	const sortedImpacts = (impacts ?? []).sort((a, b) =>
 		a.label.localeCompare(b.label),
-	)
+	);
 
 	const [organizer, setOrganizer] = useState<
 		EventOrganizerSlugType | undefined
-	>(defaultOrganizer)
-	const selectedOrganizers = useFiltersStore((state) => state.organizers.sort())
-	const { organisation } = useOrganisation(organizer)
+	>(defaultOrganizer);
+	const selectedOrganizers = useFiltersStore((state) =>
+		state.organizers.sort(),
+	);
+	const { organisation } = useOrganisation(organizer);
 
 	useEffect(() => {
-		if (!defaultOrganizer) return
-		setOrganizer(defaultOrganizer)
-	}, [defaultOrganizer])
+		if (!defaultOrganizer) return;
+		setOrganizer(defaultOrganizer);
+	}, [defaultOrganizer]);
 
 	const hasLimitations = useMemo(
 		() => !isPending && limitations.length > 0,
 		[limitations, isPending],
-	)
+	);
 
 	return (
 		<div className="flex flex-col gap-6 pr-6">
@@ -76,18 +76,18 @@ function ImpactChartColumnDescriptions({
 					}
 					selectedOrganisations={organizer ? [organizer] : []}
 					onChange={(orgs) => {
-						setOrganizer(orgs[0])
-						onOrgChange(orgs[0])
+						setOrganizer(orgs[0]);
+						onOrgChange(orgs[0]);
 					}}
 				/>
 				{hasLimitations && !!organisation && !error && (
 					<>
 						<p className="mt-2 text-grayDark relative pl-9">
 							<Asterisk className="absolute left-0 -top-1 text-grayDark opacity-50 size-6 translate-y-0.5" />
-							The impact of an average protest by{' '}
+							The impact of an average protest by{" "}
 							<strong className="text-fg font-semibold">
 								{organisation.name}
-							</strong>{' '}
+							</strong>{" "}
 							cannot be computed because of the following limitations:
 						</p>
 						<ul className="flex flex-col gap-2 list-disc marker:text-grayMed pl-9">
@@ -113,9 +113,9 @@ function ImpactChartColumnDescriptions({
 							{parseErrorMessage(error).details && (
 								<pre
 									className={cn(
-										'min-w-full px-3 py-2 bg-grayDark mt-2 text-sm',
-										'dark:bg-bg dark:text-fg dark:border dark:border-grayLight',
-										'text-mono text-bg max-w-full overflow-x-auto',
+										"min-w-full px-3 py-2 bg-grayDark mt-2 text-sm",
+										"dark:bg-bg dark:text-fg dark:border dark:border-grayLight",
+										"text-mono text-bg max-w-full overflow-x-auto",
 									)}
 								>
 									<code>fjlw fwelkf wlf </code>
@@ -127,13 +127,13 @@ function ImpactChartColumnDescriptions({
 						</p>
 					</>
 				)}
-				{((!error && !hasLimitations) || isPending) && isPending && (
+				{((!error && !hasLimitations) || isPending) && (
 					<p className="mt-4">
-						An average protest by{' '}
-						{!isPending && organisation ? (
-							<strong>{organisation.name}</strong>
-						) : (
+						An average protest by{" "}
+						{!organisation ? (
 							<span className="h-4 w-32 inline-block rounded bg-grayLight animate-pulse translate-y-[0.15rem]" />
+						) : (
+							<strong>{organisation.name}</strong>
 						)}
 					</p>
 				)}
@@ -157,8 +157,8 @@ function ImpactChartColumnDescriptions({
 						>
 							<ChevronsUpDownIcon
 								className={cn(
-									'absolute left-0 top-0.5 text-grayDark size-4 translate-y-0.5',
-									'opacity-50',
+									"absolute left-0 top-0.5 text-grayDark size-4 translate-y-0.5",
+									"opacity-50",
 								)}
 							/>
 							<span className="h-4 w-full inline-block rounded bg-grayLight animate-pulse translate-y-1" />
@@ -167,38 +167,38 @@ function ImpactChartColumnDescriptions({
 					))}
 			</div>
 		</div>
-	)
+	);
 }
 
 function formatValue(value: number) {
-	return Number.parseFloat(Math.abs(value).toFixed(2)).toLocaleString('en-GB')
+	return Number.parseFloat(Math.abs(value).toFixed(2)).toLocaleString("en-GB");
 }
 
 function ImpactChartColumnDescriptionsSentence(
 	i: ParsedMediaImpactItemType & {
-		unitLabel: string
+		unitLabel: string;
 	},
 ) {
-	const incdeclabel = i.impact.lower > 0 ? 'increases' : 'decreases'
-	const formattedLowerBound = formatValue(i.impact.lower)
-	const formattedUpperBound = formatValue(i.impact.upper)
+	const incdeclabel = i.impact.lower > 0 ? "increases" : "decreases";
+	const formattedLowerBound = formatValue(i.impact.lower);
+	const formattedUpperBound = formatValue(i.impact.upper);
 	const unclearTendency =
 		(i.impact.upper > 0 && i.impact.lower < 0) ||
-		(formattedLowerBound === '0' && formattedUpperBound === '0')
-	const isSentiment = topicIsSentiment(i.label)
+		(formattedLowerBound === "0" && formattedUpperBound === "0");
+	const isSentiment = topicIsSentiment(i.label);
 	const leastBound =
-		incdeclabel === 'increases' ? formattedLowerBound : formattedUpperBound
+		incdeclabel === "increases" ? formattedLowerBound : formattedUpperBound;
 	const mostBound =
-		incdeclabel === 'increases' ? formattedUpperBound : formattedLowerBound
+		incdeclabel === "increases" ? formattedUpperBound : formattedLowerBound;
 	const ChangeIcon = useMemo(() => {
-		if (unclearTendency) return ChevronsUpDownIcon
-		return i.impact.mean > 0 ? ArrowUp : ArrowDown
-	}, [unclearTendency, i.impact.mean])
+		if (unclearTendency) return ChevronsUpDownIcon;
+		return i.impact.mean > 0 ? ArrowUp : ArrowDown;
+	}, [unclearTendency, i.impact.mean]);
 
 	const topicNodeWithoutTooltip = useMemo(
 		() => <ImpactKeywordLabel {...i} />,
 		[i],
-	)
+	);
 
 	const topicNode = useMemo(
 		() => (
@@ -208,19 +208,19 @@ function ImpactChartColumnDescriptionsSentence(
 			</ImpactKeywordLabelTooltip>
 		),
 		[i.unitLabel, topicNodeWithoutTooltip],
-	)
+	);
 
 	return (
 		<p
 			className={cn(
-				'mt-2 pl-5 relative text-grayDark text-balance',
+				"mt-2 pl-5 relative text-grayDark text-balance",
 				`legend-topic legend-topic-${slugifyCssClass(i.label)}`,
 			)}
 		>
 			<ChangeIcon
 				className={cn(
-					'absolute left-0 top-0 text-grayDark size-4 translate-y-0.5',
-					unclearTendency && 'opacity-50',
+					"absolute left-0 top-0 text-grayDark size-4 translate-y-0.5",
+					unclearTendency && "opacity-50",
 				)}
 			/>
 			{unclearTendency && (
@@ -240,7 +240,7 @@ function ImpactChartColumnDescriptionsSentence(
 					{isSentiment && <> {topicNode} </>}
 					{` ${i.unitLabel}  `}
 					{!isSentiment && <>about {topicNode}</>}
-					{' by at least '}
+					{" by at least "}
 					<B>{leastBound}</B>
 					{` and up to `}
 					<B>{mostBound}</B>
@@ -248,11 +248,11 @@ function ImpactChartColumnDescriptionsSentence(
 				</>
 			)}
 		</p>
-	)
+	);
 }
 
 function B(props: { children: ReactNode }) {
-	return <strong className="font-semibold text-fg">{props.children}</strong>
+	return <strong className="font-semibold text-fg">{props.children}</strong>;
 }
 
-export default ImpactChartColumnDescriptions
+export default ImpactChartColumnDescriptions;

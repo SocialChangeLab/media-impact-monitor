@@ -2,30 +2,35 @@ import { cn } from "@/utility/classNames";
 import { slugifyCssClass } from "@/utility/cssSlugify";
 import { parseErrorMessage } from "@/utility/errorHandlingUtil";
 import type { ParsedMediaImpactItemType } from "@/utility/mediaImpactUtil";
+import { seededRandom } from "@/utility/randomUtil";
 import { titleCase } from "@/utility/textUtil";
 import { getTopicIcon } from "@/utility/topicsUtil";
-import type { ScaleLinear } from "d3-scale";
+import { type ScaleLinear, scaleLinear } from "d3-scale";
 import { Asterisk } from "lucide-react";
 import { useMemo } from "react";
 import ComponentError from "../ComponentError";
 
 function ImpactChartColumnVisualisation({
+	id,
 	impacts,
 	limitations = [],
 	error,
 	isPending = false,
 	positiveAreaHeightInRem,
 	negativeAreaHeightInRem,
+	totalHeightInRem,
 	scale,
 	itemsCountPerColumn,
 	paddingInRem,
 }: {
+	id: string;
 	impacts: ParsedMediaImpactItemType[] | null;
 	limitations?: string[];
 	error?: Error | null;
 	isPending?: boolean;
 	negativeAreaHeightInRem: number;
 	positiveAreaHeightInRem: number;
+	totalHeightInRem: number;
 	scale: ScaleLinear<number, number, never>;
 	itemsCountPerColumn: number;
 	paddingInRem: number;
@@ -36,7 +41,13 @@ function ImpactChartColumnVisualisation({
 	);
 	return (
 		<ImpactChartColumnVisualisationWrapper>
-			{isPending && <div>Loading...</div>}
+			{isPending && (
+				<ImpactChartColumnVisualisationLoading
+					itemsCountPerColumn={itemsCountPerColumn}
+					totalHeightInRem={totalHeightInRem}
+					id={id}
+				/>
+			)}
 			{hasLimitations && (
 				<ImpactChartColumnVisualisationLimitations limitations={limitations} />
 			)}
@@ -49,6 +60,7 @@ function ImpactChartColumnVisualisation({
 					scale={scale}
 					itemsCountPerColumn={itemsCountPerColumn}
 					paddingInRem={paddingInRem}
+					id={id}
 				/>
 			)}
 		</ImpactChartColumnVisualisationWrapper>
@@ -107,10 +119,10 @@ function ImpactChartColumnVisualisationError({ error }: { error: Error }) {
 
 function ImpactChartColumnVisualisationImpacts({
 	impacts,
-	positiveAreaHeightInRem,
 	scale,
 	itemsCountPerColumn,
 	paddingInRem,
+	id,
 }: {
 	impacts: ParsedMediaImpactItemType[] | null;
 	negativeAreaHeightInRem: number;
@@ -118,6 +130,7 @@ function ImpactChartColumnVisualisationImpacts({
 	scale: ScaleLinear<number, number, never>;
 	itemsCountPerColumn: number;
 	paddingInRem: number;
+	id: string;
 }) {
 	return (
 		<div
@@ -140,7 +153,7 @@ function ImpactChartColumnVisualisationImpacts({
 					return (
 						<div
 							className={cn("relative h-full group transition-all")}
-							key={uniqueId}
+							key={`bars-${uniqueId}`}
 						>
 							<div
 								className={cn(
@@ -176,6 +189,7 @@ function ImpactChartColumnVisualisationImpacts({
 										height={height}
 										label={label}
 										impact={impact}
+										id={`bar-${id}-${idx}`}
 									/>
 									<ImpactChartColumnVisualisationImpactLabel
 										top={`calc(${upperY}rem - 1.5rem)`}
@@ -198,21 +212,83 @@ function ImpactChartColumnVisualisationImpacts({
 	);
 }
 
+function ImpactChartColumnVisualisationLoading({
+	id,
+	itemsCountPerColumn,
+	totalHeightInRem,
+}: {
+	id: string;
+	itemsCountPerColumn: number;
+	totalHeightInRem: number;
+}) {
+	const scale = useMemo(
+		() => scaleLinear().domain([1, -1]).range([0, totalHeightInRem]),
+		[totalHeightInRem],
+	);
+	return (
+		<div
+			className="w-full h-96 grid px-4 py-16 gap-4 relative"
+			style={{ gridTemplateColumns: `repeat(${itemsCountPerColumn}, 1fr)` }}
+		>
+			<div className="absolute left-0 top-1/2 h-px right-0 bg-grayLight opacity-30" />
+			{Array.from({ length: itemsCountPerColumn }).map((_, idx) => {
+				const rand1 = seededRandom(`${id}-${idx}-1`);
+				const rand2 = seededRandom(`${id}-${idx}-2`);
+				const randImpactLower = Math.max(rand1, rand2) * -1;
+				const randImpactUpper = Math.min(rand1, rand2);
+				const lowerY = scale(randImpactLower);
+				const upperY = scale(randImpactUpper);
+				const height = lowerY - upperY;
+				return (
+					<div
+						className={cn(
+							"relative h-full group transition-all",
+							"animate-pulse",
+						)}
+						style={{ animationDelay: `${idx * 300}ms` }}
+						// biome-ignore lint/suspicious/noArrayIndexKey: <explanation>
+						key={`loading-${id}-${idx}`}
+					>
+						{(randImpactLower !== 0 || randImpactUpper !== 0) && (
+							<>
+								<ImpactChartColumnVisualisationImpactBar
+									upperY={upperY}
+									color={`var(--grayMed)`}
+									height={height}
+									label={""}
+									impact={{ lower: randImpactLower, upper: randImpactUpper }}
+									noLine
+									id={`loading-${id}-${idx}`}
+								/>
+							</>
+						)}
+					</div>
+				);
+			})}
+		</div>
+	);
+}
+
 function ImpactChartColumnVisualisationImpactBar({
 	upperY,
 	color,
 	height,
 	label,
 	impact,
+	noLine = false,
+	id,
 }: {
 	upperY: number;
 	color: string;
 	height: number;
 	label: string;
-	impact: ParsedMediaImpactItemType["impact"];
+	impact: { lower: number; upper: number };
+	noLine?: boolean;
+	id: string;
 }) {
 	return (
 		<div
+			key={id}
 			className={cn("w-full h-full absolute left-0 py-1 overflow-clip")}
 			style={{
 				height: `${height + 0.5}rem`,
@@ -229,6 +305,7 @@ function ImpactChartColumnVisualisationImpactBar({
 					color={color}
 					impact={impact}
 					height={height}
+					noLine={noLine}
 				/>
 			</div>
 		</div>
@@ -239,10 +316,12 @@ function ImpactChartColumnVisualisationImpactArrow({
 	color,
 	impact,
 	height,
+	noLine = false,
 }: {
 	color: string;
-	impact: ParsedMediaImpactItemType["impact"];
+	impact: { lower: number; upper: number };
 	height: number;
+	noLine?: boolean;
 }) {
 	const upperRounded = Number.parseFloat(impact.upper.toFixed(2));
 	const lowerRounded = Number.parseFloat(impact.lower.toFixed(2));
@@ -293,20 +372,24 @@ function ImpactChartColumnVisualisationImpactArrow({
 				d={bgPath}
 				className="[fill-opacity:0.3] group-hover:[fill-opacity:0.5] transition-all"
 			/>
-			<path
-				stroke={color}
-				strokeWidth="3px"
-				vectorEffect="non-scaling-stroke"
-				d={lineUp}
-				fill="none"
-			/>
-			<path
-				stroke={color}
-				strokeWidth="3px"
-				vectorEffect="non-scaling-stroke"
-				d={lineDown}
-				fill="none"
-			/>
+			{!noLine && (
+				<>
+					<path
+						stroke={color}
+						strokeWidth="3px"
+						vectorEffect="non-scaling-stroke"
+						d={lineUp}
+						fill="none"
+					/>
+					<path
+						stroke={color}
+						strokeWidth="3px"
+						vectorEffect="non-scaling-stroke"
+						d={lineDown}
+						fill="none"
+					/>
+				</>
+			)}
 		</svg>
 	);
 }

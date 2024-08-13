@@ -48,7 +48,9 @@ function ImpactChart(props: ImpactChartProps) {
 			restrictedPercentageOfNegativeValues * totalHeightInRem;
 		const positiveAreaHeightInRem =
 			percentageOfPositiveValues * totalHeightInRem;
+
 		return {
+			totalHeightInRem,
 			negativeAreaHeightInRem,
 			positiveAreaHeightInRem,
 			scale: scaleSqrt()
@@ -66,6 +68,7 @@ function ImpactChart(props: ImpactChartProps) {
 					return (
 						<ImpactChartColumnVisualisation
 							key={`column-${id}`}
+							id={`column-${id}`}
 							impacts={data}
 							limitations={limitations}
 							error={error}

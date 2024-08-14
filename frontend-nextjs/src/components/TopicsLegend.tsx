@@ -39,7 +39,7 @@ function TopicsLegend({
 	return (
 		<div
 			className={cn(
-				"pt-6 flex gap-[max(2rem,4vmax)] sm:grid sm:grid-cols-[2fr_1fr]",
+				"pt-6 flex flex-col gap-y-2 gap-x-[max(2rem,4vmax)] sm:grid sm:grid-cols-[2fr_1fr]",
 			)}
 		>
 			{topics.length > 0 ? (

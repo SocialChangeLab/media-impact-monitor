@@ -22,6 +22,7 @@ function ImpactChartColumnVisualisation({
 	itemsCountPerColumn,
 	paddingInRem,
 	isPending = false,
+	colIdx,
 }: {
 	id: string;
 	impacts: ParsedMediaImpactItemType[] | null;
@@ -34,13 +35,14 @@ function ImpactChartColumnVisualisation({
 	scale: ScaleLinear<number, number, never>;
 	itemsCountPerColumn: number;
 	paddingInRem: number;
+	colIdx: number;
 }) {
 	const hasLimitations = useMemo(
 		() => !isPending && limitations.length > 0,
 		[limitations, isPending],
 	);
 	return (
-		<ImpactChartColumnVisualisationWrapper>
+		<ImpactChartColumnVisualisationWrapper colIdx={colIdx}>
 			{isPending && (
 				<ImpactChartColumnVisualisationLoading
 					itemsCountPerColumn={itemsCountPerColumn}
@@ -70,10 +72,22 @@ function ImpactChartColumnVisualisation({
 
 function ImpactChartColumnVisualisationWrapper({
 	children,
+	colIdx,
 }: {
 	children: React.ReactNode;
+	colIdx: number;
 }) {
-	return <div className="bg-grayUltraLight h-96">{children}</div>;
+	return (
+		<div
+			className={cn(
+				"bg-grayUltraLight h-96",
+				colIdx === 1 && "max-md:hidden",
+				colIdx === 2 && "max-lg:hidden",
+			)}
+		>
+			{children}
+		</div>
+	);
 }
 
 function ImpactChartColumnVisualisationLimitations({

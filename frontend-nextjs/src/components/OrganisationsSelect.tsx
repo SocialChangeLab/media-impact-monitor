@@ -121,7 +121,12 @@ export function OrganisationsSelect({
 									className="shrink-0"
 								/>
 							)}
-							<span className="truncate hidden sm:inline max-w-56 text-sm lg:text-base">
+							<span
+								className={cn(
+									"truncate max-w-56 text-sm lg:text-base",
+									multiple && "hidden sm:inline",
+								)}
+							>
 								{firstSelectedOrg?.name}
 							</span>
 						</span>

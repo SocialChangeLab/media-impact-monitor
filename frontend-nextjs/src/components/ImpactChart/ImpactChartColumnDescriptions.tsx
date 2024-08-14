@@ -32,6 +32,7 @@ type ImpactChartColumnDescriptionsProps = {
 	onOrgChange?: (organiser: EventOrganizerSlugType) => void;
 	isPending?: boolean;
 	itemsCountPerColumn?: number;
+	colIdx: number;
 };
 
 function ImpactChartColumnDescriptions({
@@ -43,6 +44,7 @@ function ImpactChartColumnDescriptions({
 	onOrgChange = () => {},
 	isPending = false,
 	itemsCountPerColumn = 1,
+	colIdx,
 }: ImpactChartColumnDescriptionsProps) {
 	const sortedImpacts = (impacts ?? []).sort((a, b) =>
 		a.label.localeCompare(b.label),
@@ -67,7 +69,13 @@ function ImpactChartColumnDescriptions({
 	);
 
 	return (
-		<div className="flex flex-col gap-6 pr-6">
+		<div
+			className={cn(
+				"flex flex-col gap-6 pr-6",
+				colIdx === 1 && "max-md:hidden",
+				colIdx === 2 && "max-lg:hidden",
+			)}
+		>
 			<div className="flex flex-col gap-2">
 				<OrganisationsSelect
 					multiple={false}

@@ -1,3 +1,4 @@
+import { cn } from "@/utility/classNames";
 import type { EventOrganizerSlugType } from "@/utility/eventsUtil";
 import type { ParsedMediaImpactItemType } from "@/utility/mediaImpactUtil";
 import { scaleSqrt } from "d3-scale";
@@ -61,31 +62,45 @@ function ImpactChart(props: ImpactChartProps) {
 	return (
 		<div className="flex flex-col gap-6">
 			<div
-				className="grid gap-x-px bg-grayLight border border-grayLight h-96 overflow-clip"
-				style={{ gridTemplateColumns: `repeat(${props.columns.length}, 1fr)` }}
-			>
-				{props.columns.map(({ id, data, limitations, isPending, error }) => {
-					return (
-						<ImpactChartColumnVisualisation
-							key={`column-${id}`}
-							id={`column-${id}`}
-							impacts={data}
-							limitations={limitations}
-							error={error}
-							isPending={isPending}
-							{...scaleProps}
-							itemsCountPerColumn={props.itemsCountPerColumn ?? 1}
-							paddingInRem={paddingInRem}
-						/>
-					);
-				})}
-			</div>
-			<div
-				className="grid gap-x-px"
-				style={{ gridTemplateColumns: `repeat(${props.columns.length}, 1fr)` }}
+				className={cn(
+					"grid gap-x-px bg-grayLight border border-grayLight h-96 overflow-clip",
+					"grid-cols-1",
+					props.columns.length === 2 && "md:grid-cols-2",
+					props.columns.length === 3 && "md:grid-cols-2 lg:grid-cols-3",
+				)}
 			>
 				{props.columns.map(
-					({ id, data, limitations, org, isPending, error, onOrgChange }) => {
+					({ id, data, limitations, isPending, error }, idx) => {
+						return (
+							<ImpactChartColumnVisualisation
+								key={`column-${id}`}
+								id={`column-${id}`}
+								impacts={data}
+								limitations={limitations}
+								error={error}
+								isPending={isPending}
+								{...scaleProps}
+								itemsCountPerColumn={props.itemsCountPerColumn ?? 1}
+								paddingInRem={paddingInRem}
+								colIdx={idx}
+							/>
+						);
+					},
+				)}
+			</div>
+			<div
+				className={cn(
+					"grid gap-x-px",
+					"grid-cols-1",
+					props.columns.length === 2 && "md:grid-cols-2",
+					props.columns.length === 3 && "md:grid-cols-2 lg:grid-cols-3",
+				)}
+			>
+				{props.columns.map(
+					(
+						{ id, data, limitations, org, isPending, error, onOrgChange },
+						idx,
+					) => {
 						return (
 							<ImpactChartColumnDescriptions
 								key={`column-${id}`}
@@ -97,6 +112,7 @@ function ImpactChart(props: ImpactChartProps) {
 								defaultOrganizer={org}
 								onOrgChange={onOrgChange}
 								itemsCountPerColumn={props.itemsCountPerColumn}
+								colIdx={idx}
 							/>
 						);
 					},

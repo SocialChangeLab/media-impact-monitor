@@ -152,7 +152,7 @@ function EventsTimeline({
 					width={size.width}
 				/>
 			</EventsTimelineScrollWrapper>
-			<div className="pt-10 flex gap-[max(2rem,4vmax)] sm:grid sm:grid-cols-[1fr_auto] max-w-content">
+			<div className="pt-10 flex flex-col gap-y-2 gap-x-[max(2rem,4vmax)] sm:grid sm:grid-cols-[1fr_auto] max-w-content">
 				<CollapsableSection
 					title="Legend"
 					storageKey="protest-timeline-legend-expanded"

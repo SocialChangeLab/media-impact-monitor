@@ -30,12 +30,12 @@ const LoadingEventsTimeline = memo(() => {
 	const skeletons = useMemo(() => {
 		return intervals.map((_, i) => ({
 			colId: i,
-			eventsWithSize: Array(randomUntil(6, "skeletons"))
+			eventsWithSize: Array(randomUntil(6, `${i * Math.PI}`))
 				.fill(null)
 				.map((_, j) => ({
 					eventId: j,
 					height: `${Math.ceil(
-						sizeScale(randomUntil(60, `skeletons-${i}`)),
+						sizeScale(randomUntil(40, `${i * Math.PI}-${j * Math.PI}`)),
 					)}px`,
 				})),
 		}));

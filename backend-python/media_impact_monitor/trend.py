@@ -1,3 +1,4 @@
+from media_impact_monitor.trends.topic_trend import get_topic_trend
 import pandas as pd
 
 from media_impact_monitor.trends.keyword_trend import get_keyword_trend
@@ -11,6 +12,8 @@ def get_trend(q: TrendSearch, as_json=True) -> Trend:
             df = get_keyword_trend(q)
         case "sentiment":
             df = get_sentiment_trend(q)
+        case "topic":
+            df = get_topic_trend(q)
         case _:
             raise ValueError(f"Unsupported trend type: {q.trend_type}")
     match df:

@@ -1,13 +1,10 @@
 import asyncio
 import json
-
-import backoff
 import json_repair
 from aiolimiter import AsyncLimiter
-from litellm import BadRequestError
-from litellm.exceptions import RateLimitError as RateLimitError1
+from litellm import BadRequestError as BadRequestError1
+from openai import BadRequestError as BadRequestError2
 from tqdm.asyncio import tqdm_asyncio
-from openai import RateLimitError as RateLimitError2
 from media_impact_monitor.util.cache import cache
 
 from media_impact_monitor.util.llm import acompletion, completion
@@ -29,22 +26,57 @@ tools = [
                         "type": "string",
                         "description": "The reasoning for the choice of topics (1-3 sentences)",
                     },
+                    # # the original free-text formulation for the topics:
+                    # "topics": {
+                    #     "type": "array",
+                    #     "items": {
+                    #         "type": "string",
+                    #         "description": "A very concise free-text topic descriptor of 1-3 words, e.g. 'international relations', 'energy policy', 'olaf scholz', 'biodiversity', 'ukraine war', ...",
+                    #     },
+                    #     "description": "A list of the 10 most dominant topics in the text",
+                    # },
                     "topics": {
-                        "type": "array",
-                        "items": {
-                            "type": "string",
-                            "description": "A very concise free-text topic descriptor of 1-3 words, e.g. 'international relations', 'energy policy', 'olaf scholz', 'biodiversity', 'ukraine war', ...",
+                        "type": "object",
+                        "description": "To what extent is the text about the following topics? 0: not at all, 1: a little, 2: somewhat, 3: mostly, 4: entirely",
+                        "properties": {
+                            "protests and activism": {
+                                "type": "number",
+                                "enum": [0, 1, 2, 3, 4],
+                            },
+                            "extreme weather and disasters": {
+                                "type": "number",
+                                "enum": [0, 1, 2, 3, 4],
+                            },
+                            "climate conferences and agreements": {
+                                "type": "number",
+                                "enum": [0, 1, 2, 3, 4],
+                            },
+                            "climate policy proposals": {
+                                "type": "number",
+                                "enum": [0, 1, 2, 3, 4],
+                            },
+                            "scientific research": {
+                                "type": "number",
+                                "enum": [0, 1, 2, 3, 4],
+                            },
+                            "urgency of climate action": {
+                                "type": "number",
+                                "enum": [0, 1, 2, 3, 4],
+                            },
+                            "social and international justice": {
+                                "type": "number",
+                                "enum": [0, 1, 2, 3, 4],
+                            },
                         },
-                        "description": "A list of the 10 most dominant topics in the text",
-                    },
-                    "activism_reasoning": {
-                        "type": "string",
-                        "description": "The reasoning for the activism extent (1 sentence)",
-                    },
-                    "activism": {
-                        "type": "number",
-                        "enum": [0, 1, 2, 3, 4],
-                        "description": "To what extent is the text about activism? 0: not at all, 1: a little, 2: somewhat, 3: mostly, 4: entirely",
+                        "required": [
+                            "protests and activism",
+                            "extreme weather and disasters",
+                            "climate conferences and agreements",
+                            "climate policy proposals",
+                            "scientific research",
+                            "urgency of climate action",
+                            "social and international justice",
+                        ],
                     },
                     "activism_sentiment_reasoning": {
                         "type": ["string", "null"],
@@ -55,15 +87,6 @@ tools = [
                         "enum": [-1, 0, 1],
                         "description": "What sentiment does the text have towards the activists/protester? -1: negative, 0: neutral, 1: positive. If the text is not about activism, this field should be null.",
                     },
-                    "policy_reasoning": {
-                        "type": "string",
-                        "description": "The reasoning for the policy extent (1 sentence)",
-                    },
-                    "policy": {
-                        "type": "number",
-                        "enum": [0, 1, 2, 3, 4],
-                        "description": "To what extent is the text about policy? 0: not at all, 1: a little, 2: somewhat, 3: mostly, 4: entirely",
-                    },
                     "policy_sentiment_reasoning": {
                         "type": ["string", "null"],
                         "description": "The reasoning for the policy sentiment (1-5 sentences). If the text is not about policy, this field should be null.",
@@ -73,29 +96,14 @@ tools = [
                         "enum": [-1, 0, 1],
                         "description": "Does the text point out the insufficiency of existing policies and support progressive policy changes? -1: it supports the status quo or suggests regressive policy changes, 0: neutral, 1: it points out the insufficiency of existing policies or supports progressive policy changes. If the text is not about policy, this field should be null.",
                     },
-                    "science_reasoning": {
-                        "type": "string",
-                        "description": "The reasoning for the science extent (1 sentence)",
-                    },
-                    "science": {
-                        "type": "number",
-                        "enum": [0, 1, 2, 3, 4],
-                        "description": "To what extent is the text about natural phenomena or scientific research? 0: not at all, 1: a little, 2: somewhat, 3: mostly, 4: entirely",
-                    },
                 },
                 "required": [
                     "topics_reasoning",
                     "topics",
-                    "activism_reasoning",
-                    "activism",
                     "activism_sentiment_reasoning",
                     "activism_sentiment",
-                    "policy_reasoning",
-                    "policy",
                     "policy_sentiment_reasoning",
                     "policy_sentiment",
-                    "science_reasoning",
-                    "science",
                 ],
             },
         },
@@ -106,8 +114,6 @@ tools = [
 rate_limit = AsyncLimiter(max_rate=1000, time_period=60)
 
 
-# @cache
-# @backoff.on_exception(backoff.expo, [RateLimitError1, RateLimitError2], max_time=120)
 async def code_fulltext(text: str) -> dict | None:
     if len(text) < 20:
         return None
@@ -124,7 +130,7 @@ async def code_fulltext(text: str) -> dict | None:
                 temperature=0.0,
                 max_tokens=4000,
             )
-    except BadRequestError as e:
+    except (BadRequestError1, BadRequestError2) as e:
         print("Error while coding the text with AI:", e)
         return
     try:
@@ -138,6 +144,7 @@ async def code_fulltext(text: str) -> dict | None:
             data[sent] = (
                 int(data[sent]) if sent in data and data[sent] is not None else None
             )
+        data["topics"] = data["topics"]
         return data
     except (json.JSONDecodeError, AssertionError):
         print(
@@ -181,7 +188,7 @@ def get_aspect_sentiment(text: str, aspect: str) -> float:
             tool_choice={"type": "function", "function": {"name": "score_sentiment"}},
             temperature=0.0,
         )
-    except BadRequestError as e:
+    except (BadRequestError1, BadRequestError2) as e:
         print(e)
         print(text)
         print(response)

@@ -16,7 +16,7 @@ from media_impact_monitor.util.parallel import parallel_tqdm
 
 search = mediacloud.api.SearchApi(MEDIACLOUD_API_TOKEN)
 directory = mediacloud.api.DirectoryApi(MEDIACLOUD_API_TOKEN)
-search.TIMEOUT_SECS = 60
+search.TIMEOUT_SECS = 10
 
 Platform = Literal["onlinenews-mediacloud", "onlinenews-waybackmachine"]
 
@@ -26,7 +26,6 @@ def _story_count_over_time(**kwargs):
     return search.story_count_over_time(**kwargs)
 
 
-@cache
 def get_mediacloud_counts(
     query: str,
     end_date: date,

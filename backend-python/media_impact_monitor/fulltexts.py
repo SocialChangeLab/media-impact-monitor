@@ -10,7 +10,9 @@ from media_impact_monitor.data_loaders.protest.climate_orgs import (
     climate_orgs,
 )
 from media_impact_monitor.events import get_events_by_id
-from media_impact_monitor.fulltext_coding import code_fulltext, code_many_fulltexts
+from media_impact_monitor.fulltext_coding import (
+    code_many_fulltexts,
+)
 from media_impact_monitor.trends.keyword_trend import (
     add_quotes,
     load_keywords,
@@ -19,7 +21,6 @@ from media_impact_monitor.trends.keyword_trend import (
 )
 from media_impact_monitor.types_ import FulltextSearch
 from media_impact_monitor.util.cache import cache
-from media_impact_monitor.util.parallel import parallel_tqdm
 
 
 @cache
@@ -95,5 +96,6 @@ def get_fulltexts(q: FulltextSearch, sample_frac: float = 0.1) -> pd.DataFrame |
     for field in ["activism_sentiment", "policy_sentiment"]:
         df[field] = [r[field] if r and field in r else None for r in coded]
         df[field] = df[field].fillna(0).astype(int)
+    df["topics"] = [r["topics"] if r else None for r in coded]
 
     return df

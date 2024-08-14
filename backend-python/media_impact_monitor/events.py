@@ -4,7 +4,7 @@ import pandas as pd
 from joblib import hash as joblib_hash
 from slugify import slugify
 
-from media_impact_monitor.data_loaders.protest.acled import get_acled_events
+from media_impact_monitor.data_loaders.protest.acled.acled import get_acled_events
 from media_impact_monitor.data_loaders.protest.climate_orgs import (
     add_aliases,
     climate_orgs,

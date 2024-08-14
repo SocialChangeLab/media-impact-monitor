@@ -2,7 +2,7 @@ from datetime import date
 
 import pytest
 
-from media_impact_monitor.data_loaders.protest.acled import get_acled_events
+from media_impact_monitor.data_loaders.protest.acled.acled import get_acled_events
 
 
 def test_get_protests_with_keyword():

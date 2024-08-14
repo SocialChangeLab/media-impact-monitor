@@ -3,7 +3,7 @@ from datetime import date
 
 import pandas as pd
 
-from media_impact_monitor.data_loaders.protest.acled_size import (
+from media_impact_monitor.data_loaders.protest.acled.acled_size import (
     get_size_number,
     get_size_text,
 )

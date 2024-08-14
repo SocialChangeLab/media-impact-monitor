@@ -15,13 +15,13 @@ function ImpactChartColumnVisualisation({
 	impacts,
 	limitations = [],
 	error,
-	isPending = false,
 	positiveAreaHeightInRem,
 	negativeAreaHeightInRem,
 	totalHeightInRem,
 	scale,
 	itemsCountPerColumn,
 	paddingInRem,
+	isPending = false,
 }: {
 	id: string;
 	impacts: ParsedMediaImpactItemType[] | null;
@@ -45,6 +45,7 @@ function ImpactChartColumnVisualisation({
 				<ImpactChartColumnVisualisationLoading
 					itemsCountPerColumn={itemsCountPerColumn}
 					totalHeightInRem={totalHeightInRem}
+					paddingInRem={paddingInRem}
 					id={id}
 				/>
 			)}
@@ -216,13 +217,15 @@ function ImpactChartColumnVisualisationLoading({
 	id,
 	itemsCountPerColumn,
 	totalHeightInRem,
+	paddingInRem,
 }: {
 	id: string;
 	itemsCountPerColumn: number;
 	totalHeightInRem: number;
+	paddingInRem: number;
 }) {
 	const scale = useMemo(
-		() => scaleLinear().domain([1, -1]).range([0, totalHeightInRem]),
+		() => scaleLinear().domain([0, 1]).range([totalHeightInRem, 0]),
 		[totalHeightInRem],
 	);
 	return (
@@ -230,21 +233,21 @@ function ImpactChartColumnVisualisationLoading({
 			className="w-full h-96 grid px-4 py-16 gap-4 relative"
 			style={{ gridTemplateColumns: `repeat(${itemsCountPerColumn}, 1fr)` }}
 		>
-			<div className="absolute left-0 top-1/2 h-px right-0 bg-grayLight opacity-30" />
+			<div
+				className="absolute left-0 top-1/2 h-px right-0 bg-grayLight opacity-30"
+				style={{ top: `calc(${scale(0) + paddingInRem + 0.25}rem)` }}
+			/>
 			{Array.from({ length: itemsCountPerColumn }).map((_, idx) => {
 				const rand1 = seededRandom(`${id}-${idx}-1`);
-				const rand2 = seededRandom(`${id}-${idx}-2`);
-				const randImpactLower = Math.max(rand1, rand2) * -1;
-				const randImpactUpper = Math.min(rand1, rand2);
+				const rand2 = seededRandom(`${id}-${idx + Math.PI}-2`);
+				const randImpactLower = Math.min(rand1, rand2);
+				const randImpactUpper = Math.max(rand1, rand2);
 				const lowerY = scale(randImpactLower);
 				const upperY = scale(randImpactUpper);
-				const height = lowerY - upperY;
+				const height = Math.max(lowerY - upperY, 3);
 				return (
 					<div
-						className={cn(
-							"relative h-full group transition-all",
-							"animate-pulse",
-						)}
+						className={cn("relative h-full transition-all", "animate-pulse")}
 						style={{ animationDelay: `${idx * 300}ms` }}
 						// biome-ignore lint/suspicious/noArrayIndexKey: <explanation>
 						key={`loading-${id}-${idx}`}

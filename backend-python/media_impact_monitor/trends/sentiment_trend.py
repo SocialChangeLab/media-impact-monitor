@@ -6,7 +6,7 @@ from media_impact_monitor.util.cache import cache
 
 
 @cache
-def get_sentiment_trend(q: TrendSearch) -> pd.DataFrame | str:
+def get_sentiment_trend(q: TrendSearch) -> tuple[pd.DataFrame | None, list[str]]:
     """
     Retrieves the sentiment trend for a given query and start date.
 
@@ -18,7 +18,10 @@ def get_sentiment_trend(q: TrendSearch) -> pd.DataFrame | str:
         pd.DataFrame | str: A DataFrame containing the sentiment trend with columns for negative, neutral, and positive sentiments, indexed by date: or a string of limitations
     """
     if q.media_source != "news_online":
-        return f"Sentiment trend requires fulltext analysis, which is only available for news_online, not {q.media_source}."
+        return None, [f"Sentiment trend requires fulltext analysis, which is only available for news_online, not {q.media_source}."]
+    limitations = []
+    if q.start_date.year < 2022:
+        limitations.append("MediaCloud only goes back until 2022.")
     assert q.sentiment_target in ["activism", "policy"]
     field = f"{q.sentiment_target}_sentiment"
     params = dict(q)
@@ -34,4 +37,4 @@ def get_sentiment_trend(q: TrendSearch) -> pd.DataFrame | str:
     )
     df.index = pd.to_datetime(df.index).date
     df.index.name = "date"
-    return df
+    return df, limitations

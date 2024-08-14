@@ -11,7 +11,7 @@ def get_genios_counts(
     query: str,
     end_date: date,
     start_date: date = date(2010, 1, 1),
-) -> pd.Series:
+) -> tuple[pd.Series, list[str]]:
     assert verify_dates(start_date, end_date)
     response = get(
         "https://www.genios.de/api/searchResult/Alle/Presse",

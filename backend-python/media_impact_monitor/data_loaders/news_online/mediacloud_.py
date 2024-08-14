@@ -32,8 +32,10 @@ def get_mediacloud_counts(
     start_date: date = date(2022, 1, 1),
     countries: list | None = None,
     platform: Platform = "onlinenews-waybackmachine",
-) -> pd.Series:
-    assert start_date.year >= 2022, "MediaCloud currently only goes back to 2022"
+) -> tuple[pd.Series | None, list[str]]:
+    limitations = []
+    if start_date < date(2022, 1, 1):
+        limitations.append("Start date must be on or after 2022-01-01.")
     assert verify_dates(start_date, end_date)
 
     collection_ids = [_resolve_country(c) for c in countries] if countries else []
@@ -48,8 +50,8 @@ def get_mediacloud_counts(
     df = df[["date", "count"]]  # ignore total_count and ratio
     df["date"] = pd.to_datetime(df["date"]).dt.date
     df = df.set_index("date")
-    df = df[(df.index >= start_date) & (df.index <= end_date)]
-    return df["count"]
+    df = df.reindex(pd.date_range(start_date, end_date), fill_value=0)
+    return df["count"], limitations
 
 
 @cache
@@ -155,8 +157,7 @@ def get_mediacloud_fulltexts(
     platform: Platform = "onlinenews-mediacloud",
     sample_frac: float = 1,
 ) -> pd.DataFrame | None:
-    start_date = start_date or date(2022, 1, 1)
-    assert start_date.year >= 2022, "MediaCloud currently only goes back to 2022"
+    start_date = max(start_date or date(2022, 1, 1), date(2022, 1, 1))
     assert verify_dates(start_date, end_date)
     assert isinstance(countries, list) or countries is None
     collection_ids = [_resolve_country(c) for c in countries] if countries else None

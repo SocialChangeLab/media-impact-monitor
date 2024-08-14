@@ -8,7 +8,7 @@ from media_impact_monitor.types_ import TrendSearch
 
 
 def test_get_sentiment_trend_valid_input():
-    df = get_sentiment_trend(
+    df, lims = get_sentiment_trend(
         TrendSearch(
             trend_type="sentiment",
             topic="climate_change",

@@ -222,7 +222,7 @@ function HeaderMenu({ currentPage }: { currentPage: string }) {
 					"flex items-center lg:items-start gap-3",
 				)}
 			>
-				<AppLogo /> <span className="text-grayDark text-sm">alpha</span>
+				<AppLogo /> <span className="text-grayDark text-sm">beta</span>
 			</InternalLink>
 			<DesktopNavigation menuItems={menuItems} currentPage={currentPage} />
 			{isMobile && (

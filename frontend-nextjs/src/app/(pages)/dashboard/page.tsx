@@ -2,6 +2,7 @@ import DashboardHelpBanner from "@/components/DashboardHelpBanner.server";
 import EventsTimeline from "@/components/EventsTimeline/EventsTimeline";
 import MediaCoverageChart from "@/components/MediaCoverageChart";
 import MediaSentimentChart from "@/components/MediaSentimentChart";
+import NewsletterFooterSection from "@/components/NewsletterFooterSection";
 import SectionHeadlineWithExplanation from "@/components/SectionHeadlineWithExplanation";
 import TrendWithImpactChartWrapper from "@/components/TrendWithImpactChartWrapper";
 
@@ -71,6 +72,7 @@ export default function EventsPageWithSuspense() {
 					<MediaSentimentChart sentiment_target="policy" />
 				</TrendWithImpactChartWrapper>
 			</SectionHeadlineWithExplanation>
+			<NewsletterFooterSection />
 		</>
 	);
 }

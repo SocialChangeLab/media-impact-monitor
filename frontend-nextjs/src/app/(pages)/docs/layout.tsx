@@ -3,6 +3,7 @@
 import DocsOnThisPage from "@/components/DocsOnThisPage";
 import DocsPrevNextNav from "@/components/DocsPrevNextNav";
 import { DocsTocLink } from "@/components/DocsTocLink";
+import NewsletterFooterSection from "@/components/NewsletterFooterSection";
 import { Button } from "@/components/ui/button";
 import { useUiStore } from "@/providers/UiStoreProvider";
 import { cn } from "@/utility/classNames";
@@ -196,6 +197,7 @@ function DocsLayout({ children }: { children: ReactNode }) {
 					<SidebarCloseIcon className="size-6" />
 				)}
 			</Button>
+			<NewsletterFooterSection />
 		</>
 	);
 }

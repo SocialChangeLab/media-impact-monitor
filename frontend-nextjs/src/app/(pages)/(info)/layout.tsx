@@ -1,3 +1,4 @@
+import NewsletterFooterSection from "@/components/NewsletterFooterSection";
 import headerImage from "@/images/header-bg.webp";
 import { cn } from "@/utility/classNames";
 import Image from "next/image";
@@ -62,6 +63,7 @@ export default async function AboutPageLayout({
 					</div>
 				</div>
 			</main>
+			<NewsletterFooterSection />
 		</>
 	);
 }

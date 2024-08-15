@@ -1,4 +1,5 @@
 "use client";
+import NewsletterFooterSection from "@/components/NewsletterFooterSection";
 import OrganisationsTable from "@/components/OrganisationsTable";
 import SectionHeadlineWithExplanation from "@/components/SectionHeadlineWithExplanation";
 import { useFiltersStore } from "@/providers/FiltersStoreProvider";
@@ -26,6 +27,7 @@ export default function OrganisationsOverviewPage() {
 			>
 				<OrganisationsTable />
 			</SectionHeadlineWithExplanation>
+			<NewsletterFooterSection />
 		</>
 	);
 }

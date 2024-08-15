@@ -1,4 +1,5 @@
 import InternalLink from "@/components/InternalLink";
+import { NewsletterForm } from "@/components/NewsletterForm";
 import AppLogo from "@/components/logos/AppLogo";
 import { buttonVariants } from "@/components/ui/button";
 import headerImage from "@/images/header-bg.webp";
@@ -35,7 +36,7 @@ export default function HomePageWithSuspense() {
 						)}
 					>
 						<AppLogo hideType className="text-brandWhite" />{" "}
-						<span className="text-brandWhite opacity-50 text-sm">alpha</span>
+						<span className="text-brandWhite opacity-50 text-sm">beta</span>
 					</span>
 					<h1 className="text-4xl font-bold font-headlines antialiased text-brandWhite pr-12 md:pr-0 mt-8 mb-6 text-balance">
 						Welcome to the Media Impact Monitor
@@ -51,7 +52,7 @@ export default function HomePageWithSuspense() {
 						tool provides a detailed view of how activism influences public
 						discussion.
 					</p>
-					<div className="flex gap-4 flex-wrap pt-6 not-prose">
+					<div className="flex gap-4 flex-wrap py-2 not-prose">
 						<InternalLink
 							href={"/dashboard"}
 							className={cn(
@@ -88,6 +89,12 @@ export default function HomePageWithSuspense() {
 						>
 							{`Documentation`}
 						</InternalLink>
+					</div>
+					<div className="flex flex-col gap-4 text-brandWhite not-prose mt-12">
+						<h2 className="m-0 text-2xl font-headlines font-semibold text-balance">
+							Get notified when we launch the v1!
+						</h2>
+						<NewsletterForm />
 					</div>
 				</div>
 			</div>

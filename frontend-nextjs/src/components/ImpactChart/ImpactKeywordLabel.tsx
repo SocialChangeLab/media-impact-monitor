@@ -3,6 +3,7 @@ import { slugifyCssClass } from "@/utility/cssSlugify";
 import { titleCase } from "@/utility/textUtil";
 import { topicIsSentiment } from "@/utility/topicsUtil";
 import { type ReactNode, memo } from "react";
+import slugify from "slugify";
 import { Portal, Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip";
 
 export const ImpactKeywordLabel = memo(
@@ -29,10 +30,10 @@ export const ImpactKeywordLabel = memo(
 
 export const topicsMap = new Map<string, string[][]>(
 	Object.entries({
-		climate_science: [
+		[slugify("Climate S", { lower: true, strict: true })]: [
 			["klimaforsch*", "klimawissenschaft*", "erderwärmung", "ipcc"],
 		],
-		positive: [
+		[slugify("Climate Policy", { lower: true, strict: true })]: [
 			[
 				"klimapoliti*",
 				"klimaneutral*",
@@ -55,7 +56,7 @@ export const topicsMap = new Map<string, string[][]>(
 				"klimagerechtigkeit",
 			],
 		],
-		negative: [
+		[slugify("Climate Crisis Framing", { lower: true, strict: true })]: [
 			[
 				"klimakrise",
 				"klimakatastrophe",
@@ -64,7 +65,7 @@ export const topicsMap = new Map<string, string[][]>(
 				"klimagerechtigkeit",
 			],
 		],
-		neutral: [
+		[slugify("Climate Activism", { lower: true, strict: true })]: [
 			[
 				"*protest*",
 				"*demo",

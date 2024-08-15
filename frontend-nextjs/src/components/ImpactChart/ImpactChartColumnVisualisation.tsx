@@ -84,7 +84,7 @@ function ImpactChartColumnVisualisationWrapper({
 	return (
 		<div
 			className={cn(
-				"bg-grayUltraLight h-96",
+				"bg-grayUltraLight h-96 border-y",
 				colIdx === 1 && "max-md:hidden",
 				colIdx === 2 && "max-lg:hidden",
 			)}
@@ -159,7 +159,7 @@ function ImpactChartColumnVisualisationImpacts({
 			style={{ gridTemplateColumns: `repeat(${itemsCountPerColumn}, 1fr)` }}
 		>
 			<div
-				className="absolute left-0 h-px right-0 bg-grayMed"
+				className="absolute left-0 h-px right-0 bg-grayDark opacity-60"
 				style={{ top: `calc(${sizeScale(0) + paddingInRem - 0.25}rem)` }}
 			/>
 			{impacts
@@ -410,6 +410,10 @@ function ImpactChartColumnVisualisationImpactArrow({
 				<>
 					<path
 						stroke={color}
+						className="group-hover:[stroke-opacity:1] transition-all"
+						strokeOpacity={
+							fillOpacityScale ? Math.min(fillOpacityScale(height) * 2, 1) : 1
+						}
 						strokeWidth="3px"
 						vectorEffect="non-scaling-stroke"
 						d={lineUp}
@@ -417,6 +421,10 @@ function ImpactChartColumnVisualisationImpactArrow({
 					/>
 					<path
 						stroke={color}
+						className="group-hover:[stroke-opacity:1] transition-all"
+						strokeOpacity={
+							fillOpacityScale ? Math.min(fillOpacityScale(height) * 2, 1) : 1
+						}
 						strokeWidth="3px"
 						vectorEffect="non-scaling-stroke"
 						d={lineDown}

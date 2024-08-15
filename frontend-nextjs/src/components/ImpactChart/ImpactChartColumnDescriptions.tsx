@@ -12,7 +12,7 @@ import {
 	ArrowDown,
 	ArrowUp,
 	Asterisk,
-	ChevronsUpDownIcon,
+	Minus,
 	X,
 	type icons,
 } from "lucide-react";
@@ -194,7 +194,7 @@ function ImpactChartColumnDescriptions({
 							}`}
 							className="flex flex-col gap-1.5 mb-3 pl-5 relative animate-pulse first-of-type:mt-1.5"
 						>
-							<ChevronsUpDownIcon
+							<Minus
 								className={cn(
 									"absolute left-0 top-0.5 text-grayDark size-4 translate-y-0.5",
 									"opacity-50",
@@ -210,7 +210,10 @@ function ImpactChartColumnDescriptions({
 }
 
 function formatValue(value: number) {
-	return Number.parseFloat(Math.abs(value).toFixed(2)).toLocaleString("en-GB");
+	return [
+		value === 0 ? "" : value > 0 ? "+" : "−",
+		Number.parseFloat(Math.abs(value).toFixed(2)).toLocaleString("en-GB"),
+	].join("");
 }
 
 function ImpactChartColumnDescriptionsSentence(
@@ -218,19 +221,21 @@ function ImpactChartColumnDescriptionsSentence(
 		unitLabel: string;
 	},
 ) {
-	const incdeclabel = i.impact.lower > 0 ? "increases" : "decreases";
+	const incdeclabel = i.impact.lower > 0 ? "increase" : "decrease";
 	const formattedLowerBound = formatValue(i.impact.lower);
 	const formattedUpperBound = formatValue(i.impact.upper);
 	const unclearTendency =
 		(i.impact.upper > 0 && i.impact.lower < 0) ||
 		(formattedLowerBound === "0" && formattedUpperBound === "0");
+	const noChange =
+		formattedLowerBound === formattedUpperBound && formattedLowerBound === "0";
 	const isSentiment = topicIsSentiment(i.label);
 	const leastBound =
-		incdeclabel === "increases" ? formattedLowerBound : formattedUpperBound;
+		incdeclabel === "increase" ? formattedLowerBound : formattedUpperBound;
 	const mostBound =
-		incdeclabel === "increases" ? formattedUpperBound : formattedLowerBound;
+		incdeclabel === "increase" ? formattedUpperBound : formattedLowerBound;
 	const ChangeIcon = useMemo(() => {
-		if (unclearTendency) return ChevronsUpDownIcon;
+		if (unclearTendency) return Minus;
 		return i.impact.mean > 0 ? ArrowUp : ArrowDown;
 	}, [unclearTendency, i.impact.mean]);
 
@@ -266,20 +271,21 @@ function ImpactChartColumnDescriptionsSentence(
 					unclearTendency && "opacity-50",
 				)}
 			/>
-			{unclearTendency && (
+			{unclearTendency && !noChange && (
 				<>
-					{`leads to `}
+					{`shows `}
 					<B>no clear evidence</B>
-					{` of an increase or decrease in the production of `}
+					{` of an increase or decrease in the publication of `}
 					{isSentiment && <> {topicNode} </>}
 					{` ${i.unitLabel} `}
 					{!isSentiment && <>about {topicNode}</>}
 				</>
 			)}
-			{!unclearTendency && (
+			{!unclearTendency && !noChange && (
 				<>
+					{`shows ${incdeclabel === `increase` ? `an ` : `a `}`}
 					<B>{incdeclabel}</B>
-					{` the production of `}
+					{` in the publication of `}
 					{isSentiment && <> {topicNode} </>}
 					{` ${i.unitLabel}  `}
 					{!isSentiment && <>about {topicNode}</>}
@@ -288,6 +294,16 @@ function ImpactChartColumnDescriptionsSentence(
 					{` and up to `}
 					<B>{mostBound}</B>
 					{` ${i.unitLabel}`}
+				</>
+			)}
+			{noChange && (
+				<>
+					{`shows `}
+					<B>no impact</B>
+					{` in the publication of `}
+					{isSentiment && <> {topicNode} </>}
+					{` ${i.unitLabel} `}
+					{!isSentiment && <>about {topicNode}</>}
 				</>
 			)}
 		</p>

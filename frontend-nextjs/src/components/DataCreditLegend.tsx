@@ -24,7 +24,7 @@ function DataCreditLegend({
 				<div className="flex gap-8 justify-stretch flex-wrap">
 					{sources.map(({ label, links }) => (
 						<div key={label} className="grow flex flex-col">
-							<strong className="font-bold block pb-2">Media data:</strong>
+							<strong className="font-bold block pb-2">{label}:</strong>
 							{links.map(({ text, url }) => (
 								<a
 									key={text}

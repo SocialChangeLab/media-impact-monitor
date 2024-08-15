@@ -9,6 +9,7 @@ import { type ScaleLinear, scaleLinear } from "d3-scale";
 import { Asterisk } from "lucide-react";
 import { useMemo } from "react";
 import ComponentError from "../ComponentError";
+import { ImpactKeywordLabel } from "./ImpactKeywordLabel";
 
 function ImpactChartColumnVisualisation({
 	id,
@@ -18,7 +19,8 @@ function ImpactChartColumnVisualisation({
 	positiveAreaHeightInRem,
 	negativeAreaHeightInRem,
 	totalHeightInRem,
-	scale,
+	sizeScale,
+	fillOpacityScale,
 	itemsCountPerColumn,
 	paddingInRem,
 	isPending = false,
@@ -32,7 +34,8 @@ function ImpactChartColumnVisualisation({
 	negativeAreaHeightInRem: number;
 	positiveAreaHeightInRem: number;
 	totalHeightInRem: number;
-	scale: ScaleLinear<number, number, never>;
+	sizeScale: ScaleLinear<number, number, never>;
+	fillOpacityScale: ScaleLinear<number, number, never>;
 	itemsCountPerColumn: number;
 	paddingInRem: number;
 	colIdx: number;
@@ -60,7 +63,8 @@ function ImpactChartColumnVisualisation({
 					impacts={impacts}
 					negativeAreaHeightInRem={negativeAreaHeightInRem}
 					positiveAreaHeightInRem={positiveAreaHeightInRem}
-					scale={scale}
+					sizeScale={sizeScale}
+					fillOpacityScale={fillOpacityScale}
 					itemsCountPerColumn={itemsCountPerColumn}
 					paddingInRem={paddingInRem}
 					id={id}
@@ -134,7 +138,8 @@ function ImpactChartColumnVisualisationError({ error }: { error: Error }) {
 
 function ImpactChartColumnVisualisationImpacts({
 	impacts,
-	scale,
+	sizeScale,
+	fillOpacityScale,
 	itemsCountPerColumn,
 	paddingInRem,
 	id,
@@ -142,7 +147,8 @@ function ImpactChartColumnVisualisationImpacts({
 	impacts: ParsedMediaImpactItemType[] | null;
 	negativeAreaHeightInRem: number;
 	positiveAreaHeightInRem: number;
-	scale: ScaleLinear<number, number, never>;
+	sizeScale: ScaleLinear<number, number, never>;
+	fillOpacityScale: ScaleLinear<number, number, never>;
 	itemsCountPerColumn: number;
 	paddingInRem: number;
 	id: string;
@@ -153,14 +159,14 @@ function ImpactChartColumnVisualisationImpacts({
 			style={{ gridTemplateColumns: `repeat(${itemsCountPerColumn}, 1fr)` }}
 		>
 			<div
-				className="absolute left-0 h-px right-0 bg-grayLight opacity-75"
-				style={{ top: `calc(${scale(0) + paddingInRem - 0.5}rem)` }}
+				className="absolute left-0 h-px right-0 bg-grayMed"
+				style={{ top: `calc(${sizeScale(0) + paddingInRem - 0.25}rem)` }}
 			/>
 			{impacts
 				?.sort((a, b) => a.label.localeCompare(b.label))
 				.map(({ label, impact, color, uniqueId }, idx) => {
-					const lowerY = scale(impact.lower);
-					const upperY = scale(impact.upper);
+					const lowerY = sizeScale(impact.lower);
+					const upperY = sizeScale(impact.upper);
 					const height = lowerY - upperY;
 					const Icon = getTopicIcon(label);
 					const roundedLower = Number.parseFloat(impact.lower.toFixed(2));
@@ -179,8 +185,12 @@ function ImpactChartColumnVisualisationImpacts({
 									"pointer-events-none",
 								)}
 							>
-								<Icon size={16} color="currentColor" className="shrink-0" />
-								{titleCase(label)}
+								<Icon size={16} color={color} className="shrink-0" />
+								<ImpactKeywordLabel
+									label={titleCase(label)}
+									color={color}
+									className="whitespace-nowrap"
+								/>
 							</div>
 							{roundedLower === 0 && roundedUpper === 0 && (
 								<>
@@ -201,6 +211,7 @@ function ImpactChartColumnVisualisationImpacts({
 									<ImpactChartColumnVisualisationImpactBar
 										upperY={upperY}
 										color={color}
+										fillOpacityScale={fillOpacityScale}
 										height={height}
 										label={label}
 										impact={impact}
@@ -238,7 +249,7 @@ function ImpactChartColumnVisualisationLoading({
 	totalHeightInRem: number;
 	paddingInRem: number;
 }) {
-	const scale = useMemo(
+	const sizeScale = useMemo(
 		() => scaleLinear().domain([0, 1]).range([totalHeightInRem, 0]),
 		[totalHeightInRem],
 	);
@@ -248,16 +259,16 @@ function ImpactChartColumnVisualisationLoading({
 			style={{ gridTemplateColumns: `repeat(${itemsCountPerColumn}, 1fr)` }}
 		>
 			<div
-				className="absolute left-0 top-1/2 h-px right-0 bg-grayLight opacity-30"
-				style={{ top: `calc(${scale(0) + paddingInRem + 0.25}rem)` }}
+				className="absolute left-0 top-1/2 h-px right-0 bg-grayLight"
+				style={{ top: `calc(${sizeScale(0) + paddingInRem + 0.25}rem)` }}
 			/>
 			{Array.from({ length: itemsCountPerColumn }).map((_, idx) => {
 				const rand1 = seededRandom(`${id}-${idx}-1`);
 				const rand2 = seededRandom(`${id}-${idx + Math.PI}-2`);
 				const randImpactLower = Math.min(rand1, rand2);
 				const randImpactUpper = Math.max(rand1, rand2);
-				const lowerY = scale(randImpactLower);
-				const upperY = scale(randImpactUpper);
+				const lowerY = sizeScale(randImpactLower);
+				const upperY = sizeScale(randImpactUpper);
 				const height = Math.max(lowerY - upperY, 3);
 				return (
 					<div
@@ -292,6 +303,7 @@ function ImpactChartColumnVisualisationImpactBar({
 	height,
 	label,
 	impact,
+	fillOpacityScale,
 	noLine = false,
 	id,
 }: {
@@ -300,6 +312,7 @@ function ImpactChartColumnVisualisationImpactBar({
 	height: number;
 	label: string;
 	impact: { lower: number; upper: number };
+	fillOpacityScale?: ScaleLinear<number, number, never>;
 	noLine?: boolean;
 	id: string;
 }) {
@@ -323,6 +336,7 @@ function ImpactChartColumnVisualisationImpactBar({
 					impact={impact}
 					height={height}
 					noLine={noLine}
+					fillOpacityScale={fillOpacityScale}
 				/>
 			</div>
 		</div>
@@ -334,11 +348,13 @@ function ImpactChartColumnVisualisationImpactArrow({
 	impact,
 	height,
 	noLine = false,
+	fillOpacityScale,
 }: {
 	color: string;
 	impact: { lower: number; upper: number };
 	height: number;
 	noLine?: boolean;
+	fillOpacityScale?: ScaleLinear<number, number, never>;
 }) {
 	const upperRounded = Number.parseFloat(impact.upper.toFixed(2));
 	const lowerRounded = Number.parseFloat(impact.lower.toFixed(2));
@@ -387,7 +403,8 @@ function ImpactChartColumnVisualisationImpactArrow({
 			<path
 				fill={color}
 				d={bgPath}
-				className="[fill-opacity:0.3] group-hover:[fill-opacity:0.5] transition-all"
+				className="group-hover:[fill-opacity:0.8] transition-all"
+				fillOpacity={fillOpacityScale ? fillOpacityScale(height) : 0.3}
 			/>
 			{!noLine && (
 				<>

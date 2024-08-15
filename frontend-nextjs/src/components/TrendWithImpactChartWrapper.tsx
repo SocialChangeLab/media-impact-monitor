@@ -61,7 +61,7 @@ function TrendWithImpactChartWrapper({
 					<span className="absolute top-1/2 left-0 w-full h-px bg-gradient-to-r from-bg to-grayLight" />
 					<span className="pl-6 bg-bg relative z-20">
 						<Button onClick={() => setShowComputedImpact((prev) => !prev)}>
-							{showComputedImpact ? "Hide computed impact" : "Compute impact"}
+							{showComputedImpact ? "Hide computed impacts" : "Compute impacts"}
 						</Button>
 					</span>
 				</div>
@@ -80,7 +80,7 @@ function TrendWithImpactChartWrapper({
 							}}
 						>
 							<h3 className="text-xl font-semibold font-headlines mb-6">
-								Computed impact
+								Computed impacts
 							</h3>
 							<LazyLoadedImpactChart
 								trend_type={trend_type}

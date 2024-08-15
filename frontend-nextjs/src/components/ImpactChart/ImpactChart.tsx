@@ -1,7 +1,7 @@
 import { cn } from "@/utility/classNames";
 import type { EventOrganizerSlugType } from "@/utility/eventsUtil";
 import type { ParsedMediaImpactItemType } from "@/utility/mediaImpactUtil";
-import { scaleSqrt } from "d3-scale";
+import { scaleLinear, scaleSqrt } from "d3-scale";
 import { useMemo } from "react";
 import ImpactChartColumnDescriptions from "./ImpactChartColumnDescriptions";
 import ImpactChartColumnVisualisation from "./ImpactChartColumnVisualisation";
@@ -54,9 +54,12 @@ function ImpactChart(props: ImpactChartProps) {
 			totalHeightInRem,
 			negativeAreaHeightInRem,
 			positiveAreaHeightInRem,
-			scale: scaleSqrt()
+			sizeScale: scaleSqrt()
 				.domain([highestValue, lowestValue])
 				.range([0, totalHeightInRem]),
+			fillOpacityScale: scaleLinear()
+				.domain([Math.max(negativeAreaHeightInRem, positiveAreaHeightInRem), 0])
+				.range([0.35, 1]),
 		};
 	}, [props.columns]);
 	return (

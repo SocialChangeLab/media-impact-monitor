@@ -5,9 +5,11 @@ import { slugifyCssClass } from "@/utility/cssSlugify";
 import { titleCase } from "@/utility/textUtil";
 import { getTopicIcon, topicIsSentiment } from "@/utility/topicsUtil";
 import { memo } from "react";
+import slugify from "slugify";
 import {
 	ImpactKeywordLabel,
 	ImpactKeywordLabelTooltip,
+	topicsMap,
 } from "./ImpactChart/ImpactKeywordLabel";
 
 function TopicsLegend({
@@ -53,6 +55,12 @@ function TopicsLegend({
 							{topics.map(({ topic, color, sum }) => {
 								const Icon = getTopicIcon(topic);
 								const isSentiment = topicIsSentiment(topic);
+								const topics = topicsMap.get(
+									slugify(topic, { lower: true, strict: true }),
+								);
+								const keywordLabel = (
+									<ImpactKeywordLabel label={titleCase(topic)} color={color} />
+								);
 								return (
 									<li
 										key={topic}
@@ -68,14 +76,13 @@ function TopicsLegend({
 											className={cn("size-6 shrink-0 text-grayDark")}
 										/>
 										<span className="truncate flex gap-3 items-baseline">
-											{isSentiment && titleCase(topic)}
-											{!isSentiment && (
+											{!topics && keywordLabel}
+											{topics && (
 												<ImpactKeywordLabelTooltip
 													unitLabel="articles"
-													keywords={undefined}
+													keywords={topics}
 												>
-													{/* TODO: Add real keywords */}
-													<ImpactKeywordLabel label={topic} color={color} />
+													{keywordLabel}
 												</ImpactKeywordLabelTooltip>
 											)}
 											<span className="font-mono text-xs text-grayDark">

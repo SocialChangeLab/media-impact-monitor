@@ -7,6 +7,7 @@ import type { EventOrganizerSlugType } from "@/utility/eventsUtil";
 import type { ParsedMediaImpactItemType } from "@/utility/mediaImpactUtil";
 import { topicIsSentiment } from "@/utility/topicsUtil";
 import { useOrganisation } from "@/utility/useOrganisations";
+import { format } from "date-fns";
 import {
 	ArrowDown,
 	ArrowUp,
@@ -15,12 +16,41 @@ import {
 	X,
 	type icons,
 } from "lucide-react";
-import { type ReactNode, useEffect, useMemo, useState } from "react";
+import { type ReactNode, memo, useEffect, useMemo, useState } from "react";
+import slugify from "slugify";
 import { OrganisationsSelect } from "../OrganisationsSelect";
+import { Portal, Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip";
 import {
 	ImpactKeywordLabel,
 	ImpactKeywordLabelTooltip,
+	topicsMap,
 } from "./ImpactKeywordLabel";
+
+const SelectedTimeframeTooltip = memo(() => {
+	const { from, to } = useFiltersStore(({ from, to }) => ({
+		from: format(from, "LLLL d, yyyy"),
+		to: format(to, "LLLL d, yyyy"),
+	}));
+	return (
+		<Tooltip delayDuration={0}>
+			<TooltipTrigger>
+				<span className="underline decoration-grayMed underline-offset-2">
+					selected timeframe
+				</span>
+			</TooltipTrigger>
+			<Portal>
+				<TooltipContent className="w-fit">
+					<p className="py-1 px-1 max-w-80">
+						The selected timeframe is:
+						<br />
+						<strong className="font-bold">{from}</strong> to{" "}
+						<strong className="font-bold">{to}</strong>.
+					</p>
+				</TooltipContent>
+			</Portal>
+		</Tooltip>
+	);
+});
 
 type ImpactChartColumnDescriptionsProps = {
 	impacts: ParsedMediaImpactItemType[] | null;
@@ -142,7 +172,8 @@ function ImpactChartColumnDescriptions({
 							<span className="h-4 w-32 inline-block rounded bg-grayLight animate-pulse translate-y-[0.15rem]" />
 						) : (
 							<strong>{organisation.name}</strong>
-						)}
+						)}{" "}
+						within the <SelectedTimeframeTooltip />:
 					</p>
 				)}
 				{!isPending &&
@@ -210,12 +241,16 @@ function ImpactChartColumnDescriptionsSentence(
 
 	const topicNode = useMemo(
 		() => (
-			<ImpactKeywordLabelTooltip unitLabel={i.unitLabel} keywords={undefined}>
-				{/* TODO: Add real keywords */}
+			<ImpactKeywordLabelTooltip
+				unitLabel={i.unitLabel}
+				keywords={topicsMap.get(
+					slugify(i.label, { lower: true, strict: true }),
+				)}
+			>
 				{topicNodeWithoutTooltip}
 			</ImpactKeywordLabelTooltip>
 		),
-		[i.unitLabel, topicNodeWithoutTooltip],
+		[i.unitLabel, i.label, topicNodeWithoutTooltip],
 	);
 
 	return (

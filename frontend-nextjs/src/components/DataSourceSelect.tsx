@@ -41,7 +41,7 @@ const options: OptionType[] = [
 		name: "Online News",
 		value: "news_online",
 		Icon: GlobeIcon,
-		description: "Global online news articles and media from Media Cloud.",
+		description: "Articles from online news pages.",
 		links: [
 			{
 				label: "Official Website",
@@ -53,7 +53,7 @@ const options: OptionType[] = [
 		name: "Print News",
 		value: "news_print",
 		Icon: NewspaperIcon,
-		description: "Archived print news content from Genios for text search.",
+		description: "Articles from print newspapers.",
 		links: [
 			{
 				label: "Official Website",
@@ -66,14 +66,14 @@ const options: OptionType[] = [
 		],
 	},
 	{
-		name: "Google News",
+		name: "Google Trends",
 		value: "web_google",
 		Icon: SearchIcon,
-		description: "Broad global news from Google for research and analytics.",
+		description: "Search trends from Google.",
 		links: [
 			{
 				label: "Official Website",
-				href: "https://news.google.com/home",
+				href: "https://trends.google.com/trends/",
 			},
 		],
 	},

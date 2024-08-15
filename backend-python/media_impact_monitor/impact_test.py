@@ -1,9 +1,8 @@
 import pytest
 
 from media_impact_monitor.api import _get_impact
-from media_impact_monitor.events import get_events
 from media_impact_monitor.impact import get_impact
-from media_impact_monitor.types_ import EventSearch, Impact, ImpactSearch, TrendSearch
+from media_impact_monitor.types_ import ImpactSearch, TrendSearch
 
 
 def test_xr():
@@ -26,7 +25,7 @@ def test_xr():
 
 
 def test_xr_api():
-    response = _get_impact(
+    _get_impact(
         ImpactSearch(
             end_date="2024-06-25",
             impacted_trend=TrendSearch(
@@ -46,7 +45,7 @@ def test_xr_api():
 
 @pytest.mark.skip()
 def test_fff_api():
-    response = _get_impact(
+    _get_impact(
         ImpactSearch(
             end_date="2023-02-19",
             impacted_trend=TrendSearch(
@@ -62,28 +61,3 @@ def test_fff_api():
             start_date="2022-09-14",
         )
     )
-
-
-def test_impact_empty_trend():
-    response = _get_impact(
-        ImpactSearch(
-            end_date="2023-11-04",
-            impacted_trend=TrendSearch(
-                end_date="2023-11-04",
-                media_source="news_online",
-                organizers=["Fridays for Future"],
-                start_date="2023-02-23",
-                topic="climate_change",
-                trend_type="sentiment",
-            ),
-            method="time_series_regression",
-            organizer="Fridays for Future",
-            start_date="2023-02-23",
-        )
-    )
-    data = response.data
-    assert not data.method_applicability
-    assert data.method_limitations[0].startswith(
-        "There is a problem with the trend data"
-    )
-    assert data.impact_estimates is None

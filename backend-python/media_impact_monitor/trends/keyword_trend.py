@@ -10,16 +10,18 @@ from media_impact_monitor.types_ import TrendSearch
 from media_impact_monitor.util.paths import src
 
 
-def get_keyword_trend(q: TrendSearch) -> pd.DataFrame:
+def get_keyword_trend(q: TrendSearch) -> tuple[pd.DataFrame | None, list[str]]:
     assert q.trend_type == "keywords"
     assert q.topic == "climate_change", "Only climate_change is supported."
     dss = {}
+    limitations = set()
     for topic, query in topic_queries(q.media_source).items():
         match q.media_source:
             case "news_online":
-                ds = get_mediacloud_counts(
+                ds, lims = get_mediacloud_counts(
                     query=query, countries=["Germany"], end_date=q.end_date
                 )
+                limitations.update(lims)
             case "news_print":
                 ds = get_genios_counts(query=query, end_date=q.end_date)
             case "web_google":
@@ -27,15 +29,11 @@ def get_keyword_trend(q: TrendSearch) -> pd.DataFrame:
             case _:
                 raise ValueError(f"Unsupported media source: {q.media_source}")
         ds.index = pd.to_datetime(ds.index)
-        if q.aggregation == "weekly":
-            ds = ds.resample("W").sum()
-        elif q.aggregation == "monthly":
-            ds = ds.resample("M").sum()
         ds.index = ds.index.date
         ds.index.name = "date"
         dss[topic] = ds
     df = pd.DataFrame(dss)
-    return df
+    return df, list(limitations)
 
 
 def add_quotes(xs: list[str]) -> list[str]:

@@ -1,11 +1,6 @@
-import re
-from itertools import chain
-from math import ceil
 
-import matplotlib.pyplot as plt
 import pandas as pd
 import statsmodels.api as sm
-from tqdm.auto import tqdm
 
 from media_impact_monitor.types_ import Aggregation
 
@@ -47,7 +42,7 @@ def regress(
     lags = range(1, lags + 1)
     media_df = pd.DataFrame(media_df, columns=["count"])
     # protest_df = add_lags(protest_df, lags=[])
-    media_df = add_lags(media_df, lags=[4,5,6,7,8])
+    media_df = add_lags(media_df, lags=[4, 5, 6, 7, 8])
     # protest_df = add_emws(protest_df)
     # media_df = add_emws(media_df, spans=[14])
     df = pd.concat([protest_df, media_df], axis=1)

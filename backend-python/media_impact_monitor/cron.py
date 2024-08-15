@@ -7,11 +7,11 @@ from functools import partial
 
 from apscheduler.schedulers.background import BackgroundScheduler
 from apscheduler.triggers.cron import CronTrigger
-from media_impact_monitor.fulltexts import get_fulltexts
 from sentry_sdk.crons import monitor
 from tqdm import tqdm
 
 from media_impact_monitor.events import get_events
+from media_impact_monitor.fulltexts import get_fulltexts
 from media_impact_monitor.impact import get_impact
 from media_impact_monitor.trend import get_trend
 from media_impact_monitor.types_ import (
@@ -52,7 +52,7 @@ def fill_cache():
         except Exception as e:
             errors.append(f"events {data_source}: {e}")
     for media_source in ["news_online", "news_print", "web_google"]:
-        for trend_type in ["keywords", "sentiment"]:
+        for trend_type in ["keywords"]:  # , "sentiment"]:
             for aggregation in ["daily", "weekly"]:
                 if aggregation == "daily" and media_source == "web_google":
                     continue
@@ -70,7 +70,9 @@ def fill_cache():
                         )
                     )
                 except Exception as e:
-                    errors.append(f"trend {media_source} {trend_type} {aggregation}: {e}")
+                    errors.append(
+                        f"trend {media_source} {trend_type} {aggregation}: {e}"
+                    )
     events = events["acled"]  # TODO: include press_releases
     recent_events = events[events["date"] >= date.today() - timedelta(days=70)]
     for event in tqdm(

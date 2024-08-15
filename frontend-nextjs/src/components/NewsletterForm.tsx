@@ -3,7 +3,7 @@
 import { cn } from "@/utility/classNames";
 import { AnimatePresence, motion } from "framer-motion";
 import { Check, X } from "lucide-react";
-import { type FormEvent, useState } from "react";
+import { type FormEvent, useCallback, useState } from "react";
 import { subscribeToNewsletter } from "./NewsletterForm.action";
 import { Button } from "./ui/button";
 
@@ -23,11 +23,13 @@ export const NewsletterForm = ({
 	>("idle");
 	const [responseMsg, setResponseMsg] = useState<string>("");
 
-	async function handleSubscribe(e: FormEvent<HTMLFormElement>) {
+	const handleSubscribe = useCallback(async (e: FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
 		setStatus("loading");
+		const { value: emailAddress } =
+			(e.currentTarget.elements.namedItem("email") as HTMLInputElement) ?? {};
 		try {
-			const { message, error } = await subscribeToNewsletter(email);
+			const { message, error } = await subscribeToNewsletter(emailAddress);
 
 			if (error) {
 				setStatus("error");
@@ -43,7 +45,7 @@ export const NewsletterForm = ({
 				setResponseMsg(err.message);
 			}
 		}
-	}
+	}, []);
 
 	return (
 		<form
@@ -64,6 +66,7 @@ export const NewsletterForm = ({
 							classNames.input,
 						)}
 						id="newsletter-email"
+						name="email"
 						type="email"
 						placeholder="anna.smith@example.com"
 						value={email}
@@ -80,7 +83,7 @@ export const NewsletterForm = ({
 			</div>
 			<div className="relative h-px">
 				<AnimatePresence>
-					{responseMsg && (
+					{responseMsg && ["success", "error"].includes(status) && (
 						<motion.div
 							initial={{ opacity: 0, y: -5 }}
 							animate={{ opacity: 1, y: 0 }}

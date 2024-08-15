@@ -14,10 +14,11 @@ export const subscribeToNewsletter = async (email: unknown): Promise<Data> => {
 	}
 
 	const API_KEY = process.env.MAILCHIMP_API_KEY;
-	const API_SERVER = process.env.MAILCHIMP_API_SERVER;
+	const MAILCHIMP_REGION = process.env.MAILCHIMP_REGION;
 	const AUDIENCE_ID = process.env.MAILCHIMP_AUDIENCE_ID;
 
-	const url = `https://${API_SERVER}.api.mailchimp.com/3.0/lists/${AUDIENCE_ID}/members`;
+	const url = `https://${MAILCHIMP_REGION}.api.mailchimp.com/3.0/lists/${AUDIENCE_ID}/members`;
+	console.log("Now sending request to", url, email);
 
 	try {
 		const response = await fetch(url, {
@@ -41,11 +42,13 @@ export const subscribeToNewsletter = async (email: unknown): Promise<Data> => {
 			if (error.message.includes("Member Exists")) {
 				return { message: "Awesome! You have successfully subscribed!" };
 			}
+		} else {
+			console.error(`${error}`);
 		}
 
 		return {
 			error:
-				"Oops! There was an error subscribing you to the newsletter. Please email me at ogbonnakell@gmail.com and I'll add you to the list.",
+				"Oops! There was an error subscribing you to the newsletter. Please try with another email address.",
 		};
 	}
 

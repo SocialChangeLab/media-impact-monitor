@@ -14,22 +14,24 @@ function CollapsableSection({
 	storageType,
 	children,
 	className,
+	defaultExpanded = true,
 }: {
 	title: string;
 	storageKey: string;
 	storageType?: "local" | "session";
 	children: ReactNode;
 	className?: string;
+	defaultExpanded?: boolean;
 }) {
-	const [isExpanded, setExpanded] = useState(false);
+	const [isExpanded, setExpanded] = useState(defaultExpanded);
 
 	useEffect(() => {
 		if (!storageType || typeof window === "undefined") return;
 		const storage =
 			storageType === "local" ? window.localStorage : window.sessionStorage;
 		const value = storage.getItem(storageKey);
-		setExpanded(value === null || value === "true");
-	}, [storageKey, storageType]);
+		setExpanded((value === null && defaultExpanded) || value === "true");
+	}, [storageKey, storageType, defaultExpanded]);
 
 	return (
 		<Accordion

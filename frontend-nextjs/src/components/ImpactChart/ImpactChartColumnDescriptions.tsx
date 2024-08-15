@@ -23,6 +23,7 @@ import { Portal, Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip";
 import {
 	ImpactKeywordLabel,
 	ImpactKeywordLabelTooltip,
+	ImpactSentimentLabelTooltip,
 	topicsMap,
 } from "./ImpactKeywordLabel";
 
@@ -244,8 +245,12 @@ function ImpactChartColumnDescriptionsSentence(
 		[i],
 	);
 
-	const topicNode = useMemo(
-		() => (
+	const topicNode = useMemo(() => {
+		return isSentiment ? (
+			<ImpactSentimentLabelTooltip>
+				{topicNodeWithoutTooltip}
+			</ImpactSentimentLabelTooltip>
+		) : (
 			<ImpactKeywordLabelTooltip
 				unitLabel={i.unitLabel}
 				keywords={topicsMap.get(
@@ -254,9 +259,8 @@ function ImpactChartColumnDescriptionsSentence(
 			>
 				{topicNodeWithoutTooltip}
 			</ImpactKeywordLabelTooltip>
-		),
-		[i.unitLabel, i.label, topicNodeWithoutTooltip],
-	);
+		);
+	}, [i.unitLabel, i.label, topicNodeWithoutTooltip, isSentiment]);
 
 	return (
 		<p

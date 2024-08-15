@@ -9,6 +9,7 @@ import slugify from "slugify";
 import {
 	ImpactKeywordLabel,
 	ImpactKeywordLabelTooltip,
+	ImpactSentimentLabelTooltip,
 	topicsMap,
 } from "./ImpactChart/ImpactKeywordLabel";
 
@@ -76,7 +77,11 @@ function TopicsLegend({
 											className={cn("size-6 shrink-0 text-grayDark")}
 										/>
 										<span className="truncate flex gap-3 items-baseline">
-											{!topics && keywordLabel}
+											{isSentiment && (
+												<ImpactSentimentLabelTooltip>
+													{keywordLabel}
+												</ImpactSentimentLabelTooltip>
+											)}
 											{topics && (
 												<ImpactKeywordLabelTooltip
 													unitLabel="articles"

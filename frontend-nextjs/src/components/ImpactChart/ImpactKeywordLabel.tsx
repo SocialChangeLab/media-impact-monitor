@@ -2,6 +2,7 @@ import { cn } from "@/utility/classNames";
 import { slugifyCssClass } from "@/utility/cssSlugify";
 import { titleCase } from "@/utility/textUtil";
 import { topicIsSentiment } from "@/utility/topicsUtil";
+import Link from "next/link";
 import { type ReactNode, memo } from "react";
 import slugify from "slugify";
 import { Portal, Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip";
@@ -20,9 +21,11 @@ export const ImpactKeywordLabel = memo(
 					`legend-topic legend-topic-${slugifyCssClass(label)}`,
 					className,
 				)}
-				style={{ textDecorationColor: color }}
+				style={{ textDecorationColor: color, color }}
 			>
-				{isSentiment ? label : titleCase(label)}
+				<span className="[&:not(:hover)]:text-fg transition">
+					{isSentiment ? label : titleCase(label)}
+				</span>
 			</span>
 		);
 	},
@@ -30,7 +33,7 @@ export const ImpactKeywordLabel = memo(
 
 export const topicsMap = new Map<string, string[][]>(
 	Object.entries({
-		[slugify("Climate S", { lower: true, strict: true })]: [
+		[slugify("Climate Science", { lower: true, strict: true })]: [
 			["klimaforsch*", "klimawissenschaft*", "erderwärmung", "ipcc"],
 		],
 		[slugify("Climate Policy", { lower: true, strict: true })]: [
@@ -131,6 +134,42 @@ export const ImpactKeywordLabelTooltip = memo(
 								return acc.concat(keywords);
 							}, [] as ReactNode[])}
 						</ul>
+					</TooltipContent>
+				</Portal>
+			</Tooltip>
+		);
+	},
+);
+
+export const ImpactSentimentLabelTooltip = memo(
+	({
+		children,
+	}: {
+		children: ReactNode;
+	}) => {
+		return (
+			<Tooltip>
+				<TooltipTrigger className="group">{children}</TooltipTrigger>
+				<Portal>
+					<TooltipContent>
+						<p className="mt-2 mb-1 max-w-80">
+							We use{" "}
+							<strong className="font-semibold">Large Language Models</strong>{" "}
+							(LLMs) to predict the sentiment of articles.
+						</p>
+						<p className="mb-2 max-w-80">
+							To know more about the methodology, see the{" "}
+							<Link
+								href="/docs/charts/mediaSentimentTrend/methodology"
+								className={cn(
+									"underline decoration-grayMed underline-offset-2 decoration-2",
+									"focusable hover:decoration-grayDark transition",
+								)}
+							>
+								documentation
+							</Link>
+							.
+						</p>
 					</TooltipContent>
 				</Portal>
 			</Tooltip>

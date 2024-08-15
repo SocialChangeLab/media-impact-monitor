@@ -1,12 +1,10 @@
 """Cache functions."""
 
-import asyncio
 from time import sleep as _sleep
 
 from joblib import Memory
 from requests import get as _get
 from requests import post as _post
-from tqdm.asyncio import tqdm_asyncio
 from zenrows import ZenRowsClient
 
 from media_impact_monitor.util.env import ZENROWS_API_KEY
@@ -28,7 +26,6 @@ def get(url, sleep=None, **kwargs):
     :rtype: requests.Response
     """
     response = _get(url, **kwargs)
-    response.raise_for_status()
     if sleep is not None:
         _sleep(sleep)
     return response
@@ -53,19 +50,17 @@ def post(url, sleep=None, **kwargs):
     return response
 
 
-client = ZenRowsClient(ZENROWS_API_KEY, retries=2, concurrency=10)
-
-
 @cache
-async def get_proxied_async(url, **kwargs):
-    if not "timeout" in kwargs:
+def get_proxied(url, **kwargs):
+    if "timeout" not in kwargs:
         kwargs["timeout"] = 10
     try:
         response = get(url, **kwargs)
         return response
     except Exception:
         pass
-    response = await client.get_async(url, **kwargs)
+    client = ZenRowsClient(ZENROWS_API_KEY, retries=2, concurrency=10)
+    response = client.get(url, **kwargs)
     if response.text.startswith('{"code":'):
         zenrows_errors = [
             "REQS001",
@@ -88,23 +83,8 @@ async def get_proxied_async(url, **kwargs):
             "RESP003",
         ]
         if any(error in response.text for error in zenrows_errors):
-
             # problem with zenrows -> inform the developer
             raise Exception(response.text)
         # otherwise, problem with the site itself -> just don't use this site
         return None
     return response
-
-
-def get_proxied(url, **kwargs):
-    return asyncio.run(get_proxied_async(url, **kwargs))
-
-
-async def get_proxied_many_async(urls, desc=""):
-    return await tqdm_asyncio.gather(
-        *[get_proxied_async(url) for url in urls], desc=desc
-    )
-
-
-def get_proxied_many(urls, desc=""):
-    return asyncio.run(get_proxied_many_async(urls, desc=desc))

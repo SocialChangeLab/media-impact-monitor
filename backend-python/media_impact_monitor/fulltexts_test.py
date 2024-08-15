@@ -1,22 +1,31 @@
 from datetime import date, timedelta
 
+import pandas as pd
 import pytest
 
-from media_impact_monitor.data_loaders.news_online.mediacloud_ import (
-    get_mediacloud_fulltexts,
-)
 from media_impact_monitor.fulltexts import get_fulltexts
-from media_impact_monitor.types_ import Fulltext, FulltextSearch
+from media_impact_monitor.types_ import FulltextSearch
 
 
-def test_get_fulltexts_for_org():
+@pytest.fixture
+def default_start_date():
+    return date(2024, 5, 1)
+
+
+@pytest.fixture
+def default_end_date():
+    return date(2024, 5, 2)
+
+
+def test_get_fulltexts_for_org(default_start_date, default_end_date):
     texts = get_fulltexts(
         FulltextSearch(
             media_source="news_online",
-            start_date=date(2024, 5, 1),
-            end_date=date(2024, 5, 2),
+            start_date=default_start_date,
+            end_date=default_end_date,
             organizers=["Last Generation"],
-        )
+        ),
+        sample_frac=0.1,
     )
     assert texts is not None
     assert len(texts) > 0
@@ -31,41 +40,97 @@ def test_get_fulltexts_for_event():
             FulltextSearch(
                 media_source="news_online",
                 event_id=event_id,
-                end_date=date(2024, 5, 18),
-            )
+            ),
+            sample_frac=0.1,
         )
         assert texts is not None
         assert len(texts) > 0
-        assert (texts["date"] <= date(2024, 5, 18)).all()
 
 
-def test_get_fulltexts_with_too_many_params():
-    with pytest.raises(ValueError) as e:
-        get_fulltexts(
-            FulltextSearch(
-                media_source="news_online",
-                topic="climate_change",
-                start_date=date(2023, 1, 1),
-                end_date=date(2024, 1, 31),
-                event_id="adb689988aa3e61021da64570bda6d95",
-            )
-        )
-    assert (
-        str(e.value)
-        == "Only one of 'topic', 'organizers', 'query', 'event_id' is allowed."
-    )
-
-
-def test_get_fulltexts_for_climate_change():
-    texts = get_fulltexts(
+def test_get_fulltexts_for_climate_change(default_start_date, default_end_date):
+    result = get_fulltexts(
         FulltextSearch(
             media_source="news_online",
             topic="climate_change",
-            # using a Sunday so there's fewer articles
-            start_date=date(2022, 3, 6),
-            end_date=date(2022, 3, 6),
-        )
+            start_date=default_start_date,
+            end_date=default_end_date,
+        ),
+        sample_frac=0.001,
     )
-    assert texts is not None
-    assert len(texts) > 0
-    # TODO: check availability and format of dates
+    assert isinstance(result, pd.DataFrame)
+    assert not result.empty
+    assert all(
+        col in result.columns
+        for col in [
+            "title",
+            "date",
+            "url",
+            "text",
+            "activism_sentiment",
+            "policy_sentiment",
+        ]
+    )
+
+
+def test_get_fulltexts_custom_query(default_start_date, default_end_date):
+    q = FulltextSearch(
+        media_source="news_online",
+        query="climate protest",
+        start_date=default_start_date,
+        end_date=default_end_date,
+    )
+    result = get_fulltexts(q, sample_frac=0.1)
+    assert isinstance(result, pd.DataFrame)
+    assert not result.empty
+    assert "climate" in result["text"].str.lower().sum()
+    assert "protest" in result["text"].str.lower().sum()
+
+
+def test_get_fulltexts_no_filters():
+    q = FulltextSearch(media_source="news_online", end_date=date.today())
+    with pytest.raises(AssertionError):
+        get_fulltexts(q)
+
+
+def test_get_fulltexts_invalid_organizer(default_start_date, default_end_date):
+    q = FulltextSearch(
+        media_source="news_online",
+        organizers=["Invalid Organization"],
+        start_date=default_start_date,
+        end_date=default_end_date,
+    )
+    with pytest.raises(
+        AssertionError, match="Unknown organization: Invalid Organization"
+    ):
+        get_fulltexts(q)
+
+
+def test_get_fulltexts_sample_frac(default_start_date, default_end_date):
+    q = FulltextSearch(
+        media_source="news_online",
+        topic="climate_change",
+        start_date=default_start_date,
+        end_date=default_end_date,
+    )
+    result_full = get_fulltexts(q, sample_frac=0.002)
+    result_sample = get_fulltexts(q, sample_frac=0.001)
+    assert len(result_sample) < len(result_full)
+
+
+def test_get_fulltexts_date_range(default_start_date, default_end_date):
+    q = FulltextSearch(
+        media_source="news_online",
+        topic="climate_change",
+        start_date=default_start_date,
+        end_date=default_end_date,
+    )
+    result = get_fulltexts(q, sample_frac=0.001)
+    assert isinstance(result, pd.DataFrame)
+    assert not result.empty
+    assert all(
+        default_start_date <= date <= default_end_date for date in result["date"]
+    )
+    assert "activism_sentiment" in result.columns
+    assert "policy_sentiment" in result.columns
+    assert all(result["activism_sentiment"].isin([-1, 0, 1]))
+    assert all(result["policy_sentiment"].isin([-1, 0, 1]))

@@ -16,7 +16,7 @@ from starlette.middleware.cors import CORSMiddleware
 from starlette.responses import RedirectResponse
 from uvicorn.logging import AccessFormatter
 
-from media_impact_monitor.cron import setup_cron
+from media_impact_monitor.cron import fill_cache, setup_cron
 from media_impact_monitor.events import get_events, organizers_with_id
 from media_impact_monitor.fulltexts import get_fulltexts
 from media_impact_monitor.impact import get_impact
@@ -153,6 +153,12 @@ def _get_policy(q: PolicySearch):  # -> Response[PolicySearch, Policy]:
 @app.get("/organizers")
 def _get_organizers() -> list[Organizer]:
     return organizers_with_id()
+
+
+@app.get("/fill_cache")
+def _fill_cache():
+    fill_cache()
+    return {"status": "success"}
 
 
 if __name__ == "__main__":

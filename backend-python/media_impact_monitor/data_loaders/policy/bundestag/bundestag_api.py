@@ -7,7 +7,6 @@ Access the Bundestag API
 """
 
 import logging
-import os
 import warnings
 from datetime import date
 from typing import Dict

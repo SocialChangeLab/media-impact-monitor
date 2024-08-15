@@ -11,9 +11,9 @@ const protest_source = await view(
   })
 )
 const media_sources = {
-  news_online: 'coverage of climate in german online news',
-  news_print: 'coverage of climate in german print news',
-  web_google: 'google search volume in germany'
+  news_online: 'online news',
+  news_print: 'print news',
+  web_google: 'google search volume'
 }
 const media_source = view(
   Inputs.select(Object.keys(media_sources), {
@@ -46,12 +46,38 @@ events = events.map(a => ({
 ```
 
 ```js
-const trend_plot = (trend, title) => ({
+const keyword_plot = (trend, title) => ({
   data: { values: trend },
   width: 600,
   height: 100,
   title: title,
-  mark: { type: 'line', interpolate: 'step-after' },
+  mark: { type: 'line', interpolate: 'basis' },
+  encoding: {
+    x: {
+      field: 'date',
+      type: 'temporal',
+      axis: { title: null },
+      scale: { domain: { selection: 'brush' } }
+    },
+    y: {
+      field: 'n_articles',
+      type: 'quantitative',
+      axis: { title: 'Number of articles' },
+      stack: 'center'
+    },
+    color: {
+      field: 'topic',
+      type: 'nominal'
+    }
+  }
+})
+
+const sentiment_plot = (trend, title) => ({
+  data: { values: trend },
+  width: 600,
+  height: 100,
+  title: title,
+  mark: { type: 'area', interpolate: 'basis' },
   encoding: {
     x: {
       field: 'date',
@@ -63,6 +89,37 @@ const trend_plot = (trend, title) => ({
       field: 'n_articles',
       type: 'quantitative',
       axis: { title: 'Number of articles' }
+      // stack: 'center'
+    },
+    color: {
+      field: 'topic',
+      type: 'nominal',
+      scale: {
+        domain: ['positive', 'neutral', 'negative'],
+        range: ['green', 'yellow', 'red']
+      }
+    }
+  }
+})
+
+const topic_plot = (trend, title) => ({
+  data: { values: trend },
+  width: 600,
+  height: 100,
+  title: title,
+  mark: { type: 'area', interpolate: 'basis' },
+  encoding: {
+    x: {
+      field: 'date',
+      type: 'temporal',
+      axis: { title: null },
+      scale: { domain: { selection: 'brush' } }
+    },
+    y: {
+      field: 'n_articles',
+      type: 'quantitative',
+      axis: { title: 'Number of articles' },
+      stack: 'center'
     },
     color: {
       field: 'topic',
@@ -77,25 +134,56 @@ const keyword_trend = await queryApi('trend', {
   topic: 'climate_change'
 })
 const trend_plots = [
-  trend_plot(keyword_trend.trends, media_sources[media_source])
+  keyword_plot(
+    keyword_trend.trends,
+    'keywords in german ' + media_sources[media_source]
+  )
 ]
-const sentiment_trend = await queryApi('trend', {
+const sentiment_trend_a = await queryApi('trend', {
   trend_type: 'sentiment',
   media_source: media_source,
-  topic: 'climate_change'
+  topic: 'climate_change',
+  sentiment_target: 'activism',
+  aggregation: 'monthly'
 })
-if (sentiment_trend.applicability) {
+if (sentiment_trend_a.applicability) {
   trend_plots.push(
-    trend_plot(
-      sentiment_trend.trends,
-      media_sources[media_source].replace(/coverage of/, 'sentiment of')
+    sentiment_plot(
+      sentiment_trend_a.trends,
+      'sentiments towards protests in german ' + media_sources[media_source]
     )
   )
 }
-// display(Inputs.table(trend))
-```
+const sentiment_trend_b = await queryApi('trend', {
+  trend_type: 'sentiment',
+  media_source: media_source,
+  topic: 'climate_change',
+  sentiment_target: 'policy',
+  aggregation: 'monthly'
+})
+if (sentiment_trend_b.applicability) {
+  trend_plots.push(
+    sentiment_plot(
+      sentiment_trend_b.trends,
+      'sentiments towards policy in german ' + media_sources[media_source]
+    )
+  )
+}
+const topic_trend = await queryApi('trend', {
+  trend_type: 'topic',
+  media_source: media_source,
+  topic: 'climate_change',
+  aggregation: 'monthly'
+})
+if (topic_trend.applicability) {
+  trend_plots.push(
+    topic_plot(
+      topic_trend.trends,
+      'topics in german ' + media_sources[media_source]
+    )
+  )
+}
 
-```js
 const today = new Date()
 const year = today.getFullYear()
 const month = today.getMonth()

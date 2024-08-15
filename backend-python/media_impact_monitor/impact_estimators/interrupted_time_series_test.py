@@ -82,7 +82,7 @@ def test_mean_impact_estimates():
     assert impacts_df.index[0] == -4
     assert impacts_df.index[-1] == 6
     assert len(impacts_df) == 4 + 7
-    assert set(impacts_df.columns) == {"mean", "ci_lower", "ci_upper"}
+    assert set(impacts_df.columns) == {"mean", "ci_lower", "ci_upper", "p_value"}
     for i in range(-4, -1):
         mean = impacts_df.loc[i, "mean"]
         assert -50 <= mean <= 50

@@ -18,6 +18,7 @@ type MenuItemType = {
 	showMediaFilter?: boolean;
 	showOrganisationsFilter?: boolean;
 	showTimeFilter?: boolean;
+	cascade?: boolean;
 };
 
 const menuItems: MenuItemType[] = [
@@ -43,6 +44,7 @@ const menuItems: MenuItemType[] = [
 		route: "/organisations",
 		showTimeFilter: true,
 		showOrganisationsFilter: true,
+		cascade: true,
 	},
 	{
 		name: "about",
@@ -57,7 +59,13 @@ const menuItems: MenuItemType[] = [
 ];
 
 function getMenuItemByPathname(pathname: string) {
-	return menuItems.find((i) => i.route === pathname);
+	const item = menuItems.find((i) => {
+		if (i.route === "/") return pathname === "/";
+		return pathname.startsWith(i.route);
+	});
+	if (!item) return undefined;
+	if (item.route === pathname) return item;
+	return item.cascade ? item : undefined;
 }
 
 export function doesPathnameShowAnyFilter(pathname: string) {

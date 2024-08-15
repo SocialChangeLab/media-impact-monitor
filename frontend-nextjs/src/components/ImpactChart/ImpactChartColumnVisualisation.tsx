@@ -84,7 +84,7 @@ function ImpactChartColumnVisualisationWrapper({
 	return (
 		<div
 			className={cn(
-				"bg-grayUltraLight h-96 border-y",
+				"bg-grayUltraLight h-96 border-y border-grayLight",
 				colIdx === 1 && "max-md:hidden",
 				colIdx === 2 && "max-lg:hidden",
 			)}

@@ -167,5 +167,10 @@ def estimate_mean_impact(
         lambda x: confidence_interval_ttest(x.dropna(), 0.95)[1], axis=1
     )
     return pd.DataFrame(
-        {"mean": average, "ci_lower": ci_lower, "ci_upper": ci_upper}
+        {
+            "mean": average,
+            "ci_lower": ci_lower,
+            "ci_upper": ci_upper,
+            "p_value": 1,  # TODO
+        }
     ), warnings

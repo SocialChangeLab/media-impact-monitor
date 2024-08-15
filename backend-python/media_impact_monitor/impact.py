@@ -1,4 +1,3 @@
-
 import pandas as pd
 
 from media_impact_monitor.events import get_events
@@ -87,6 +86,7 @@ def get_impact(q: ImpactSearch) -> Impact:
                     mean=impact["mean"].loc[n_days],
                     ci_upper=impact["ci_upper"].loc[n_days],
                     ci_lower=impact["ci_lower"].loc[n_days],
+                    p_value=impact["p_value"].loc[n_days],
                 ),
                 absolute_impact_time_series=[
                     DatedMeanWithUncertainty(**d)

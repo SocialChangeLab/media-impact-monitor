@@ -217,6 +217,7 @@ class MeanWithUncertainty(BaseModel):
     mean: float = Field(description="Mean estimate.")
     ci_upper: float = Field(description="Upper bound of the 95% confidence interval.")
     ci_lower: float = Field(description="Lower bound of the 95% confidence interval.")
+    p_value: float = Field(description="P-value.")
 
 
 class DatedMeanWithUncertainty(BaseModel):
@@ -224,6 +225,7 @@ class DatedMeanWithUncertainty(BaseModel):
     mean: float
     ci_upper: float
     ci_lower: float
+    p_value: float
 
 
 class ImpactEstimate(BaseModel):

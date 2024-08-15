@@ -39,7 +39,7 @@ function SectionHeadlineWithExplanation({
 								className={cn(
 									"font-headlines text-2xl lg:text-3xl font-bold",
 									"flex items-center mb-3 antialiased gap-2",
-									"leading-7",
+									"leading-7 w-[min(40ch,100%)] text-balance",
 								)}
 							>
 								{headline}

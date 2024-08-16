@@ -20,7 +20,7 @@ def get_sentiment_trend(q: TrendSearch) -> tuple[pd.DataFrame | None, list[str]]
     if q.media_source != "news_online":
         return None, [f"Sentiment trend requires fulltext analysis, which is only available for news_online, not {q.media_source}."]
     limitations = []
-    if q.start_date.year < 2022:
+    if q.start_date and q.start_date.year < 2022:
         limitations.append("MediaCloud only goes back until 2022.")
     assert q.sentiment_target in ["activism", "policy"]
     field = f"{q.sentiment_target}_sentiment"

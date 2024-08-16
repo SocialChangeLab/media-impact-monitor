@@ -17,6 +17,7 @@ def test_get_events_success(client):
         json={
             "source": "acled",
             "topic": "climate_change",
+            "end_date": "2020-01-31",
         },
     )
     assert response.status_code == 200

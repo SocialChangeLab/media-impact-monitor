@@ -10,7 +10,7 @@ from mcmetadata import extract
 from mcmetadata.exceptions import BadContentError
 
 from media_impact_monitor.util.cache import cache, get
-from media_impact_monitor.util.date import verify_dates
+from media_impact_monitor.util.date import get_latest_data, verify_dates
 from media_impact_monitor.util.env import MEDIACLOUD_API_TOKEN
 from media_impact_monitor.util.parallel import parallel_tqdm
 
@@ -39,13 +39,13 @@ def get_mediacloud_counts(
     assert verify_dates(start_date, end_date)
 
     collection_ids = [_resolve_country(c) for c in countries] if countries else []
-    data = _story_count_over_time(
+    kwargs = dict(
         query=query,
         start_date=date(2022, 1, 1),
-        end_date=date.today(),
         collection_ids=collection_ids,
         platform=platform,
     )
+    data = get_latest_data(_story_count_over_time, kwargs)
     df = pd.DataFrame(data)
     df = df[["date", "count"]]  # ignore total_count and ratio
     df["date"] = pd.to_datetime(df["date"]).dt.date

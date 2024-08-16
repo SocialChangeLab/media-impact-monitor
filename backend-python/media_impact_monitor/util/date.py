@@ -18,7 +18,6 @@ def get_latest_data(func: callable, kwargs: dict):
     If the end date field is not set, it will be set to yesterday.
     If it is not possible to fetch data for the given end date, the function will try to fetch data for the previous day.
     """
-    assert "end_date" in kwargs
     end_date = date.today() - timedelta(days=1)
     _stop_date = date.today() - timedelta(days=2)
     exception = None  # store exception to raise it only once in the end

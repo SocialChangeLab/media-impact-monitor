@@ -11,7 +11,7 @@ function NewsletterFooterSection() {
 		<div
 			className={cn(
 				"w-full bg-brandGreen bg-blend-screen relative z-0",
-				"overflow-clip grid grid-cols-1 xl:grid-cols-2 gap-12 items-center justify-center",
+				"overflow-clip grid grid-cols-1 xl:grid-cols-2 gap-x-12 items-center justify-center",
 			)}
 		>
 			<div className="flex flex-col gap-2 justify-center items-center px-[var(--pagePadding)] py-[clamp(2rem,4vmax,8rem)]">
@@ -26,7 +26,7 @@ function NewsletterFooterSection() {
 					className="absolute -z-10 inset-0 w-full h-full sm:min-h-40 bg-repeat bg-center mix-blend-screen bg-[url(/images/noisy-dark.webp)]"
 					aria-hidden="true"
 				/>
-				<div className="prose w-[max(460px,100%)]">
+				<div className="prose w-full max-w-[32rem]">
 					<span
 						className={cn(
 							"opacity-100 motion-safe:transition-opacity hover:opacity-80 focusable",
@@ -37,14 +37,14 @@ function NewsletterFooterSection() {
 						<span className="text-brandWhite opacity-50 text-sm">beta</span>
 					</span>
 					<div className="flex flex-col gap-6 text-brandWhite not-prose mt-8">
-						<h2 className="m-0 text-3xl font-headlines text-balance font-semibold">
+						<h2 className="m-0 text-2xl xl:text-3xl font-headlines text-balance font-semibold">
 							Receive updates and get notified when we launch the v1!
 						</h2>
 						<NewsletterForm />
 					</div>
 				</div>
 			</div>
-			<div className="w-full h-full relative">
+			<div className="w-full h-80 xl:h-full relative">
 				<Image
 					src={dashboardScreenshotLight}
 					alt="A screenshot of the dashboard (light mode)"

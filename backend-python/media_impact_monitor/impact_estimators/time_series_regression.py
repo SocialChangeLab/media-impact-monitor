@@ -1,4 +1,3 @@
-
 import pandas as pd
 import statsmodels.api as sm
 
@@ -69,7 +68,7 @@ def regress(
     return {
         "date": day,
         "mean": model.params[treatment],
-        "p": model.pvalues[treatment],
+        "p_value": model.pvalues[treatment],
         "ci_lower": model.conf_int(alpha=alpha)[0][treatment],
         "ci_upper": model.conf_int(alpha=alpha)[1][treatment],
     }
@@ -103,5 +102,5 @@ def estimate_impact(
             for day in outcome_days
         ]
     )
-    impacts = impacts.set_index("date")[["mean", "ci_lower", "ci_upper"]]
+    impacts = impacts.set_index("date")[["mean", "ci_lower", "ci_upper", "p_value"]]
     return impacts, limitations

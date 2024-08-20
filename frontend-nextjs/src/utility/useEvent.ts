@@ -24,7 +24,10 @@ function useEvent(id?: ParsedEventType["event_id"]) {
 	useQueryErrorToast("protest", query.error);
 
 	const organisations = useMemo(
-		() => (query.data ? extractEventOrganisations([query.data]) : []),
+		() =>
+			(query.data ? extractEventOrganisations([query.data]) : []).filter(
+				Boolean,
+			),
 		[query.data],
 	);
 

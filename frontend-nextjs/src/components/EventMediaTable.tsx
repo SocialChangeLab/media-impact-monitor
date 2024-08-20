@@ -1,37 +1,63 @@
 "use client";
+import type { ParsedFullTextType } from "@/utility/fullTextsUtil";
+import { useFullTexts } from "@/utility/useFullTexts";
 import { createColumnHelper } from "@tanstack/react-table";
 import { format } from "date-fns";
 import DataTableWithState from "./DataTable";
 import ExternalLink from "./ExternalLink";
 import SentimentLabel from "./SentimentLabel";
+import { Portal, Tooltip, TooltipContent, TooltipTrigger } from "./ui/tooltip";
 
-type MediaType = {
-	id: string;
-	name: string;
-	url: string;
-	description: string;
-	date: string;
-	sentiment: number;
-};
+const columnHelper = createColumnHelper<ParsedFullTextType>();
 
-const columnHelper = createColumnHelper<MediaType>();
-
+//  {
+// 	"title": "Klima: Aktivisten streiken gemeinsam mit Personal des Nahverkehrs",
+// 	"date": "2024-02-20",
+// 	"url": "https://www.zeit.de/news/2024-02/20/aktivisten-streiken-gemeinsam-mit-personal-des-nahverkehrs",
+// 	"text": "Schulterschluss zwischen Klimaaktivisten und dem Personal des öffentlichen Nahverkehrs in Dresden: Die Initiative Fridays for Future (FFF) will am 1. März gemeinsam mit Beschäftigten des öffentlichen Personennahverkehrs (ÖPNV) in Dresden auf die Straße gehen. Unter dem Motto \"Wir fahren zusammen\" wurde am Dienstag für eine Kundgebung an der Staatskanzlei geworben. Dann soll auch eine Petition an die Politik übergeben werden. Fridays for Future und die Gewerkschaft Verdi forderten gute Arbeitsbedingungen und mehr Personal sowie \"Mobilität für alle\" und eine Verdopplung des ÖPNV. Die Aktion in Dresden ist Teil eines bundesweiten Aktionstages.\n\"Klimakrise und soziale Fragen wurden viel zu lange gegeneinander ausgespielt, doch sie können nur zusammen gelöst werden. Das sehen wir auch seit Jahren im öffentlichen Nahverkehr, der immer weiter kaputtgespart wird: Fürs Klima brauchen wir eine radikale Mobilitätswende - das geht nur mit mehr Bus und Bahn\", argumentierte FFF-Sprecherin Elisabeth Jancke. Die Arbeitsbedingungen im Nahverkehr seien \"katastrophal\". Es sei kein Wunder, dass es an Beschäftigten fehle. \"Deswegen gehen wir gemeinsam mit den Beschäftigten auf die Straße und fordern faire Arbeitsbedingungen und einen guten Nahverkehr, der alle mitnimmt.\"\nFridays for Future zitierte in der Ankündigung einen Dresdner Straßenbahnfahrer, der schlechte Arbeitsbedingungen und eine hohe Arbeitsbelastung kritisierte und als Beleg den Krankenstand der Beschäftigten anführte. \"Bis 2030 werden bundesweit zehntausende Beschäftigte im Nahverkehr fehlen.\" Dadurch würden die Jobs stressiger, die Dienste länger und die Zeit für Pausen und Fahrgäste kürzer\", so der Straßenbahnfahrer. Die Kolleginnen und Kollegen seien täglich für die Fahrgäste im Einsatz, doch aktuell verteile sich die Verantwortung auf viel zu wenige Schultern.\n© dpa-infocom, dpa:240220-99-55290/2\nSchulterschluss zwischen Klimaaktivisten und dem Personal des öffentlichen Nahverkehrs in Dresden: Die Initiative Fridays for Future (FFF) will am 1. März gemeinsam mit Beschäftigten des öffentlichen Personennahverkehrs (ÖPNV) in Dresden auf die Straße gehen. Unter dem Motto \"Wir fahren zusammen\" wurde am Dienstag für eine Kundgebung an der Staatskanzlei geworben. Dann soll auch eine Petition an die Politik übergeben werden. Fridays for Future und die Gewerkschaft Verdi forderten gute Arbeitsbedingungen und mehr Personal sowie \"Mobilität für alle\" und eine Verdopplung des ÖPNV. Die Aktion in Dresden ist Teil eines bundesweiten Aktionstages.",
+// 	"activism_sentiment": 1.0,
+// 	"policy_sentiment": 1.0
+// }
 const columns = [
-	columnHelper.accessor("name", {
+	columnHelper.accessor("title", {
 		header: "Title",
 		cell: (info) => <strong className="font-bold">{info.getValue()}</strong>,
-		size: 200,
+		size: 300,
 	}),
-	columnHelper.accessor("description", {
+	columnHelper.accessor("text", {
 		header: "Summary",
-		cell: (info) => info.getValue(),
+		cell: ({ getValue, row }) => {
+			const title = row.original.title;
+			return (
+				<Tooltip delayDuration={50}>
+					<TooltipTrigger className="w-fit text-left">
+						{getValue().slice(0, 200)}...
+					</TooltipTrigger>
+					<Portal>
+						<TooltipContent className="max-w-96 relative">
+							<strong className="uppercase tracking-wide text-[0.75rem] mt-2 text-grayDark font-normal block">
+								Summary
+							</strong>
+							<h4 className="font-semibold text-base leading-tight mb-2">
+								{title}
+							</h4>
+							<p>{getValue()}</p>
+							<div
+								className="h-16 inset-x-0 bottom-0 bg-gradient-to-t from-bg to-transparent sticky translate-y-2 pointer-events-none"
+								aria-hidden="true"
+							/>
+						</TooltipContent>
+					</Portal>
+				</Tooltip>
+			);
+		},
 		size: 500,
 	}),
 	columnHelper.accessor("date", {
 		header: "Date",
 		cell: (info) => (
 			<span className="whitespace-nowrap">
-				{format(info.getValue(), "LLLL d, yyyy")}
+				{format(info.getValue(), "LLL. d, yyyy")}
 			</span>
 		),
 		size: 100,
@@ -41,57 +67,29 @@ const columns = [
 		cell: ({ getValue }) => <ExternalLink href={getValue()} />,
 		size: 300,
 	}),
-	columnHelper.accessor("sentiment", {
-		header: "Sentiment",
-		cell: (info) => <SentimentLabel sentiment={info.getValue()} />,
+	columnHelper.accessor("activism_sentiment", {
+		header: "Sent. Activism",
+		cell: (info) => {
+			const sentiment = info.getValue();
+			return sentiment ? <SentimentLabel sentiment={sentiment} /> : "-";
+		},
+		size: 50,
+	}),
+	columnHelper.accessor("policy_sentiment", {
+		header: "Sent. Policy",
+		cell: (info) => {
+			const sentiment = info.getValue();
+			return sentiment ? <SentimentLabel sentiment={sentiment} /> : "-";
+		},
 		size: 50,
 	}),
 ];
 
-const data = [
-	{
-		id: "1",
-		name: "Media Cloud",
-		url: "https://mediacloud.org/",
-		description:
-			"Global open source media collection to understand the content, context, and impact of news stories.",
-		date: "2023-06-01T00:00:00.000Z",
-		sentiment: 0.9,
-	},
-	{
-		id: "2",
-		name: "Genios",
-		url: "https://www.genios.de/browser/",
-		description:
-			"Text-searchable archives of newspapers and other media content for numerous organizations.",
-		date: "2023-07-01T00:00:00.000Z",
-		sentiment: 0.4,
-	},
-	{
-		id: "3",
-		name: "Nexis",
-		url: "https://www.lexisnexis.com/en-us/professional/research/Users/vogelino/repos/media-impact-monitor/frontend-nextjs/node_modules/@contentlayer/core/dist/generation/generate-dotpkg.js",
-		description:
-			"Extensive global news, business, and legal information for research and analytics.",
-		date: "2023-08-01T00:00:00.000Z",
-		sentiment: 0.1,
-	},
-	{
-		id: "4",
-		name: "DeReKo (Deutsches Referenzkorpus)",
-		url: "https://www.corpusfinder.ugent.be/corpus/69",
-		description:
-			"Modern German texts, used for linguistic research and analysis.",
-		date: "2023-09-01T00:00:00.000Z",
-		sentiment: 0.2,
-	},
-];
-
 function EventMediaTable({ id }: { id: string }) {
+	const q = useFullTexts({ event_id: id });
 	const query = {
-		data,
-		isPending: false,
-		error: null,
+		...q,
+		data: q.data ?? null,
 		columns,
 	};
 	return <DataTableWithState {...query} />;

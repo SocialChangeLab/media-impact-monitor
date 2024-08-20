@@ -21,17 +21,34 @@ const columnHelper = createColumnHelper<ParsedFullTextType>();
 const columns = [
 	columnHelper.accessor("title", {
 		header: "Title",
-		cell: (info) => <strong className="font-bold">{info.getValue()}</strong>,
+		cell: (info) => {
+			const title = info.getValue();
+			if (title.length < 100)
+				return <strong className="font-bold">{title}</strong>;
+			return (
+				<Tooltip delayDuration={50}>
+					<TooltipTrigger className="w-fit text-left">
+						<strong className="font-bold">{`${title.slice(0, 100)}...`}</strong>
+					</TooltipTrigger>
+					<Portal>
+						<TooltipContent className="max-w-96 relative">
+							<strong>{title}</strong>
+						</TooltipContent>
+					</Portal>
+				</Tooltip>
+			);
+		},
 		size: 300,
 	}),
 	columnHelper.accessor("text", {
 		header: "Summary",
 		cell: ({ getValue, row }) => {
 			const title = row.original.title;
+			const text = getValue();
 			return (
 				<Tooltip delayDuration={50}>
 					<TooltipTrigger className="w-fit text-left">
-						{getValue().slice(0, 200)}...
+						{text.length > 200 ? `${text.slice(0, 200)}...` : text}
 					</TooltipTrigger>
 					<Portal>
 						<TooltipContent className="max-w-96 relative">

@@ -40,13 +40,15 @@ export type FullTextsQueryProps = {
 
 function getFullTextsQuery({
 	event_id,
-	mediaSource,
 	organizers,
 	allOrganisations,
 }: FullTextsQueryProps) {
 	return {
 		event_id,
-		...formatInput({ mediaSource, organizers }, allOrganisations),
+		...formatInput(
+			{ mediaSource: "news_online", organizers },
+			allOrganisations,
+		),
 	};
 }
 

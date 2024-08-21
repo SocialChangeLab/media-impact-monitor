@@ -4,11 +4,13 @@ import MediaCoverageChart from "@/components/MediaCoverageChart";
 import MediaSentimentChart from "@/components/MediaSentimentChart";
 import NewsletterFooterSection from "@/components/NewsletterFooterSection";
 import SectionHeadlineWithExplanation from "@/components/SectionHeadlineWithExplanation";
+import SizeOptimizationNotice from "@/components/SizeOptimizationNotice.server";
 import TrendWithImpactChartWrapper from "@/components/TrendWithImpactChartWrapper";
 
 export default function EventsPageWithSuspense() {
 	return (
 		<>
+			<SizeOptimizationNotice />
 			<DashboardHelpBanner />
 			<SectionHeadlineWithExplanation
 				headline="What protests are happening?"

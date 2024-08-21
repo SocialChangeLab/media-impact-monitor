@@ -1,7 +1,6 @@
 import { cn } from "@/utility/classNames";
 import { slugifyCssClass } from "@/utility/cssSlugify";
 import { titleCase } from "@/utility/textUtil";
-import { topicIsSentiment } from "@/utility/topicsUtil";
 import Link from "next/link";
 import { type ReactNode, memo } from "react";
 import slugify from "slugify";
@@ -13,7 +12,6 @@ export const ImpactKeywordLabel = memo(
 		color,
 		className,
 	}: { label: string; color: string; className?: string }) => {
-		const isSentiment = topicIsSentiment(label);
 		return (
 			<span
 				className={cn(

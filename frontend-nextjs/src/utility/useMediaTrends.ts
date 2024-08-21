@@ -11,7 +11,10 @@ import useQueryErrorToast from "./useQueryErrorToast";
 function useMediaTrends({
 	trend_type,
 	sentiment_target,
-}: Pick<TrendQueryProps, "trend_type" | "sentiment_target">) {
+	enabled = true,
+}: Pick<TrendQueryProps, "trend_type" | "sentiment_target"> & {
+	enabled?: boolean;
+}) {
 	const { from, to, organizers, mediaSource } = useFiltersStore(
 		({ from, to, organizers, mediaSource }) => ({
 			from,
@@ -55,6 +58,7 @@ function useMediaTrends({
 				allOrganisations: data.organisations || [],
 			}),
 		staleTime: endOfDay(new Date()).getTime() - new Date().getTime(),
+		enabled,
 	});
 
 	useQueryErrorToast(`media ${trend_type} trends`, query.error);

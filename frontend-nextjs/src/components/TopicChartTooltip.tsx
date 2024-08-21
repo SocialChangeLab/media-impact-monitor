@@ -44,7 +44,7 @@ function TopicChartTooltip({
 					formatDateByAggregationUnit(date, aggregationUnit)}
 			</strong>
 			{topics
-				.map((t) => ({ ...t, value: item[t.topic] }))
+				.map((t) => ({ ...t, value: item[t.topic] ?? 0 }))
 				.map(({ topic, value, color }) => {
 					const Icon = getTopicIcon(topic);
 					return (

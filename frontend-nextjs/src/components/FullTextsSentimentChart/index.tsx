@@ -1,6 +1,5 @@
 "use client";
 import type { TrendQueryProps } from "@/utility/mediaTrendUtil";
-import useElementSize from "@custom-react-hooks/use-element-size";
 import { Suspense, memo, useMemo } from "react";
 import {
 	Bar,
@@ -14,51 +13,43 @@ import {
 
 import { slugifyCssClass } from "@/utility/cssSlugify";
 import { parseErrorMessage } from "@/utility/errorHandlingUtil";
-import useMediaTrends from "@/utility/useMediaTrends";
-import useTopics from "@/utility/useTopics";
+import {
+	type ParsedFullTextsType,
+	useFullTextsTrends,
+} from "@/utility/useFullTextsTrends";
 import { QueryErrorResetBoundary } from "@tanstack/react-query";
 import { BarChartIcon } from "lucide-react";
 import { ErrorBoundary } from "next/dist/client/components/error-boundary";
 import ChartLimitations from "../ChartLimitations";
+import MediaSentimentChartEmpty from "../MediaSentimentChart/MediaSentimentChartEmpty";
+import MediaSentimentChartError from "../MediaSentimentChart/MediaSentimentChartError";
+import MediaSentimentChartLoading from "../MediaSentimentChart/MediaSentimentChartLoading";
 import TopicChartTooltip from "../TopicChartTooltip";
-import MediaSentimentChartEmpty from "./MediaSentimentChartEmpty";
-import MediaSentimentChartError from "./MediaSentimentChartError";
-import MediaSentimentChartLoading from "./MediaSentimentChartLoading";
 
-export const MediaSentimentChart = memo(
+export const FullTextSentimentChart = memo(
 	({
-		sentiment_target,
+		data,
 	}: {
-		sentiment_target: TrendQueryProps["sentiment_target"];
+		data: ParsedFullTextsType["data"];
 	}) => {
-		const [parentRef, size] = useElementSize();
-		const {
-			topics: queryTopics,
-			filteredData,
-			aggregationUnit,
-		} = useTopics({
-			containerWidth: size.width,
-			trend_type: "sentiment",
-			sentiment_target,
-		});
-
 		const topics = useMemo(() => {
 			return ["positive", "neutral", "negative"].map((topic) => ({
 				topic,
 				color: `var(--sentiment-${topic})`,
-				sum: queryTopics.find((t) => t.topic === topic)?.sum ?? 0,
+				sum:
+					data?.trends?.reduce((acc, d) => {
+						const val = d[topic as "positive" | "neutral" | "negative"] ?? 0;
+						return acc + (val ?? 0);
+					}, 0) ?? 0,
 			}));
-		}, [queryTopics]);
+		}, [data?.trends]);
 
 		return (
 			<div className="media-sentiment-chart">
-				<div
-					className="w-full h-[var(--media-sentiment-chart-height)] bg-grayUltraLight"
-					ref={parentRef}
-				>
+				<div className="w-full h-[var(--media-sentiment-chart-height)]">
 					<ResponsiveContainer>
 						<BarChart
-							data={filteredData}
+							data={data?.trends ?? []}
 							className="bg-pattern-soft"
 							margin={{
 								top: 0,
@@ -99,7 +90,7 @@ export const MediaSentimentChart = memo(
 									return (
 										<TopicChartTooltip
 											topics={topics}
-											aggregationUnit={aggregationUnit}
+											aggregationUnit={"day"}
 											item={item}
 										/>
 									);
@@ -126,24 +117,23 @@ export const MediaSentimentChart = memo(
 	},
 );
 
-function MediaSentimentChartWithData({
+function FullTextsSentimentChartWithData({
 	reset,
 	sentiment_target,
 	event_id,
 }: {
 	reset?: () => void;
 	sentiment_target: TrendQueryProps["sentiment_target"];
-	event_id?: string;
+	event_id: string;
 }) {
 	const {
 		data: originalData,
 		isError,
 		isPending,
 		isSuccess,
-	} = useMediaTrends({
-		trend_type: "sentiment",
+	} = useFullTextsTrends({
+		event_id,
 		sentiment_target,
-		enabled: !event_id,
 	});
 	const data = originalData || {
 		applicability: false,
@@ -160,7 +150,7 @@ function MediaSentimentChartWithData({
 			<ChartLimitations limitations={data.limitations} Icon={BarChartIcon} />
 		);
 	if (isSuccess && data.applicability && (data.trends?.length ?? 0) > 0)
-		return <MediaSentimentChart sentiment_target={sentiment_target} />;
+		return <FullTextSentimentChart data={data} />;
 	return <MediaSentimentChartEmpty />;
 }
 export default function MediaCoverageChartWithErrorBoundary({
@@ -168,7 +158,7 @@ export default function MediaCoverageChartWithErrorBoundary({
 	event_id,
 }: {
 	sentiment_target: TrendQueryProps["sentiment_target"];
-	event_id?: string;
+	event_id: string;
 }) {
 	return (
 		<QueryErrorResetBoundary>
@@ -182,7 +172,7 @@ export default function MediaCoverageChartWithErrorBoundary({
 					)}
 				>
 					<Suspense fallback={<MediaSentimentChartLoading />}>
-						<MediaSentimentChartWithData
+						<FullTextsSentimentChartWithData
 							reset={reset}
 							sentiment_target={sentiment_target}
 							event_id={event_id}

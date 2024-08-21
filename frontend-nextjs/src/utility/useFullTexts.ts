@@ -5,7 +5,7 @@ import slugify from "slugify";
 import { getFullTextsData } from "./fullTextsUtil";
 import useEvents from "./useEvents";
 
-export function useFullTexts({ event_id }: { event_id: string }) {
+export function useFullTexts({ event_id }: { event_id?: string }) {
 	const mediaSource = useFiltersStore(({ mediaSource }) => mediaSource);
 	const organizers = useFiltersStore(({ organizers }) => organizers);
 	const { data } = useEvents();
@@ -22,7 +22,7 @@ export function useFullTexts({ event_id }: { event_id: string }) {
 		queryKey,
 		queryFn: async () =>
 			getFullTextsData({
-				event_id,
+				event_id: event_id || "",
 				mediaSource,
 				organizers,
 				allOrganisations: data.organisations || [],

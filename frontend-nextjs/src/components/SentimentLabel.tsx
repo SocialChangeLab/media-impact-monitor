@@ -30,15 +30,15 @@ function SentimentLabel({ sentiment }: { sentiment?: number }) {
 
 export default SentimentLabel;
 
-function getSentimentLabel(sentiment?: number) {
-	if (sentiment === undefined) return "Unknown";
+export function getSentimentLabel(sentiment?: number | null) {
+	if (sentiment === undefined || sentiment === null) return "Unknown";
 	if (sentiment < negativeMax) return "Negative";
 	if (sentiment > positiveMin) return "Positive";
 	return "Neutral";
 }
 
-function getSentimentColor(sentiment?: number) {
-	if (sentiment === undefined) return "text-grayMed";
+function getSentimentColor(sentiment?: number | null) {
+	if (sentiment === undefined || sentiment === null) return "text-grayMed";
 	if (sentiment < negativeMax) return "text-sentimentNegative";
 	if (sentiment > positiveMin) return "text-sentimentPositive";
 	return "text-sentimentNeutral";

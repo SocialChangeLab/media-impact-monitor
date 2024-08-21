@@ -63,7 +63,9 @@ export function SlideUpDrawer({
 					"data-[state=open]:slide-in-from-bottom",
 					"data-[state=closed]:slide-out-to-bottom",
 				)}
-				childrenContainerClassName={cn("h-auto min-h-full bg-bg rounded-t-lg")}
+				childrenContainerClassName={cn(
+					"h-auto min-h-full bg-pattern-soft rounded-t-lg",
+				)}
 				style={{
 					animationDuration: "1000ms",
 					animationTimingFunction: "cubic-bezier(0,1.01,0,1)",

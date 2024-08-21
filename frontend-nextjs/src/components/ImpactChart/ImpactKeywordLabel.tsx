@@ -24,7 +24,7 @@ export const ImpactKeywordLabel = memo(
 				style={{ textDecorationColor: color, color }}
 			>
 				<span className="[&:not(:hover)]:text-fg transition">
-					{isSentiment ? label : titleCase(label)}
+					{titleCase(label)}
 				</span>
 			</span>
 		);

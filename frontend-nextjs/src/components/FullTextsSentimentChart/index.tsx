@@ -51,6 +51,8 @@ export const FullTextSentimentChart = memo(
 						<BarChart
 							data={data?.trends ?? []}
 							className="bg-pattern-soft"
+							barGap={0}
+							barCategoryGap={2}
 							margin={{
 								top: 0,
 								right: 0,
@@ -80,6 +82,7 @@ export const FullTextSentimentChart = memo(
 								stroke="var(--grayDark)"
 								strokeWidth={0.25}
 								fontSize="0.875rem"
+								padding={{ top: 24 }}
 							/>
 							<Tooltip
 								formatter={(value) => `${value} articles`}

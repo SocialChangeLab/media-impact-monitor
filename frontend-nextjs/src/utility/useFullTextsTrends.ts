@@ -1,6 +1,12 @@
 import { formatDateByAggregationUnit } from "@/components/EventsTimeline/useAggregationUnit";
 import { getSentimentLabel } from "@/components/SentimentLabel";
-import { format } from "date-fns";
+import {
+	addDays,
+	differenceInDays,
+	format,
+	isSameDay,
+	subDays,
+} from "date-fns";
 import { useMemo } from "react";
 import slugify from "slugify";
 import {
@@ -84,7 +90,9 @@ export function useFullTextsTrends({
 			});
 			return acc;
 		}, new Map<string, FullTextsTrendItem>());
-		const trends = Array.from(dateToValMap.values()).sort(dateSortCompare);
+		const trends = ensureSevenDays(
+			Array.from(dateToValMap.values()).sort(dateSortCompare),
+		);
 		return {
 			applicability: true,
 			limitations: [],
@@ -95,5 +103,43 @@ export function useFullTextsTrends({
 	return {
 		...query,
 		data: fullTextsAsTrends ?? [],
+	};
+}
+
+function ensureSevenDays(arr: FullTextsTrendItem[]): FullTextsTrendItem[] {
+	const minDaysCount = 7;
+
+	if (arr.length === 0) return [];
+	if (arr.length >= minDaysCount) return arr;
+	const earliestDataDate = arr[0].date;
+	const latestDataDate = arr[arr.length - 1].date;
+	const dataDaysDiff = differenceInDays(latestDataDate, earliestDataDate);
+
+	const daysOnSide =
+		dataDaysDiff >= minDaysCount
+			? 1
+			: Math.ceil((minDaysCount - dataDaysDiff) / 2);
+	const earliestDate = subDays(earliestDataDate, daysOnSide);
+	const latestDate = addDays(latestDataDate, daysOnSide);
+	const daysDiff = Math.abs(differenceInDays(earliestDate, latestDate));
+
+	const allDays = [...new Array(daysDiff + 1)].map((_, i) => {
+		const date = addDays(earliestDate, i);
+		const dataEntry = arr.find((d) => isSameDay(d.date, date));
+		if (dataEntry) return dataEntry;
+		return createPlaceholderDay(date);
+	});
+
+	return allDays;
+}
+
+function createPlaceholderDay(date: Date): FullTextsTrendItem {
+	return {
+		date,
+		dateFormatted: formatDateByAggregationUnit(date, "day"),
+		comparableDateObject: dateToComparableDateItem(date),
+		positive: 0,
+		neutral: 0,
+		negative: 0,
 	};
 }

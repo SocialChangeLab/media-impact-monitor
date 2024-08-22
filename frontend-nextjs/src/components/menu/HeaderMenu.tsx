@@ -215,7 +215,7 @@ function HeaderMenu({ currentPage }: { currentPage: string }) {
 			)}
 		>
 			<InternalLink
-				href="/"
+				href="/dashboard"
 				title="Home"
 				className={cn(
 					"opacity-100 motion-safe:transition-opacity hover:opacity-80 focusable",

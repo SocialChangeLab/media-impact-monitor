@@ -2,7 +2,7 @@
 import { cn } from "@/utility/classNames";
 import { motion } from "framer-motion";
 import { Monitor, X } from "lucide-react";
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { Alert, AlertDescription, AlertTitle } from "./ui/alert";
 import { Button } from "./ui/button";
 
@@ -11,15 +11,22 @@ type HelpBannerActions = {
 };
 
 function SizeOptimizationNotice({ onHide }: HelpBannerActions) {
+	useEffect(() => {
+		if (typeof window === "undefined") return;
+		if ("ontouchstart" in window || navigator.maxTouchPoints) {
+			document.documentElement.classList.add("touch");
+		}
+	}, []);
+
 	return (
 		<Alert className="relative grid grid-cols-[auto,1fr] gap-x-2 pr-10 h-32 bg-grayUltraLight mix-blend-multiply dark:mix-blend-screen">
 			<Monitor className="size-6 -translate-x-1" />
 			<AlertTitle className="flex h-full items-center">Heads up!</AlertTitle>
 			<span />
 			<AlertDescription>
-				This dashboard is not optimized for smaller screen.{" "}
+				This dashboard is not optimized for touch screens.{" "}
 				<br className="hidden sm:inline" />
-				For a better experience, we recommend using a larger screen.
+				For a better experience, we recommend using a pointer device.
 			</AlertDescription>
 			<Button
 				size="icon"
@@ -75,8 +82,8 @@ function DashboardHelpBannerClient({
 			initial={isDisplayed ? "expanded" : "collapsed"}
 			animate={isDisplayed ? "expanded" : "collapsed"}
 			className={cn(
-				"px-[var(--pagePadding)] overflow-clip flex flex-col justify-center",
-				"border-b border-grayLight last-of-type:border-b-0 lg:hidden",
+				"px-[var(--pagePadding)] overflow-clip flex-col justify-center",
+				"border-b border-grayLight last-of-type:border-b-0 hidden touch:flex",
 			)}
 		>
 			{isDisplayed && <SizeOptimizationNotice {...actions} />}

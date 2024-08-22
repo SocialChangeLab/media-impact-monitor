@@ -75,7 +75,7 @@ module.exports = {
 		require('@tailwindcss/forms'),
 		require('@tailwindcss/typography'),
 		require('tailwindcss-animate'),
-		plugin(({ addUtilities }) => {
+		plugin(({ addUtilities, addVariant }) => {
 			addUtilities({
 				'.text-balance': {
 					'text-wrap': 'balance',
@@ -92,6 +92,7 @@ module.exports = {
 					'-webkit-text-stroke-color': 'var(--fg)',
 				},
 			})
+			addVariant('touch', '.touch &')
 		}),
 	],
 }

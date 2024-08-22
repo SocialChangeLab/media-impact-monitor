@@ -9,6 +9,7 @@ import {
 	ImpactKeywordLabelTooltip,
 	topicsMap,
 } from "./ImpactChart/ImpactKeywordLabel";
+import TopicsLegend from "./TopicsLegend";
 
 function TrendHeadline({
 	topic,
@@ -67,6 +68,7 @@ function EventPageContent({ id }: { id: string }) {
 						/>
 					</div>
 				</div>
+				<TopicsLegend trend_type="sentiment" />
 			</SectionHeadlineWithExplanation>
 		</>
 	);

@@ -2,6 +2,7 @@ import CollapsableSection from "@/components/CollapsableSection";
 import DataCreditLegend from "@/components/DataCreditLegend";
 import { cn } from "@/utility/classNames";
 import { slugifyCssClass } from "@/utility/cssSlugify";
+import type { TrendQueryProps } from "@/utility/mediaTrendUtil";
 import { titleCase } from "@/utility/textUtil";
 import { getTopicIcon, topicIsSentiment } from "@/utility/topicsUtil";
 import { memo } from "react";
@@ -13,7 +14,7 @@ import {
 	topicsMap,
 } from "./ImpactChart/ImpactKeywordLabel";
 
-function TopicsLegend({
+function GenericTopicsLegend({
 	id,
 	topics,
 	sources = [
@@ -32,7 +33,7 @@ function TopicsLegend({
 	topics: {
 		topic: string;
 		color: string;
-		sum: number;
+		sum?: number;
 	}[];
 	sources?: {
 		label: string;
@@ -90,9 +91,11 @@ function TopicsLegend({
 													{keywordLabel}
 												</ImpactKeywordLabelTooltip>
 											)}
-											<span className="font-mono text-xs text-grayDark">
-												({sum.toLocaleString("en-GB")})
-											</span>
+											{sum && (
+												<span className="font-mono text-xs text-grayDark">
+													({sum.toLocaleString("en-GB")})
+												</span>
+											)}
 										</span>
 									</li>
 								);
@@ -108,6 +111,43 @@ function TopicsLegend({
 				sources={sources}
 			/>
 		</div>
+	);
+}
+
+function TopicsLegend({
+	sentiment_target,
+	topics,
+	trend_type,
+}: {
+	sentiment_target?: TrendQueryProps["sentiment_target"];
+	topics?: { topic: string; color: string; sum: number }[];
+	trend_type: TrendQueryProps["trend_type"];
+}) {
+	const sentimentTopics = [
+		{ topic: "positive", color: "var(--sentiment-positive)" },
+		{ topic: "neutral", color: "var(--sentiment-neutral)" },
+		{ topic: "negative", color: "var(--sentiment-negative)" },
+	];
+	const keywordTopics = [
+		{ topic: "climate policy", color: "var(--keyword-climate-policy)" },
+		{ topic: "climate activism", color: "var(--keyword-climate-activism)" },
+		{
+			topic: "climate crisis framing",
+			color: "var(--keyword-climate-crisis-framing)",
+		},
+		{ topic: "climate science", color: "var(--keyword-climate-science)" },
+	];
+	return (
+		<GenericTopicsLegend
+			topics={
+				topics?.length && topics.length > 0
+					? topics
+					: trend_type === "keywords"
+						? keywordTopics
+						: sentimentTopics
+			}
+			id={`trend-with-impact-chart-${trend_type}-${sentiment_target || "none"}`}
+		/>
 	);
 }
 

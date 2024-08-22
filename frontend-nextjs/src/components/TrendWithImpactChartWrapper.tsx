@@ -95,12 +95,11 @@ function TrendWithImpactChartWrapper({
 					)}
 				</AnimatePresence>
 			</Suspense>
-			{applicability && (
-				<TopicsLegend
-					topics={topics}
-					id={`trend-with-impact-chart-${trend_type}-${sentiment_target || "none"}`}
-				/>
-			)}
+			<TopicsLegend
+				topics={topics}
+				sentiment_target={sentiment_target}
+				trend_type={trend_type}
+			/>
 		</div>
 	);
 }

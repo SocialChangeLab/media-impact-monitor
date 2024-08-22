@@ -18,11 +18,10 @@ function ImpactChartColumnVisualisation({
 	error,
 	positiveAreaHeightInRem,
 	negativeAreaHeightInRem,
-	totalHeightInRem,
+	heightInRem,
 	sizeScale,
 	fillOpacityScale,
 	itemsCountPerColumn,
-	paddingInRem,
 	isPending = false,
 	colIdx,
 }: {
@@ -33,11 +32,10 @@ function ImpactChartColumnVisualisation({
 	isPending?: boolean;
 	negativeAreaHeightInRem: number;
 	positiveAreaHeightInRem: number;
-	totalHeightInRem: number;
+	heightInRem: number;
 	sizeScale: ScaleLinear<number, number, never>;
 	fillOpacityScale: ScaleLinear<number, number, never>;
 	itemsCountPerColumn: number;
-	paddingInRem: number;
 	colIdx: number;
 }) {
 	const hasLimitations = useMemo(
@@ -45,12 +43,14 @@ function ImpactChartColumnVisualisation({
 		[limitations, isPending],
 	);
 	return (
-		<ImpactChartColumnVisualisationWrapper colIdx={colIdx}>
+		<ImpactChartColumnVisualisationWrapper
+			colIdx={colIdx}
+			heightInRem={heightInRem}
+		>
 			{isPending && (
 				<ImpactChartColumnVisualisationLoading
 					itemsCountPerColumn={itemsCountPerColumn}
-					totalHeightInRem={totalHeightInRem}
-					paddingInRem={paddingInRem}
+					heightInRem={heightInRem}
 					id={id}
 				/>
 			)}
@@ -66,7 +66,7 @@ function ImpactChartColumnVisualisation({
 					sizeScale={sizeScale}
 					fillOpacityScale={fillOpacityScale}
 					itemsCountPerColumn={itemsCountPerColumn}
-					paddingInRem={paddingInRem}
+					heightInRem={heightInRem}
 					id={id}
 				/>
 			)}
@@ -77,9 +77,11 @@ function ImpactChartColumnVisualisation({
 function ImpactChartColumnVisualisationWrapper({
 	children,
 	colIdx,
+	heightInRem,
 }: {
 	children: React.ReactNode;
 	colIdx: number;
+	heightInRem: number;
 }) {
 	return (
 		<div
@@ -88,6 +90,7 @@ function ImpactChartColumnVisualisationWrapper({
 				colIdx === 1 && "max-md:hidden",
 				colIdx === 2 && "max-lg:hidden",
 			)}
+			style={{ height: `${heightInRem}rem` }}
 		>
 			{children}
 		</div>
@@ -141,8 +144,8 @@ function ImpactChartColumnVisualisationImpacts({
 	sizeScale,
 	fillOpacityScale,
 	itemsCountPerColumn,
-	paddingInRem,
 	id,
+	heightInRem,
 }: {
 	impacts: ParsedMediaImpactItemType[] | null;
 	negativeAreaHeightInRem: number;
@@ -150,17 +153,20 @@ function ImpactChartColumnVisualisationImpacts({
 	sizeScale: ScaleLinear<number, number, never>;
 	fillOpacityScale: ScaleLinear<number, number, never>;
 	itemsCountPerColumn: number;
-	paddingInRem: number;
 	id: string;
+	heightInRem: number;
 }) {
 	return (
 		<div
-			className="w-full h-96 grid px-4 py-16 gap-4 relative"
-			style={{ gridTemplateColumns: `repeat(${itemsCountPerColumn}, 1fr)` }}
+			className="w-full grid px-4 gap-4 relative"
+			style={{
+				gridTemplateColumns: `repeat(${itemsCountPerColumn}, 1fr)`,
+				height: `${heightInRem}rem`,
+			}}
 		>
 			<div
 				className="absolute left-0 h-px right-0 bg-grayDark opacity-60"
-				style={{ top: `calc(${sizeScale(0) + paddingInRem - 0.25}rem)` }}
+				style={{ top: `${sizeScale(0)}rem` }}
 			/>
 			{impacts
 				?.sort((a, b) => a.label.localeCompare(b.label))
@@ -180,7 +186,7 @@ function ImpactChartColumnVisualisationImpacts({
 								className={cn(
 									"absolute left-1/2 -translate-x-1/2 top-0 right-0 text-grayDark",
 									"opacity-0 group-hover:opacity-75 transition-all",
-									"text-xs translate-y-[calc(-100%-1.25rem)] h-8 leading-tight",
+									"text-xs h-8 leading-tight pt-3",
 									"flex gap-1 whitespace-nowrap w-fit",
 									"pointer-events-none",
 								)}
@@ -195,7 +201,7 @@ function ImpactChartColumnVisualisationImpacts({
 							{roundedLower === 0 && roundedUpper === 0 && (
 								<>
 									<ImpactChartColumnVisualisationImpactLabel
-										top={`calc(${upperY}rem - 1.5rem)`}
+										top={`${upperY}rem`}
 										impact={impact.upper}
 										prefix="No impact:"
 										className={`translate-y-1`}
@@ -221,13 +227,11 @@ function ImpactChartColumnVisualisationImpacts({
 										top={`calc(${upperY}rem - 1.5rem)`}
 										impact={impact.upper}
 										prefix="Up to"
-										className={`translate-y-1`}
 									/>
 									<ImpactChartColumnVisualisationImpactLabel
-										top={`${upperY + height + 1}rem`}
+										top={`${upperY + height + 0.5}rem`}
 										impact={impact.lower}
 										prefix={impact.lower < 0 ? "Down to" : "At least"}
-										className={`-translate-y-1`}
 									/>
 								</>
 							)}
@@ -241,26 +245,30 @@ function ImpactChartColumnVisualisationImpacts({
 function ImpactChartColumnVisualisationLoading({
 	id,
 	itemsCountPerColumn,
-	totalHeightInRem,
-	paddingInRem,
+	heightInRem,
 }: {
 	id: string;
 	itemsCountPerColumn: number;
-	totalHeightInRem: number;
-	paddingInRem: number;
+	heightInRem: number;
 }) {
 	const sizeScale = useMemo(
-		() => scaleLinear().domain([0, 1]).range([totalHeightInRem, 0]),
-		[totalHeightInRem],
+		() =>
+			scaleLinear()
+				.domain([0, 1])
+				.range([heightInRem - 4, 2]),
+		[heightInRem],
 	);
 	return (
 		<div
-			className="w-full h-96 grid px-4 py-16 gap-4 relative"
-			style={{ gridTemplateColumns: `repeat(${itemsCountPerColumn}, 1fr)` }}
+			className="w-full grid px-4 gap-4 relative"
+			style={{
+				gridTemplateColumns: `repeat(${itemsCountPerColumn}, 1fr)`,
+				height: `${heightInRem}rem`,
+			}}
 		>
 			<div
 				className="absolute left-0 top-1/2 h-px right-0 bg-grayLight"
-				style={{ top: `calc(${sizeScale(0) + paddingInRem + 0.25}rem)` }}
+				style={{ top: `${sizeScale(0)}rem` }}
 			/>
 			{Array.from({ length: itemsCountPerColumn }).map((_, idx) => {
 				const rand1 = seededRandom(`${id}-${idx}-1`);
@@ -322,7 +330,7 @@ function ImpactChartColumnVisualisationImpactBar({
 			className={cn("w-full h-full absolute left-0 py-1 overflow-clip")}
 			style={{
 				height: `${height + 0.5}rem`,
-				top: `${upperY}rem`,
+				top: `calc(${upperY}rem - 4px)`,
 			}}
 		>
 			<div

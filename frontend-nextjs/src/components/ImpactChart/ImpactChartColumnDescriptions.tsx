@@ -3,12 +3,18 @@ import { useFiltersStore } from "@/providers/FiltersStoreProvider";
 import { cn } from "@/utility/classNames";
 import { slugifyCssClass } from "@/utility/cssSlugify";
 import { parseErrorMessage } from "@/utility/errorHandlingUtil";
-import type { EventOrganizerSlugType } from "@/utility/eventsUtil";
+import type {
+	EventOrganizerSlugType,
+	OrganisationType,
+} from "@/utility/eventsUtil";
 import type { ParsedMediaImpactItemType } from "@/utility/mediaImpactUtil";
 import { topicIsSentiment } from "@/utility/topicsUtil";
+import useEvents from "@/utility/useEvents";
 import { useOrganisation } from "@/utility/useOrganisations";
+import { scaleQuantize } from "d3-scale";
 import { format } from "date-fns";
 import {
+	AlertCircle,
 	ArrowDown,
 	ArrowUp,
 	Asterisk,
@@ -27,31 +33,92 @@ import {
 	topicsMap,
 } from "./ImpactKeywordLabel";
 
-const SelectedTimeframeTooltip = memo(() => {
-	const { from, to } = useFiltersStore(({ from, to }) => ({
-		from: format(from, "LLLL d, yyyy"),
-		to: format(to, "LLLL d, yyyy"),
-	}));
-	return (
-		<Tooltip delayDuration={0}>
-			<TooltipTrigger>
-				<span className="underline decoration-grayMed underline-offset-2">
-					selected timeframe
-				</span>
-			</TooltipTrigger>
-			<Portal>
-				<TooltipContent className="w-fit">
-					<p className="py-1 px-1 max-w-80">
-						The selected timeframe is:
-						<br />
-						<strong className="font-bold">{from}</strong> to{" "}
-						<strong className="font-bold">{to}</strong>.
-					</p>
-				</TooltipContent>
-			</Portal>
-		</Tooltip>
-	);
-});
+const SelectedTimeframeTooltip = memo(
+	({
+		organisation,
+	}: {
+		organisation?: OrganisationType;
+	}) => {
+		const { from, to } = useFiltersStore(({ from, to }) => ({
+			from: format(from, "LLLL d, yyyy"),
+			to: format(to, "LLLL d, yyyy"),
+		}));
+		const { data } = useEvents();
+		const minPercentageConsideredGood = 40;
+
+		const { color, percentageOfOrgsInTimeframe, showNotice } = useMemo(() => {
+			if (!data || !organisation)
+				return {
+					color: undefined,
+					percentageOfOrgsInTimeframe: undefined,
+					showNotice: false,
+				};
+			const allEventsFromOrg = data.allEvents.filter((e) =>
+				e.organizers.find((o) => o.slug === organisation.slug),
+			).length;
+			const eventsFromOrgInTimeframe = data.events.filter((e) =>
+				e.organizers.find((o) => o.slug === organisation.slug),
+			).length;
+			const percentageOfOrgsInTimeframe =
+				(eventsFromOrgInTimeframe / allEventsFromOrg) * 100;
+			const scale = scaleQuantize<number, string>()
+				.domain([0, minPercentageConsideredGood])
+				.range([
+					"var(--sentiment-negative)",
+					"var(--sentiment-neutral)",
+				] as unknown as number[]);
+			const color = scale(percentageOfOrgsInTimeframe);
+			return {
+				color: typeof color === "string" ? color : undefined,
+				percentageOfOrgsInTimeframe,
+				showNotice: percentageOfOrgsInTimeframe < minPercentageConsideredGood,
+			};
+		}, [data, organisation]);
+
+		return (
+			<Tooltip delayDuration={0}>
+				<TooltipTrigger>
+					<span
+						className="underline decoration-grayMed underline-offset-2 flex items-center gap-0.5"
+						style={{
+							textDecorationColor: showNotice ? (color as string) : undefined,
+						}}
+					>
+						selected timeframe
+						{showNotice && (
+							<AlertCircle
+								className="w-4 h-4"
+								style={{ color: color as string }}
+							/>
+						)}
+					</span>
+				</TooltipTrigger>
+				<Portal>
+					<TooltipContent className="w-fit">
+						<p className="py-1 px-1 max-w-80">
+							The selected timeframe is:
+							<br />
+							<strong className="font-bold">{from}</strong> to{" "}
+							<strong className="font-bold">{to}</strong>.
+						</p>
+						{showNotice && (
+							<p className="py-1 px-1 max-w-80">
+								Only{" "}
+								<span className="font-bold" style={{ color: color as string }}>
+									{Math.round(percentageOfOrgsInTimeframe ?? 0)}%
+								</span>{" "}
+								of protests from{" "}
+								<strong className="font-bold">{organisation?.name}</strong> are
+								within the selected timeframe. Longer timeframes lead to more
+								reliable impact estimates.
+							</p>
+						)}
+					</TooltipContent>
+				</Portal>
+			</Tooltip>
+		);
+	},
+);
 
 type ImpactChartColumnDescriptionsProps = {
 	impacts: ParsedMediaImpactItemType[] | null;
@@ -174,7 +241,7 @@ function ImpactChartColumnDescriptions({
 						) : (
 							<strong>{organisation.name}</strong>
 						)}{" "}
-						within the <SelectedTimeframeTooltip />:
+						within the <SelectedTimeframeTooltip organisation={organisation} />:
 					</p>
 				)}
 				{!isPending &&

@@ -79,9 +79,14 @@ function TrendWithImpactChartWrapper({
 								ease: "easeInOut",
 							}}
 						>
-							<h3 className="text-xl font-semibold font-headlines mb-6">
-								Computed impacts
-							</h3>
+							<div className="mb-6 flex flex-col gap-1">
+								<h3 className="text-xl font-semibold font-headlines">
+									Computed impacts
+								</h3>
+								<p className="text-sm text-grayDark">
+									Lorem ipsum dolor sit amet consectetur adipisicing elit.
+								</p>
+							</div>
 							<LazyLoadedImpactChart
 								trend_type={trend_type}
 								sentiment_target={sentiment_target}

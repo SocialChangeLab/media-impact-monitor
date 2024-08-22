@@ -73,6 +73,7 @@ const MediaCoverageChart = memo(() => {
 							stroke="var(--grayDark)"
 							strokeWidth={0.25}
 							fontSize="0.875rem"
+							tickFormatter={(value) => `${value.toLocaleString("en-GB")}`}
 						/>
 						<Tooltip
 							formatter={(value) => `${value} articles`}

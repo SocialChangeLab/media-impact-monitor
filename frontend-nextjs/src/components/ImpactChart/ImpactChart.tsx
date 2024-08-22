@@ -1,7 +1,7 @@
 import { cn } from "@/utility/classNames";
 import type { EventOrganizerSlugType } from "@/utility/eventsUtil";
 import type { ParsedMediaImpactItemType } from "@/utility/mediaImpactUtil";
-import { type ScaleLinear, scaleSqrt } from "d3-scale";
+import { type ScaleLinear, scaleLinear } from "d3-scale";
 import { useMemo } from "react";
 import ImpactChartColumnDescriptions from "./ImpactChartColumnDescriptions";
 import ImpactChartColumnVisualisation from "./ImpactChartColumnVisualisation";
@@ -50,17 +50,21 @@ function ImpactChart(props: ImpactChartProps) {
 		const positiveAreaHeightInRem =
 			percentageOfPositiveValues * totalHeightInRem;
 
+		const sizeScale = scaleLinear()
+			.domain([highestValue, lowestValue])
+			.range([0 + paddingInRem, fullHeightInclPadding - paddingInRem]);
 		return {
 			totalHeightInRem,
 			negativeAreaHeightInRem,
 			positiveAreaHeightInRem,
-			yAxisScale: scaleSqrt()
-				.domain([highestValue, lowestValue])
-				.range([lowestValue, highestValue]),
-			sizeScale: scaleSqrt()
-				.domain([highestValue, lowestValue])
-				.range([0, totalHeightInRem]),
-			fillOpacityScale: scaleSqrt()
+			sizeScale,
+			yAxisScale: scaleLinear()
+				.domain([
+					highestValue + sizeScale.invert(paddingInRem),
+					lowestValue - sizeScale.invert(paddingInRem),
+				])
+				.range([paddingInRem / 2, fullHeightInclPadding - paddingInRem / 2]),
+			fillOpacityScale: scaleLinear()
 				.domain([totalHeightInRem, 0])
 				.range([0.2, 1]),
 		};
@@ -70,10 +74,10 @@ function ImpactChart(props: ImpactChartProps) {
 			<div
 				className={cn(
 					"grid gap-x-px bg-grayLight h-96 overflow-clip",
-					"grid-cols-[2rem_1fr] border-r border-grayLight",
-					props.columns.length === 2 && "md:grid-cols-[2rem_repeat(2,1fr)]",
+					"grid-cols-[4rem_1fr] border-r border-grayLight",
+					props.columns.length === 2 && "md:grid-cols-[4rem_repeat(2,1fr)]",
 					props.columns.length === 3 &&
-						"md:grid-cols-[2rem_repeat(2,1fr)] lg:grid-cols-[2rem_repeat(3,1fr)]",
+						"md:grid-cols-[4rem_repeat(2,1fr)] lg:grid-cols-[4rem_repeat(3,1fr)]",
 				)}
 			>
 				<ImpactChartYAxis
@@ -92,8 +96,8 @@ function ImpactChart(props: ImpactChartProps) {
 								isPending={isPending}
 								{...scaleProps}
 								itemsCountPerColumn={props.itemsCountPerColumn ?? 1}
-								paddingInRem={paddingInRem}
 								colIdx={idx}
+								heightInRem={fullHeightInclPadding}
 							/>
 						);
 					},
@@ -102,10 +106,10 @@ function ImpactChart(props: ImpactChartProps) {
 			<div
 				className={cn(
 					"grid gap-x-px",
-					"grid-cols-[2rem_1fr]",
-					props.columns.length === 2 && "md:grid-cols-[2rem_repeat(2,1fr)]",
+					"grid-cols-[4rem_1fr]",
+					props.columns.length === 2 && "md:grid-cols-[4rem_repeat(2,1fr)]",
 					props.columns.length === 3 &&
-						"md:grid-cols-[2rem_repeat(2,1fr)] lg:grid-cols-[2rem_repeat(3,1fr)]",
+						"md:grid-cols-[4rem_repeat(2,1fr)] lg:grid-cols-[4rem_repeat(3,1fr)]",
 				)}
 			>
 				<div />
@@ -144,38 +148,25 @@ function ImpactChartYAxis({
 	sizeScale: ScaleLinear<number, number, never>;
 	isPending: boolean;
 }) {
-	const twentyPercentOfRange = sizeScale.domain()[0] * 1.5 * 0.3;
-	const scaleStart = roundByDigits(
-		sizeScale.domain()[0] + twentyPercentOfRange,
-	);
-	const scaleEnd = roundByDigits(sizeScale.domain()[1] - twentyPercentOfRange);
-	const ticks = yAxisScale.ticks(4);
+	const ticks = yAxisScale.ticks(5);
 	return (
-		<div className={cn("py-16 pr-2 bg-bg")}>
+		<div className={cn("pr-2 bg-pattern-soft")}>
 			<div
 				className={cn(
-					"relative transition-opacity",
+					"relative transition-opacity size-full",
 					isPending ? "opacity-0" : "opacity-100",
 				)}
 			>
-				<ImpactChartXAxisTick
-					value={scaleStart}
-					top={`${sizeScale(scaleStart) - 0.75}rem`}
-				/>
 				{ticks.map((tick, idx) => (
 					<ImpactChartXAxisTick
 						value={tick}
-						top={`${sizeScale(tick) - 0.75}rem`}
+						top={`${sizeScale(tick)}rem`}
 						key={`size-scale-tick-${
 							// biome-ignore lint/suspicious/noArrayIndexKey: <explanation>
 							idx
 						}`}
 					/>
 				))}
-				<ImpactChartXAxisTick
-					value={scaleEnd}
-					top={`${sizeScale(scaleEnd) - 0.75}rem`}
-				/>
 			</div>
 		</div>
 	);
@@ -184,19 +175,18 @@ function ImpactChartYAxis({
 function ImpactChartXAxisTick({ value, top }: { value: number; top: string }) {
 	return (
 		<div
-			className={cn("text-sm text-grayDark", "absolute right-0")}
+			className={cn(
+				"text-sm text-grayDark flex items-center justify-end",
+				"absolute right-0 h-px w-full text-right",
+			)}
 			style={{ top }}
 		>
-			{value}
+			<span>
+				{value === 0 ? "" : value > 0 ? "+" : "-"}
+				{Math.abs(value).toLocaleString("en-GB")}
+			</span>
 		</div>
 	);
-}
-
-function roundByDigits(number: number) {
-	if (number === 0) return 0;
-	const digits = Math.floor(Math.log10(Math.abs(number))) + 1;
-	const factor = 10 ** (digits - 1);
-	return Math.round(number / factor) * factor;
 }
 
 export default ImpactChart;

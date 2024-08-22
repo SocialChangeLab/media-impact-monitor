@@ -40,6 +40,13 @@ function EventPageContent({ id }: { id: string }) {
 		<>
 			<EventPageHeader id={id} />
 			<SectionHeadlineWithExplanation
+				headline="Event Media Mentions"
+				description="See which articles and media mention the event"
+				helpSlug="mediaMentions"
+			>
+				<EventMediaTable id={id} />
+			</SectionHeadlineWithExplanation>
+			<SectionHeadlineWithExplanation
 				headline="Protest Timeline of Sentiment"
 				description="See the sentiment towards activism of articles related to the protest"
 				helpSlug="sentimentTrend"
@@ -60,13 +67,6 @@ function EventPageContent({ id }: { id: string }) {
 						/>
 					</div>
 				</div>
-			</SectionHeadlineWithExplanation>
-			<SectionHeadlineWithExplanation
-				headline="Event Media Mentions"
-				description="See which articles and media mention the event"
-				helpSlug="mediaMentions"
-			>
-				<EventMediaTable id={id} />
 			</SectionHeadlineWithExplanation>
 		</>
 	);

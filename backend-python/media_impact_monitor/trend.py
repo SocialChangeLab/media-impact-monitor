@@ -27,8 +27,7 @@ def get_trend(q: TrendSearch) -> tuple[pd.DataFrame | None, list[str]]:
     # wrapper for better caching
     start_date = q.start_date
     end_date = q.end_date
-    # copy q to avoid modifying the original
-    r = TrendSearch(**dict(q))
+    r = TrendSearch(**dict(q))  # copy q to avoid modifying the original
     r.start_date = date(2020, 1, 1)
     r.end_date = date.today()
     df, lims = _get_trend(r)

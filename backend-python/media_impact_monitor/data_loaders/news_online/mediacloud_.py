@@ -22,6 +22,7 @@ Platform = Literal["onlinenews-mediacloud", "onlinenews-waybackmachine"]
 
 @cache(ignore=["timeout"])
 def _story_count_over_time(timeout: int = 10, **kwargs):
+    # currently not used because it's extremely slow and unreliable
     search.TIMEOUT_SECS = timeout
     return search.story_count_over_time(**kwargs)
 
@@ -33,25 +34,23 @@ def get_mediacloud_counts(
     countries: list | None = None,
     platform: Platform = "onlinenews-mediacloud",
 ) -> tuple[pd.Series | None, list[str]]:
-    limitations = []
-    if start_date < date(2022, 1, 1):
-        limitations.append("MediaCloud does not have data before 2022-01-01.")
     assert verify_dates(start_date, end_date)
 
     collection_ids = [_resolve_country(c) for c in countries] if countries else []
-    kwargs = dict(
+    stories = _story_list_split_monthly(
         query=query,
-        start_date=date(2022, 1, 1),
+        start_date=start_date,
+        end_date=end_date,
         collection_ids=collection_ids,
         platform=platform,
     )
-    data = get_latest_data(_story_count_over_time, kwargs)
-    df = pd.DataFrame(data)
-    df = df[["date", "count"]]  # ignore total_count and ratio
-    df["date"] = pd.to_datetime(df["date"]).dt.date
-    df = df.set_index("date")
-    df = df.reindex(pd.date_range(start_date, end_date), fill_value=0)
-    return df["count"], limitations
+    if stories is None:
+        return None, []
+    stories["publish_date"] = pd.to_datetime(stories["publish_date"])
+    counts = stories.resample("D", on="publish_date").size()
+    counts = counts.reindex(pd.date_range(start_date, end_date), fill_value=0)
+    counts = counts.rename("count")
+    return counts, []
 
 
 @cache

@@ -109,8 +109,8 @@ const SelectedTimeframeTooltip = memo(
 								</span>{" "}
 								of protests from{" "}
 								<strong className="font-bold">{organisation?.name}</strong> are
-								within the selected timeframe. Longer timeframes lead to more
-								reliable impact estimates.
+								within the selected timeframe. Select a longer timeframe to get
+								a more reliable impact estimate.
 							</p>
 						)}
 					</TooltipContent>

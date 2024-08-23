@@ -16,26 +16,26 @@ from media_impact_monitor.util.parallel import parallel_tqdm
 
 search = mediacloud.api.SearchApi(MEDIACLOUD_API_TOKEN)
 directory = mediacloud.api.DirectoryApi(MEDIACLOUD_API_TOKEN)
-search.TIMEOUT_SECS = 10
 
 Platform = Literal["onlinenews-mediacloud", "onlinenews-waybackmachine"]
 
 
-@cache
-def _story_count_over_time(**kwargs):
+@cache(ignore=["timeout"])
+def _story_count_over_time(timeout: int = 10, **kwargs):
+    search.TIMEOUT_SECS = timeout
     return search.story_count_over_time(**kwargs)
 
 
 def get_mediacloud_counts(
     query: str,
     end_date: date,
-    start_date: date = date(2022, 1, 1),
+    start_date: date,
     countries: list | None = None,
-    platform: Platform = "onlinenews-waybackmachine",
+    platform: Platform = "onlinenews-mediacloud",
 ) -> tuple[pd.Series | None, list[str]]:
     limitations = []
     if start_date < date(2022, 1, 1):
-        limitations.append("Start date must be on or after 2022-01-01.")
+        limitations.append("MediaCloud does not have data before 2022-01-01.")
     assert verify_dates(start_date, end_date)
 
     collection_ids = [_resolve_country(c) for c in countries] if countries else []

@@ -32,5 +32,5 @@ def get_latest_data(func: callable, kwargs: dict):
             exception = e
     else:
         raise Exception(
-            f"Failed to fetch data for dates between {_stop_date} and {end_date}: {exception}"
+            f"Failed to fetch data for dates between {end_date} and {date.today() - timedelta(days=1)}: {exception}"
         )

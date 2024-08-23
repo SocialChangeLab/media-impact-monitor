@@ -18,6 +18,7 @@ from media_impact_monitor.util.env import DATAFORSEO_EMAIL, DATAFORSEO_PASSWORD
 
 @cache
 def get_google_trends_counts(query: str, end_date: date) -> pd.Series:
+    # end_date exists as a parameter for proper daily caching
     url = "https://api.dataforseo.com/v3/keywords_data/google_trends/explore/live"
     location_codes = {"Germany": 2276}
     payload = [
@@ -39,7 +40,9 @@ def get_google_trends_counts(query: str, end_date: date) -> pd.Series:
     data = response.json()["tasks"][0]["result"][0]["items"][0]["data"]
     df = pd.DataFrame(data)
     df["value"] = df["values"].str[0].fillna(0)
-    # df = df[~df["missing_data"]] # this ignores data from the current day/week/month, which is not yet complete
+    df = df[
+        ~df["missing_data"]
+    ]  # this ignores data from the current day/week/month, which is not yet complete
     df = df.rename(columns={"date_from": "date", "value": "count"})
     df["date"] = pd.to_datetime(df["date"]).dt.date
     df = df.set_index("date")["count"]

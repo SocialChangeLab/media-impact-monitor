@@ -64,9 +64,8 @@ function ImpactChart(props: ImpactChartProps) {
 					lowestValue - sizeScale.invert(paddingInRem),
 				])
 				.range([paddingInRem / 2, fullHeightInclPadding - paddingInRem / 2]),
-			fillOpacityScale: scaleLinear()
-				.domain([totalHeightInRem, 0])
-				.range([0.2, 1]),
+			fillOpacityScale: (pVal: number) =>
+				Math.abs(Math.log10(Math.max(0.001, pVal)) / 3),
 		};
 	}, [props.columns]);
 	return (

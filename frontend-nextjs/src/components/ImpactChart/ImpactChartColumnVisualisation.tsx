@@ -34,7 +34,7 @@ function ImpactChartColumnVisualisation({
 	positiveAreaHeightInRem: number;
 	heightInRem: number;
 	sizeScale: ScaleLinear<number, number, never>;
-	fillOpacityScale: ScaleLinear<number, number, never>;
+	fillOpacityScale: (pVal: number) => number;
 	itemsCountPerColumn: number;
 	colIdx: number;
 }) {
@@ -151,7 +151,7 @@ function ImpactChartColumnVisualisationImpacts({
 	negativeAreaHeightInRem: number;
 	positiveAreaHeightInRem: number;
 	sizeScale: ScaleLinear<number, number, never>;
-	fillOpacityScale: ScaleLinear<number, number, never>;
+	fillOpacityScale: (pVal: number) => number;
 	itemsCountPerColumn: number;
 	id: string;
 	heightInRem: number;
@@ -292,7 +292,11 @@ function ImpactChartColumnVisualisationLoading({
 									color={`var(--grayMed)`}
 									height={height}
 									label={""}
-									impact={{ lower: randImpactLower, upper: randImpactUpper }}
+									impact={{
+										lower: randImpactLower,
+										upper: randImpactUpper,
+										p_value: 0,
+									}}
 									noLine
 									id={`loading-${id}-${idx}`}
 								/>
@@ -319,8 +323,8 @@ function ImpactChartColumnVisualisationImpactBar({
 	color: string;
 	height: number;
 	label: string;
-	impact: { lower: number; upper: number };
-	fillOpacityScale?: ScaleLinear<number, number, never>;
+	impact: { lower: number; upper: number; p_value: number };
+	fillOpacityScale?: (pVal: number) => number;
 	noLine?: boolean;
 	id: string;
 }) {
@@ -359,10 +363,10 @@ function ImpactChartColumnVisualisationImpactArrow({
 	fillOpacityScale,
 }: {
 	color: string;
-	impact: { lower: number; upper: number };
+	impact: { lower: number; upper: number; p_value: number };
 	height: number;
 	noLine?: boolean;
-	fillOpacityScale?: ScaleLinear<number, number, never>;
+	fillOpacityScale?: (pVal: number) => number;
 }) {
 	const upperRounded = Number.parseFloat(impact.upper.toFixed(2));
 	const lowerRounded = Number.parseFloat(impact.lower.toFixed(2));
@@ -394,6 +398,7 @@ function ImpactChartColumnVisualisationImpactArrow({
 		lineDown = `M0 ${height} L50 ${height - arrowHeight} L100 ${height}`;
 	if (lowerRounded === 0 && upperUp) lineDown = `M0 ${height} L100 ${height}`;
 
+	const opacity = fillOpacityScale ? fillOpacityScale(impact.p_value) : 0.3;
 	return (
 		<svg
 			className={cn("absolute left-0 top-0 w-full overflow-visible")}
@@ -411,17 +416,15 @@ function ImpactChartColumnVisualisationImpactArrow({
 			<path
 				fill={color}
 				d={bgPath}
-				className="group-hover:[fill-opacity:0.8] transition-all"
-				fillOpacity={fillOpacityScale ? fillOpacityScale(height) : 0.3}
+				className="group-hover:[fill-opacity:0.9] transition-all"
+				fillOpacity={opacity}
 			/>
 			{!noLine && (
 				<>
 					<path
 						stroke={color}
 						className="group-hover:[stroke-opacity:1] transition-all"
-						strokeOpacity={
-							fillOpacityScale ? Math.min(fillOpacityScale(height) * 2, 1) : 1
-						}
+						strokeOpacity={fillOpacityScale ? Math.min(opacity * 2, 1) : 1}
 						strokeWidth="3px"
 						vectorEffect="non-scaling-stroke"
 						d={lineUp}
@@ -430,9 +433,7 @@ function ImpactChartColumnVisualisationImpactArrow({
 					<path
 						stroke={color}
 						className="group-hover:[stroke-opacity:1] transition-all"
-						strokeOpacity={
-							fillOpacityScale ? Math.min(fillOpacityScale(height) * 2, 1) : 1
-						}
+						strokeOpacity={fillOpacityScale ? Math.min(opacity * 2, 1) : 1}
 						strokeWidth="3px"
 						vectorEffect="non-scaling-stroke"
 						d={lineDown}

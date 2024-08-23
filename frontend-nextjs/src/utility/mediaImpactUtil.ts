@@ -21,6 +21,7 @@ const mediaImpactZodSchema = z.object({
 					mean: z.number(),
 					ci_upper: z.number(),
 					ci_lower: z.number(),
+					p_value: z.number(),
 				}),
 				absolute_impact_time_series: z.array(
 					z.object({
@@ -28,6 +29,7 @@ const mediaImpactZodSchema = z.object({
 						mean: z.number(),
 						ci_upper: z.number(),
 						ci_lower: z.number(),
+						p_value: z.number(),
 					}),
 				),
 			}),
@@ -42,6 +44,7 @@ const parsedMediaImpactItemZodSchema = z.object({
 		upper: z.number(),
 		mean: z.number(),
 		range: z.number(),
+		p_value: z.number(),
 	}),
 	label: z.string(),
 	color: z.string(),
@@ -123,6 +126,7 @@ function validateGetDataResponse(response: unknown): ParsedMediaImpactType {
 						upper: a.ci_upper,
 						mean: a.mean,
 						range: Math.abs(a.ci_lower - a.ci_upper),
+						p_value: a.p_value,
 					},
 					label: key,
 					color: getTopicColor(key),

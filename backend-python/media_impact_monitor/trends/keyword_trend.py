@@ -28,11 +28,9 @@ def get_keyword_trend(q: TrendSearch) -> tuple[pd.DataFrame | None, list[str]]:
                 ds = get_google_trends_counts(query=query, end_date=q.end_date)
             case _:
                 raise ValueError(f"Unsupported media source: {q.media_source}")
-        ds.index = pd.to_datetime(ds.index)
-        ds.index = ds.index.date
-        ds.index.name = "date"
         dss[topic] = ds
-    df = pd.DataFrame(dss)
+    df = pd.DataFrame({k: v for k, v in dss.items() if v is not None})
+    df = None if df.empty else df
     return df, list(limitations)
 
 

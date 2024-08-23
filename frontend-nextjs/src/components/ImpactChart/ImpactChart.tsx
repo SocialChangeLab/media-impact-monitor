@@ -53,6 +53,7 @@ function ImpactChart(props: ImpactChartProps) {
 		const sizeScale = scaleLinear()
 			.domain([highestValue, lowestValue])
 			.range([0 + paddingInRem, fullHeightInclPadding - paddingInRem]);
+
 		return {
 			totalHeightInRem,
 			negativeAreaHeightInRem,
@@ -65,7 +66,7 @@ function ImpactChart(props: ImpactChartProps) {
 				])
 				.range([paddingInRem / 2, fullHeightInclPadding - paddingInRem / 2]),
 			fillOpacityScale: (pVal: number) =>
-				Math.abs(Math.log10(Math.max(0.001, pVal)) / 3),
+				Math.max(Math.log10(Math.max(0.001, pVal)) / -3, 0.1),
 		};
 	}, [props.columns]);
 	return (

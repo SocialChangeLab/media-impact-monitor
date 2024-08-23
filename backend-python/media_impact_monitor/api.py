@@ -21,7 +21,7 @@ from media_impact_monitor.events import get_events, organizers_with_id
 from media_impact_monitor.fulltexts import get_fulltexts
 from media_impact_monitor.impact import get_impact
 from media_impact_monitor.policy import get_policy
-from media_impact_monitor.trend import get_trend
+from media_impact_monitor.trend import get_trend_for_api
 from media_impact_monitor.types_ import (
     Event,
     EventSearch,
@@ -122,7 +122,7 @@ def _get_events(q: EventSearch) -> Response[EventSearch, list[Event]]:
 @app.post("/trend")
 def _get_trend(q: TrendSearch) -> Response[TrendSearch, Trend]:
     """Fetch media item counts from the Media Impact Monitor database."""
-    data = get_trend(q)
+    data = get_trend_for_api(q)
     return Response(query=q, data=data)
 
 

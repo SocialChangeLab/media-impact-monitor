@@ -12,7 +12,7 @@ Query = str  # for now, just a single keyword
 MediaSource = Literal["news_online", "news_print", "web_google"]
 
 StartDateField = Field(
-    default=None,
+    default=date(2020, 1, 1),
     description="Filter by start date. By default, the earliest date available is used.",
 )
 EndDateField = Field(

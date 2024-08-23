@@ -1,5 +1,6 @@
 from datetime import date
 from media_impact_monitor.trends.topic_trend import get_topic_trend
+from media_impact_monitor.util.date import verify_dates
 import pandas as pd
 
 from media_impact_monitor.trends.keyword_trend import get_keyword_trend
@@ -37,6 +38,7 @@ def get_trend(q: TrendSearch) -> tuple[pd.DataFrame | None, list[str]]:
 
 
 def get_trend_for_api(q: TrendSearch) -> Trend:
+    verify_dates(q.start_date, q.end_date)
     df, lims = get_trend(q)
     match df:
         case pd.DataFrame():

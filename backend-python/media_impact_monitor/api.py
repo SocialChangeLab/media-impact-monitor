@@ -4,6 +4,7 @@ Run with: `uvicorn media_impact_monitor.api:app --reload`
 Or, if necessary: `poetry run uvicorn media_impact_monitor.api:app --reload` in "backend-python/"
 """
 
+from datetime import date
 import json
 import logging
 import os
@@ -114,6 +115,7 @@ def get_info() -> dict:
 @app.post("/events")
 def _get_events(q: EventSearch) -> Response[EventSearch, list[Event]]:
     """Fetch events from the Media Impact Monitor database."""
+    q.end_date = q.end_date or date.today()
     df = get_events(q)
     data = json.loads(df.to_json(orient="records"))  # convert nan to None
     return Response(query=q, data=data)
@@ -122,6 +124,7 @@ def _get_events(q: EventSearch) -> Response[EventSearch, list[Event]]:
 @app.post("/trend")
 def _get_trend(q: TrendSearch) -> Response[TrendSearch, Trend]:
     """Fetch media item counts from the Media Impact Monitor database."""
+    q.end_date = q.end_date or date.today()
     data = get_trend_for_api(q)
     return Response(query=q, data=data)
 
@@ -129,6 +132,7 @@ def _get_trend(q: TrendSearch) -> Response[TrendSearch, Trend]:
 @app.post("/fulltexts")
 def _get_fulltexts(q: FulltextSearch) -> Response[FulltextSearch, list[Fulltext]]:
     """Fetch media fulltexts from the Media Impact Monitor database."""
+    q.end_date = q.end_date or date.today()
     fulltexts = get_fulltexts(q)
     if fulltexts is None:
         return Response(query=q, data=[])
@@ -138,6 +142,7 @@ def _get_fulltexts(q: FulltextSearch) -> Response[FulltextSearch, list[Fulltext]
 @app.post("/impact")
 def _get_impact(q: ImpactSearch) -> Response[ImpactSearch, Impact]:
     """Compute the impact of an event on a media trend."""
+    q.end_date = q.end_date or date.today()
     impact = get_impact(q)
     return Response(query=q, data=impact)
 
@@ -145,6 +150,7 @@ def _get_impact(q: ImpactSearch) -> Response[ImpactSearch, Impact]:
 @app.post("/policy")
 def _get_policy(q: PolicySearch):  # -> Response[PolicySearch, Policy]:
     """Fetch policy data from the Media Impact Monitor database."""
+    q.end_date = q.end_date or date.today()
     policy = get_policy(q)
     return Response(query=q, data=policy.to_dict(orient="records"))
 

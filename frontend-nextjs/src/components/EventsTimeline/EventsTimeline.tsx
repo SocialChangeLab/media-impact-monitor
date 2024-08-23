@@ -13,9 +13,6 @@ import { QueryErrorResetBoundary } from "@tanstack/react-query";
 import { format } from "date-fns";
 import { ErrorBoundary } from "next/dist/client/components/error-boundary";
 import { Suspense } from "react";
-import CollapsableSection from "../CollapsableSection";
-import DataCreditLegend from "../DataCreditLegend";
-import OrgsLegend from "../OrgsLegend";
 import EmptyEventsTimeline from "./EmptyEventsTimeline";
 import ErrorEventsTimeline from "./ErrorEventsTimeline";
 import EventTimelineItem from "./EventTimelineItem";
@@ -23,8 +20,8 @@ import EventsTimelineWrapper from "./EventsTimelinWrapper";
 import EventsTimelineAggregatedItem from "./EventsTimelineAggregatedItem";
 import EventsTimelineAxis from "./EventsTimelineAxis";
 import EventsTimelineChartWrapper from "./EventsTimelineChartWrapper";
+import EventsTimelineLegend from "./EventsTimelineLegend";
 import EventsTimelineScrollWrapper from "./EventsTimelineScrollWrapper";
-import EventsTimelineSizeLegend from "./EventsTimelineSizeLegend";
 import useAggregationUnit from "./useAggregationUnit";
 import useTimelineEvents from "./useTimelineEvents";
 
@@ -152,35 +149,10 @@ function EventsTimeline({
 					width={size.width}
 				/>
 			</EventsTimelineScrollWrapper>
-			<div className="pt-10 flex flex-col gap-y-2 gap-x-[max(2rem,4vmax)] sm:grid sm:grid-cols-[1fr_auto] max-w-content">
-				<CollapsableSection
-					title="Legend"
-					storageKey="protest-timeline-legend-expanded"
-					storageType="session"
-				>
-					<div className="grid gap-[max(1rem,2vmax)] md:grid-cols-[auto_1fr]">
-						<EventsTimelineSizeLegend
-							sizeScale={sizeScale}
-							aggragationUnit={aggregationUnit}
-						/>
-						<OrgsLegend organisations={selectedOrganisations} />
-					</div>
-				</CollapsableSection>
-				<DataCreditLegend
-					storageKey={"protest-timeline-data-credit-expanded"}
-					sources={[
-						{
-							label: "Protest data",
-							links: [
-								{
-									text: "Armed Conflict Location & Event Data Project (ACLED)",
-									url: "https://acleddata.com",
-								},
-							],
-						},
-					]}
-				/>
-			</div>
+			<EventsTimelineLegend
+				sizeScale={sizeScale}
+				selectedOrganisations={selectedOrganisations}
+			/>
 		</EventsTimelineWrapper>
 	);
 }

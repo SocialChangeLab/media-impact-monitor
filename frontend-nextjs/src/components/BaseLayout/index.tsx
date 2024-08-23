@@ -37,6 +37,11 @@ export function BaseLayout({
 					"maxPage:border-x maxPage:border-grayLight min-h-screen grid-rows-[1fr_auto]",
 					"transition-all duration-1000 ease-smooth-out",
 				)}
+				style={{
+					paddingTop: showFilters
+						? `calc(var(--headerHeight) + var(--filtersHeight))`
+						: `var(--headerHeight)`,
+				}}
 				variants={{
 					withoutFilters: { paddingTop: `var(--headerHeight)` },
 					withFilters: {

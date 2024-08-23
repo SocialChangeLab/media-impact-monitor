@@ -1,20 +1,19 @@
 "use client";
-import type {
-	EventOrganizerSlugType,
-	OrganisationType,
-} from "@/utility/eventsUtil";
+import type { EventOrganizerSlugType } from "@/utility/eventsUtil";
 import { ArrowRight } from "lucide-react";
 import { useMemo } from "react";
+import type { LegendOrganisation } from "./EventsTimeline/EventsTimelineLegend";
 import OrgsLegendItem from "./OrgsLegendItem";
 
-function getOtherOrg(organisations: OrganisationType[]) {
+function getOtherOrg(organisations: LegendOrganisation[]) {
 	return {
 		slug: "other" as EventOrganizerSlugType,
 		name: "Other",
-		count: organisations.reduce((acc, org) => acc + org.count, 0),
+		count: organisations.reduce((acc, org) => acc + (org.count ?? 0), 0),
 		color: `var(--grayDark)`,
 		isMain: false,
 		orgs: organisations.sort((a, b) => {
+			if (!a.count || !b.count) return a.name.localeCompare(b.name);
 			if (a.count > b.count) return -1;
 			if (a.count < b.count) return 1;
 			return a.name.localeCompare(b.name);
@@ -25,11 +24,11 @@ function getOtherOrg(organisations: OrganisationType[]) {
 function OrgsLegend({
 	organisations,
 }: {
-	organisations: OrganisationType[];
+	organisations: LegendOrganisation[];
 }) {
 	const { allOrgs, otherOrgs } = useMemo(() => {
-		const mainOrgs: OrganisationType[] = [];
-		const otherOrgs: OrganisationType[] = [];
+		const mainOrgs: LegendOrganisation[] = [];
+		const otherOrgs: LegendOrganisation[] = [];
 
 		for (const org of organisations) {
 			if (!org.isMain) otherOrgs.push(org);

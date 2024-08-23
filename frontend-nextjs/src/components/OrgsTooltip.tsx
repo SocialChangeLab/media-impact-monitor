@@ -1,6 +1,6 @@
 import { cn } from "@/utility/classNames";
-import type { OrganisationType } from "@/utility/eventsUtil";
 import type { ReactNode } from "react";
+import type { LegendOrganisation } from "./EventsTimeline/EventsTimelineLegend";
 import InternalLink from "./InternalLink";
 import RoundedColorPill from "./RoundedColorPill";
 import { Portal, Tooltip, TooltipContent, TooltipTrigger } from "./ui/tooltip";
@@ -10,7 +10,7 @@ function OrgsTooltip({
 	children,
 	withPills = false,
 }: {
-	otherOrgs?: OrganisationType[];
+	otherOrgs?: LegendOrganisation[];
 	children: ReactNode;
 	withPills?: boolean;
 }) {
@@ -37,9 +37,11 @@ function OrgsTooltip({
 								>
 									{withPills && <RoundedColorPill color={subOrg.color} />}
 									<span className="truncate">{subOrg.name}</span>
-									<span className="font-mono text-xs text-black/45">
-										({subOrg.count.toLocaleString("en-GB")})
-									</span>
+									{subOrg.count && (
+										<span className="font-mono text-xs text-black/45">
+											({subOrg.count.toLocaleString("en-GB")})
+										</span>
+									)}
 								</InternalLink>
 							</li>
 						))}

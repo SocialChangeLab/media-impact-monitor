@@ -1,7 +1,7 @@
 import { cn } from "@/utility/classNames";
-import type { OrganisationType } from "@/utility/eventsUtil";
 import { useSearchParams } from "next/navigation";
 import { memo, useMemo } from "react";
+import type { LegendOrganisation } from "./EventsTimeline/EventsTimelineLegend";
 import InternalLink from "./InternalLink";
 import OrgsTooltip from "./OrgsTooltip";
 import RoundedColorPill from "./RoundedColorPill";
@@ -11,8 +11,8 @@ function OrgsLegendItem({
 	org,
 	otherOrgs,
 }: {
-	org: OrganisationType;
-	otherOrgs?: OrganisationType[];
+	org: LegendOrganisation;
+	otherOrgs?: LegendOrganisation[];
 }) {
 	const searchParams = useSearchParams();
 
@@ -25,9 +25,11 @@ function OrgsLegendItem({
 					<div className="truncate group-hover:font-semibold group-hover:text-fg transition-all">
 						{org.name.split(":")[0]}
 					</div>
-					<span className="font-mono text-xs text-grayDark">
-						({org.count.toLocaleString("en-GB")})
-					</span>
+					{org.count && (
+						<span className="font-mono text-xs text-grayDark">
+							({org.count.toLocaleString("en-GB")})
+						</span>
+					)}
 				</span>
 			</>
 		);

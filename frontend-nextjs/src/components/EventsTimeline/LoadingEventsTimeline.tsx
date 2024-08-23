@@ -11,6 +11,7 @@ import { memo, useMemo } from "react";
 import EventsTimelineWrapper from "./EventsTimelinWrapper";
 import EventsTimelineAxis from "./EventsTimelineAxis";
 import EventsTimelineChartWrapper from "./EventsTimelineChartWrapper";
+import EventsTimelineLegend from "./EventsTimelineLegend";
 import EventsTimelineScrollWrapper from "./EventsTimelineScrollWrapper";
 import config from "./eventsTimelineConfig";
 
@@ -68,6 +69,7 @@ const LoadingEventsTimeline = memo(() => {
 					width={size.width}
 				/>
 			</EventsTimelineScrollWrapper>
+			<EventsTimelineLegend />
 		</EventsTimelineWrapper>
 	);
 });

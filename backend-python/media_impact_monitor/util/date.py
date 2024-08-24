@@ -12,23 +12,25 @@ def verify_dates(start_date: date, end_date: date):
     return True
 
 
-def get_latest_data(func: callable, args: BaseModel):
+def get_latest_data(func: callable, kwargs: dict):
     """
     Takes a function and a query object (as defined in types.py) that has an `end_date` field.
     If the end date field is not set, it will be set to yesterday.
     If it is not possible to fetch data for the given end date, the function will try to fetch data for the previous day.
     """
-    assert hasattr(args, "end_date")
-    args.end_date = args.end_date or date.today() - timedelta(days=1)
-    _stop_date = args.end_date - timedelta(days=2)
+    end_date = date.today() - timedelta(days=1)
+    _stop_date = date.today() - timedelta(days=2)
     exception = None  # store exception to raise it only once in the end
-    while args.end_date >= _stop_date:
+    while end_date >= _stop_date:
         try:
-            data = func(args)
+            kwargs["end_date"] = end_date
+            data = func(**kwargs)
             return data
         except Exception as e:
-            print(f"Failed to fetch data for {args.end_date}: {e}")
-            args.end_date -= timedelta(days=1)
+            print(f"Failed to fetch data for {end_date}: {e}")
+            end_date -= timedelta(days=1)
             exception = e
     else:
-        raise exception
+        raise Exception(
+            f"Failed to fetch data for dates between {end_date} and {date.today() - timedelta(days=1)}: {exception}"
+        )

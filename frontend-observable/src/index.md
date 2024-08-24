@@ -62,8 +62,7 @@ const keyword_plot = (trend, title) => ({
     y: {
       field: 'n_articles',
       type: 'quantitative',
-      axis: { title: 'Number of articles' },
-      stack: 'center'
+      axis: { title: 'Number of articles' }
     },
     color: {
       field: 'topic',

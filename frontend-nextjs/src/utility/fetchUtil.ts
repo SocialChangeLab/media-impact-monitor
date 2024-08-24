@@ -3,7 +3,7 @@ import {
 	datasetEndDate,
 	datasetStartDate,
 } from "@/stores/filtersStore";
-import { format } from "date-fns";
+import { format } from "@/utility/dateUtil";
 import type { EventOrganizerSlugType, OrganisationType } from "./eventsUtil";
 
 export async function fetchApiData({

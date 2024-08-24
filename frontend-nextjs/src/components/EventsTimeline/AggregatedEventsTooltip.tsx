@@ -3,12 +3,12 @@ import {
 	TooltipContent,
 	TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { format } from "@/utility/dateUtil";
 import {
 	type OrganisationType,
 	type ParsedEventType,
 	compareOrganizationsByColors,
 } from "@/utility/eventsUtil";
-import { format } from "date-fns";
 import { type ReactNode, memo, useMemo } from "react";
 import OrgLine from "./EventTooltipOrgLine";
 import {

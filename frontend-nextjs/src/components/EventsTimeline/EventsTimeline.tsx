@@ -1,16 +1,17 @@
 "use client";
 import LoadingEventsTimeline from "@/components/EventsTimeline/LoadingEventsTimeline";
+import { useToday } from "@/providers/TodayProvider";
 import { cn } from "@/utility/classNames";
 import {
 	type ComparableDateItemType,
 	dateToComparableDateItem,
 } from "@/utility/comparableDateItemSchema";
+import { format } from "@/utility/dateUtil";
 import { parseErrorMessage } from "@/utility/errorHandlingUtil";
 import useEvents, { type UseEventsReturnType } from "@/utility/useEvents";
 import { isInSameAggregationUnit } from "@/utility/useTimeIntervals";
 import useElementSize from "@custom-react-hooks/use-element-size";
 import { QueryErrorResetBoundary } from "@tanstack/react-query";
-import { format } from "date-fns";
 import { ErrorBoundary } from "next/dist/client/components/error-boundary";
 import { Suspense } from "react";
 import EmptyEventsTimeline from "./EmptyEventsTimeline";
@@ -30,17 +31,6 @@ type DataSourceInsertionType = {
 	name: string;
 };
 
-const dataSourceInsertions: DataSourceInsertionType[] = [
-	{
-		date: dateToComparableDateItem(new Date("2022-01-01T00:00:00.000Z")),
-		name: "ACLED (Armed Conflict Location & Event Data Project)",
-	},
-	{
-		date: dateToComparableDateItem(new Date("2022-07-01T00:00:00.000Z")),
-		name: "Press Releases by Last Generation",
-	},
-];
-
 function EventsTimeline({
 	data,
 }: {
@@ -54,6 +44,23 @@ function EventsTimeline({
 		data,
 		aggregationUnit,
 	});
+	const { today } = useToday();
+	const dataSourceInsertions: DataSourceInsertionType[] = [
+		{
+			date: dateToComparableDateItem(
+				new Date("2022-01-01T00:00:00.000Z"),
+				today,
+			),
+			name: "ACLED (Armed Conflict Location & Event Data Project)",
+		},
+		{
+			date: dateToComparableDateItem(
+				new Date("2022-07-01T00:00:00.000Z"),
+				today,
+			),
+			name: "Press Releases by Last Generation",
+		},
+	];
 	if (eventsByOrgs.length === 0) return <EmptyEventsTimeline />;
 
 	return (

@@ -4,6 +4,7 @@ import type * as React from "react";
 import { DayPicker } from "react-day-picker";
 
 import { buttonVariants } from "@/components/ui/button";
+import { useToday } from "@/providers/TodayProvider";
 import { cn } from "@/utility/classNames";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 
@@ -15,12 +16,13 @@ function Calendar({
 	showOutsideDays = true,
 	...props
 }: CalendarProps) {
+	const { today } = useToday();
 	return (
 		<DayPicker
 			captionLayout="dropdown-buttons"
 			fromYear={2020}
 			ISOWeek
-			toYear={new Date().getFullYear()}
+			toYear={today.getFullYear()}
 			showOutsideDays={showOutsideDays}
 			className={cn("px-3", className)}
 			classNames={{

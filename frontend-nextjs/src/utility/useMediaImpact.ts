@@ -1,10 +1,12 @@
 "use client";
 import { useFiltersStore } from "@/providers/FiltersStoreProvider";
 import { useQuery } from "@tanstack/react-query";
-import { endOfDay, format } from "date-fns";
+import { endOfDay } from "date-fns";
+import { format } from "./dateUtil";
 import type { EventOrganizerSlugType } from "./eventsUtil";
 import { getMediaImpactData } from "./mediaImpactUtil";
 import type { TrendQueryProps } from "./mediaTrendUtil";
+import { today } from "./today";
 import useEvents from "./useEvents";
 import useQueryErrorToast from "./useQueryErrorToast";
 
@@ -48,7 +50,7 @@ function useMediaImpactData({
 				allOrganisations: data?.organisations || [],
 			});
 		},
-		staleTime: endOfDay(new Date()).getTime() - new Date().getTime(),
+		staleTime: endOfDay(today).getTime() - today.getTime(),
 		enabled: organizer !== undefined && data?.organisations?.length > 0,
 	});
 

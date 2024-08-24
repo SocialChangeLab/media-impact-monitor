@@ -1,8 +1,8 @@
 "use client";
+import { format } from "@/utility/dateUtil";
 import type { ParsedFullTextType } from "@/utility/fullTextsUtil";
 import { useFullTexts } from "@/utility/useFullTexts";
 import { createColumnHelper } from "@tanstack/react-table";
-import { format } from "date-fns";
 import DataTableWithState from "./DataTable";
 import ExternalLink from "./ExternalLink";
 import SentimentLabel from "./SentimentLabel";

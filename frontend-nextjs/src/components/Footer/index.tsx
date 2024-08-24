@@ -5,16 +5,17 @@ import Logo from "@/components/logos/AppLogo";
 import BMBFLogo from "@/components/logos/BMBFLogo";
 import PrototypeFundLogo from "@/components/logos/PrototypeFundLogo";
 import SocialChangeLabLogo from "@/components/logos/SocialChangeLabLogo";
+import { useToday } from "@/providers/TodayProvider";
 import { cn } from "@/utility/classNames";
 import { useAnimationFrame } from "framer-motion";
 import { ArrowUp, ExternalLink, GithubIcon } from "lucide-react";
 import { useRef } from "react";
 import InternalLink from "../InternalLink";
 
-const year = new Date().getFullYear();
-
 function Footer() {
 	const footerRef = useRef<HTMLElement>(null);
+	const { today } = useToday();
+	const year = today.getFullYear();
 
 	useAnimationFrame(() => {
 		if (!footerRef.current) return;

@@ -1,4 +1,5 @@
 "use client";
+import { useToday } from "@/providers/TodayProvider";
 import {
 	type ComparableDateItemType,
 	dateToComparableDateItem,
@@ -22,9 +23,11 @@ const sizeScale = scalePow(
 
 const LoadingEventsTimeline = memo(() => {
 	const [parentRef, size] = useElementSize();
+	const { today } = useToday();
 	const startDate = new Date("2023-01-01T00:00:00.000Z");
 	const intervals = Array.from({ length: 30 }, (_, idx) => idx + 1).reduce(
-		(acc, idx) => acc.concat(dateToComparableDateItem(addDays(startDate, idx))),
+		(acc, idx) =>
+			acc.concat(dateToComparableDateItem(addDays(startDate, idx), today)),
 		[] as ComparableDateItemType[],
 	);
 

@@ -4,8 +4,9 @@ import {
 	comparableDateItemSchema,
 	dateToComparableDateItem,
 } from "./comparableDateItemSchema";
-import { dateSortCompare, isValidISODateString } from "./dateUtil";
+import { dateSortCompare } from "./dateUtil";
 import { fetchApiData, formatInput } from "./fetchUtil";
+import { today as defaultToday } from "./today";
 import { formatZodError } from "./zodUtil";
 
 const eventZodSchema = z.object({
@@ -63,10 +64,13 @@ const eventDataResponseTypeZodSchema = z.object({
 	error: z.union([z.string(), z.null()]).optional(),
 });
 
-export async function getEventsData(params?: {
-	from?: Date;
-	to?: Date;
-}): Promise<EventsDataType> {
+export async function getEventsData(
+	params?: {
+		from?: Date;
+		to?: Date;
+	},
+	today = defaultToday,
+): Promise<EventsDataType> {
 	const json = await fetchApiData({
 		endpoint: "events",
 		body: {
@@ -74,31 +78,32 @@ export async function getEventsData(params?: {
 			...formatInput(params || {}, []),
 		},
 	});
-	return validateGetDataResponse(json);
+	return validateGetDataResponse(json, today);
 }
 
 export async function getEventData(
 	id: string,
+	today = defaultToday,
 ): Promise<ParsedEventType | undefined> {
-	const allEvents = await getEventsData();
+	const allEvents = await getEventsData(undefined, today);
 	return allEvents.find((x) => x.event_id === id);
 }
 
-function validateGetDataResponse(response: unknown): ParsedEventType[] {
+function validateGetDataResponse(
+	response: unknown,
+	today: Date,
+): ParsedEventType[] {
 	try {
 		const parsedResponse = eventDataResponseTypeZodSchema.parse(response);
 		const eventsWithFixedOrgs = parsedResponse.data
-			.filter((x) => isValidISODateString(x.date))
-			.map((x) => {
-				return {
-					...x,
-					organizers: (x.organizers ?? []).map((x) => ({
-						slug: slugify(x, { lower: true, strict: true }),
-						name: x,
-					})),
-					...dateToComparableDateItem(x.date),
-				};
-			})
+			.map((x) => ({
+				...x,
+				organizers: (x.organizers ?? []).map((x) => ({
+					slug: slugify(x, { lower: true, strict: true }),
+					name: x,
+				})),
+				...dateToComparableDateItem(x.date, today),
+			}))
 			.sort((a, b) => dateSortCompare(a.date, b.date));
 		return parsedEventZodSchema.array().parse(eventsWithFixedOrgs);
 	} catch (error) {

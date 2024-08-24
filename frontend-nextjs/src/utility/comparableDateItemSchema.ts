@@ -1,5 +1,14 @@
-import { parse, startOfDay, startOfWeek } from "date-fns";
+import {
+	getDay,
+	getMonth,
+	getTime,
+	getYear,
+	parse,
+	startOfDay,
+	startOfWeek,
+} from "date-fns";
 import { z } from "zod";
+import { today as defaultToday } from "./today";
 
 export const comparableDateItemSchema = z.object({
 	date: z.date(),
@@ -11,17 +20,20 @@ export const comparableDateItemSchema = z.object({
 });
 export type ComparableDateItemType = z.infer<typeof comparableDateItemSchema>;
 
-const today = new Date();
-export const dateToComparableDateItem = (d: Date | string) => {
+export const dateToComparableDateItem = (
+	d: Date | string,
+	today = defaultToday,
+) => {
 	const date = startOfDay(
 		typeof d === "string" ? parse(d, "yyyy-MM-dd", today) : d,
 	);
-	return {
+	const dateObj = {
 		date,
-		year: date.getUTCFullYear(),
-		month: date.getUTCMonth(),
-		week: startOfWeek(date, { weekStartsOn: 1 }).getTime(),
-		day: date.getUTCDate(),
-		time: date.getTime(),
+		year: getYear(date),
+		month: getMonth(date),
+		week: getTime(startOfWeek(date, { weekStartsOn: 1 })),
+		day: getDay(date),
+		time: getTime(date),
 	};
+	return dateObj;
 };

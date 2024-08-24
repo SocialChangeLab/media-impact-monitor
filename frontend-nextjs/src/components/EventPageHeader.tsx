@@ -1,5 +1,6 @@
 "use client";
 import { cn } from "@/utility/classNames";
+import { format } from "@/utility/dateUtil";
 import { parseErrorMessage } from "@/utility/errorHandlingUtil";
 import type { ParsedEventType } from "@/utility/eventsUtil";
 import {
@@ -8,7 +9,6 @@ import {
 } from "@/utility/randomUtil";
 import useEvent from "@/utility/useEvent";
 import { QueryErrorResetBoundary } from "@tanstack/react-query";
-import { format } from "date-fns";
 import { ErrorBoundary } from "next/dist/client/components/error-boundary";
 import Image from "next/image";
 import { Suspense, memo, useMemo } from "react";

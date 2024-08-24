@@ -1,4 +1,5 @@
 import type { MediaSourceType } from "@/stores/filtersStore";
+import { parse } from "date-fns";
 import { z } from "zod";
 import type { EventOrganizerSlugType, OrganisationType } from "./eventsUtil";
 import { fetchApiData, formatInput } from "./fetchUtil";
@@ -6,7 +7,7 @@ import { formatZodError } from "./zodUtil";
 
 export const rawFullTextsZodSchema = z.object({
 	title: z.string(),
-	date: z.coerce.date(),
+	date: z.string(),
 	url: z.string().url(),
 	text: z.string(),
 	activism_sentiment: z.number().nullable(),
@@ -14,7 +15,11 @@ export const rawFullTextsZodSchema = z.object({
 });
 export type RawFullTextType = z.infer<typeof rawFullTextsZodSchema>;
 
-const parsedFullTextsZodSchema = rawFullTextsZodSchema;
+const parsedFullTextsZodSchema = rawFullTextsZodSchema
+	.omit({ date: true })
+	.extend({
+		date: z.date(),
+	});
 export type ParsedFullTextType = z.infer<typeof parsedFullTextsZodSchema>;
 
 const rawResponseDataZodSchema = z.array(rawFullTextsZodSchema).default([]);
@@ -36,6 +41,7 @@ export type FullTextsQueryProps = {
 	mediaSource?: MediaSourceType;
 	organizers: EventOrganizerSlugType[];
 	allOrganisations: OrganisationType[];
+	today: Date;
 };
 
 function getFullTextsQuery({
@@ -57,15 +63,23 @@ export async function getFullTextsData(props: FullTextsQueryProps) {
 		endpoint: "fulltexts",
 		body: getFullTextsQuery(props),
 	});
-	return validateFullTextsResponse(json);
+	return validateFullTextsResponse(json, props.today);
 }
 
 function validateFullTextsResponse(
 	response: unknown,
+	today: Date,
 ): ParsedFullTextsResponseType {
 	try {
-		const parsedResponse = rawResponseZodSchema.parse(response);
-		const sortedMedia = parsedResponse.data.sort(
+		const parsedResponse = rawResponseZodSchema
+			.transform((val) =>
+				val.data.map((d) => ({
+					...d,
+					date: parse(d.date, "yyyy-MM-dd", today),
+				})),
+			)
+			.parse(response);
+		const sortedMedia = parsedResponse.sort(
 			(a, b) => a.date.getTime() - b.date.getTime(),
 		);
 		return parsedResponseDataZodSchema.parse(sortedMedia);

@@ -1,20 +1,16 @@
 import { formatDateByAggregationUnit } from "@/components/EventsTimeline/useAggregationUnit";
 import { getSentimentLabel } from "@/components/SentimentLabel";
-import {
-	addDays,
-	differenceInDays,
-	format,
-	isSameDay,
-	subDays,
-} from "date-fns";
+import { useToday } from "@/providers/TodayProvider";
+import { addDays, differenceInDays, isSameDay, subDays } from "date-fns";
 import { useMemo } from "react";
 import slugify from "slugify";
 import {
 	type ComparableDateItemType,
 	dateToComparableDateItem,
 } from "./comparableDateItemSchema";
-import { dateSortCompare } from "./dateUtil";
+import { dateSortCompare, format } from "./dateUtil";
 import type { ParsedMediaTrendResponseType } from "./mediaTrendUtil";
+import { today as defaultToday } from "./today";
 import { useFullTexts } from "./useFullTexts";
 
 type FullTextsTrendItem = {
@@ -45,6 +41,7 @@ export function useFullTextsTrends({
 	sentiment_target?: "policy" | "activism" | null;
 }): ParsedFullTextsType {
 	const query = useFullTexts({ event_id });
+	const { today } = useToday();
 
 	const fullTextsAsTrends = useMemo(() => {
 		if (!query.data) {
@@ -78,7 +75,7 @@ export function useFullTextsTrends({
 			const baseObj = {
 				date: d.date,
 				dateFormatted: formatDateByAggregationUnit(d.date, "day"),
-				comparableDateObject: dateToComparableDateItem(d.date),
+				comparableDateObject: dateToComparableDateItem(d.date, today),
 				positive: existingVal?.positive ?? 0,
 				neutral: existingVal?.neutral ?? 0,
 				negative: existingVal?.negative ?? 0,
@@ -98,7 +95,7 @@ export function useFullTextsTrends({
 			limitations: [],
 			trends,
 		};
-	}, [query.data, sentiment_target]);
+	}, [query.data, sentiment_target, today]);
 
 	return {
 		...query,
@@ -133,11 +130,14 @@ function ensureSevenDays(arr: FullTextsTrendItem[]): FullTextsTrendItem[] {
 	return allDays;
 }
 
-function createPlaceholderDay(date: Date): FullTextsTrendItem {
+function createPlaceholderDay(
+	date: Date,
+	today = defaultToday,
+): FullTextsTrendItem {
 	return {
 		date,
 		dateFormatted: formatDateByAggregationUnit(date, "day"),
-		comparableDateObject: dateToComparableDateItem(date),
+		comparableDateObject: dateToComparableDateItem(date, today),
 		positive: 0,
 		neutral: 0,
 		negative: 0,

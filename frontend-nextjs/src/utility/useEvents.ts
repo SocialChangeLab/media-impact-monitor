@@ -1,5 +1,6 @@
 "use client";
 import { useFiltersStore } from "@/providers/FiltersStoreProvider";
+import { useToday } from "@/providers/TodayProvider";
 import {
 	type UseQueryResult,
 	useQuery,
@@ -33,6 +34,7 @@ function useEvents({
 	to: inputTo,
 }: { from?: Date; to?: Date } = {}): UseEventsReturnType {
 	const queryClient = useQueryClient();
+	const { today } = useToday();
 	const filterStore = useFiltersStore((state) => ({
 		from: state.from,
 		to: state.to,
@@ -45,8 +47,8 @@ function useEvents({
 	const queryKey = ["events"];
 	const query = useQuery({
 		queryKey,
-		queryFn: async () => await getEventsData(),
-		staleTime: endOfDay(new Date()).getTime() - new Date().getTime(),
+		queryFn: async () => await getEventsData(undefined, today),
+		staleTime: endOfDay(today).getTime() - today.getTime(),
 	});
 	const { data, error } = query;
 

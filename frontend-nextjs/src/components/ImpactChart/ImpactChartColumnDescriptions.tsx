@@ -2,6 +2,7 @@
 import { useFiltersStore } from "@/providers/FiltersStoreProvider";
 import { cn } from "@/utility/classNames";
 import { slugifyCssClass } from "@/utility/cssSlugify";
+import { format } from "@/utility/dateUtil";
 import { parseErrorMessage } from "@/utility/errorHandlingUtil";
 import type {
 	EventOrganizerSlugType,
@@ -12,7 +13,6 @@ import { topicIsSentiment } from "@/utility/topicsUtil";
 import useEvents from "@/utility/useEvents";
 import { useOrganisation } from "@/utility/useOrganisations";
 import { scaleQuantize } from "d3-scale";
-import { format } from "date-fns";
 import {
 	AlertCircle,
 	ArrowDown,

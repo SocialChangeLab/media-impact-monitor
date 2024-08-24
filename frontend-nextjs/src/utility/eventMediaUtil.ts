@@ -5,12 +5,13 @@ import {
 	eventOrganizerSlugZodSchema,
 } from "./eventsUtil";
 import { fetchApiData, formatInput } from "./fetchUtil";
+import { today } from "./today";
 import { formatZodError } from "./zodUtil";
 
 export const eventMediaInputQueryZodSchema = z.object({
 	mediaSource: z.enum(["news_online", "news_print", "web_google"]),
-	from: z.coerce.date().optional(),
-	to: z.coerce.date().optional(),
+	from: z.date().optional(),
+	to: z.date().optional(),
 	eventId: z.string(),
 	topic: z.string().optional().default("climate_change"),
 	organizers: z.array(eventOrganizerSlugZodSchema).optional(),
@@ -83,7 +84,7 @@ function validateGetDataResponse(response: unknown): ParsedEventMediaType[] {
 			mediaCoverageDataResponseTypeZodSchema.parse(response);
 		const media = parsedResponse.data.map((m) => ({
 			...m,
-			date: parse(m.date, "yyyy-MM-dd", new Date()),
+			date: parse(m.date, "yyyy-MM-dd", today),
 		}));
 		return parsedEventMediaCoverageZodSchema.array().parse(media);
 	} catch (error) {

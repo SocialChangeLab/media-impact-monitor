@@ -4,9 +4,10 @@ import {
 	comparableDateItemSchema,
 	dateToComparableDateItem,
 } from "./comparableDateItemSchema";
-import { dateSortCompare, isValidISODateString } from "./dateUtil";
+import { dateSortCompare } from "./dateUtil";
 import type { EventOrganizerSlugType, OrganisationType } from "./eventsUtil";
 import { fetchApiData, formatInput } from "./fetchUtil";
+import { today as defaultToday } from "./today";
 import { formatZodError } from "./zodUtil";
 
 export const mediaTrendZodSchema = z.object({
@@ -67,26 +68,32 @@ export function getMediaTrendQuery({
 
 export async function getMediaTrendData(
 	props: TrendQueryProps,
+	today = defaultToday,
 ): Promise<ParsedMediaTrendResponseType> {
 	const json = await fetchApiData({
 		endpoint: "trend",
 		body: getMediaTrendQuery(props),
 	});
-	return validateGetDataResponse(json);
+	return validateGetDataResponse(json, today);
 }
 
 function validateGetDataResponse(
 	response: unknown,
+	today: Date,
 ): ParsedMediaTrendResponseType {
 	try {
-		const parsedResponse = rawResponseZodSchema.parse(response);
-		const sortedMedia = parsedResponse.data.trends
-			?.filter((x) => isValidISODateString(x.date))
-			.map((x) => ({
-				...x,
-				...dateToComparableDateItem(x.date),
+		const parsedResponse = rawResponseZodSchema
+			.transform((val) => ({
+				...val,
+				trends: (val.data.trends || []).map((d) => ({
+					...d,
+					...dateToComparableDateItem(d.date, today),
+				})),
 			}))
-			.sort((a, b) => dateSortCompare(a.date, b.date));
+			.parse(response);
+		const sortedMedia = parsedResponse.trends.sort((a, b) =>
+			dateSortCompare(a.date, b.date),
+		);
 		return parsedResponseDataZodSchema.parse({
 			applicability: parsedResponse.data.applicability,
 			limitations: parsedResponse.data.limitations,

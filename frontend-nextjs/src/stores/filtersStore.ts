@@ -1,7 +1,8 @@
+import { format } from "@/utility/dateUtil";
 import type { EventOrganizerSlugType } from "@/utility/eventsUtil";
+import { today } from "@/utility/today";
 import {
 	endOfDay,
-	format,
 	isAfter,
 	isBefore,
 	parse,
@@ -17,8 +18,8 @@ import {
 	persist,
 } from "zustand/middleware";
 
-const defaultTo = endOfDay(subDays(new Date(), 1));
-const defaultFrom = startOfDay(subMonths(startOfDay(new Date()), 2));
+const defaultTo = endOfDay(subDays(today, 1));
+const defaultFrom = startOfDay(subMonths(startOfDay(today), 2));
 
 export type MediaSourceType = "news_online" | "news_print" | "web_google";
 
@@ -131,6 +132,7 @@ export const createFiltersStore = (
 	create(
 		persist<FiltersStore>(
 			(set) => ({
+				...defaultInitState,
 				...initState,
 				setDateRange: (range) =>
 					set(() =>
@@ -157,9 +159,9 @@ export const createFiltersStore = (
 	);
 
 export const datasetStartDate = startOfDay(
-	parse("01-01-2020", "dd-MM-yyyy", new Date()),
+	parse("01-01-2020", "dd-MM-yyyy", today),
 );
-export const datasetEndDate = endOfDay(subDays(new Date(), 1));
+export const datasetEndDate = endOfDay(subDays(today, 1));
 
 export function limitDateRange({ from, to }: { from: Date; to: Date }) {
 	const newFrom = isBefore(from, datasetStartDate) ? datasetStartDate : from;

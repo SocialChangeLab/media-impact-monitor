@@ -7,13 +7,14 @@ import {
 	extractEventOrganisations,
 	getEventData,
 } from "./eventsUtil";
+import { today } from "./today";
 import useQueryErrorToast from "./useQueryErrorToast";
 
 export function getEventQueryOptions(id?: ParsedEventType["event_id"]) {
 	return queryOptions({
 		queryKey: ["events", id],
 		queryFn: () => (id ? getEventData(id) : null),
-		staleTime: endOfDay(new Date()).getTime() - new Date().getTime(),
+		staleTime: endOfDay(today).getTime() - today.getTime(),
 		enabled: id !== undefined,
 	});
 }

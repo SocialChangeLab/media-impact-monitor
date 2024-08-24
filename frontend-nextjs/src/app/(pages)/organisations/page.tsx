@@ -3,7 +3,8 @@ import NewsletterFooterSection from "@/components/NewsletterFooterSection";
 import OrganisationsTable from "@/components/OrganisationsTable";
 import SectionHeadlineWithExplanation from "@/components/SectionHeadlineWithExplanation";
 import { useFiltersStore } from "@/providers/FiltersStoreProvider";
-import { format, isSameDay } from "date-fns";
+import { format } from "@/utility/dateUtil";
+import { isSameDay } from "date-fns";
 
 export default function OrganisationsOverviewPage() {
 	const description = useFiltersStore((state) => {

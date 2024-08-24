@@ -8,6 +8,7 @@ import {
 	getEventMediaData,
 } from "./eventMediaUtil";
 import type { OrganisationType, ParsedEventType } from "./eventsUtil";
+import { today } from "./today";
 import useEvents from "./useEvents";
 import useQueryErrorToast from "./useQueryErrorToast";
 
@@ -32,7 +33,7 @@ export function getEventMediaQueryOptions(
 						allOrganisations,
 					)
 				: null,
-		staleTime: endOfDay(new Date()).getTime() - new Date().getTime(),
+		staleTime: endOfDay(today).getTime() - today.getTime(),
 		enabled: queryParsing.success,
 	});
 }

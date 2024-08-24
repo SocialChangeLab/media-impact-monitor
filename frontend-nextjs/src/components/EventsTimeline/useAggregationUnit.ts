@@ -1,10 +1,10 @@
 import { useFiltersStore } from "@/providers/FiltersStoreProvider";
+import { format } from "@/utility/dateUtil";
 import {
 	differenceInCalendarISOWeeks,
 	differenceInCalendarMonths,
 	differenceInDays,
 	endOfWeek,
-	format,
 	isSameMonth,
 	isSameYear,
 	startOfWeek,

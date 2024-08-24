@@ -1,9 +1,11 @@
 "use client";
 import { useFiltersStore } from "@/providers/FiltersStoreProvider";
+import { useToday } from "@/providers/TodayProvider";
 import { useQuery } from "@tanstack/react-query";
-import { endOfDay, format } from "date-fns";
+import { endOfDay } from "date-fns";
 import { useMemo } from "react";
 import slugify from "slugify";
+import { format } from "./dateUtil";
 import { type TrendQueryProps, getMediaTrendData } from "./mediaTrendUtil";
 import useEvents from "./useEvents";
 import useQueryErrorToast from "./useQueryErrorToast";
@@ -34,6 +36,7 @@ function useMediaTrends({
 		[organizers],
 	);
 	const { data } = useEvents();
+	const { today } = useToday();
 	const queryKey = [
 		"mediaTrends",
 		trend_type,
@@ -46,18 +49,21 @@ function useMediaTrends({
 	const query = useQuery({
 		queryKey,
 		queryFn: async () =>
-			await getMediaTrendData({
-				trend_type,
-				sentiment_target,
-				params: {
-					from,
-					to,
-					organizers,
-					mediaSource,
+			await getMediaTrendData(
+				{
+					trend_type,
+					sentiment_target,
+					params: {
+						from,
+						to,
+						organizers,
+						mediaSource,
+					},
+					allOrganisations: data.organisations || [],
 				},
-				allOrganisations: data.organisations || [],
-			}),
-		staleTime: endOfDay(new Date()).getTime() - new Date().getTime(),
+				today,
+			),
+		staleTime: endOfDay(today).getTime() - today.getTime(),
 		enabled,
 	});
 

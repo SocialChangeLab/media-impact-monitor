@@ -1,7 +1,7 @@
 import { Tooltip, TooltipContent } from "@/components/ui/tooltip";
 import { cn } from "@/utility/classNames";
+import { format } from "@/utility/dateUtil";
 import type { OrganisationType, ParsedEventType } from "@/utility/eventsUtil";
-import { format } from "date-fns";
 import { Users } from "lucide-react";
 import { type PropsWithChildren, useMemo, useState } from "react";
 import { Button } from "../ui/button";

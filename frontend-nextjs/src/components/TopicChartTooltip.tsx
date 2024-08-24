@@ -1,7 +1,7 @@
 import { cn } from "@/utility/classNames";
 import type { ComparableDateItemType } from "@/utility/comparableDateItemSchema";
+import { format } from "@/utility/dateUtil";
 import { getTopicIcon } from "@/utility/topicsUtil";
-import { format } from "date-fns";
 import { memo } from "react";
 import {
 	type AggregationUnitType,

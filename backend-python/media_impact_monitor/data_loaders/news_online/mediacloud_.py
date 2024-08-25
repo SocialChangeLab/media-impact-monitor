@@ -70,6 +70,7 @@ def _story_list_all_pages(
     collection_ids: list[int] | None = None,
     platform: Platform = "onlinenews-mediacloud",
     sample_frac: float = 1,
+    verbose: bool = False,
 ):
     all_stories = []
     more_stories = True
@@ -95,9 +96,10 @@ def _story_list_all_pages(
             )
         else:
             dt = end_date
-        print(
-            f"retrieved metadata for {len(all_stories)} stories for month {start_date.year}-{start_date.month}, currently at {dt}"
-        )
+        if verbose:
+            print(
+                f"retrieved metadata for {len(all_stories)} stories for month {start_date.year}-{start_date.month}, currently at {dt}"
+            )
         # https://github.com/mediacloud/api-tutorial-notebooks/blob/main/MC02%20-%20attention.ipynb:
         # > As you may have noted, this can take a while for long time periods. If you look closely you'll notice that it can't be easily parallelized, because it requires content in the results to make the next call. A workaround is to divide you query up by time and query in parallel for something like each day. This can speed up the response. Also just contact us directly if you are trying to do larger data dumps, or hit up against your API quota.
     # take a 1% sample of stories
@@ -118,6 +120,7 @@ def _slice_date_range(start: date, end: date) -> list[tuple[date, date]]:
     return result
 
 
+@cache
 def _story_list_split_monthly(
     query: str,
     start_date: date,

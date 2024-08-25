@@ -9,7 +9,7 @@ def parallel_tqdm(
     n_jobs: int = 8,
     backend: str = "loky",
     **kwargs,
-):
+) -> list:
     """Parallelize a function with a tqdm progress bar."""
     total = total or len(iter)
     results = Parallel(n_jobs=n_jobs, return_as="generator", backend=backend)(

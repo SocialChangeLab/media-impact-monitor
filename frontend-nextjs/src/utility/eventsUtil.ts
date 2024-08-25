@@ -113,15 +113,14 @@ function validateGetDataResponse(
 
 export const distinctiveColorsMap = Object.fromEntries(
 	Object.entries({
-		"Fridays for Future": `var(--categorical-color-14)`,
+		"Fridays for Future": `var(--categorical-color-6)`,
 		"Last Generation": `var(--categorical-color-5)`,
 		"Extinction Rebellion": `var(--categorical-color-7)`,
-		BUND: `var(--categorical-color-13)`,
+		BUND: `var(--categorical-color-14)`,
 		NABU: `var(--categorical-color-2)`,
-		Greenpeace: `var(--categorical-color-6)`,
+		Greenpeace: `var(--categorical-color-3)`,
 		"Ende Gelaende": `var(--categorical-color-4)`,
 		"The Greens": `var(--categorical-color-8)`,
-		"MLPD: Marxist-Leninist Party of Germany": `var(--categorical-color-11)`,
 		"The Left": `var(--categorical-color-1)`,
 		SPD: `var(--categorical-color-12)`,
 	}).map(([key, value]) => [

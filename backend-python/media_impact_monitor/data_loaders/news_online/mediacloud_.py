@@ -36,7 +36,12 @@ def get_mediacloud_counts(
 ) -> tuple[pd.Series | None, list[str]]:
     assert verify_dates(start_date, end_date)
 
-    collection_ids = [_resolve_country(c) for c in countries] if countries else []
+    collection_ids = [_resolve_country(c) for c in countries] if countries else None
+    collection_ids = (
+        [item for sublist in collection_ids for item in sublist]
+        if collection_ids
+        else None
+    )
     stories = _story_list_split_monthly(
         query=query,
         start_date=start_date,
@@ -160,6 +165,11 @@ def get_mediacloud_fulltexts(
     assert verify_dates(start_date, end_date)
     assert isinstance(countries, list) or countries is None
     collection_ids = [_resolve_country(c) for c in countries] if countries else None
+    collection_ids = (
+        [item for sublist in collection_ids for item in sublist]
+        if collection_ids
+        else None
+    )
     df = _story_list_split_monthly(
         query=query,
         start_date=start_date,
@@ -205,10 +215,14 @@ def _extract(url_and_response):
 
 
 @cache
-def _resolve_country(country: str) -> int:
-    # get national newspapers (regional newspapers are also available)
+def _resolve_country(country: str) -> list[int]:
+    # get national newspapers
     results = directory.collection_list(name=f"{country} - national")["results"]
     # ignore research collections
     results = [r for r in results if "(Research Only)" not in r["name"]]
     assert len(results) == 1, f"Expected 1 result, got {len(results)} for {country}"
-    return results[0]["id"]
+    national = results[0]["id"]
+    # get regional newspapers
+    results = directory.collection_list(name=f"{country} - state & local")["results"]
+    regional = results[0]["id"]
+    return [national, regional]

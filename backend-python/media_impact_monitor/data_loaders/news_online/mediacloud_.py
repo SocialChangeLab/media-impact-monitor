@@ -205,7 +205,7 @@ def get_mediacloud_fulltexts(
 
 def _extract(url_and_response):
     url, response = url_and_response
-    if response.status_code != 200:
+    if response is None or response.status_code != 200:
         return None
     try:
         # this also contains additional metadata (title, language, extraction method, ...) that could be used

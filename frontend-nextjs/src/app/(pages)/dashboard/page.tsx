@@ -32,7 +32,7 @@ export default function EventsPageWithSuspense() {
 				<EventsTimeline />
 			</SectionHeadlineWithExplanation>
 			<SectionHeadlineWithExplanation
-				headline="What topics are the focus of public discourse?"
+				headline="How prominent are the issues in public discourse?"
 				description={
 					<>
 						<p className="text-pretty">

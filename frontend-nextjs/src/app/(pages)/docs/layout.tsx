@@ -62,18 +62,15 @@ function DocsLayout({ children }: { children: ReactNode }) {
 						<ul className="mx-auto max-w-xl flex flex-col gap-2">
 							{docsPagesToc.map((docsPage) => (
 								<li key={docsPage.slug}>
-									{!("children" in docsPage) && <DocsTocLink {...docsPage} />}
-									{"children" in docsPage && docsPage.children.length > 0 && (
-										<>
-											<DocsTocLink {...docsPage} />
-											<ul className="mb-4 flex flex-col mt-2">
-												{docsPage.children.map((child) => (
-													<li key={child.slug}>
-														<DocsTocLink {...child} child />
-													</li>
-												))}
-											</ul>
-										</>
+									<DocsTocLink {...docsPage} />
+									{docsPage.children && (
+										<ul className="mb-4 flex flex-col mt-2">
+											{docsPage.children.map((child) => (
+												<li key={child.slug}>
+													<DocsTocLink {...child} child />
+												</li>
+											))}
+										</ul>
 									)}
 								</li>
 							))}

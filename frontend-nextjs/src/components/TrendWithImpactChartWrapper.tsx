@@ -17,8 +17,12 @@ function TrendWithImpactChartWrapper({
 	children,
 	trend_type,
 	sentiment_target,
+	impactHeadline,
+	impactDescription,
 }: React.ComponentProps<typeof LazyLoadedImpactChart> & {
 	children: ReactNode;
+	impactHeadline?: string;
+	impactDescription?: string;
 }) {
 	const [showComputedImpact, setShowComputedImpact] = useState(false);
 	const [parentRef, size] = useElementSize();
@@ -81,11 +85,9 @@ function TrendWithImpactChartWrapper({
 						>
 							<div className="mb-6 flex flex-col gap-1">
 								<h3 className="text-xl font-semibold font-headlines">
-									Computed impacts
+									{impactHeadline}
 								</h3>
-								<p className="text-sm text-grayDark">
-									Lorem ipsum dolor sit amet consectetur adipisicing elit.
-								</p>
+								<p className="text-sm text-grayDark">{impactDescription}</p>
 							</div>
 							<LazyLoadedImpactChart
 								trend_type={trend_type}

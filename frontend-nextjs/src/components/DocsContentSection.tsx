@@ -1,7 +1,7 @@
 import type { DocsPage } from "contentlayer/generated";
 import { Mdx } from "./Mdx";
 
-function DocsChartContentSection({
+function DocsContentSection({
 	noTitle = false,
 	...doc
 }: DocsPage & { noTitle?: boolean }) {
@@ -25,4 +25,4 @@ function DocsChartContentSection({
 	);
 }
 
-export default DocsChartContentSection;
+export default DocsContentSection;

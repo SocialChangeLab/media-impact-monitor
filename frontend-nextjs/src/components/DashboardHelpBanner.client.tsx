@@ -1,5 +1,6 @@
 "use client";
 import { cn } from "@/utility/classNames";
+import { texts } from "@/utility/textUtil";
 import { motion } from "framer-motion";
 import { CornerLeftDown, CornerLeftUp, HelpCircle } from "lucide-react";
 import { useCallback, useMemo, useState } from "react";
@@ -22,18 +23,20 @@ function ExpandedHelpBanner({ onCollapse }: HelpBannerActions) {
 						"leading-7",
 					)}
 				>
-					The Impact Monitor dashboard
+					{texts.info.welcome_message.heading}
 				</h1>
-				<p className="text-sm lg:text-base max-w-prose text-pretty mt-1 mb-1 text-fg">
-					Welcome to the Impact Monitor dashboard. View protests over time,
-					media topics and sentiments, and how organizations impact the media
-					landscape.
-				</p>
-				<p className="text-sm lg:text-base max-w-prose text-pretty mt-2 mb-5 text-fg">
-					Start by setting the filters in the top of the page, and scroll down
-					to explore the data.
-				</p>
-				<span className="flex gap-4">
+				{texts.info.welcome_message.description.map((desc, i) => (
+					<p
+						key={`${desc}-${
+							// biome-ignore lint/suspicious/noArrayIndexKey: <explanation>
+							i
+						}`}
+						className="text-sm lg:text-base max-w-prose text-pretty mt-1 mb-1 text-fg"
+					>
+						{desc}
+					</p>
+				))}
+				<span className="flex gap-4 mt-5">
 					<Button size="sm" onClick={onCollapse}>
 						Got it!
 					</Button>{" "}

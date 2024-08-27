@@ -1,4 +1,4 @@
-import DocsChartContentSection from "@/components/DocsChartContentSection";
+import DocsContentSection from "@/components/DocsContentSection";
 import { Mdx } from "@/components/Mdx";
 import { getAllDocsPages, getDocsPage } from "@/utility/docsUtil";
 import { notFound } from "next/navigation";
@@ -25,15 +25,15 @@ const DocsPageLayout = ({ params }: { params: { slug: string } }) => {
 					{docsPage.title}
 				</h1>
 			</div>
-			{!docsPage.isChartPage && docsPage.body?.code && <Mdx code={docsPage.body.code} />}
-			{docsPage.isChartPage && (
+			{docsPage.body?.code && <Mdx code={docsPage.body.code} />}
+			{!docsPage.isTopLevel && (
 				<>
-					{docsPage.intro && (
-						<DocsChartContentSection {...docsPage.intro} noTitle />
+					{docsPage.intro && <DocsContentSection {...docsPage.intro} noTitle />}
+					{docsPage.info && <DocsContentSection {...docsPage.info} />}
+					{docsPage.methodology && (
+						<DocsContentSection {...docsPage.methodology} />
 					)}
-					<DocsChartContentSection {...docsPage.info} />
-					<DocsChartContentSection {...docsPage.methodology} />
-					<DocsChartContentSection {...docsPage.data} />
+					{docsPage.data && <DocsContentSection {...docsPage.data} />}
 				</>
 			)}
 		</article>

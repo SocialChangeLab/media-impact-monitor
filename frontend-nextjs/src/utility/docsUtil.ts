@@ -1,101 +1,148 @@
 import { type DocsPage, allDocsPages } from "contentlayer/generated";
+import slugify from "slugify";
 
-export type ChartDocsPage = {
+type DocsPageBase = DocsPage & {
 	slug: string;
 	title: string;
 	tocOrder?: number;
-	isChartPage: true;
-	intro: DocsPage;
-	info: DocsPage;
-	methodology: DocsPage;
-	data: DocsPage;
 };
 
-export type NonChartDocsPage = DocsPage & {
-	isChartPage: false;
+type TopLevelDocsPage = DocsPageBase & {
+	isTopLevel: true;
+	children: [];
 };
 
-export type HierarchizedDocsPage = NonChartDocsPage | ChartDocsPage;
+type SecondLevelDocsPage = DocsPageBase & {
+	children: ThirdLevelDocsPage[];
+	isTopLevel: true;
+};
 
-const chartPageKey = "charts";
+type ThirdLevelDocsPage = DocsPageBase & {
+	isTopLevel: false;
+	intro?: DocsPageBase;
+	info?: DocsPageBase;
+	methodology?: DocsPageBase;
+	data?: DocsPageBase;
+};
+
+type ParsedDocsPage = TopLevelDocsPage | SecondLevelDocsPage;
 
 export function getAllDocsPages() {
 	const pagesMap = allDocsPages.reduce((acc, doc) => {
-		const path = doc._raw.flattenedPath.split("/").slice(1);
+		const path = doc._raw.flattenedPath
+			.split("/")
+			.slice(1)
+			.map(slugifyPageName);
+		const [parentPageName, pageName] = path;
 		if (path.length === 0) return acc;
-		if (path[0] !== chartPageKey) {
-			acc.set(doc.slug, { ...doc, isChartPage: false });
+		if (path.length === 1) {
+			acc.set(parentPageName, {
+				...doc,
+				title: doc.title || camelToCapitalCase(parentPageName ?? ""),
+				slug: parentPageName,
+				isTopLevel: true,
+				children: [],
+			} satisfies TopLevelDocsPage);
 			return acc;
 		}
 		if (path.length !== 3) return acc;
-		const [_base, chartName, section] = path;
-		const existingChartPage = acc.get(chartName);
-		const chartPage = existingChartPage as ChartDocsPage | undefined;
-		acc.set(chartName, {
-			slug: chartName,
-			title: `${camelToCapitalCase(chartName)} Chart`,
-			isChartPage: true,
-			intro: (section === "00-intro" && doc) || (chartPage?.intro as DocsPage),
-			methodology:
-				(section === "02-methodology" && doc) ||
-				(chartPage?.methodology as DocsPage),
-			data: (section === "03-data" && doc) || (chartPage?.data as DocsPage),
-			info: (section === "01-info" && doc) || (chartPage?.info as DocsPage),
-		});
+		const parsedParentPageName = slugifyPageName(parentPageName);
+		const parsedPageName = slugifyPageName(pageName);
+		const existingParent = acc.get(parsedParentPageName) as
+			| SecondLevelDocsPage
+			| undefined;
+		const getByKey = (slug: string) =>
+			allDocsPages.find((d) => {
+				const path = d._raw.flattenedPath.split("/").slice(1);
+				const s = slugifyPageName(path.at(-1) ?? "");
+				const p = slugifyPageName(path.at(-2) ?? "");
+				return s === slug && p === parsedPageName;
+			});
+		const intro = getByKey("intro");
+		const methodology = getByKey("methodology");
+		const info = getByKey("info");
+		const data = getByKey("data");
+		const previousChildren = existingParent?.children ?? [];
+		const existingChild = previousChildren.find(
+			(child) => child.slug === parsedPageName,
+		);
+		if (existingChild) return acc;
+		acc.set(parsedParentPageName, {
+			...doc,
+			...existingParent,
+			title: camelToCapitalCase(parsedParentPageName),
+			slug: parsedParentPageName,
+			isTopLevel: true,
+			children: [
+				...(existingParent?.children ?? []),
+				{
+					...doc,
+					title: camelToCapitalCase(parsedPageName),
+					slug: parsedPageName,
+					isTopLevel: false,
+					intro,
+					methodology,
+					data,
+					info,
+				},
+			],
+		} satisfies SecondLevelDocsPage);
 		return acc;
-	}, new Map<string, HierarchizedDocsPage>());
+	}, new Map<string, ParsedDocsPage>());
 	return Array.from(pagesMap.values());
 }
 
 export function getDocsPage(slug: string) {
-	const docsPage = getAllDocsPages().find((docsPage) => docsPage.slug === slug);
+	const parsedSlug = slugifyPageName(slug);
+	const docsPage = getDocsFlatToc().find(
+		(docsPage) => slugifyPageName(docsPage.slug) === parsedSlug,
+	);
 	return docsPage || null;
 }
 
-export function getDocsToc(): (
-	| HierarchizedDocsPage
-	| {
-			title: string;
-			slug: string;
-			children: HierarchizedDocsPage[];
-			tocOrder?: number;
-	  }
-)[] {
+export function getDocsToc() {
 	const docsPages = getAllDocsPages();
-	const chartPages = docsPages.filter(
-		(docsPage) => docsPage.isChartPage,
-	) as ChartDocsPage[];
-	const nonChartPages = docsPages.filter(
-		(docsPage) => !docsPage.isChartPage,
-	) as NonChartDocsPage[];
-	return [
-		...nonChartPages,
-		{
-			title: "Charts",
-			slug: chartPages[0].slug,
-			children: chartPages,
-			tocOrder: 2,
-		},
-	].sort((a, b) => {
-		const aOrder = a.tocOrder ?? 999;
-		const bOrder = b.tocOrder ?? 999;
-		if (aOrder === bOrder) return a.title.localeCompare(b.title);
-		return aOrder - bOrder;
-	});
+	return docsPages.sort(sortPages).map((docsPage) => ({
+		...docsPage,
+		children: docsPage.children?.sort(sortPages),
+	}));
 }
 
 export function getDocsFlatToc() {
-	const docsPages = getAllDocsPages();
-	return docsPages.map((docsPage) => ({
-		slug: docsPage.slug,
-		title: docsPage.title,
-		isChartPage: docsPage.isChartPage,
-	}));
+	return getAllDocsPages().flatMap((docsPage) =>
+		docsPage.children ? [docsPage, ...docsPage.children] : [docsPage],
+	);
 }
 
 function camelToCapitalCase(str: string) {
 	return str
+		.replace(/[-_]/g, " ")
 		.replace(/([A-Z])/g, " $1")
 		.replace(/^./, (match: string) => match.toUpperCase())
 		.replace(/\s./g, (match: string) => match.toUpperCase());
+}
+
+function slugifyPageName(str: string) {
+	return slugify(str.replaceAll("_", "-").replace(/^\d{2}/, ""), {
+		lower: true,
+		strict: true,
+	});
+}
+
+type SortablePage = {
+	tocOrder?: number;
+	_raw: { flattenedPath: string };
+	title: string;
+};
+function sortPages(a: SortablePage, b: SortablePage) {
+	const aOrder = a.tocOrder ?? 999;
+	const bOrder = b.tocOrder ?? 999;
+	if (aOrder === bOrder) {
+		const aFilename =
+			a._raw.flattenedPath.split("/").slice(-1).at(0) ?? a.title;
+		const bFilename =
+			b._raw.flattenedPath.split("/").slice(-1).at(0) ?? b.title;
+		return aFilename.localeCompare(bFilename);
+	}
+	return aOrder - bOrder;
 }

@@ -6,6 +6,7 @@ import NewsletterFooterSection from "@/components/NewsletterFooterSection";
 import SectionHeadlineWithExplanation from "@/components/SectionHeadlineWithExplanation";
 import SizeOptimizationNotice from "@/components/SizeOptimizationNotice.server";
 import TrendWithImpactChartWrapper from "@/components/TrendWithImpactChartWrapper";
+import { texts } from "@/utility/textUtil";
 
 export default function EventsPageWithSuspense() {
 	return (
@@ -14,6 +15,7 @@ export default function EventsPageWithSuspense() {
 			<DashboardHelpBanner />
 			<SectionHeadlineWithExplanation
 				headline="What protests are happening?"
+				helpSlug="01-protest_timeline"
 				description={
 					<>
 						<p className="text-pretty">
@@ -44,9 +46,13 @@ export default function EventsPageWithSuspense() {
 						</p>
 					</>
 				}
-				helpSlug="mediaTrend"
+				helpSlug="03-topics_impact"
 			>
-				<TrendWithImpactChartWrapper trend_type="keywords">
+				<TrendWithImpactChartWrapper
+					trend_type="keywords"
+					impactHeadline={texts.charts.topics_impact.heading}
+					impactDescription={texts.charts.topics_impact.description}
+				>
 					<MediaCoverageChart />
 				</TrendWithImpactChartWrapper>
 			</SectionHeadlineWithExplanation>

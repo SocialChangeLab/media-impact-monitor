@@ -18,7 +18,7 @@ function DocsChartContentSection({
 					</a>
 				</h2>
 			)}
-			<Mdx code={doc.body.code} />
+			{doc.body?.code && <Mdx code={doc.body.code} />}
 			<hr className="my-4 md:my-8 border-grayLight text-grayLight" />
 			<br />
 		</>

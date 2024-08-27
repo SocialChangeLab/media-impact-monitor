@@ -35,12 +35,12 @@ export function getAllDocsPages() {
 			slug: chartName,
 			title: `${camelToCapitalCase(chartName)} Chart`,
 			isChartPage: true,
-			intro: (section === "intro" && doc) || (chartPage?.intro as DocsPage),
+			intro: (section === "00-intro" && doc) || (chartPage?.intro as DocsPage),
 			methodology:
-				(section === "methodology" && doc) ||
+				(section === "02-methodology" && doc) ||
 				(chartPage?.methodology as DocsPage),
-			data: (section === "data" && doc) || (chartPage?.data as DocsPage),
-			info: (section === "info" && doc) || (chartPage?.info as DocsPage),
+			data: (section === "03-data" && doc) || (chartPage?.data as DocsPage),
+			info: (section === "01-info" && doc) || (chartPage?.info as DocsPage),
 		});
 		return acc;
 	}, new Map<string, HierarchizedDocsPage>());

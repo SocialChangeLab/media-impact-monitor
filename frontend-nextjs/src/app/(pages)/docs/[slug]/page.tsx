@@ -25,7 +25,7 @@ const DocsPageLayout = ({ params }: { params: { slug: string } }) => {
 					{docsPage.title}
 				</h1>
 			</div>
-			{!docsPage.isChartPage && <Mdx code={docsPage.body.code} />}
+			{!docsPage.isChartPage && docsPage.body?.code && <Mdx code={docsPage.body.code} />}
 			{docsPage.isChartPage && (
 				<>
 					{docsPage.intro && (

@@ -1,5 +1,3 @@
-// Style guide: always use British English (e.g., "organisations")
-
 {
     "info": [
         {
@@ -16,8 +14,8 @@
             "id": "protest_timeline",
             "heading": "What protests are happening?",
             "description": [
-                "See protests over time for all of the selected organisations.", // maybe add an eye symbol before this paragraph?
-                "Hover or click on the bubbles for more information on individual protest events.", // maybe add a cursor symbol before this paragraph?
+                "See protests over time for all of the selected organisations.",
+                "Hover or click on the bubbles for more information on individual protest events.",
                 "Currently, we only cover climate protests in Germany since 2020."
             ],
             "data_credit": [
@@ -98,6 +96,6 @@
             "description": [ ],
             "data_credit": [ ]
 
-        },
+        }
     ]
 }

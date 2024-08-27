@@ -26,8 +26,7 @@ You will need to add the required API keys (`BUNDESTAG_API_KEY`, `ACLED_KEY`, et
 
 We have defined the following endpoints on Azure OpenAI:
 
-- `gpt-35-turbo`: `gpt-3.5-turbo-1106` (16k tokens context)
-- `gpt-4`: `gpt-4-turbo-2024-04-09` (128k tokens context)
+- `gpt-4o-mini`: `gpt-4o-mini-2024-07-18` (128k tokens context)
 
 Azure OpenAI uses content filters, also for the input texts, that cannot be switched off, but their thresholds can be set to high.
 

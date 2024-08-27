@@ -1,21 +1,11 @@
-from datetime import date
-
 import pandas as pd
 
-from media_impact_monitor.data_loaders.news_online.mediacloud_ import (
-    get_mediacloud_fulltexts,
-)
-from media_impact_monitor.fulltext_coding import code_fulltext
+from media_impact_monitor.fulltexts import get_fulltexts
+from media_impact_monitor.types_ import FulltextSearch, TrendSearch
 from media_impact_monitor.util.cache import cache
 
 
-@cache
-def get_sentiment_trend(
-    end_date: date,
-    query: str,
-    start_date: date = date(2024, 5, 1),
-    media_source: str = "news_online",
-) -> pd.DataFrame:
+def get_sentiment_trend(q: TrendSearch) -> tuple[pd.DataFrame | None, list[str]]:
     """
     Retrieves the sentiment trend for a given query and start date.
 
@@ -24,24 +14,28 @@ def get_sentiment_trend(
         start_date (date): The start date for retrieving the sentiment trend.
 
     Returns:
-        pd.DataFrame: A DataFrame containing the sentiment trend with columns for negative, neutral, and positive sentiments, indexed by date.
+        pd.DataFrame | str: A DataFrame containing the sentiment trend with columns for negative, neutral, and positive sentiments, indexed by date: or a string of limitations
     """
-    assert (
-        media_source == "news_online"
-    ), "Only news_online has fulltexts, which are necessary for sentiment analysis."
-    query = '"letzte generation"'  # TODO
-    print(start_date, end_date, query)
-    fulltexts = get_mediacloud_fulltexts(
-        query=query, start_date=start_date, end_date=end_date, countries=["Germany"]
-    )
-    coded_df = fulltexts["text"].apply(code_fulltext).apply(pd.Series)
-    fulltexts = pd.concat([fulltexts, coded_df], axis=1)
+    if q.media_source != "news_online":
+        return None, [
+            f"Sentiment trend requires fulltext analysis, which is only available for news_online, not {q.media_source}."
+        ]
+    limitations = []
+    if q.start_date and q.start_date.year < 2022:
+        limitations.append("MediaCloud only goes back until 2022.")
+    assert q.sentiment_target in ["activism", "policy"]
+    field = f"{q.sentiment_target}_sentiment"
+    params = dict(q)
+    del params["trend_type"]
+    del params["aggregation"]
+    fulltexts = get_fulltexts(FulltextSearch(**params), sample_frac=0.01)
 
     # aggregate positive, neutral, negative sentiments by day
-    fulltexts = (
-        fulltexts.groupby("date")["sentiment"].value_counts().unstack().fillna(0)
+    df = fulltexts.groupby("date")[field].agg(
+        negative=lambda x: (x == -1).sum(),
+        neutral=lambda x: (x == 0).sum(),
+        positive=lambda x: (x == 1).sum(),
     )
-    fulltexts.columns = ["negative", "neutral", "positive"]
-    fulltexts.index = pd.to_datetime(fulltexts.index).date
-    fulltexts.index.name = "date"
-    return fulltexts
+    df.index = pd.to_datetime(df.index).date
+    df.index.name = "date"
+    return df, limitations

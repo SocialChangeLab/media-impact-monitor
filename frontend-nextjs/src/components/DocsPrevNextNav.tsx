@@ -2,8 +2,8 @@
 import { cn } from "@/utility/classNames";
 import { getDocsFlatToc } from "@/utility/docsUtil";
 import { ArrowLeft, ArrowRight } from "lucide-react";
-import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useSearchParams } from "next/navigation";
+import InternalLink from "./InternalLink";
 
 function DocsPrevNextNav() {
 	const pathname = usePathname();
@@ -44,8 +44,9 @@ function DocsPrevNextLink({
 		isChartPage: boolean;
 	};
 }) {
+	const searchParams = useSearchParams();
 	return (
-		<Link
+		<InternalLink
 			href={`/docs/${page.slug}`}
 			className={cn(
 				"grid gap-4 items-center group",
@@ -67,7 +68,7 @@ function DocsPrevNextLink({
 			{!isPrev && (
 				<ArrowRight className="text-grayMed group-hover:text-fg transition-colors" />
 			)}
-		</Link>
+		</InternalLink>
 	);
 }
 

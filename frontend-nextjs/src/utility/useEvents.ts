@@ -1,5 +1,6 @@
 "use client";
 import { useFiltersStore } from "@/providers/FiltersStoreProvider";
+import { useToday } from "@/providers/TodayProvider";
 import {
 	type UseQueryResult,
 	useQuery,
@@ -7,13 +8,13 @@ import {
 } from "@tanstack/react-query";
 import { endOfDay } from "date-fns";
 import { useEffect, useMemo } from "react";
-import { toast } from "sonner";
 import {
 	type OrganisationType,
 	type ParsedEventType,
 	extractEventOrganisations,
 	getEventsData,
 } from "./eventsUtil";
+import useQueryErrorToast from "./useQueryErrorToast";
 
 export type UseEventsReturnType = Omit<
 	UseQueryResult<ParsedEventType[], unknown>,
@@ -33,6 +34,7 @@ function useEvents({
 	to: inputTo,
 }: { from?: Date; to?: Date } = {}): UseEventsReturnType {
 	const queryClient = useQueryClient();
+	const { today } = useToday();
 	const filterStore = useFiltersStore((state) => ({
 		from: state.from,
 		to: state.to,
@@ -45,19 +47,12 @@ function useEvents({
 	const queryKey = ["events"];
 	const query = useQuery({
 		queryKey,
-		queryFn: async () => await getEventsData(),
-		staleTime: endOfDay(new Date()).getTime() - new Date().getTime(),
+		queryFn: async () => await getEventsData(undefined, today),
+		staleTime: endOfDay(today).getTime() - today.getTime(),
 	});
 	const { data, error } = query;
 
-	useEffect(() => {
-		if (!error) return;
-		toast.error(`Error fetching events: ${error}`, {
-			important: true,
-			dismissible: true,
-			duration: 1000000,
-		});
-	}, [error]);
+	useQueryErrorToast("protests", error);
 
 	const organisersKey = useMemo(
 		() => filterStore.organizers.sort().join("-"),
@@ -78,7 +73,9 @@ function useEvents({
 	const eventFilteredByOrganizers = useMemo(() => {
 		if (filterStore.organizers.length === 0) return events;
 		return events.filter((e) =>
-			filterStore.organizers.find((org) => e.organizers.includes(org)),
+			filterStore.organizers.find((orgSlug) =>
+				e.organizers.find((x) => x.slug === orgSlug),
+			),
 		);
 	}, [events, organisersKey]);
 
@@ -87,15 +84,18 @@ function useEvents({
 		[data],
 	);
 
+	const orgsFromFilteredEvents = useMemo(
+		() => (events.length ? extractEventOrganisations(events) : []),
+		[events],
+	);
+
 	const selectedOrganisations = useMemo(() => {
-		if (filterStore.organizers.length === 0) return organisations;
-		const selectedOrganisations = organisations.filter((org) =>
-			filterStore.organizers.find(
-				(o) => o.toLowerCase() === org.name.toLowerCase(),
-			),
+		if (filterStore.organizers.length === 0) return orgsFromFilteredEvents;
+		const selectedOrs = orgsFromFilteredEvents.filter((org) =>
+			filterStore.organizers.find((o) => o === org.slug),
 		);
-		return selectedOrganisations;
-	}, [filterStore.organizers, organisations]);
+		return selectedOrs.length === 0 ? orgsFromFilteredEvents : selectedOrs;
+	}, [filterStore.organizers, orgsFromFilteredEvents]);
 
 	// biome-ignore lint/correctness/useExhaustiveDependencies: The queryClient should never change and if it does it shouldn't retrigger the useEffect
 	useEffect(() => {

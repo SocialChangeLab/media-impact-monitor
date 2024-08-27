@@ -1,4 +1,5 @@
-import headerImage from "@/images/header-bg.png";
+import NewsletterFooterSection from "@/components/NewsletterFooterSection";
+import headerImage from "@/images/header-bg.webp";
 import { cn } from "@/utility/classNames";
 import Image from "next/image";
 import type { ReactNode } from "react";
@@ -24,7 +25,7 @@ export default async function AboutPageLayout({
 					<div
 						className="absolute inset-0 w-screen h-[88px] sm:h-[16vw] sm:min-h-40 bg-repeat
             bg-center mix-blend-screen dark:mix-blend-multipy
-            bg-[url(/images/noisy-dark.png)] dark:bg-[url(/images/noisy-inverted.png)]"
+            bg-[url(/images/noisy-dark.webp)] dark:bg-[url(/images/noisy-inverted.webp)]"
 						aria-hidden="true"
 					/>
 				</div>
@@ -39,12 +40,12 @@ export default async function AboutPageLayout({
 						<div
 							aria-hidden="true"
 							className="absolute w-screen h-screen top-[10vw] right-full pointer-events-none dark:invert dark:saturate-0 bg-right-top bg-no-repeat"
-							style={{ backgroundImage: `url(/images/doc-shadow.png)` }}
+							style={{ backgroundImage: `url(/images/doc-shadow.webp)` }}
 						/>
 						<div
 							aria-hidden="true"
 							className="absolute w-screen h-screen top-[10vw] left-full pointer-events-none dark:invert dark:saturate-0 bg-right-top bg-no-repeat -scale-x-100"
-							style={{ backgroundImage: `url(/images/doc-shadow.png)` }}
+							style={{ backgroundImage: `url(/images/doc-shadow.webp)` }}
 						/>
 						<div
 							className="prose prose-fg relative pb-8 sm:py-8 m-0
@@ -62,6 +63,7 @@ export default async function AboutPageLayout({
 					</div>
 				</div>
 			</main>
+			<NewsletterFooterSection />
 		</>
 	);
 }

@@ -3,9 +3,12 @@ import {
 	TooltipContent,
 	TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { cn } from "@/utility/classNames";
-import type { OrganisationType, ParsedEventType } from "@/utility/eventsUtil";
-import { format } from "date-fns";
+import { format } from "@/utility/dateUtil";
+import {
+	type OrganisationType,
+	type ParsedEventType,
+	compareOrganizationsByColors,
+} from "@/utility/eventsUtil";
 import { type ReactNode, memo, useMemo } from "react";
 import OrgLine from "./EventTooltipOrgLine";
 import {
@@ -39,24 +42,25 @@ function AggregatedEventsTooltip({
 		return organisations
 			.map((org) => ({
 				...org,
-				count: events.filter((event) => event.organizers.includes(org.name))
-					.length,
-				isSelected: !!selectedOrganisations.find((x) => x.name === org.name),
+				count: events.filter((event) =>
+					event.organizers.find((x) => x.slug === org.slug),
+				).length,
+				isSelected: !!selectedOrganisations.find((x) => x.slug === org.slug),
 			}))
 			.sort((a, b) => {
+				if (selectedOrganisations.length === 0)
+					return compareOrganizationsByColors(a, b);
 				if (a.isSelected && !b.isSelected) return -1;
 				if (!a.isSelected && b.isSelected) return 1;
-				if (a.color > b.color) return -1;
-				if (a.color < b.color) return 1;
-				return a.name.localeCompare(b.name);
+				return compareOrganizationsByColors(a, b);
 			});
 	}, [organisations, selectedOrganisations, events]);
 
 	return (
 		<Tooltip>
 			<TooltipTrigger>{children}</TooltipTrigger>
-			<TooltipContent>
-				<p className="text-base pt-2 pb-3 max-w-80">
+			<TooltipContent className="px-0">
+				<p className="text-base pt-2 pb-3 max-w-80 px-4">
 					The {aggregationUnit} of{" "}
 					<strong>
 						{aggregationUnit === "month"
@@ -74,11 +78,10 @@ function AggregatedEventsTooltip({
 							<strong>{sumSize.toLocaleString("en-GB")} participants</strong>
 						</>
 					)}
-					{organisations.length > 1 &&
-						", and was organized by the following organizations:"}
+					{`, and ${events.length > 1 ? "were" : "was"} organized by the following organization${orgs.length > 1 ? "s" : ""}:`}
 				</p>
 				{orgs.map((org) => (
-					<OrgLine key={org.name} {...org} />
+					<OrgLine key={org.slug} {...org} />
 				))}
 			</TooltipContent>
 		</Tooltip>

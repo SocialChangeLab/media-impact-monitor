@@ -31,7 +31,7 @@ const PaginationContent = React.forwardRef<
 		ref={ref}
 		className={cn(
 			"flex flex-row items-center gap-px bg-grayLight",
-			"overflow-clip border border-grayLight",
+			"border border-grayLight",
 			className,
 		)}
 		{...props}
@@ -49,21 +49,28 @@ PaginationItem.displayName = "PaginationItem";
 
 type PaginationLinkProps = {
 	isActive?: boolean;
-} & ButtonProps;
+} & Pick<ButtonProps, "size"> &
+	React.ComponentProps<"a">;
 
-const PaginationLink = React.forwardRef<typeof Button, PaginationLinkProps>(
+const PaginationLink = React.forwardRef<HTMLButtonElement, PaginationLinkProps>(
 	(
-		{ className, isActive, size = "icon", ...props }: PaginationLinkProps,
+		{
+			className,
+			isActive,
+			size = "icon",
+			href = "",
+			...props
+		}: PaginationLinkProps,
 		ref,
 	) => (
 		<Button
 			// @ts-ignore
 			ref={ref}
 			aria-current={isActive ? "page" : undefined}
-			size={size}
 			variant={isActive ? "default" : "ghost"}
+			size={size}
 			className={cn(
-				"px-1.5 py-2 hover:bg-grayLight rounded-none",
+				"px-1.5 py-2 hover:bg-fg hover:text-bg rounded-none",
 				`border-none h-9 min-w-9`,
 				className,
 			)}

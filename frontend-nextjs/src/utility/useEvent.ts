@@ -1,19 +1,20 @@
 "use client";
 import { queryOptions, useQuery } from "@tanstack/react-query";
 import { endOfDay } from "date-fns";
-import { useEffect, useMemo } from "react";
-import { toast } from "sonner";
+import { useMemo } from "react";
 import {
 	type ParsedEventType,
 	extractEventOrganisations,
 	getEventData,
 } from "./eventsUtil";
+import { today } from "./today";
+import useQueryErrorToast from "./useQueryErrorToast";
 
 export function getEventQueryOptions(id?: ParsedEventType["event_id"]) {
 	return queryOptions({
 		queryKey: ["events", id],
 		queryFn: () => (id ? getEventData(id) : null),
-		staleTime: endOfDay(new Date()).getTime() - new Date().getTime(),
+		staleTime: endOfDay(today).getTime() - today.getTime(),
 		enabled: id !== undefined,
 	});
 }
@@ -21,17 +22,13 @@ export function getEventQueryOptions(id?: ParsedEventType["event_id"]) {
 function useEvent(id?: ParsedEventType["event_id"]) {
 	const query = useQuery(getEventQueryOptions(id));
 
-	useEffect(() => {
-		if (!query.error) return;
-		toast.error(`Error fetching events: ${query.error}`, {
-			important: true,
-			dismissible: true,
-			duration: 1000000,
-		});
-	}, [query.error]);
+	useQueryErrorToast("protest", query.error);
 
 	const organisations = useMemo(
-		() => (query.data ? extractEventOrganisations([query.data]) : []),
+		() =>
+			(query.data ? extractEventOrganisations([query.data]) : []).filter(
+				Boolean,
+			),
 		[query.data],
 	);
 

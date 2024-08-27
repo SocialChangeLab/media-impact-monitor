@@ -1,4 +1,5 @@
 "use client";
+import { useToday } from "@/providers/TodayProvider";
 import {
 	type ComparableDateItemType,
 	dateToComparableDateItem,
@@ -11,6 +12,7 @@ import { memo, useMemo } from "react";
 import EventsTimelineWrapper from "./EventsTimelinWrapper";
 import EventsTimelineAxis from "./EventsTimelineAxis";
 import EventsTimelineChartWrapper from "./EventsTimelineChartWrapper";
+import EventsTimelineLegend from "./EventsTimelineLegend";
 import EventsTimelineScrollWrapper from "./EventsTimelineScrollWrapper";
 import config from "./eventsTimelineConfig";
 
@@ -21,21 +23,23 @@ const sizeScale = scalePow(
 
 const LoadingEventsTimeline = memo(() => {
 	const [parentRef, size] = useElementSize();
+	const { today } = useToday();
 	const startDate = new Date("2023-01-01T00:00:00.000Z");
 	const intervals = Array.from({ length: 30 }, (_, idx) => idx + 1).reduce(
-		(acc, idx) => acc.concat(dateToComparableDateItem(addDays(startDate, idx))),
+		(acc, idx) =>
+			acc.concat(dateToComparableDateItem(addDays(startDate, idx), today)),
 		[] as ComparableDateItemType[],
 	);
 
 	const skeletons = useMemo(() => {
 		return intervals.map((_, i) => ({
 			colId: i,
-			eventsWithSize: Array(randomUntil(6, "skeletons"))
+			eventsWithSize: Array(randomUntil(6, `${i * Math.PI}`))
 				.fill(null)
 				.map((_, j) => ({
 					eventId: j,
 					height: `${Math.ceil(
-						sizeScale(randomUntil(60, `skeletons-${i}`)),
+						sizeScale(randomUntil(40, `${i * Math.PI}-${j * Math.PI}`)),
 					)}px`,
 				})),
 		}));
@@ -68,6 +72,7 @@ const LoadingEventsTimeline = memo(() => {
 					width={size.width}
 				/>
 			</EventsTimelineScrollWrapper>
+			<EventsTimelineLegend />
 		</EventsTimelineWrapper>
 	);
 });

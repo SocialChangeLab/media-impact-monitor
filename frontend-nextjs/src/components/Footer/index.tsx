@@ -5,40 +5,67 @@ import Logo from "@/components/logos/AppLogo";
 import BMBFLogo from "@/components/logos/BMBFLogo";
 import PrototypeFundLogo from "@/components/logos/PrototypeFundLogo";
 import SocialChangeLabLogo from "@/components/logos/SocialChangeLabLogo";
+import { useToday } from "@/providers/TodayProvider";
 import { cn } from "@/utility/classNames";
-import { ArrowUp } from "lucide-react";
-import Link from "next/link";
-
-const year = new Date().getFullYear();
+import { useAnimationFrame } from "framer-motion";
+import { ArrowUp, ExternalLink, GithubIcon } from "lucide-react";
+import { useRef } from "react";
+import InternalLink from "../InternalLink";
 
 function Footer() {
+	const footerRef = useRef<HTMLElement>(null);
+	const { today } = useToday();
+	const year = today.getFullYear();
+
+	useAnimationFrame(() => {
+		if (!footerRef.current) return;
+		const height = footerRef.current.getBoundingClientRect().height;
+		document.documentElement.style.setProperty(
+			"--footerHeight",
+			`${Math.floor(height)}px`,
+		);
+	});
 	return (
-		<footer className="mx-auto w-full relative" aria-label="Main page footer">
-			<div className="flex justify-between w-full px-6 py-8 relative border-y border-grayLight">
-				<div className="flex flex-col gap-4 justify-between">
-					<Link
-						href="/"
+		<footer
+			className="mx-auto w-full relative"
+			aria-label="Main page footer"
+			ref={footerRef}
+		>
+			<div className="flex flex-wrap gap-8 items-end w-full px-6 py-8 relative border-y border-grayLight">
+				<div className="flex md:flex-col gap-4 justify-between">
+					<InternalLink
+						href="/dashboard"
 						className="flex flex-col gap-4 justify-between w-fit focusable"
 						scroll={false}
 					>
-						<Logo className="text-grayDark" width={256} height={31} />
-					</Link>
+						<Logo className="text-grayDark origin-top-left scale-90" hideType />
+					</InternalLink>
 
 					<div className="flex flex-col gap-4 justify-between text-grayDark text-sm">
-						<Link
+						<InternalLink
 							href="/logos"
 							className="no-underline focusable hover:text-fg transition-colors w-fit"
 							scroll={false}
 						>
 							Logo assets
-						</Link>
+						</InternalLink>
 						<UptimeStatusLink />
+						<a
+							href="https://github.com/SocialChangeLab/media-impact-monitor"
+							target="_blank"
+							rel="noopener noreferrer"
+							className="no-underline focusable hover:text-fg transition-colors w-fit flex gap-1 items-center"
+						>
+							<GithubIcon className="size-4 text-grayDark" />
+							GitHub
+							<ExternalLink className="size-4 opacity-50" />
+						</a>
 						<span aria-label={`Copyright ${year}`}>
 							© {year} - Social Change Lab
 						</span>
 					</div>
 				</div>
-				<div className="flex flex-wrap gap-x-16 gap-y-8 max-w-full pr-4">
+				<div className="flex flex-wrap gap-x-6 md:gap-x-8 lg:gap-x-16 gap-y-8 max-w-full pr-4 max-sm:border-t border-grayLight max-sm:pt-6 max-sm:w-full">
 					<div className="flex flex-wrap gap-x-16">
 						<a
 							className="h-fit focusable flex flex-col gap-4 group"
@@ -51,14 +78,18 @@ function Footer() {
 								Hosted by
 							</span>
 							<SocialChangeLabLogo
-								className="origin-top-left transition-transform group-hover:scale-105 text-[#3552C8] dark:text-white dark:opacity-80"
+								className={cn(
+									"origin-top-left transition-transform group-hover:scale-105",
+									"text-[#3552C8] w-[112px] h-[56px] lg:w-[150px] lg:h-[75px]",
+									"dark:text-white dark:opacity-80 dark:grayscale dark:brightness-[10]",
+								)}
 								aria-label="Social Change Lab Logo"
 								width={105}
 								height={75}
 							/>
 						</a>
 					</div>
-					<div className="flex flex-wrap gap-x-8">
+					<div className="flex flex-wrap gap-x-8 gap-y-4">
 						<a
 							className="h-fit focusable flex flex-col gap-6 group"
 							href="https://prototypefund.de/"
@@ -70,10 +101,12 @@ function Footer() {
 								Sponsored by
 							</span>
 							<BMBFLogo
-								className="origin-top-left transition-transform group-hover:scale-105 text-fg dark:text-white dark:opacity-80 dark:grayscale dark:brightness-[10]"
+								className={cn(
+									"origin-top-left transition-transform group-hover:scale-105",
+									"text-fg w-[112px] h-[56px] lg:w-[150px] lg:h-[75px]",
+									"dark:text-white dark:opacity-80 dark:grayscale dark:brightness-[10]",
+								)}
 								aria-label="Bundesministerium für Bildung und Forschung"
-								width={150}
-								height={75}
 							/>
 						</a>
 						<a
@@ -83,37 +116,38 @@ function Footer() {
 							rel="noopener noreferrer"
 							title="Prototype Fund"
 						>
-							<span className="no-underline text-fg hidden xs:inline-block">
-								&nbsp;
-							</span>
+							<span className="no-underline text-fg ">&nbsp;</span>
 							<PrototypeFundLogo
-								className="origin-top-left transition-transform group-hover:scale-105 text-fg dark:text-white dark:opacity-80 dark:grayscale dark:brightness-[10]"
+								className={cn(
+									"origin-top-left transition-transform group-hover:scale-105",
+									"text-fg w-[28px] h-[51px] lg:w-[56px] lg:h-[102px]",
+									"dark:text-white dark:opacity-80 dark:grayscale dark:brightness-[10]",
+								)}
 								aria-label="Prototype Fund Logo"
 								width={56}
 								height={102}
 							/>
 						</a>
 					</div>
-					<div className="flex flex-col gap-4">
-						<button
-							type="button"
-							id="back-to-top"
-							aria-label="Scroll to top"
-							className={cn(
-								`p-1 text-fg border border-transparent`,
-								`hover:bg-grayUltraLight motion-safe:transition-colors`,
-								`focusable hover:border-grayLight`,
-							)}
-							onClick={() => {
-								if (typeof window === "undefined") return;
-								window.scrollTo({ top: 0, behavior: "smooth" });
-							}}
-						>
-							<ArrowUp />
-						</button>
-					</div>
 				</div>
 			</div>
+			<button
+				type="button"
+				id="back-to-top"
+				aria-label="Scroll to top"
+				className={cn(
+					`absolute right-6 top-6`,
+					`p-1 text-fg border border-transparent`,
+					`hover:bg-grayUltraLight motion-safe:transition-colors`,
+					`focusable hover:border-grayLight`,
+				)}
+				onClick={() => {
+					if (typeof window === "undefined") return;
+					window.scrollTo({ top: 0, behavior: "smooth" });
+				}}
+			>
+				<ArrowUp />
+			</button>
 		</footer>
 	);
 }

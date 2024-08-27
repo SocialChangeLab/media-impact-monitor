@@ -3,6 +3,12 @@
 @tailwind utilities;
 
 @layer base {
+	html {
+		font-size: clamp(0.88rem, 0.282353vi + 0.81rem, 1rem);
+		line-height: calc(2px + 2ex + 2px);
+		scrollbar-gutter: stable;
+	}
+
 	::-moz-selection,
 	::selection {
 		@apply text-alt bg-fg;
@@ -20,9 +26,10 @@
 	:root[data-theme='light'] {
 		--pageMaxWidth: 1920px;
 		--pageFullWidth: min(100vw,var(--pageMaxWidth));
-		--pagePadding: clamp(2rem,2vmax,4rem);
-		--headerHeight: 76px;
-		--footerHeight: 216px;
+		--pagePadding: clamp(1.5rem,2vmax,4rem);
+    --headerHeight: 75px;
+    --filtersHeight: 141px;
+    --footerHeight: 251px;
 
 		--fg: var(--brandGreen);
 		--bg: var(--brandWhite);
@@ -48,13 +55,18 @@
 		--categorical-color-13: #327483;
 		--categorical-color-14: #7EA73F;
 
+		--keyword-climate-activism: #D53D4F;
+		--keyword-climate-crisis-framing:#FDAE61;
+		--keyword-climate-policy: #66C2A5;
+		--keyword-climate-science: #3288BD;
+
 		--sentiment-positive: #229E74;
 		--sentiment-negative: #D55E00;
 		--sentiment-neutral: #E69F00;
 
-		--protest-timeline-height: max(100vh - 32rem, 400px);
-		--media-coverage-chart-height: max(40vh, 440px);
-		--media-sentiment-chart-height: max(40vh, 440px);
+		--protest-timeline-height: max(30vh, 20rem);
+		--media-coverage-chart-height: max(30vh, 20rem);
+		--media-sentiment-chart-height: max(30vh, 20rem);
 	}
 
 	:root[data-theme='dark'] {
@@ -117,6 +129,37 @@
 		--tw-prose-lead: var(--fg);
 	}
 
+	body:has(.boost-header-above-dialog) > header.main-header {
+		z-index: 60;
+	}
+
+	#user-feedback-button {
+		--trigger-background: var(--bg);
+		--font-family: var(--font-inter);
+		--font-size: 1rem;
+		--dialog-border-radius: 0;
+		--input-border-radius: 0;
+		--button-border-radius: 0;
+		--button-primary-border-radius: 0;
+		--z-index: 999;
+		--interactive-filter: brightness(95%);
+
+		--foreground: var(--fg);
+		--background: url(/images/noisy.webp);
+		--accent-foreground: var(--bg);
+		--accent-background: var(--fg);
+		--success-color: var(--sentiment-positive);
+		--error-color: var(--sentiment-negative);
+		--outline: 1px auto var(--fg);
+		--border: 1px solid var(--grayMed);
+		--input-color: var(--grayDark);
+		--button-primary-border: 1px solid var(--fg);
+	}
+	
+	:root[data-theme='dark']  #user-feedback-button {
+		--background: var(--bg) url(/images/noisy-inverted.webp) repeat center;
+	}
+
 	@layer base {
 		input[type='text'],
 		input[type='password'],
@@ -134,9 +177,9 @@
 		select,
 		select[multiple],
 		textarea {
-			@apply border-grayMed focus:outline-none focus:ring-2;
-			@apply focus:ring-offset-2 focus:ring-fg focus:ring-offset-bg;
-			@apply focus:border-grayMed bg-bg;
+			@apply border-grayMed focus-visible:outline-none focus-visible:ring-2;
+			@apply focus-visible:ring-offset-2 focus-visible:ring-fg focus-visible:ring-offset-bg;
+			@apply focus-visible:border-grayMed bg-bg;
 		}
 	}
 
@@ -160,6 +203,11 @@
 	::selection {
 		background: var(--bg);
 		color: var(--fg);
+	}
+
+	dialog:modal {
+		max-width: 100vw;
+		max-height: 100vh;
 	}
 
 	body::after {
@@ -226,15 +274,15 @@
 	}
 
 	.bg-pattern-soft {
-		@apply bg-[url(/images/noisy.png)] dark:bg-[url(/images/noisy-inverted.png)] bg-repeat bg-center;
+		@apply bg-[url(/images/noisy.webp)] dark:bg-[url(/images/noisy-inverted.webp)] bg-repeat bg-center;
 	}
 
 	.bg-pattern-semi-inverted {
-		@apply bg-fg bg-[url(/images/noisy-dark.png)] dark:bg-[url(/images/noisy-light.png)] bg-repeat bg-center bg-blend-screen dark:bg-blend-multiply;
+		@apply bg-fg bg-[url(/images/noisy-dark.webp)] dark:bg-[url(/images/noisy-light.webp)] bg-repeat bg-center bg-blend-screen dark:bg-blend-multiply;
 	}
 
 	.bg-pattern-semi-inverted-light {
-		@apply bg-brandWhite dark:bg-[url(/images/noisy-light.png)] bg-repeat bg-center bg-blend-multiply;
+		@apply bg-brandWhite dark:bg-[url(/images/noisy-light.webp)] bg-repeat bg-center bg-blend-multiply;
 	}
 
 

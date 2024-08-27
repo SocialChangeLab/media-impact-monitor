@@ -1,5 +1,6 @@
 "use client";
 import { cn } from "@/utility/classNames";
+import { format } from "@/utility/dateUtil";
 import { parseErrorMessage } from "@/utility/errorHandlingUtil";
 import type { ParsedEventType } from "@/utility/eventsUtil";
 import {
@@ -8,7 +9,6 @@ import {
 } from "@/utility/randomUtil";
 import useEvent from "@/utility/useEvent";
 import { QueryErrorResetBoundary } from "@tanstack/react-query";
-import { format } from "date-fns";
 import { ErrorBoundary } from "next/dist/client/components/error-boundary";
 import Image from "next/image";
 import { Suspense, memo, useMemo } from "react";
@@ -54,52 +54,59 @@ const EventPageWithPopulatedData = memo(
 			),
 			[],
 		);
-		const title = useMemo(
+		const title = useMemo(() => {
+			if (!data) return <PlaceholderSkeleton width={80} height={20} />;
+			const prefix = `Protest on ${format(data.event.date, "LLLL d, yyyy")}`;
+			if (data.organisations.length === 0) return prefix;
+			return `${prefix} by ${
+				data.organisations.length > 1
+					? "multiple organisations"
+					: data.organisations[0].name
+			}`;
+		}, [data]);
+
+		const hasOrganisations = useMemo(
 			() =>
-				data ? (
-					`Protest on ${format(data.event.date, "LLLL d, yyyy")} by ${
-						data.organisations.length > 1
-							? "multiple organisations"
-							: data.organisations[0].name
-					}`
-				) : (
-					<PlaceholderSkeleton width={80} height={20} />
-				),
+				Boolean(data?.organisations?.length && data?.organisations.length > 0),
 			[data],
 		);
 		return (
-			<div className="grid md:grid-cols-[3fr,1fr] lg:grid-cols-[2fr,1fr] border-b border-grayLight -mt-6">
-				<div className="px-[max(1rem,2vmax)] pt-[max(1.25rem,2.5vmax)] pb-[max(1.25rem,4vmax)] flex flex-col gap-4 min-h-full">
+			<div className="grid md:grid-cols-[3fr,1fr] lg:grid-cols-[2fr,1fr] border-b border-grayLight">
+				<div className="px-[var(--pagePadding)] pt-[max(1.25rem,2.5vmax)] pb-[max(1.25rem,4vmax)] flex flex-col gap-4 min-h-full">
 					<h1 className="text-3xl font-bold font-headlines">{title}</h1>
 					<dl className="inline-grid grid-cols-[auto,1fr] gap-x-6 gap-y-2 items-center">
 						<dt className="w-fit">City</dt>
 						<dd>{data?.event.city ?? <PlaceholderSkeleton width={100} />}</dd>
 						<dt className="w-fit">Country</dt>
 						<dd>{data?.event.country ?? <PlaceholderSkeleton width={80} />}</dd>
-						<dt className="w-fit self-start">Organisations</dt>
-						<dd className="flex flex-wrap">
-							{data?.organisations.map((org) => (
-								<span
-									key={org.name}
-									className={cn(
-										"grid grid-cols-[auto_1fr_auto] gap-x-2",
-										`items-center cursor-pointer`,
-									)}
-								>
-									<span
-										className={cn(
-											"size-4 rounded-full shadow-[inset_0_0_0_1px_rgba(0,0,0,0.1)] bg-grayDark",
-										)}
-										style={{ backgroundColor: org.color }}
-										aria-hidden="true"
-									/>
-									<span className="grid grid-cols-[1fr_auto] gap-4">
-										{org.name}
-									</span>
-								</span>
-							))}
-							{!data && orgsPlaceholders}
-						</dd>
+						{hasOrganisations && (
+							<>
+								<dt className="w-fit self-start">Organisations</dt>
+								<dd className="flex flex-wrap">
+									{data?.organisations.map((org) => (
+										<span
+											key={org.slug}
+											className={cn(
+												"grid grid-cols-[auto_1fr_auto] gap-x-2",
+												`items-center cursor-pointer`,
+											)}
+										>
+											<span
+												className={cn(
+													"size-4 rounded-full shadow-[inset_0_0_0_1px_rgba(0,0,0,0.1)] bg-grayDark",
+												)}
+												style={{ backgroundColor: org.color }}
+												aria-hidden="true"
+											/>
+											<span className="grid grid-cols-[1fr_auto] gap-4">
+												{org.name}
+											</span>
+										</span>
+									))}
+									{!data && orgsPlaceholders}
+								</dd>
+							</>
+						)}
 					</dl>
 					<p className="max-w-prose">
 						{data?.event.description ?? descPlaceholderLines}

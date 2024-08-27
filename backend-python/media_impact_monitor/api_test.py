@@ -17,15 +17,13 @@ def test_get_events_success(client):
         json={
             "source": "acled",
             "topic": "climate_change",
+            "end_date": "2020-01-31",
         },
     )
     assert response.status_code == 200
     assert isinstance(response.json()["data"], list)
 
 
-@pytest.mark.skip(
-    reason="This throws a backend error (which is good, and handled and logged by uvicorn) but the testing considers it a proper error."
-)
 @pytest.mark.filterwarnings("ignore::DeprecationWarning")
 def test_get_events_failure(client):
     response = client.post(
@@ -39,7 +37,6 @@ def test_get_events_failure(client):
     assert "detail" in response.json()
 
 
-@pytest.mark.skip(reason="The Genios API is currently down.")
 @pytest.mark.filterwarnings("ignore::DeprecationWarning")
 def test_get_trend_success(client):
     response = client.post(
@@ -47,7 +44,7 @@ def test_get_trend_success(client):
         json={
             "trend_type": "keywords",
             "media_source": "news_print",
-            "query": "climate change",
+            "topic": "climate_change",
             "start_date": "2021-01-01",
             "end_date": "2021-01-31",
         },

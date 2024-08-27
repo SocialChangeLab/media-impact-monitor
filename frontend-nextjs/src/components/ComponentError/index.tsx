@@ -2,7 +2,7 @@
 import { Button } from "@/components/ui/button";
 import { useFiltersStore } from "@/providers/FiltersStoreProvider";
 import { cn } from "@/utility/classNames";
-import { AlertTriangle } from "lucide-react";
+import { AlertTriangle, X, XCircle, XSquare } from "lucide-react";
 
 export type ComponentErrorProps = {
 	errorMessage: string;
@@ -23,41 +23,39 @@ function ComponentError({
 		}),
 	);
 	return (
-		<div className="w-fit max-w-96 flex flex-col items-center">
-			<div className="mb-6 relative min-w-full flex justify-center">
-				<div className="h-px w-full bg-grayLight absolute inset-x-0 top-1/2"></div>
-				<div
-					className={cn(
-						"text-fg p-4 rounded-full border border-grayLight",
-						"w-fit bg-bg dark:bg-red-600 dark:border-red-600 z-10",
-					)}
-				>
-					<AlertTriangle
-						size={56}
-						strokeWidth={1}
-						className="-mt-1 text-red-600 dark:text-white"
-					/>
-				</div>
+		<div className="w-fit max-w-96 flex flex-col">
+			<div className={cn("mb-3 w-fit h-fit")}>
+				<X size={48} strokeWidth={1} className="text-red-600 -ml-3" />
 			</div>
-			{errorMessage}
-			{errorDetails && (
-				<pre
-					className={cn(
-						"mt-2 min-w-full px-6 py-5 bg-grayDark",
-						"dark:bg-bg dark:text-fg dark:border dark:border-grayLight",
-						"text-mono text-bg max-w-full overflow-x-auto",
-					)}
-				>
-					<code>{errorDetails}</code>
-				</pre>
-			)}
-			<div className="flex gap-4 flex-wrap min-w-full justify-between pt-6">
-				{reset && <Button onClick={reset}>Try again</Button>}
-				{from && to && (
-					<Button onClick={resetAllFilters} variant="outline">
-						Reset all filters
-					</Button>
+			<div className="mb-3 relative min-w-full grid grid-cols-[auto,1fr] items-center gap-4">
+				<strong className="font-semibold">Error</strong>
+				<div className="h-px w-full bg-grayLight"></div>
+			</div>
+			<div className="">
+				<p className="text-grayDark">{errorMessage}</p>
+				{errorDetails && (
+					<pre
+						className={cn(
+							"min-w-full px-6 py-5 bg-grayDark mt-2",
+							"dark:bg-bg dark:text-fg dark:border dark:border-grayLight",
+							"text-mono text-bg max-w-full overflow-x-auto",
+						)}
+					>
+						<code>{errorDetails}</code>
+					</pre>
 				)}
+				<div className="flex gap-4 flex-wrap min-w-full justify-between pt-6">
+					{reset && (
+						<Button size="sm" onClick={reset}>
+							Try again
+						</Button>
+					)}
+					{from && to && (
+						<Button onClick={resetAllFilters} variant="outline">
+							Reset all filters
+						</Button>
+					)}
+				</div>{" "}
 			</div>
 		</div>
 	);

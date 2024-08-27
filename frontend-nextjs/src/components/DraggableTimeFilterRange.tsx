@@ -1,15 +1,17 @@
 import { useFiltersStore } from "@/providers/FiltersStoreProvider";
+import { useToday } from "@/providers/TodayProvider";
 import { cn } from "@/utility/classNames";
 import {
 	type ComparableDateItemType,
 	dateToComparableDateItem,
 } from "@/utility/comparableDateItemSchema";
+import { format } from "@/utility/dateUtil";
 import useEvents from "@/utility/useEvents";
 import { isInSameAggregationUnit } from "@/utility/useTimeIntervals";
 import useDebounce from "@custom-react-hooks/use-debounce";
 import useElementSize from "@custom-react-hooks/use-element-size";
 import { type Ranger, useRanger } from "@tanstack/react-ranger";
-import { addDays, differenceInDays, format, parse, startOfDay } from "date-fns";
+import { addDays, differenceInDays, startOfDay } from "date-fns";
 import {
 	type KeyboardEvent as ReactKeyboardEvent,
 	type MouseEvent as ReactMouseEvent,
@@ -27,17 +29,6 @@ type BtnMouseEvent = ReactMouseEvent<HTMLButtonElement>;
 type BtnTouchEvent = ReactTouchEvent<HTMLButtonElement>;
 type BtnEvent = BtnMouseEvent | BtnTouchEvent;
 
-const datasetStartDate = startOfDay(
-	parse("01-01-2020", "dd-MM-yyyy", new Date()),
-);
-const datasetEndDate = startOfDay(new Date());
-const amountOfDays = differenceInDays(datasetEndDate, datasetStartDate) + 1;
-const intervals = new Array(amountOfDays)
-	.fill(null)
-	.map((_, i) => dateToComparableDateItem(addDays(datasetStartDate, i)));
-
-const rangerSteps = intervals.map((_, i) => i);
-const rangerTicks = intervals.map((d) => d.time);
 function DraggableTimeFilterRange() {
 	const rangerRef = useRef<HTMLDivElement>(null);
 	const midSegmentRef = useRef<HTMLButtonElement>(null);
@@ -46,19 +37,29 @@ function DraggableTimeFilterRange() {
 		to: state.to,
 		setDateRange: state.setDateRange,
 	}));
+	const { today, datasetStartDate, datasetEndDate } = useToday();
+	const amountOfDays = differenceInDays(datasetEndDate, datasetStartDate) + 1;
+	const intervals = new Array(amountOfDays)
+		.fill(null)
+		.map((_, i) =>
+			dateToComparableDateItem(addDays(datasetStartDate, i), today),
+		);
+
+	const rangerSteps = intervals.map((_, i) => i);
+	const rangerTicks = intervals.map((d) => d.time);
 	const indexOfFrom = useMemo(
 		() =>
 			intervals.findIndex((d) =>
 				isInSameAggregationUnit("day", d, startOfDay(from)),
 			),
-		[from],
+		[from, intervals],
 	);
 	const indexOfTo = useMemo(
 		() =>
 			intervals.findIndex((d) =>
 				isInSameAggregationUnit("day", d, startOfDay(to)),
 			),
-		[to],
+		[to, intervals],
 	);
 	const [values, setValues] = useState<ReadonlyArray<number>>([
 		indexOfFrom,
@@ -104,7 +105,7 @@ function DraggableTimeFilterRange() {
 				Math.min(intervals.length - 1, toIdx),
 			]);
 		},
-		[onValuesChange],
+		[onValuesChange, intervals],
 	);
 
 	// biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
@@ -181,6 +182,7 @@ function DraggableTimeFilterRange() {
 				document.removeEventListener("touchmove", onDrag);
 				document.removeEventListener("mouseup", handleRelease);
 				document.removeEventListener("touchend", handleRelease);
+				setIsDragging(false);
 			};
 
 			document.addEventListener("mousemove", onDrag);
@@ -274,6 +276,7 @@ const Handle = memo(
 
 		const handleKeyDown = useCallback(
 			(e: ReactKeyboardEvent) => {
+				if (e.key === "Tab") return;
 				e.preventDefault();
 				onKeyDownHandler(e);
 			},
@@ -369,6 +372,7 @@ const HandleTooptip = memo(
 
 const BackgroundVis = memo(() => {
 	const [parentRef, size] = useElementSize();
+	const { datasetStartDate, datasetEndDate } = useToday();
 	const { data } = useEvents({
 		from: datasetStartDate,
 		to: datasetEndDate,

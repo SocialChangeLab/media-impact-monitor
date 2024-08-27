@@ -1,5 +1,4 @@
 import { cn } from "@/utility/classNames";
-import { slugifyCssClass } from "@/utility/cssSlugify";
 import type { OrganisationType } from "@/utility/eventsUtil";
 import { type ReactNode, forwardRef } from "react";
 
@@ -12,14 +11,9 @@ const EventsBar = forwardRef<
 			className={cn(
 				"size-3 relative z-10 hover:z-20",
 				"event-item transition-all",
-				organisations.map((org) => {
-					const isMain = org?.isMain ?? false;
-					return `event-item-org-${
-						isMain
-							? slugifyCssClass(org.name) || "unknown-organisation"
-							: "other"
-					}`;
-				}),
+				organisations.map(
+					(org) => `event-item-org-${org.slug || "unknown-organisation"}`,
+				),
 			)}
 			style={{ height: `${height}px` }}
 		>

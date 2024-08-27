@@ -1,11 +1,13 @@
 import { cn } from "@/utility/classNames";
 import type { ComparableDateItemType } from "@/utility/comparableDateItemSchema";
-import { format } from "date-fns";
+import { format } from "@/utility/dateUtil";
+import { getTopicIcon } from "@/utility/topicsUtil";
 import { memo } from "react";
 import {
 	type AggregationUnitType,
 	formatDateByAggregationUnit,
 } from "./EventsTimeline/useAggregationUnit";
+import { ImpactKeywordLabel } from "./ImpactChart/ImpactKeywordLabel";
 
 function TopicChartTooltip({
 	aggregationUnit,
@@ -42,27 +44,25 @@ function TopicChartTooltip({
 					formatDateByAggregationUnit(date, aggregationUnit)}
 			</strong>
 			{topics
-				.map((t) => ({ ...t, value: item[t.topic] }))
-				.map(({ topic, value, color }) => (
-					<div
-						key={topic}
-						className="grid grid-cols-[auto_1fr_auto] gap-2 items-center text-sm"
-					>
-						<span className="size-3" style={{ background: color }} />
-						<strong className="font-bold">
-							{topic.charAt(0).toUpperCase()}
-							{topic.slice(1)}
-							{": "}
-						</strong>
-						<span className="font-mono text-xs text-grayDark">
-							{(+value)?.toLocaleString("en-GB") ?? 0}
-						</span>
-					</div>
-				))}
+				.map((t) => ({ ...t, value: item[t.topic] ?? 0 }))
+				.map(({ topic, value, color }) => {
+					const Icon = getTopicIcon(topic);
+					return (
+						<div
+							key={topic}
+							className="grid grid-cols-[auto_1fr_auto] gap-2 items-center text-sm"
+						>
+							<Icon className="size-6 shrink-0" color={color} />
+							<ImpactKeywordLabel label={topic} color={color} />
+							<span className="font-mono text-xs text-grayDark">
+								{(+value)?.toLocaleString("en-GB") ?? 0}
+							</span>
+						</div>
+					);
+				})}
 			<div className="border-t border-grayLight pt-1 mt-1 flex gap-4 justify-between items-center">
 				<strong className="font-bold ">Total:</strong>
 				<span className="font-mono text-xs text-grayDark">
-					{/* biome-ignore lint/correctness/useJsxKeyInIterable: <explanation> */}
 					{topics.reduce((acc, { topic }) => acc + (item[topic] || 0), 0)}
 				</span>
 			</div>

@@ -25,10 +25,12 @@ import TablePagination from "./table-pagination";
 export function DataTable<RecordType>({
 	columns,
 	data,
+	isLoading = false,
 }: {
 	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
 	columns: ColumnDef<RecordType, any>[];
 	data: RecordType[];
+	isLoading?: boolean;
 }) {
 	const table = useReactTable({
 		columns,
@@ -39,7 +41,7 @@ export function DataTable<RecordType>({
 	});
 
 	return (
-		<div className="flex flex-col gap-6">
+		<div className={cn("flex flex-col gap-6", isLoading && "animate-pulse")}>
 			<Table>
 				<TableHeader>
 					{table.getHeaderGroups().map((headerGroup) => (
@@ -103,7 +105,9 @@ export function DataTable<RecordType>({
 								colSpan={table.getAllColumns().length}
 								className="h-24 text-center"
 							>
-								No results for this filter configuration.
+								{isLoading
+									? "Loading..."
+									: "No results for this filter configuration."}
 							</TableCell>
 						</TableRow>
 					)}

@@ -1,7 +1,7 @@
+import ChartLoadingPlaceholder from "../ChartLoadingPlaceholder";
+
 function MediaCoverageChartLoading() {
-	return (
-		<div className="h-[var(--media-coverage-chart-height)] bg-grayUltraLight motion-safe:animate-pulse border border-grayLight"></div>
-	);
+	return <ChartLoadingPlaceholder />;
 }
 
 export default MediaCoverageChartLoading;

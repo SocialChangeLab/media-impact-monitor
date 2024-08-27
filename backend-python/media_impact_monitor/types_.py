@@ -1,7 +1,6 @@
-import datetime
 from dataclasses import dataclass
 from datetime import date
-from typing import Generic, Literal, Optional, TypeVar
+from typing import Generic, Literal, TypeVar
 
 from pydantic import BaseModel, Field
 
@@ -13,7 +12,7 @@ Query = str  # for now, just a single keyword
 MediaSource = Literal["news_online", "news_print", "web_google"]
 
 StartDateField = Field(
-    default=None,
+    default=date(2020, 1, 1),
     description="Filter by start date. By default, the earliest date available is used.",
 )
 EndDateField = Field(
@@ -79,12 +78,13 @@ class Event:
 #### Trend types ####
 
 TrendType = Literal["keywords", "topic", "sentiment"]
+SentimentTarget = Literal["activism", "policy"]
 Aggregation = Literal["daily", "weekly", "monthly"]
 
 
 class TrendSearch(BaseModel):
     trend_type: TrendType = Field(
-        description="What type of trend to obtain: the frequency of a keyword, the value of a sentiment, or the frequencies of multiple sub-topics. Depending on the type, you have further configuration options. Currently only keyword frequencies are supported."
+        description="What type of trend to obtain: the frequency of a keyword, the value of a sentiment, or the frequencies of multiple sub-topics. Depending on the type, you have further configuration options. Currently only keyword frequencies and sentiments are supported."
     )
     media_source: MediaSource = Field(
         description="The data source for the media data (i.e., online news, print news, etc.)."
@@ -92,25 +92,28 @@ class TrendSearch(BaseModel):
     start_date: date | None = StartDateField
     end_date: date | None = EndDateField
     topic: Topic | None = Field(
-        description="When retrieving keyword frequencies, this automatically sets relevant sets of keywords. Currently only _climate_change_ is supported."
+        default=None,
+        description="When the trend type is `keywords`, this automatically sets relevant sets of keywords; currently only `climate_change` is supported as topic for this.",
+    )
+    sentiment_target: SentimentTarget | None = Field(
+        default=None,
+        description="When the trend type is `sentiment`, then you can define what aspect the sentiment should be about; currently `activism` and `policy` are supported. This parameter must be used if and only if the trend type is `sentiment`.",
     )
     aggregation: Aggregation = Field(
         default="daily", description="The time aggregation of the trend."
     )
-    query: Query | None = Field(default=None, description="Custom query.")
-    organizers: list[str] | None = Field(
-        default=None, description="The organizations involved in the event."
-    )
-    event_ids: list[EventId] | None = Field(
-        default=None,
-        description="The ids of the protest events that the trend should be related to.",
-    )  # TODO: this is not compatible with "keyword"
 
 
 class CategoryCount(BaseModel):
     date: date
     topic: str
     n_articles: int
+
+
+class Trend(BaseModel):
+    applicability: bool
+    limitations: list[str]
+    trends: list[CategoryCount] | None
 
 
 #### Policy types ####
@@ -156,6 +159,10 @@ class PolicySearch(BaseModel):
 
 
 class FulltextSearch(BaseModel):
+    """
+    You can set parameters for media_source and date_range, and filter by one of the following: topic, organizers, query, or event_id. For now you cannot combine the latter filters, since they all affect the query in different ways.
+    """
+
     media_source: MediaSource = Field(
         description="The data source for the media data (i.e., online news, print news, etc.)."
     )
@@ -180,7 +187,8 @@ class Fulltext(BaseModel):
     date: date
     url: str
     text: str
-    sentiment: float | None
+    activism_sentiment: float | None
+    policy_sentiment: float | None
 
 
 #### Impact types ####
@@ -209,6 +217,7 @@ class MeanWithUncertainty(BaseModel):
     mean: float = Field(description="Mean estimate.")
     ci_upper: float = Field(description="Upper bound of the 95% confidence interval.")
     ci_lower: float = Field(description="Lower bound of the 95% confidence interval.")
+    p_value: float = Field(description="P-value.")
 
 
 class DatedMeanWithUncertainty(BaseModel):
@@ -216,6 +225,7 @@ class DatedMeanWithUncertainty(BaseModel):
     mean: float
     ci_upper: float
     ci_lower: float
+    p_value: float
 
 
 class ImpactEstimate(BaseModel):

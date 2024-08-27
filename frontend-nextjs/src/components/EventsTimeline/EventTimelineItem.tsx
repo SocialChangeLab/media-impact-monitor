@@ -19,15 +19,15 @@ function EventTimelineItem({
 	const mappedOrganisations = useMemo(
 		() =>
 			event.organizers
-				.map((x) => organisations.find((y) => y.name === x))
+				.map((x) => organisations.find((y) => y.slug === x.slug))
 				.filter(Boolean) as OrganisationType[],
 		[event.organizers, organisations],
 	);
 	const selectedOrganisationsMapped = useMemo(
 		() =>
 			event.organizers
-				.filter((x) => selectedOrganisations.find((y) => y.name === x))
-				.map((x) => organisations.find((y) => y.name === x))
+				.filter((x) => selectedOrganisations.find((y) => y.slug === x.slug))
+				.map((x) => organisations.find((y) => y.slug === x.slug))
 				.filter(Boolean) as OrganisationType[],
 		[event.organizers, selectedOrganisations, organisations],
 	);

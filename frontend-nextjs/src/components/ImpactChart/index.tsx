@@ -1,15 +1,22 @@
 "use client";
+import { useFiltersStore } from "@/providers/FiltersStoreProvider";
 import { cn } from "@/utility/classNames";
 import { parseErrorMessage } from "@/utility/errorHandlingUtil";
-import useMediaSentimentImpactData from "@/utility/useMediaSentimentImpact";
+import type { EventOrganizerSlugType } from "@/utility/eventsUtil";
+import type { TrendQueryProps } from "@/utility/mediaTrendUtil";
+import useEvents from "@/utility/useEvents";
+import useMediaImpactData from "@/utility/useMediaImpact";
 import { QueryErrorResetBoundary } from "@tanstack/react-query";
 import type { icons } from "lucide-react";
 import { ErrorBoundary } from "next/dist/client/components/error-boundary";
-import { Suspense } from "react";
+import { Suspense, useCallback, useEffect, useMemo, useState } from "react";
+import ChartLoadingPlaceholder from "../ChartLoadingPlaceholder";
 import ComponentError from "../ComponentError";
 import ImpactChart from "./ImpactChart";
 
 type ImpactChartWithDataProps = {
+	trend_type: TrendQueryProps["trend_type"];
+	sentiment_target: TrendQueryProps["sentiment_target"];
 	reset?: () => void;
 	unitLabel?: string;
 	icon?: keyof typeof icons;
@@ -36,16 +43,7 @@ function ImpactChartError(props: ImpactChartErrorProps) {
 }
 
 function ImpactChartLoading() {
-	return (
-		<div
-			className={cn(
-				"w-full min-h-96 p-8 border border-grayLight",
-				"flex items-center justify-center bg-grayUltraLight",
-			)}
-		>
-			<span>Loading data...</span>
-		</div>
-	);
+	return <ChartLoadingPlaceholder />;
 }
 
 function ImpactChartEmpty() {
@@ -63,39 +61,112 @@ function ImpactChartEmpty() {
 
 function ImpactChartWithData({
 	reset,
-	unitLabel = "articles & media",
-	icon = "LineChart",
+	unitLabel = "articles",
+	trend_type = "keywords",
+	sentiment_target = null,
 }: ImpactChartWithDataProps) {
-	const fffQuery = useMediaSentimentImpactData("Fridays for Future");
-	const xrQuery = useMediaSentimentImpactData("Extinction Rebellion");
-	const data = {
-		fridaysForFuture: fffQuery.data,
-		extinctionRebellion: xrQuery.data,
-	};
-	const isEmpty = Object.entries(data).every(
-		([_key, data]) => data?.data && data.data.length === 0,
+	const {
+		data: { organisations },
+	} = useEvents();
+	const selectedOrgs = useFiltersStore((state) => state.organizers.sort());
+	const orgs = useMemo(
+		() =>
+			selectedOrgs.length === 0
+				? organisations.map(({ slug }) => slug)
+				: selectedOrgs,
+		[selectedOrgs, organisations],
 	);
-	const isError = fffQuery.isError || xrQuery.isError;
-	const isSuccess = fffQuery.isSuccess && xrQuery.isSuccess;
-	const isPending = fffQuery.isPending || xrQuery.isPending;
-	const error = fffQuery.error || xrQuery.error;
-	if (isError)
-		return <ImpactChartError reset={reset} {...parseErrorMessage(error)} />;
-	if (isPending) return <ImpactChartLoading />;
-	if (isSuccess && isEmpty) return <ImpactChartEmpty />;
+
+	const [org1, setOrg1] = useState<EventOrganizerSlugType | undefined>(orgs[0]);
+	const [org2, setOrg2] = useState<EventOrganizerSlugType | undefined>(orgs[1]);
+	const [org3, setOrg3] = useState<EventOrganizerSlugType | undefined>(orgs[2]);
+
+	useEffect(() => {
+		setOrg1(orgs[0]);
+		setOrg2(orgs[1]);
+		setOrg3(orgs[2]);
+	}, [orgs]);
+
+	const getUpdateOrgHandler = useCallback(
+		(idx: number) => (slug: EventOrganizerSlugType) => {
+			const orgChangeHandlers = [setOrg1, setOrg2, setOrg3];
+			if (orgs.length === 0 || !slug) return;
+			const handler = orgChangeHandlers[idx] ?? (() => undefined);
+			handler(slug);
+		},
+		[orgs],
+	);
+
+	const orgValues = [org1, org2, org3];
+	const org1Query = useMediaImpactData({
+		organizer: org1,
+		trend_type,
+		sentiment_target,
+	});
+	const org2Query = useMediaImpactData({
+		organizer: org2,
+		trend_type,
+		sentiment_target,
+	});
+	const org3Query = useMediaImpactData({
+		organizer: org3,
+		trend_type,
+		sentiment_target,
+	});
+
+	const queries = {} as Record<string, ReturnType<typeof useMediaImpactData>>;
+	if (org1) queries[org1] = org1Query;
+	if (org2) queries[org2] = org1Query;
+	if (org3) queries[org3] = org1Query;
+
+	const queriesArray = Array.from(Object.values(queries));
+	const data = {} as Record<
+		string,
+		ReturnType<typeof useMediaImpactData>["data"]
+	>;
+	if (org1) data[org1] = org1Query.data;
+	if (org2) data[org2] = org2Query.data;
+	if (org3) data[org3] = org3Query.data;
+
+	const anyLoading =
+		queriesArray.length === 0 || queriesArray.some((query) => query.isPending);
+	const isEmpty =
+		!anyLoading &&
+		queriesArray.every(
+			(query) => query?.data?.data && query.data.data.length === 0,
+		);
+	const allErroring =
+		!anyLoading && queriesArray.every((query) => query.isError === true);
+	if (allErroring) {
+		const firstError = queriesArray.find((query) => query.error)?.error;
+		return (
+			<ImpactChartError reset={reset} {...parseErrorMessage(firstError)} />
+		);
+	}
+	if (isEmpty) return <ImpactChartEmpty />;
+
 	return (
 		<ImpactChart
-			columns={Object.entries(data).map(([key, data]) => ({
+			columns={Object.entries(data).map(([key, d], idx) => ({
 				id: key,
-				data: data?.data || [],
+				data: d?.data || null,
+				limitations: d?.limitations,
+				error: queries[key as keyof typeof queries]?.error ?? null,
+				org: orgValues[idx] as EventOrganizerSlugType,
+				onOrgChange: getUpdateOrgHandler(idx),
+				isPending: queries[key as keyof typeof queries]?.isPending ?? false,
 			}))}
+			columnsCount={3}
+			itemsCountPerColumn={trend_type === "keywords" ? 4 : 3}
 			unitLabel={unitLabel}
-			icon={icon}
 		/>
 	);
 }
 
-export default function ImpactChartWithErrorBoundary() {
+export default function ImpactChartWithErrorBoundary({
+	trend_type = "keywords",
+	sentiment_target = null,
+}: Pick<TrendQueryProps, "trend_type" | "sentiment_target">) {
 	return (
 		<QueryErrorResetBoundary>
 			{({ reset }) => (
@@ -105,7 +176,11 @@ export default function ImpactChartWithErrorBoundary() {
 					)}
 				>
 					<Suspense fallback={<ImpactChartLoading />}>
-						<ImpactChartWithData reset={reset} />
+						<ImpactChartWithData
+							reset={reset}
+							trend_type={trend_type}
+							sentiment_target={sentiment_target}
+						/>
 					</Suspense>
 				</ErrorBoundary>
 			)}

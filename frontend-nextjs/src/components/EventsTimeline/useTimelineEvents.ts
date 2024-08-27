@@ -16,12 +16,12 @@ function combineOrganizers(
 	return Array.from(
 		events
 			.reduce((acc, evt) => {
-				const orgs = evt.organizers.filter((orgName) =>
-					organisations.find((o) => o.name === orgName),
+				const orgs = evt.organizers.filter((org) =>
+					organisations.find((o) => o.slug === org.slug),
 				);
-				for (const orgName of orgs) {
-					const organisation = organisations.find((o) => o.name === orgName);
-					if (organisation) acc.set(orgName, organisation);
+				for (const org of orgs) {
+					const organisation = organisations.find((o) => o.slug === org.slug);
+					if (organisation) acc.set(org.slug, organisation);
 				}
 				return acc;
 			}, new Map<string, OrganisationType>())
@@ -69,7 +69,7 @@ function useTimelineEvents({
 				if (aSize < bSize ?? 0) return -1;
 				if (aSize > bSize ?? 0) return 1;
 				if (!a.organizers[0] || !b.organizers[0]) return 0;
-				return a.organizers[0].localeCompare(b.organizers[0]);
+				return a.organizers[0].name.localeCompare(b.organizers[0].name);
 			});
 
 			return {

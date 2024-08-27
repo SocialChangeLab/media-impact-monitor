@@ -1,6 +1,6 @@
 "use client";
 
-import { format, isSameDay, startOfDay, subDays, subMonths } from "date-fns";
+import { endOfDay, isSameDay, startOfDay, subDays, subMonths } from "date-fns";
 import type { DateRange } from "react-day-picker";
 
 import { Button } from "@/components/ui/button";
@@ -10,7 +10,9 @@ import {
 	PopoverContent,
 	PopoverTrigger,
 } from "@/components/ui/popover";
+import { useToday } from "@/providers/TodayProvider";
 import { cn } from "@/utility/classNames";
+import { format } from "@/utility/dateUtil";
 import { CalendarDays } from "lucide-react";
 import {
 	type ReactNode,
@@ -40,8 +42,9 @@ export const DatePickerWithRange = memo(
 		const lastRange = useRef<DateRange | undefined>();
 		const [date, setDate] = useState<DateRange | undefined>(dateRange);
 		const [month, setMonth] = useState<Date | undefined>();
-		const fromDateString = format(date?.from || new Date(), "yyyy-MM-dd");
-		const toDateString = format(date?.to || new Date(), "yyyy-MM-dd");
+		const { today } = useToday();
+		const fromDateString = format(date?.from || today, "yyyy-MM-dd");
+		const toDateString = format(date?.to || today, "yyyy-MM-dd");
 
 		const isDefault = useMemo(() => {
 			if (!defaultDateRange.from || !defaultDateRange.to) return false;
@@ -95,26 +98,34 @@ export const DatePickerWithRange = memo(
 						<Button
 							id="date"
 							variant={"outline"}
-							className={cn("font-normal", !date && "text-grayDark")}
+							className={cn(
+								"font-normal max-lg:px-2 max-lg:py-1",
+								!date && "text-grayDark",
+							)}
 							onClick={() => setIsOpen(true)}
 						>
-							<CalendarDays className="mr-2 w-6 h-6" />
-							{date?.from ? (
-								date.to ? (
-									<>
-										{format(date.from, "LLL dd, y")} -{" "}
-										{format(date.to, "LLL dd, y")}
-									</>
+							<CalendarDays className="lg:mr-2 size-5 md:size-6" />
+							<span className="hidden md:block text-sm lg:text-base">
+								{date?.from ? (
+									date.to ? (
+										<>
+											{format(date.from, "LLL dd, y")} -{" "}
+											{format(date.to, "LLL dd, y")}
+										</>
+									) : (
+										format(date.from, "LLL dd, y")
+									)
 								) : (
-									format(date.from, "LLL dd, y")
-								)
-							) : (
-								<span>Pick a date</span>
-							)}
+									<span>Pick a date</span>
+								)}
+							</span>
 						</Button>
 					</PopoverTrigger>
 					{isOpen && (
-						<PopoverContent className="w-auto p-0" align="end">
+						<PopoverContent
+							className="w-auto max-w-[calc(100vw-(2*var(--pagePadding)))] p-0 z-[70]"
+							align="end"
+						>
 							<div className="flex gap-4 p-3 border-b border-grayUltraLight items-center justify-end">
 								<span className="grow">Presets:</span>
 								<LastTwelveMonthButton
@@ -146,7 +157,7 @@ export const DatePickerWithRange = memo(
 								selected={date}
 								onSelect={setDate}
 								numberOfMonths={2}
-								disabled={{ after: new Date() }}
+								disabled={{ after: subDays(endOfDay(today), 1) }}
 								month={month}
 								onMonthChange={setMonth}
 							/>
@@ -185,18 +196,22 @@ const LastSixMonthButton = memo(
 	}: {
 		onChange: (range: DateRange) => void;
 		currentRange?: DateRange;
-	}) => (
-		<PresetButton
-			currentRange={currentRange}
-			targetRange={{
-				from: startOfDay(subMonths(new Date(), 6)),
-				to: startOfDay(new Date()),
-			}}
-			onChange={onChange}
-		>
-			Last 6 months
-		</PresetButton>
-	),
+	}) => {
+		const { today } = useToday();
+		return (
+			<PresetButton
+				currentRange={currentRange}
+				targetRange={{
+					from: startOfDay(subMonths(startOfDay(subDays(today, 1)), 6)),
+					to: endOfDay(subDays(today, 1)),
+				}}
+				onChange={onChange}
+			>
+				<span className="hidden md:inline">Last 6 months</span>
+				<span className="inline md:hidden">-6M</span>
+			</PresetButton>
+		);
+	},
 );
 
 const LastTwelveMonthButton = memo(
@@ -206,18 +221,22 @@ const LastTwelveMonthButton = memo(
 	}: {
 		onChange: (range: DateRange) => void;
 		currentRange?: DateRange;
-	}) => (
-		<PresetButton
-			currentRange={currentRange}
-			targetRange={{
-				from: startOfDay(subMonths(new Date(), 12)),
-				to: startOfDay(new Date()),
-			}}
-			onChange={onChange}
-		>
-			Last 12 months
-		</PresetButton>
-	),
+	}) => {
+		const { today } = useToday();
+		return (
+			<PresetButton
+				currentRange={currentRange}
+				targetRange={{
+					from: startOfDay(subMonths(startOfDay(subDays(today, 1)), 12)),
+					to: endOfDay(subDays(today, 1)),
+				}}
+				onChange={onChange}
+			>
+				<span className="hidden md:inline">Last 12 months</span>
+				<span className="inline md:hidden">-12M</span>
+			</PresetButton>
+		);
+	},
 );
 
 const LastMonthButton = memo(
@@ -227,18 +246,22 @@ const LastMonthButton = memo(
 	}: {
 		onChange: (range: DateRange) => void;
 		currentRange?: DateRange;
-	}) => (
-		<PresetButton
-			currentRange={currentRange}
-			targetRange={{
-				from: startOfDay(subDays(new Date(), 30)),
-				to: startOfDay(new Date()),
-			}}
-			onChange={onChange}
-		>
-			Last 30 days
-		</PresetButton>
-	),
+	}) => {
+		const { today } = useToday();
+		return (
+			<PresetButton
+				currentRange={currentRange}
+				targetRange={{
+					from: startOfDay(subDays(today, 31)),
+					to: endOfDay(subDays(today, 1)),
+				}}
+				onChange={onChange}
+			>
+				<span className="hidden md:inline">Last 30 days</span>
+				<span className="inline md:hidden">-30D</span>
+			</PresetButton>
+		);
+	},
 );
 
 const PresetButton = memo(

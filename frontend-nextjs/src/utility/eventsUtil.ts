@@ -1,11 +1,13 @@
-import { endOfToday, format } from "date-fns";
-import { ZodError, z } from "zod";
+import slugify from "slugify";
+import { z } from "zod";
 import {
 	comparableDateItemSchema,
 	dateToComparableDateItem,
 } from "./comparableDateItemSchema";
-import { dateSortCompare, isValidISODateString } from "./dateUtil";
-import { fetchApiData } from "./fetchUtil";
+import { dateSortCompare } from "./dateUtil";
+import { fetchApiData, formatInput } from "./fetchUtil";
+import { today as defaultToday } from "./today";
+import { formatZodError } from "./zodUtil";
 
 const eventZodSchema = z.object({
 	event_id: z.string(),
@@ -22,16 +24,31 @@ const eventZodSchema = z.object({
 });
 export type EventType = z.infer<typeof eventZodSchema>;
 
+export const eventOrganizerSlugZodSchema = z
+	.string()
+	.brand("EventOrganizerSlug");
+export type EventOrganizerSlugType = z.infer<
+	typeof eventOrganizerSlugZodSchema
+>;
+
+const eventOrganizerZodSchema = z.object({
+	slug: eventOrganizerSlugZodSchema,
+	name: z.string(),
+});
+export type EventOrganizerType = z.infer<typeof eventOrganizerZodSchema>;
+
 const parsedEventZodSchema = eventZodSchema
-	.omit({ date: true })
-	.merge(comparableDateItemSchema);
+	.omit({ date: true, organizers: true })
+	.merge(comparableDateItemSchema)
+	.extend({
+		organizers: z.array(eventOrganizerZodSchema),
+	});
 export type ParsedEventType = z.infer<typeof parsedEventZodSchema>;
 
 const colorTypeZodSchema = z.string();
 export type ColorType = z.infer<typeof colorTypeZodSchema>;
 
-const organisationZodSchema = z.object({
-	name: z.string(),
+export const organisationZodSchema = eventOrganizerZodSchema.extend({
 	count: z.number(),
 	color: colorTypeZodSchema,
 	isMain: z.boolean().default(false),
@@ -47,115 +64,126 @@ const eventDataResponseTypeZodSchema = z.object({
 	error: z.union([z.string(), z.null()]).optional(),
 });
 
-export async function getEventsData(params?: {
-	from?: Date;
-	to?: Date;
-}): Promise<EventsDataType> {
+export async function getEventsData(
+	params?: {
+		from?: Date;
+		to?: Date;
+	},
+	today = defaultToday,
+): Promise<EventsDataType> {
 	const json = await fetchApiData({
 		endpoint: "events",
 		body: {
 			source: "acled",
-			topic: "climate_change",
-			...(params?.from && params?.to
-				? {
-						start_date: format(params?.from, "yyyy-MM-dd"),
-						end_date: format(params?.to, "yyyy-MM-dd"),
-					}
-				: {
-						start_date: "2020-01-01",
-						end_date: format(endOfToday(), "yyyy-MM-dd"),
-					}),
+			...formatInput(params || {}, []),
 		},
-		// fallbackFilePathContent: (await import("../data/fallbackProtests.json"))
-		// 	.default,
 	});
-	return validateGetDataResponse(json);
+	return validateGetDataResponse(json, today);
 }
 
 export async function getEventData(
 	id: string,
+	today = defaultToday,
 ): Promise<ParsedEventType | undefined> {
-	const allEvents = await getEventsData();
+	const allEvents = await getEventsData(undefined, today);
 	return allEvents.find((x) => x.event_id === id);
 }
 
-function validateGetDataResponse(response: unknown): ParsedEventType[] {
+function validateGetDataResponse(
+	response: unknown,
+	today: Date,
+): ParsedEventType[] {
 	try {
 		const parsedResponse = eventDataResponseTypeZodSchema.parse(response);
 		const eventsWithFixedOrgs = parsedResponse.data
-			.filter((x) => isValidISODateString(x.date))
-			.map((x) => {
-				return {
-					...x,
-					organizers: x.organizers ?? [],
-					...dateToComparableDateItem(x.date),
-				};
-			})
+			.map((x) => ({
+				...x,
+				organizers: (x.organizers ?? []).map((x) => ({
+					slug: slugify(x, { lower: true, strict: true }),
+					name: x,
+				})),
+				...dateToComparableDateItem(x.date, today),
+			}))
 			.sort((a, b) => dateSortCompare(a.date, b.date));
 		return parsedEventZodSchema.array().parse(eventsWithFixedOrgs);
 	} catch (error) {
-		if (error instanceof ZodError) {
-			const errorMessage = (error.issues ?? [])
-				.map(
-					(x) =>
-						`${x.message}${x.path.length > 0 ? ` at ${x.path.join(".")}` : ""}`,
-				)
-				.join(", ");
-			throw new Error(`ZodError&&&${errorMessage}`);
-		}
-		if (error instanceof Error) throw error;
-		throw new Error(`UnknownError&&&${error}`);
+		throw formatZodError(error);
 	}
 }
 
-export const distinctiveColors = [
-	`var(--categorical-color-1)`,
-	`var(--categorical-color-2)`,
-	`var(--categorical-color-3)`,
-	`var(--categorical-color-4)`,
-	`var(--categorical-color-5)`,
-	`var(--categorical-color-6)`,
-	`var(--categorical-color-7)`,
-	`var(--categorical-color-8)`,
-	`var(--categorical-color-9)`,
-	`var(--categorical-color-10)`,
-	`var(--categorical-color-11)`,
-	`var(--categorical-color-12)`,
-	"var(--categorical-color-13)",
-	"var(--categorical-color-14)",
-];
+export const distinctiveColorsMap = Object.fromEntries(
+	Object.entries({
+		"Fridays for Future": `var(--categorical-color-6)`,
+		"Last Generation": `var(--categorical-color-5)`,
+		"Extinction Rebellion": `var(--categorical-color-7)`,
+		BUND: `var(--categorical-color-14)`,
+		NABU: `var(--categorical-color-2)`,
+		Greenpeace: `var(--categorical-color-3)`,
+		"Ende Gelaende": `var(--categorical-color-4)`,
+		"The Greens": `var(--categorical-color-8)`,
+		"The Left": `var(--categorical-color-1)`,
+		SPD: `var(--categorical-color-12)`,
+	}).map(([key, value]) => [
+		slugify(key, { lower: true, strict: true }),
+		value,
+	]),
+);
 
 export function extractEventOrganisations(
 	events: ParsedEventType[],
 ): OrganisationType[] {
-	const organisationStrings = [
-		...events
-			.reduce((acc, event) => {
-				for (const organizer of event.organizers ?? []) acc.add(organizer);
-				return acc;
-			}, new Set<string>())
-			.values(),
-	];
-	return organisationStrings
+	const organisationsMap = events.reduce((acc, event) => {
+		for (const organizer of event.organizers ?? []) {
+			acc.set(organizer.slug, organizer);
+		}
+		return acc;
+	}, new Map<string, EventOrganizerType>());
+	const organisations = Array.from(organisationsMap.values());
+	return organisations
 		.map((organizer) => ({
-			name: organizer,
-			count: events.filter((x) => x.organizers?.includes(organizer)).length,
+			...organizer,
+			count: events.filter((x) =>
+				x.organizers?.find((x) => x.slug === organizer.slug),
+			).length,
 		}))
 		.sort((a, b) => b.count - a.count)
 		.map((organizer, idx) => {
 			if (organizer.name.toLocaleLowerCase().trim() === "") {
 				return {
+					slug: "unknown-organisation" as EventOrganizerSlugType,
 					name: "Unknown organisation",
 					color: "var(--grayMed)",
 					count: events.filter((x) => x.organizers?.filter((x) => !x)).length,
 					isMain: false,
 				};
 			}
-			const color = distinctiveColors[idx];
+			const color =
+				distinctiveColorsMap[
+					organizer.slug as keyof typeof distinctiveColorsMap
+				];
 			return {
 				...organizer,
 				color: color ?? "var(--grayDark)",
-				isMain: idx < distinctiveColors.length,
+				isMain: !!color,
 			};
 		});
+}
+
+export function compareOrganizationsByColors(
+	a: OrganisationType,
+	b: OrganisationType,
+): -1 | 0 | 1 {
+	if (a.isMain && !b.isMain) return -1;
+	if (!a.isMain && b.isMain) return 1;
+	if (a.isMain && b.isMain) {
+		const mainNames = Object.keys(distinctiveColorsMap);
+		const aIdx = mainNames.indexOf(a.slug);
+		const bIdx = mainNames.indexOf(b.slug);
+		if (aIdx > bIdx) return 1;
+		if (aIdx < bIdx) return -1;
+	}
+	const nameComparison = a.name.localeCompare(b.name);
+	if (nameComparison === 1) return 1;
+	if (nameComparison === -1) return -1;
+	return 0;
 }

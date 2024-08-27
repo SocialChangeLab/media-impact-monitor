@@ -1,9 +1,9 @@
 import { cn } from "@/utility/classNames";
-import Link from "next/link";
 import type { ReactNode } from "react";
+import InternalLink from "../InternalLink";
 
 function HeaderMenuLink({
-	as = Link,
+	as = InternalLink,
 	onClick,
 	href,
 	title,
@@ -11,7 +11,7 @@ function HeaderMenuLink({
 	active,
 	ariaLabel,
 }: {
-	as?: typeof Link | string;
+	as?: typeof InternalLink | string;
 	onClick?: () => void;
 	href?: string;
 	title: ReactNode;
@@ -26,7 +26,7 @@ function HeaderMenuLink({
 				href={href ?? "/"}
 				aria-label={`Header menu link: ${ariaLabel || title} page`}
 				className={cn(
-					`py-1.5 px-4 motion-safe:transition-colors`,
+					`py-1.5 px-3 xl:px-4 motion-safe:transition-colors`,
 					`inline-block border border-transparent`,
 					`focusable`,
 					!active &&

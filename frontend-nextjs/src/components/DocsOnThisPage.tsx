@@ -93,7 +93,7 @@ function DocsOnThisPage() {
 	}, [headingElements]);
 
 	return (
-		<ul className="flex flex-col text-sm">
+		<ul className="flex flex-col text-sm pb-8">
 			{headingElements.length === 0 && (
 				<ul aria-hidden="true" className="flex flex-col gap-3 text-sm">
 					{skeletons.map((skeleton) => (

@@ -1,6 +1,6 @@
-import portraitDavid from "@/images/portrait-david.jpeg";
-import portraitLennart from "@/images/portrait-lennart.png";
-import portraitLucas from "@/images/portrait-lucas.png";
+import portraitDavid from "@/images/portrait-david.webp";
+import portraitLennart from "@/images/portrait-lennart.webp";
+import portraitLucas from "@/images/portrait-lucas.webp";
 import Image from "next/image";
 
 const team = [

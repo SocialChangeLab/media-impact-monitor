@@ -3,8 +3,7 @@
 from time import sleep as _sleep
 
 from joblib import Memory
-from requests import get as _get
-from requests import post as _post
+from requests import get as _get, post as _post, Response
 from zenrows import ZenRowsClient
 
 from media_impact_monitor.util.env import ZENROWS_API_KEY
@@ -14,7 +13,7 @@ cache = memory.cache
 
 
 @cache(ignore=["sleep"])
-def get(url, sleep=None, **kwargs):
+def get(url, sleep=None, **kwargs) -> Response | None:
     r"""Send a GET request, cached in the cloud.
 
     :param url: URL for the new :class:`Request` object.
@@ -25,15 +24,17 @@ def get(url, sleep=None, **kwargs):
     :return: :class:`Response <Response>` object
     :rtype: requests.Response
     """
-    response = _get(url, **kwargs)
-    response.raise_for_status()
+    try:
+        response = _get(url, **kwargs)
+    except Exception:
+        return None
     if sleep is not None:
         _sleep(sleep)
     return response
 
 
 @cache(ignore=["sleep"])
-def post(url, sleep=None, **kwargs):
+def post(url, sleep=None, **kwargs) -> Response | None:
     r"""Send a POST request, cached in the cloud.
 
     :param url: URL for the new :class:`Request` object.
@@ -44,24 +45,50 @@ def post(url, sleep=None, **kwargs):
     :return: :class:`Response <Response>` object
     :rtype: requests.Response
     """
-    response = _post(url, **kwargs)
-    response.raise_for_status()
+    try:
+        response = _post(url, **kwargs)
+    except Exception:
+        return None
     if sleep is not None:
         _sleep(sleep)
     return response
 
 
-concurrency = 10
-retries = 2
-
-
 @cache
-def get_proxied(url, *args, **kwargs) -> str | None:
-    client = ZenRowsClient(ZENROWS_API_KEY, retries=retries, concurrency=concurrency)
-    response = client.get(url, *args, **kwargs)
+def get_proxied(url, **kwargs):
+    if "timeout" not in kwargs:
+        kwargs["timeout"] = 10
+    try:
+        response = get(url, **kwargs)
+        return response
+    except Exception:
+        pass
+    client = ZenRowsClient(ZENROWS_API_KEY, retries=2, concurrency=10)
+    response = client.get(url, **kwargs)
     if response.text.startswith('{"code":'):
-        if "RESP002" in response.text:  # zenrows error code for http 404
-            pass
-        else:
-            raise ValueError(f"{url}: {response.text}")
+        zenrows_errors = [
+            "REQS001",
+            "REQS004",
+            "REQS006",
+            "RESP004",
+            "AUTH001",
+            "AUTH002",
+            "AUTH003",
+            "AUTH004",
+            "AUTH005",
+            "AUTH009",
+            "BLK0001",
+            "AUTH007",
+            "AUTH006",
+            "AUTH008",
+            "CTX0001",
+            "ERR0001",
+            "ERR0000",
+            "RESP003",
+        ]
+        if any(error in response.text for error in zenrows_errors):
+            # problem with zenrows -> inform the developer
+            raise Exception(response.text)
+        # otherwise, problem with the site itself -> just don't use this site
+        return None
     return response

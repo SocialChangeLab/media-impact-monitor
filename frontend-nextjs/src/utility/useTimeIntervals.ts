@@ -1,5 +1,6 @@
 import type { AggregationUnitType } from "@/components/EventsTimeline/useAggregationUnit";
 import { useFiltersStore } from "@/providers/FiltersStoreProvider";
+import { useToday } from "@/providers/TodayProvider";
 import {
 	addDays,
 	addMonths,
@@ -13,7 +14,6 @@ import {
 	endOfMonth,
 	endOfWeek,
 	endOfYear,
-	format,
 	startOfDay,
 	startOfMonth,
 	startOfWeek,
@@ -24,6 +24,7 @@ import {
 	type ComparableDateItemType,
 	dateToComparableDateItem,
 } from "./comparableDateItemSchema";
+import { format } from "./dateUtil";
 
 function useTimeIntervals({
 	from: inputFrom,
@@ -51,6 +52,7 @@ function useTimeIntervals({
 		? format(inputTo, "yyyy-MM-dd")
 		: filterStore.toDateString;
 	const range = { from, to };
+	const { today } = useToday();
 
 	// biome-ignore lint/correctness/useExhaustiveDependencies: Using the fromDateString and toDateString to avoid the exact date (which changes on each render) to be used as dependencies of the useEffect
 	const eventColumns = useMemo(() => {
@@ -65,7 +67,10 @@ function useTimeIntervals({
 		return new Array(timeDiff)
 			.fill(null)
 			.map((_, idx) =>
-				dateToComparableDateItem(timeStartFn(timeIncrementerFn(from, idx))),
+				dateToComparableDateItem(
+					timeStartFn(timeIncrementerFn(from, idx)),
+					today,
+				),
 			);
 	}, [fromDateString, toDateString, aggregationUnit]);
 

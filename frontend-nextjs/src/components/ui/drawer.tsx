@@ -4,15 +4,24 @@ import * as React from "react";
 import { Drawer as DrawerPrimitive } from "vaul";
 
 import { cn } from "@/utility/classNames";
+import { X } from "lucide-react";
+
+const DrawerContext = React.createContext<{
+	direction?: "top" | "bottom" | "left" | "right";
+}>({
+	direction: "bottom",
+});
 
 const Drawer = ({
 	shouldScaleBackground = true,
 	...props
 }: React.ComponentProps<typeof DrawerPrimitive.Root>) => (
-	<DrawerPrimitive.Root
-		shouldScaleBackground={shouldScaleBackground}
-		{...props}
-	/>
+	<DrawerContext.Provider value={{ direction: props.direction }}>
+		<DrawerPrimitive.Root
+			shouldScaleBackground={shouldScaleBackground}
+			{...props}
+		/>
+	</DrawerContext.Provider>
 );
 Drawer.displayName = "Drawer";
 
@@ -37,24 +46,50 @@ DrawerOverlay.displayName = DrawerPrimitive.Overlay.displayName;
 const DrawerContent = React.forwardRef<
 	React.ElementRef<typeof DrawerPrimitive.Content>,
 	React.ComponentPropsWithoutRef<typeof DrawerPrimitive.Content>
->(({ className, children, ...props }, ref) => (
-	<DrawerPortal>
-		<DrawerOverlay />
-		<DrawerPrimitive.Content
-			ref={ref}
-			className={cn(
-				`focusable`,
-				"fixed inset-x-0 bottom-0 z-50 mt-24 flex h-auto max-h-[90vh] flex-col border-t border-grayMed bg-bg",
-				className,
-			)}
-			tabIndex={-1}
-			{...props}
-		>
-			<div className="mx-auto mt-4 h-2 w-[100px] rounded-full bg-grayMed cursor-grab active:cursor-grabbing" />
-			{children}
-		</DrawerPrimitive.Content>
-	</DrawerPortal>
-));
+>(({ className, children, ...props }, ref) => {
+	const { direction } = React.useContext(DrawerContext);
+	return (
+		<DrawerPortal>
+			<DrawerOverlay />
+			<DrawerPrimitive.Content
+				ref={ref}
+				className={cn(
+					`focusable`,
+					"fixed z-50 flex h-auto flex-col border-grayMed bg-bg",
+					(!direction || direction === "bottom") &&
+						"bottom-0 mt-24 max-h-[90vh] border-t inset-x-0",
+					direction === "right" &&
+						"right-0 top-0 w-screen h-screen border-l max-w-96",
+					className,
+				)}
+				tabIndex={-1}
+				{...props}
+			>
+				{(!direction || direction === "bottom") && (
+					<div
+						className={cn(
+							"mx-auto mt-4 h-2 w-[100px] rounded-full bg-grayMed cursor-grab active:cursor-grabbing",
+						)}
+					/>
+				)}
+				{(direction === "right" || direction === "left") && (
+					<DrawerPrimitive.Close
+						className={cn(
+							"absolute right-6 top-6 pointer-events-auto ring-offset-bg",
+							"transition focusable bg-bg rounded-full p-1",
+							"disabled:pointer-events-none data-[state=open]:bg-fg",
+							"data-[state=open]:text-grayDark hover:bg-fg hover:text-bg",
+						)}
+					>
+						<X />
+						<span className="sr-only">Close</span>
+					</DrawerPrimitive.Close>
+				)}
+				{children}
+			</DrawerPrimitive.Content>
+		</DrawerPortal>
+	);
+});
 DrawerContent.displayName = "DrawerContent";
 
 const DrawerHeader = ({

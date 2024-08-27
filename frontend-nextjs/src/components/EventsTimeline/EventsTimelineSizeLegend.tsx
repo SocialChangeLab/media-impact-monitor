@@ -1,19 +1,20 @@
 import { cn } from "@/utility/classNames";
-import type { ScalePower } from "d3-scale";
+import type { ScaleLinear } from "d3-scale";
 import { ArrowRight } from "lucide-react";
-import { Fragment, memo, useMemo } from "react";
+import { memo, useMemo } from "react";
 import type { AggregationUnitType } from "./useAggregationUnit";
 
 function EventsTimelineSizeLegend({
 	sizeScale,
 	aggragationUnit,
 }: {
-	sizeScale: ScalePower<number, number>;
+	sizeScale: ScaleLinear<number, number, never>;
 	aggragationUnit: AggregationUnitType;
 }) {
 	const exampleSizes = useMemo(() => {
-		const max = roundLegendNumber(Math.max(sizeScale.domain()[1], 30));
-		let min = getLegendMinNumber(max);
+		const maxVal = Math.max(sizeScale.domain()[1], 30);
+		const max = roundLegendNumber(maxVal);
+		let min = roundLegendNumber(maxVal / 2);
 		min = min === max ? max / 2 : min;
 		return [undefined, min, max].map((x, idx) => ({
 			id: idx,
@@ -37,9 +38,9 @@ function EventsTimelineSizeLegend({
 					participants
 				</span>
 			</h5>
-			<div className="grid grid-cols-[auto_1fr] gap-x-4 gap-y-1 items-center">
+			<div className="flex flex-row-reverse items-start justify-end gap-y-1 h-48">
 				{exampleSizes.map(({ id, size, height }) => (
-					<Fragment key={id}>
+					<div className="flex gap-2 items-end" key={id}>
 						<div
 							className={cn(
 								"bg-grayDark w-3",
@@ -47,8 +48,17 @@ function EventsTimelineSizeLegend({
 							)}
 							style={{ height }}
 						/>
-						<span>{size ? size.toLocaleString("en-GB") : "0 or unknown"} </span>
-					</Fragment>
+						<span className="h-px relative w-px">
+							<span
+								className={cn(
+									"absolute left-0 text-nowrap h-3.5",
+									size ? "-translate-y-1/2 top-1/2" : "top-0 -translate-y-full",
+								)}
+							>
+								{size ? size.toLocaleString("en-GB") : "0 or unknown"}{" "}
+							</span>
+						</span>
+					</div>
 				))}
 			</div>
 		</div>
@@ -56,13 +66,6 @@ function EventsTimelineSizeLegend({
 }
 
 export default memo(EventsTimelineSizeLegend);
-
-function getLegendMinNumber(maxNumber: number) {
-	if (maxNumber < 1000) return 10;
-	if (maxNumber < 10000) return 100;
-	if (maxNumber < 100000) return 1000;
-	return 100000;
-}
 
 function roundLegendNumber(num: number, rounder = Math.floor) {
 	if (num < 100) return rounder(num / 10) * 10;

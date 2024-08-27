@@ -1,6 +1,7 @@
 import { cn } from "@/utility/classNames";
 import EventsTimelineWrapper from "./EventsTimelinWrapper";
 import EventsTimelineChartWrapper from "./EventsTimelineChartWrapper";
+import EventsTimelineLegend from "./EventsTimelineLegend";
 
 export default function EmptyEventsTimeline() {
 	return (
@@ -16,6 +17,7 @@ export default function EmptyEventsTimeline() {
 					<p>No data for the current filter configuration</p>
 				</div>
 			</EventsTimelineChartWrapper>
+			<EventsTimelineLegend />
 		</EventsTimelineWrapper>
 	);
 }

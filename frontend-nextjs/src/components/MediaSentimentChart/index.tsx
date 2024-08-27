@@ -1,10 +1,7 @@
 "use client";
-import type { ParsedMediaSentimentType } from "@/utility/mediaSentimentUtil";
-import useTimeIntervals, {
-	isInSameAggregationUnit,
-} from "@/utility/useTimeIntervals";
+import type { TrendQueryProps } from "@/utility/mediaTrendUtil";
 import useElementSize from "@custom-react-hooks/use-element-size";
-import { Suspense, memo, useCallback, useMemo } from "react";
+import { Suspense, memo, useMemo } from "react";
 import {
 	Bar,
 	BarChart,
@@ -15,113 +12,46 @@ import {
 	YAxis,
 } from "recharts";
 
-import useAggregationUnit, {
-	formatDateByAggregationUnit,
-} from "@/components/EventsTimeline/useAggregationUnit";
-import type { ComparableDateItemType } from "@/utility/comparableDateItemSchema";
 import { slugifyCssClass } from "@/utility/cssSlugify";
 import { parseErrorMessage } from "@/utility/errorHandlingUtil";
-import useMediaSentimentData from "@/utility/useMediaSentiment";
+import useMediaTrends from "@/utility/useMediaTrends";
+import useTopics from "@/utility/useTopics";
 import { QueryErrorResetBoundary } from "@tanstack/react-query";
+import { BarChartIcon } from "lucide-react";
 import { ErrorBoundary } from "next/dist/client/components/error-boundary";
+import ChartLimitations from "../ChartLimitations";
 import TopicChartTooltip from "../TopicChartTooltip";
 import MediaSentimentChartEmpty from "./MediaSentimentChartEmpty";
 import MediaSentimentChartError from "./MediaSentimentChartError";
-import MediaSentimentChartLegend from "./MediaSentimentChartLegend";
 import MediaSentimentChartLoading from "./MediaSentimentChartLoading";
 
 export const MediaSentimentChart = memo(
 	({
-		data,
+		sentiment_target,
 	}: {
-		data: ParsedMediaSentimentType[];
+		sentiment_target: TrendQueryProps["sentiment_target"];
 	}) => {
 		const [parentRef, size] = useElementSize();
-		const aggregationUnit = useAggregationUnit(size.width);
-		const intervals = useTimeIntervals({ aggregationUnit });
+		const {
+			topics: queryTopics,
+			filteredData,
+			aggregationUnit,
+		} = useTopics({
+			containerWidth: size.width,
+			trend_type: "sentiment",
+			sentiment_target,
+		});
 
-		const isInSameUnit = useCallback(
-			(comparableDateObject: ComparableDateItemType, b: Date) =>
-				isInSameAggregationUnit(aggregationUnit, comparableDateObject, b),
-			[aggregationUnit],
-		);
-
-		const { filteredData, topics } = useMemo(() => {
-			const allTopics = Array.from(
-				data
-					.reduce((acc, day) => {
-						acc.add(day.topic);
-						return acc;
-					}, new Set<string>())
-					.values(),
-			);
-			const filteredData = intervals.map((comparableDateObject) => {
-				const daysInUnit = data.filter((day) =>
-					isInSameUnit(comparableDateObject, new Date(day.date)),
-				);
-				return allTopics.reduce(
-					(acc, topic) => {
-						const itemsWithTopics = daysInUnit.filter(
-							(day) => day.topic === topic,
-						);
-						const sum = itemsWithTopics.reduce(
-							(acc, day) => acc + (day.n_articles || 0),
-							0,
-						);
-						acc[topic] = sum;
-						return acc;
-					},
-					{
-						comparableDateObject,
-						dateFormatted: formatDateByAggregationUnit(
-							comparableDateObject.date,
-							aggregationUnit,
-						),
-					} as {
-						comparableDateObject: ComparableDateItemType;
-						dateFormatted: string;
-					} & {
-						[key: string]: number;
-					},
-				);
-			});
-			return {
-				topics: allTopics.sort().map((topic) => ({
-					topic,
-					color: `var(--sentiment-${topic})`,
-					sum: filteredData.reduce((acc, day) => acc + day[topic], 0),
-				})),
-				filteredData,
-			};
-		}, [data, intervals, isInSameUnit, aggregationUnit]);
+		const topics = useMemo(() => {
+			return ["positive", "neutral", "negative"].map((topic) => ({
+				topic,
+				color: `var(--sentiment-${topic})`,
+				sum: queryTopics.find((t) => t.topic === topic)?.sum ?? 0,
+			}));
+		}, [queryTopics]);
 
 		return (
 			<div className="media-sentiment-chart">
-				<style jsx global>{`
-				.media-sentiment-chart .recharts-cartesian-grid-vertical {
-					transition: opacity 150ms cubic-bezier(0.4, 0, 0.2, 1);
-					opacity: 0 !important;
-				}
-				.media-sentiment-chart svg:hover .recharts-cartesian-grid-vertical {
-					opacity: 1 !important;
-				}
-				.media-sentiment-chart:has(.legend-topic:hover) .media-sentiment-item {
-					opacity: 0.2 !important;
-					filter: grayscale(100%) !important;
-				}
-				${topics
-					.map(({ topic }) => {
-						const slug = slugifyCssClass(topic);
-						return `
-							.media-sentiment-chart:has(.legend-topic-${slug}:hover)
-								.media-sentiment-item-topic-${slug} {
-									opacity: 1 !important;
-									filter: grayscale(0%) !important;
-								}
-						`;
-					})
-					.join("")}
-			`}</style>
 				<div
 					className="w-full h-[var(--media-sentiment-chart-height)] bg-grayUltraLight"
 					ref={parentRef}
@@ -130,9 +60,11 @@ export const MediaSentimentChart = memo(
 						<BarChart
 							data={filteredData}
 							className="bg-pattern-soft"
+							barGap={0}
+							barCategoryGap={2}
 							margin={{
 								top: 0,
-								right: 30,
+								right: 0,
 								left: 0,
 								bottom: 24,
 							}}
@@ -159,6 +91,7 @@ export const MediaSentimentChart = memo(
 								stroke="var(--grayDark)"
 								strokeWidth={0.25}
 								fontSize="0.875rem"
+								padding={{ top: 24 }}
 							/>
 							<Tooltip
 								formatter={(value) => `${value} articles`}
@@ -183,7 +116,7 @@ export const MediaSentimentChart = memo(
 									dataKey={topic}
 									stroke={color}
 									fill={color}
-									className={`media-sentiment-item media-sentiment-item-topic-${slugifyCssClass(
+									className={`topic-chart-item topic-chart-item-topic-${slugifyCssClass(
 										topic,
 									)} transition-all`}
 								/>
@@ -191,23 +124,55 @@ export const MediaSentimentChart = memo(
 						</BarChart>
 					</ResponsiveContainer>
 				</div>
-				<MediaSentimentChartLegend topics={topics} />
 			</div>
 		);
 	},
 );
 
-function MediaSentimentChartWithData({ reset }: { reset?: () => void }) {
-	const { data, isError, isSuccess, isPending } = useMediaSentimentData();
+function MediaSentimentChartWithData({
+	reset,
+	sentiment_target,
+	event_id,
+}: {
+	reset?: () => void;
+	sentiment_target: TrendQueryProps["sentiment_target"];
+	event_id?: string;
+}) {
+	const {
+		data: originalData,
+		isError,
+		isPending,
+		isSuccess,
+	} = useMediaTrends({
+		trend_type: "sentiment",
+		sentiment_target,
+		enabled: !event_id,
+	});
+	const data = originalData || {
+		applicability: false,
+		limitations: [],
+		trends: [],
+	};
 	if (isPending) return <MediaSentimentChartLoading />;
 	if (isError)
 		return (
 			<MediaSentimentChartError {...parseErrorMessage(isError)} reset={reset} />
 		);
-	if (isSuccess && data.length > 0) return <MediaSentimentChart data={data} />;
+	if (isSuccess && data.applicability === false && data.limitations.length > 0)
+		return (
+			<ChartLimitations limitations={data.limitations} Icon={BarChartIcon} />
+		);
+	if (isSuccess && data.applicability && (data.trends?.length ?? 0) > 0)
+		return <MediaSentimentChart sentiment_target={sentiment_target} />;
 	return <MediaSentimentChartEmpty />;
 }
-export default function MediaCoverageChartWithErrorBoundary() {
+export default function MediaCoverageChartWithErrorBoundary({
+	sentiment_target,
+	event_id,
+}: {
+	sentiment_target: TrendQueryProps["sentiment_target"];
+	event_id?: string;
+}) {
 	return (
 		<QueryErrorResetBoundary>
 			{({ reset }) => (
@@ -220,7 +185,11 @@ export default function MediaCoverageChartWithErrorBoundary() {
 					)}
 				>
 					<Suspense fallback={<MediaSentimentChartLoading />}>
-						<MediaSentimentChartWithData reset={reset} />
+						<MediaSentimentChartWithData
+							reset={reset}
+							sentiment_target={sentiment_target}
+							event_id={event_id}
+						/>
 					</Suspense>
 				</ErrorBoundary>
 			)}

@@ -1,6 +1,11 @@
 "use client";
 
-import { Check, ChevronsUpDown } from "lucide-react";
+import {
+	Check,
+	ChevronsUpDown,
+	HeartHandshakeIcon,
+	Loader2,
+} from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -16,47 +21,64 @@ import {
 	PopoverTrigger,
 } from "@/components/ui/popover";
 import { cn } from "@/utility/classNames";
-import type { OrganisationType } from "@/utility/eventsUtil";
-import useEvents from "@/utility/useEvents";
-import { endOfToday, parse, startOfDay } from "date-fns";
+import type {
+	EventOrganizerSlugType,
+	OrganisationType,
+} from "@/utility/eventsUtil";
+import { useOrganisations } from "@/utility/useOrganisations";
 import { useMemo, useState } from "react";
 import RoundedColorPill from "./RoundedColorPill";
 
 export function OrganisationsSelect({
-	initialValues,
-	onChange = () => undefined,
 	className,
 	multiple = true,
+	organisations,
+	selectedOrganisations,
+	onChange = () => {},
 }: {
-	initialValues?: OrganisationType["name"][];
-	onChange?: (values: OrganisationType["name"][]) => void;
 	className?: string;
 	multiple?: boolean;
+	organisations?: EventOrganizerSlugType[];
+	selectedOrganisations: EventOrganizerSlugType[];
+	onChange?: (orgs: EventOrganizerSlugType[]) => void;
 }) {
-	const {
-		data: { organisations },
-	} = useEvents({
-		from: startOfDay(parse("01-01-2020", "dd-MM-yyyy", new Date())),
-		to: endOfToday(),
-	});
 	const [open, setOpen] = useState(false);
-	const initial =
-		initialValues ??
-		organisations.reduce(
-			(acc, org) => (org.isMain ? acc.concat([org.name]) : acc),
-			[] as string[],
+	const { isPending, organisations: allOrganisations } = useOrganisations();
+
+	const selectedOrgs = useMemo(() => {
+		return selectedOrganisations
+			.map((slug) => allOrganisations.find(({ slug: s }) => s === slug))
+			.filter(Boolean) as OrganisationType[];
+	}, [allOrganisations, selectedOrganisations]);
+
+	const orgsToSelectFrom = useMemo(() => {
+		if (typeof organisations === "undefined") return allOrganisations;
+		return (
+			organisations.map((slug) =>
+				allOrganisations.find(({ slug: s }) => s === slug),
+			) || []
+		).filter(Boolean) as OrganisationType[];
+	}, [organisations, allOrganisations]);
+
+	const selectedOrganizerSlugs = useMemo(
+		() => selectedOrgs?.map(({ slug }) => slug),
+		[selectedOrgs],
+	);
+	const firstSelectedOrg = useMemo(
+		() => selectedOrgs?.find(({ slug }) => slug === selectedOrganizerSlugs[0]),
+		[selectedOrganizerSlugs, selectedOrgs],
+	);
+	const selectedColors = useMemo(() => {
+		const colors = Array.from(
+			selectedOrganizerSlugs.reduce((acc, orgSlug) => {
+				const org = selectedOrgs.find(({ slug }) => slug === orgSlug);
+				if (!org) return acc;
+				acc.add(org.color);
+				return acc;
+			}, new Set<string>()),
 		);
-	const [selectedOrgs, setSelectedOrgs] = useState<OrganisationType["name"][]>(
-		multiple ? initial : [initial[0]],
-	);
-	const orgNames = useMemo(
-		() => organisations.map((o) => o.name),
-		[organisations],
-	);
-	const firstOrg = useMemo(
-		() => organisations.find((o) => o.name === selectedOrgs[0]),
-		[selectedOrgs, organisations],
-	);
+		return colors;
+	}, [selectedOrganizerSlugs, selectedOrgs]);
 
 	return (
 		<Popover open={open} onOpenChange={setOpen}>
@@ -66,37 +88,57 @@ export function OrganisationsSelect({
 					role="combobox"
 					aria-expanded={open}
 					className={cn(
-						"w-fit justify-between rounded-none h-[38px]",
+						"w-fit justify-between rounded-none max-md:gap-0",
 						"hover:bg-grayLight hover:text-fg border-grayMed",
-						"group",
+						"group transition-colors max-lg:px-2 max-lg:py-1",
+						isPending && "text-grayDark",
 						className,
 					)}
 				>
-					{selectedOrgs.length === 0 && "Select organisations"}
-					{selectedOrgs.length === 1 && (
-						<span className="grid grid-cols-[auto_1fr] gap-2 items-center">
-							<RoundedColorPill
-								color={firstOrg?.color ?? "transparent"}
-								className="shrink-0"
+					{(isPending || selectedOrganisations.length === 0) && (
+						<>
+							<div className="flex items-center gap-3">
+								<HeartHandshakeIcon className="shrink-0 text-grayDark size-5 lg:size-6" />
+								<span className="hidden md:inline text-sm lg:text-base">
+									Select organisation{multiple ? "s" : ""}
+								</span>
+							</div>
+							<Loader2
+								className={cn(
+									"w-0 h-3 lg:h-4 animate-spin duration-1000 text-grayMed transition-all opacity-0",
+									"overflow-clip",
+									isPending && "opacity-100 w-3 lg:w-4",
+								)}
+								aria-hidden="true"
 							/>
-							<span className="truncate">{firstOrg?.name}</span>
+						</>
+					)}
+					{!isPending && selectedOrganisations.length === 1 && (
+						<span className="grid grid-cols-[auto_1fr] gap-2 items-center">
+							{multiple && (
+								<RoundedColorPill
+									color={firstSelectedOrg?.color ?? "transparent"}
+									className="shrink-0"
+								/>
+							)}
+							<span
+								className={cn(
+									"truncate max-w-56 text-sm lg:text-base",
+									multiple && "hidden sm:inline",
+								)}
+							>
+								{firstSelectedOrg?.name}
+							</span>
 						</span>
 					)}
-					{selectedOrgs.length > 1 && (
+					{!isPending && selectedOrganisations.length > 1 && (
 						<span className="flex items-center">
-							{Array.from(
-								selectedOrgs.reduce((acc, orgName) => {
-									const org = organisations.find((o) => o.name === orgName);
-									if (!org) return acc;
-									acc.add(org.color);
-									return acc;
-								}, new Set<string>()),
-							).map((color) => {
+							{selectedColors.map((color) => {
 								return (
 									<RoundedColorPill
 										key={color}
 										color={color}
-										className="-mr-1 ring-2 ring-bg group-hover:ring-grayLight"
+										className="-mr-2 xs:-mr-1 ring-2 ring-bg group-hover:ring-grayLight"
 									/>
 								);
 							})}
@@ -109,65 +151,66 @@ export function OrganisationsSelect({
 				</Button>
 			</PopoverTrigger>
 			<PopoverContent
-				className="w-fit max-w-96 p-0 max-h-[70vh] overflow-y-auto"
+				className="w-fit max-w-[min(320px,100vw-(var(--pagePadding)*2))] p-0 max-h-[70vh] overflow-y-auto z-[70] -translate-x-7 md:translate-x-0"
 				align="start"
 			>
-				<Command>
-					<CommandInput
-						placeholder="Search..."
-						className="focus-visible:ring-inset focus-visible:ring-offset-0 outline-offset-0 border-0 border-l"
-					/>
-					<CommandEmpty>No organisation found.</CommandEmpty>
-					<CommandGroup>
-						{multiple && (
-							<CommandItem
-								value="all"
-								onSelect={() => {
-									const newValues =
-										selectedOrgs.length === organisations.length
-											? []
-											: orgNames;
-									setSelectedOrgs(newValues);
-									onChange(newValues);
-								}}
-							>
-								Toggle all/none
-							</CommandItem>
-						)}
-						{organisations.map((org) => (
-							<CommandItem
-								key={org.name}
-								value={org.name}
-								onSelect={(currentValue: OrganisationType["name"]) => {
-									const newValues = selectedOrgs.find(
-										(o) => o.toLowerCase() === currentValue.toLowerCase(),
-									)
-										? selectedOrgs.filter(
-												(o) => o.toLowerCase() !== currentValue.toLowerCase(),
-											)
-										: [...selectedOrgs, org.name];
-									const uniqueValues = Array.from(new Set(newValues));
-									setSelectedOrgs(multiple ? uniqueValues : [org.name]);
-									onChange(multiple ? uniqueValues : [org.name]);
-									!multiple && setOpen(false);
-								}}
-							>
-								<Check
-									className={cn(
-										"mr-2 h-4 w-4 shrink-0",
-										selectedOrgs.find((o) => o === org.name)
-											? "opacity-100"
-											: "opacity-0",
-									)}
-								/>
-								<span className="grid grid-cols-[auto_1fr] gap-2 items-center">
-									<RoundedColorPill color={org.color} className="shrink-0" />
-									<span className="truncate">{org.name}</span>
-								</span>
-							</CommandItem>
-						))}
-					</CommandGroup>
-				</Command>
+				{!isPending && (
+					<Command>
+						<CommandInput
+							placeholder="Search..."
+							className="focus-visible:ring-inset focus-visible:ring-offset-0 outline-offset-0 border-0 border-l"
+						/>
+						<CommandEmpty>No organisation found.</CommandEmpty>
+						<CommandGroup>
+							{multiple && (
+								<CommandItem
+									value="all"
+									onSelect={() => {
+										const newSlugs =
+											selectedOrganizerSlugs.length === selectedOrgs.length
+												? []
+												: selectedOrganizerSlugs;
+										onChange(newSlugs);
+									}}
+								>
+									Toggle all/none
+								</CommandItem>
+							)}
+							{orgsToSelectFrom.map((org) => (
+								<CommandItem
+									key={org.slug}
+									value={org.slug}
+									onSelect={(currentValue: string) => {
+										const alreadySelected = selectedOrganizerSlugs.includes(
+											currentValue as EventOrganizerSlugType,
+										);
+										const newValues = alreadySelected
+											? selectedOrganizerSlugs.filter(
+													(slug) => slug !== currentValue,
+												)
+											: [...selectedOrganizerSlugs, org.slug];
+										const uniqueValues = Array.from(new Set(newValues));
+										onChange(multiple ? uniqueValues : [org.slug]);
+										!multiple && setOpen(false);
+									}}
+								>
+									<Check
+										className={cn(
+											"mr-2 h-4 w-4 shrink-0",
+											selectedOrganisations.find((o) => o === org.slug)
+												? "opacity-100"
+												: "opacity-0",
+										)}
+									/>
+									<span className="grid grid-cols-[auto_1fr] gap-2 items-center">
+										<RoundedColorPill color={org.color} className="shrink-0" />
+										<span className="truncate">{org.name}</span>
+									</span>
+								</CommandItem>
+							))}
+						</CommandGroup>
+					</Command>
+				)}
 			</PopoverContent>
 		</Popover>
 	);

@@ -1,7 +1,9 @@
 import { cn } from "@/utility/classNames";
-import { slugifyCssClass } from "@/utility/cssSlugify";
-import type { OrganisationType } from "@/utility/eventsUtil";
+import { useSearchParams } from "next/navigation";
 import { memo, useMemo } from "react";
+import type { LegendOrganisation } from "./EventsTimeline/EventsTimelineLegend";
+import InternalLink from "./InternalLink";
+import OrgsTooltip from "./OrgsTooltip";
 import RoundedColorPill from "./RoundedColorPill";
 import { Portal, Tooltip, TooltipContent, TooltipTrigger } from "./ui/tooltip";
 
@@ -9,33 +11,48 @@ function OrgsLegendItem({
 	org,
 	otherOrgs,
 }: {
-	org: OrganisationType;
-	otherOrgs?: OrganisationType[];
+	org: LegendOrganisation;
+	otherOrgs?: LegendOrganisation[];
 }) {
+	const searchParams = useSearchParams();
+
+	// biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
 	const triggerContent = useMemo(() => {
 		return (
-			<li
-				className={cn(
-					"grid grid-cols-[auto_1fr_auto] gap-x-2 py-2",
-					"items-center",
-					`legend-org legend-org-${slugifyCssClass(org.name)}`,
-					`cursor-pointer`,
-				)}
-			>
+			<>
 				<RoundedColorPill color={org.color} />
 				<span className="grid grid-cols-[1fr_auto] gap-4">
-					<div className="truncate">{org.name.split(":")[0]}</div>
-					<span className="font-mono text-xs text-grayDark">
-						({org.count.toLocaleString("en-GB")})
-					</span>
+					<div className="truncate group-hover:font-semibold group-hover:text-fg transition-all">
+						{org.name.split(":")[0]}
+					</div>
+					{org.count && (
+						<span className="font-mono text-xs text-grayDark">
+							({org.count.toLocaleString("en-GB")})
+						</span>
+					)}
 				</span>
-			</li>
+			</>
 		);
-	}, [org.name, org.color, org.count]);
+	}, [org.slug, searchParams]);
+
 	if (org.isMain) {
 		return (
-			<Tooltip key={org.name} delayDuration={50} disableHoverableContent>
-				<TooltipTrigger asChild>{triggerContent}</TooltipTrigger>
+			<Tooltip key={org.slug} disableHoverableContent>
+				<TooltipTrigger asChild>
+					<li>
+						<InternalLink
+							href={`/organisations/${org.slug}`}
+							className={cn(
+								"focusable",
+								"grid grid-cols-[auto_1fr_auto] gap-x-2 py-2 transition-colors",
+								`items-center group cursor-pointer hover:bg-grayUltraLight`,
+								org.isMain && `legend-org legend-org-${org.slug}`,
+							)}
+						>
+							{triggerContent}
+						</InternalLink>
+					</li>
+				</TooltipTrigger>
 				<Portal>
 					<TooltipContent className="text-sm">{org.name}</TooltipContent>
 				</Portal>
@@ -43,25 +60,18 @@ function OrgsLegendItem({
 		);
 	}
 	return (
-		<Tooltip key={org.name} delayDuration={50}>
-			<TooltipTrigger asChild>{triggerContent}</TooltipTrigger>
-			<Portal>
-				<TooltipContent className="text-sm">
-					<ul className="flex flex-col w-96 max-w-full">
-						{otherOrgs?.map((subOrg) => (
-							<li key={subOrg.name} className="flex flex-col">
-								<div className="grid grid-cols-[1fr_auto] gap-4 py-2 border-b border-black/10">
-									<span className="truncate">{subOrg.name}</span>
-									<span className="font-mono text-xs text-black/45">
-										({subOrg.count.toLocaleString("en-GB")})
-									</span>
-								</div>
-							</li>
-						))}
-					</ul>
-				</TooltipContent>
-			</Portal>
-		</Tooltip>
+		<OrgsTooltip otherOrgs={otherOrgs}>
+			<li>
+				<span
+					className={cn(
+						"grid grid-cols-[auto_1fr_auto] gap-x-2 py-2",
+						`items-center cursor-pointer`,
+					)}
+				>
+					{triggerContent}
+				</span>
+			</li>
+		</OrgsTooltip>
 	);
 }
 

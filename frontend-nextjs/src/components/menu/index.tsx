@@ -1,25 +1,13 @@
 "use client";
-import { useUiStore } from "@/providers/UiStoreProvider";
-import { usePathname } from "next/navigation";
 import FiltersArea from "../FiltersArea";
 import HeaderMenu from "./HeaderMenu";
 import { StickyMenuWrapper } from "./StickyMenuWrapper";
 
 export const Menu = ({ currentPage }: { currentPage: string }) => {
-	const pathname = usePathname();
-	const uiState = useUiStore(
-		({ isScrolledToTop, isScrollingUp, scrollThresholdConsideredTheTop }) => ({
-			isScrolledToTop,
-			isScrollingUp,
-			scrollThresholdConsideredTheTop,
-		}),
-	);
 	return (
-		<StickyMenuWrapper {...uiState}>
+		<StickyMenuWrapper>
 			<HeaderMenu currentPage={currentPage} />
-			{pathname === "/" && (
-				<FiltersArea isScrolledToTop={uiState.isScrolledToTop} />
-			)}
+			<FiltersArea />
 		</StickyMenuWrapper>
 	);
 };

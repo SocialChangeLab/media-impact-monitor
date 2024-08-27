@@ -1,185 +1,190 @@
 import { cn } from "@/utility/classNames";
-import type { icons } from "lucide-react";
-import { Fragment, useCallback, useMemo } from "react";
-import ImpactBar from "./ImpactBar";
-import ImpactChartRow from "./ImpactChartRow";
-
-type ImpactChartColumnItem = {
-	impact: number;
-	uncertainty: number | null;
-	label: string;
-	color: string;
-	uniqueId: string;
-};
+import type { EventOrganizerSlugType } from "@/utility/eventsUtil";
+import type { ParsedMediaImpactItemType } from "@/utility/mediaImpactUtil";
+import { type ScaleLinear, scaleLinear } from "d3-scale";
+import { useMemo } from "react";
+import ImpactChartColumnDescriptions from "./ImpactChartColumnDescriptions";
+import ImpactChartColumnVisualisation from "./ImpactChartColumnVisualisation";
 
 type ImpactChartColumn = {
-	data: ImpactChartColumnItem[];
+	data: ParsedMediaImpactItemType[] | null;
 	id: string;
+	limitations?: string[];
+	error: Error | null;
+	org: EventOrganizerSlugType;
+	onOrgChange?: (organiser: EventOrganizerSlugType) => void;
+	isPending: boolean;
 };
 
 type ImpactChartProps = {
 	columns: ImpactChartColumn[];
+	columnsCount?: number;
+	itemsCountPerColumn?: number;
 	unitLabel: string;
-	icon: keyof typeof icons;
 };
 
 function ImpactChart(props: ImpactChartProps) {
-	const height = 400;
-	const padding = 32;
+	const paddingInRem = 4;
+	const fullHeightInclPadding = 24;
 
-	const columnItems = useMemo(
-		() => props.columns.flatMap((columnItem) => columnItem.data),
-		[props.columns],
-	);
-
-	const impactScale = useCallback(
-		(impact: number) => {
-			const columnsWithValidCertainty = columnItems.filter(
-				(item) => item.uncertainty !== null,
-			);
-			const lowestImpact = Math.min(
-				...columnsWithValidCertainty.map((item) => item.impact),
-			);
-			const highestImpact = Math.max(
-				...columnsWithValidCertainty.map((item) => item.impact),
-			);
-			const impactRange = Math.abs(lowestImpact) + Math.abs(highestImpact);
-			const highImpactsPercentage = highestImpact / impactRange;
-			const lowImpactsPercentage = Math.abs(lowestImpact) / impactRange;
-			const highImpactsPixels = height * highImpactsPercentage;
-			const lowImpactsPixels = height * lowImpactsPercentage;
-
-			const absImpact = Math.abs(impact);
-			const percentageOfImpact = absImpact / impactRange;
-			const partInPixels = impact < 0 ? lowImpactsPixels : highImpactsPixels;
-			return Math.floor(partInPixels * percentageOfImpact);
-		},
-		[columnItems],
-	);
-
-	const items = useMemo(() => {
-		if (props.columns.length === 0) return [];
-		const itemsPerGroup = props.columns[0].data.length;
-		const separatorsCount = Math.floor(columnItems.length / itemsPerGroup) - 2;
-		let separatorsAdded = 0;
-		return Array.from(
-			{ length: separatorsCount + columnItems.length + 1 },
-			(_, idx) => {
-				const itemNumber = idx + 1;
-				const isSeparator =
-					itemNumber !== 1 && itemNumber % (itemsPerGroup + 1) === 0;
-				isSeparator && separatorsAdded++;
-				const item = {
-					type: isSeparator ? "separator" : "item",
-					item: isSeparator ? idx : columnItems[idx - separatorsAdded],
-					key: isSeparator
-						? `separator-${separatorsAdded}`
-						: `item-${idx - separatorsAdded}`,
-				};
-				return item;
-			},
+	const scaleProps = useMemo(() => {
+		const negativeValues = props.columns
+			.flatMap((c) => c.data?.filter((d) => d.impact.lower < 0) ?? [])
+			.map((d) => d.impact.lower);
+		const positiveValues = props.columns
+			.flatMap((c) => c.data?.filter((d) => d.impact.upper > 0) ?? [])
+			.map((d) => d.impact.upper);
+		const lowestValue = Math.min(...negativeValues, 0);
+		const highestValue = Math.max(...positiveValues, 0);
+		const totalValueRange = Math.abs(highestValue - lowestValue);
+		const percentageOfNegativeValues =
+			lowestValue === 0 ? 0 : Math.abs(lowestValue) / totalValueRange;
+		const restrictedPercentageOfNegativeValues = Math.max(
+			percentageOfNegativeValues,
+			0.2,
 		);
-	}, [props.columns, columnItems]);
+		const percentageOfPositiveValues = 1 - restrictedPercentageOfNegativeValues;
+		const totalHeightInRem = fullHeightInclPadding - paddingInRem * 2;
+		const negativeAreaHeightInRem =
+			restrictedPercentageOfNegativeValues * totalHeightInRem;
+		const positiveAreaHeightInRem =
+			percentageOfPositiveValues * totalHeightInRem;
 
+		const sizeScale = scaleLinear()
+			.domain([highestValue, lowestValue])
+			.range([0 + paddingInRem, fullHeightInclPadding - paddingInRem]);
+
+		return {
+			totalHeightInRem,
+			negativeAreaHeightInRem,
+			positiveAreaHeightInRem,
+			sizeScale,
+			yAxisScale: scaleLinear()
+				.domain([
+					highestValue + sizeScale.invert(paddingInRem),
+					lowestValue - sizeScale.invert(paddingInRem),
+				])
+				.range([paddingInRem / 2, fullHeightInclPadding - paddingInRem / 2]),
+			fillOpacityScale: (pVal: number) =>
+				Math.max(Math.log10(Math.max(0.001, pVal)) / -3, 0.1),
+		};
+	}, [props.columns]);
 	return (
-		<div className="flex flex-col">
-			<style jsx global>{`
-				${columnItems
-					.map(
-						(item) => `
-						.impact-chart-container:has(.${item.uniqueId}-item:hover) .${item.uniqueId}-show {
-							opacity: 1;
-						}
-						.impact-chart-container:has(.${item.uniqueId}-item:hover) .${item.uniqueId}-hide {
-							opacity: 0;
-						}
-					`,
-					)
-					.join("\n")}
-			`}</style>
+		<div className="flex flex-col gap-6">
 			<div
 				className={cn(
-					`impact-chart-container`,
-					"grid grid-flow-col grid-rows-[1fr_auto] w-full",
+					"grid gap-x-px bg-grayLight h-96 overflow-clip",
+					"grid-cols-[4rem_1fr] border-r border-grayLight",
+					props.columns.length === 2 && "md:grid-cols-[4rem_repeat(2,1fr)]",
+					props.columns.length === 3 &&
+						"md:grid-cols-[4rem_repeat(2,1fr)] lg:grid-cols-[4rem_repeat(3,1fr)]",
 				)}
-				style={{
-					maxHeight: `${height}px`,
-					gridTemplateColumns: items
-						.map(({ type }) => (type === "separator" ? "3px" : "1fr"))
-						.join(" "),
-				}}
 			>
-				{items.map(({ type, item, key }) => {
-					const commonCSSClasses = cn("size-full");
-					const oddCSSClasses = cn("border-b border-grayLight");
-					if (type === "separator" || typeof item === "number") {
+				<ImpactChartYAxis
+					{...scaleProps}
+					isPending={props.columns.some((c) => c.isPending)}
+				/>
+				{props.columns.map(
+					({ id, data, limitations, isPending, error }, idx) => {
 						return (
-							<Fragment key={key}>
-								<div
-									className={cn(
-										commonCSSClasses,
-										oddCSSClasses,
-										"shrink-0 relative",
-									)}
-								>
-									<div className="absolute top-0 left-1/2 w-px h-full bg-grayLight" />
-								</div>
-								<div className={cn(commonCSSClasses, "shrink-0 relative")}>
-									<div className="absolute top-0 left-1/2 w-px h-full bg-grayLight" />
-								</div>
-							</Fragment>
+							<ImpactChartColumnVisualisation
+								key={`column-${id}`}
+								id={`column-${id}`}
+								impacts={data}
+								limitations={limitations}
+								error={error}
+								isPending={isPending}
+								{...scaleProps}
+								itemsCountPerColumn={props.itemsCountPerColumn ?? 1}
+								colIdx={idx}
+								heightInRem={fullHeightInclPadding}
+							/>
 						);
-					}
-					const columnItem = item;
-					const impactInHeightPercentage = impactScale(columnItem.impact);
-					const itemClass = `${columnItem.uniqueId}-item`;
-					return (
-						<Fragment key={key}>
-							{columnItem.impact < 0 && (
-								<div
-									className={cn(itemClass, commonCSSClasses, oddCSSClasses)}
-								/>
-							)}
-							<div
-								key={columnItem.uniqueId}
-								className={cn(
-									itemClass,
-									commonCSSClasses,
-									`flex items-end px-4 group`,
-									columnItem.impact < 0 && `-scale-y-100`,
-									columnItem.impact > 0 && oddCSSClasses,
-								)}
-								style={{ paddingTop: `${padding}px` }}
-							>
-								<ImpactBar
-									{...columnItem}
-									totalHeight={height - padding * 2}
-									barHeight={Math.abs(impactInHeightPercentage)}
-								/>
-							</div>
-							{columnItem.impact >= 0 && (
-								<div className={cn(itemClass, commonCSSClasses)} />
-							)}
-						</Fragment>
-					);
-				})}
+					},
+				)}
 			</div>
 			<div
-				className="grid"
-				style={{ gridTemplateColumns: `repeat(${props.columns.length}, 1fr)` }}
+				className={cn(
+					"grid gap-x-px",
+					"grid-cols-[4rem_1fr]",
+					props.columns.length === 2 && "md:grid-cols-[4rem_repeat(2,1fr)]",
+					props.columns.length === 3 &&
+						"md:grid-cols-[4rem_repeat(2,1fr)] lg:grid-cols-[4rem_repeat(3,1fr)]",
+				)}
 			>
-				{props.columns.map(({ id, data }) => {
-					return (
-						<div key={`column-${id}`} className="p-4">
-							<ImpactChartRow
-								icon={props.icon}
+				<div />
+				{props.columns.map(
+					(
+						{ id, data, limitations, org, isPending, error, onOrgChange },
+						idx,
+					) => {
+						return (
+							<ImpactChartColumnDescriptions
+								key={`column-${id}`}
 								impacts={data}
+								isPending={isPending}
 								unitLabel={props.unitLabel}
+								limitations={limitations}
+								error={error}
+								defaultOrganizer={org}
+								onOrgChange={onOrgChange}
+								itemsCountPerColumn={props.itemsCountPerColumn}
+								colIdx={idx}
 							/>
-						</div>
-					);
-				})}
+						);
+					},
+				)}
 			</div>
+		</div>
+	);
+}
+
+function ImpactChartYAxis({
+	yAxisScale,
+	sizeScale,
+	isPending,
+}: {
+	yAxisScale: ScaleLinear<number, number, never>;
+	sizeScale: ScaleLinear<number, number, never>;
+	isPending: boolean;
+}) {
+	const ticks = yAxisScale.ticks(5);
+	return (
+		<div className={cn("pr-2 bg-pattern-soft")}>
+			<div
+				className={cn(
+					"relative transition-opacity size-full",
+					isPending ? "opacity-0" : "opacity-100",
+				)}
+			>
+				{ticks.map((tick, idx) => (
+					<ImpactChartXAxisTick
+						value={tick}
+						top={`${sizeScale(tick)}rem`}
+						key={`size-scale-tick-${
+							// biome-ignore lint/suspicious/noArrayIndexKey: <explanation>
+							idx
+						}`}
+					/>
+				))}
+			</div>
+		</div>
+	);
+}
+
+function ImpactChartXAxisTick({ value, top }: { value: number; top: string }) {
+	return (
+		<div
+			className={cn(
+				"text-sm text-grayDark flex items-center justify-end",
+				"absolute right-0 h-px w-full text-right",
+			)}
+			style={{ top }}
+		>
+			<span>
+				{value === 0 ? "" : value > 0 ? "+" : "-"}
+				{Math.abs(value).toLocaleString("en-GB")}
+			</span>
 		</div>
 	);
 }

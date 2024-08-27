@@ -4,6 +4,7 @@ import { cn } from "@/utility/classNames";
 import { AnimatePresence, motion } from "framer-motion";
 import { Check, X } from "lucide-react";
 import { type FormEvent, useCallback, useState } from "react";
+import { z } from "zod";
 import { subscribeToNewsletter } from "./NewsletterForm.action";
 import { Button } from "./ui/button";
 
@@ -17,17 +18,27 @@ export const NewsletterForm = ({
 		message?: string;
 	};
 }) => {
-	const [email, setEmail] = useState<string>("");
 	const [status, setStatus] = useState<
 		"success" | "error" | "loading" | "idle"
 	>("idle");
 	const [responseMsg, setResponseMsg] = useState<string>("");
 
 	const handleSubscribe = useCallback(async (e: FormEvent<HTMLFormElement>) => {
+		const form = e.currentTarget;
+		const formData = new FormData(form);
 		e.preventDefault();
 		setStatus("loading");
-		const { value: emailAddress } =
-			(e.currentTarget.elements.namedItem("email") as HTMLInputElement) ?? {};
+
+		const emailAddressValidation = z
+			.string()
+			.email()
+			.safeParse(formData.get("email"));
+		if (!emailAddressValidation.success) {
+			setStatus("error");
+			setResponseMsg("Please enter a valid email address");
+			return;
+		}
+		const emailAddress = emailAddressValidation.data;
 		try {
 			const { message, error } = await subscribeToNewsletter(emailAddress);
 
@@ -36,7 +47,7 @@ export const NewsletterForm = ({
 				setResponseMsg(error);
 			} else if (message) {
 				setStatus("success");
-				setEmail("");
+				setResponseMsg("");
 				setResponseMsg(message);
 			}
 		} catch (err) {
@@ -63,20 +74,21 @@ export const NewsletterForm = ({
 							`caret-fg disabled:border-grayMed border text-fg`,
 							status === "error" && "border-[var(--sentiment-negative)]",
 							status === "success" && "border-[var(--sentiment-positive)]",
+							status === "loading" && "text-grayMed",
 							classNames.input,
 						)}
 						id="newsletter-email"
 						name="email"
 						type="email"
+						required
 						placeholder="anna.smith@example.com"
-						value={email}
-						onChange={(e) => setEmail(e.target.value)}
 						disabled={status === "loading"}
 					/>
 				</div>
 				<Button
 					disabled={status === "loading"}
 					className={cn(classNames.button)}
+					type="submit"
 				>
 					Subscribe
 				</Button>

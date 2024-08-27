@@ -3,8 +3,7 @@
 from time import sleep as _sleep
 
 from joblib import Memory
-from requests import get as _get
-from requests import post as _post
+from requests import get as _get, post as _post, Response
 from zenrows import ZenRowsClient
 
 from media_impact_monitor.util.env import ZENROWS_API_KEY
@@ -14,7 +13,7 @@ cache = memory.cache
 
 
 @cache(ignore=["sleep"])
-def get(url, sleep=None, **kwargs):
+def get(url, sleep=None, **kwargs) -> Response | None:
     r"""Send a GET request, cached in the cloud.
 
     :param url: URL for the new :class:`Request` object.
@@ -25,14 +24,17 @@ def get(url, sleep=None, **kwargs):
     :return: :class:`Response <Response>` object
     :rtype: requests.Response
     """
-    response = _get(url, **kwargs)
+    try:
+        response = _get(url, **kwargs)
+    except Exception:
+        return None
     if sleep is not None:
         _sleep(sleep)
     return response
 
 
 @cache(ignore=["sleep"])
-def post(url, sleep=None, **kwargs):
+def post(url, sleep=None, **kwargs) -> Response | None:
     r"""Send a POST request, cached in the cloud.
 
     :param url: URL for the new :class:`Request` object.
@@ -43,8 +45,10 @@ def post(url, sleep=None, **kwargs):
     :return: :class:`Response <Response>` object
     :rtype: requests.Response
     """
-    response = _post(url, **kwargs)
-    response.raise_for_status()
+    try:
+        response = _post(url, **kwargs)
+    except Exception:
+        return None
     if sleep is not None:
         _sleep(sleep)
     return response

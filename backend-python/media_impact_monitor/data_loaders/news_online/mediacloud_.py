@@ -36,7 +36,12 @@ def get_mediacloud_counts(
 ) -> tuple[pd.Series | None, list[str]]:
     assert verify_dates(start_date, end_date)
 
-    collection_ids = [_resolve_country(c) for c in countries] if countries else []
+    collection_ids = [_resolve_country(c) for c in countries] if countries else None
+    collection_ids = (
+        [item for sublist in collection_ids for item in sublist]
+        if collection_ids
+        else None
+    )
     stories = _story_list_split_monthly(
         query=query,
         start_date=start_date,
@@ -65,6 +70,7 @@ def _story_list_all_pages(
     collection_ids: list[int] | None = None,
     platform: Platform = "onlinenews-mediacloud",
     sample_frac: float = 1,
+    verbose: bool = False,
 ):
     all_stories = []
     more_stories = True
@@ -90,9 +96,10 @@ def _story_list_all_pages(
             )
         else:
             dt = end_date
-        print(
-            f"retrieved metadata for {len(all_stories)} stories for month {start_date.year}-{start_date.month}, currently at {dt}"
-        )
+        if verbose:
+            print(
+                f"retrieved metadata for {len(all_stories)} stories for month {start_date.year}-{start_date.month}, currently at {dt}"
+            )
         # https://github.com/mediacloud/api-tutorial-notebooks/blob/main/MC02%20-%20attention.ipynb:
         # > As you may have noted, this can take a while for long time periods. If you look closely you'll notice that it can't be easily parallelized, because it requires content in the results to make the next call. A workaround is to divide you query up by time and query in parallel for something like each day. This can speed up the response. Also just contact us directly if you are trying to do larger data dumps, or hit up against your API quota.
     # take a 1% sample of stories
@@ -113,6 +120,7 @@ def _slice_date_range(start: date, end: date) -> list[tuple[date, date]]:
     return result
 
 
+@cache
 def _story_list_split_monthly(
     query: str,
     start_date: date,
@@ -160,6 +168,11 @@ def get_mediacloud_fulltexts(
     assert verify_dates(start_date, end_date)
     assert isinstance(countries, list) or countries is None
     collection_ids = [_resolve_country(c) for c in countries] if countries else None
+    collection_ids = (
+        [item for sublist in collection_ids for item in sublist]
+        if collection_ids
+        else None
+    )
     df = _story_list_split_monthly(
         query=query,
         start_date=start_date,
@@ -195,7 +208,7 @@ def get_mediacloud_fulltexts(
 
 def _extract(url_and_response):
     url, response = url_and_response
-    if response.status_code != 200:
+    if response is None or response.status_code != 200:
         return None
     try:
         # this also contains additional metadata (title, language, extraction method, ...) that could be used
@@ -205,10 +218,14 @@ def _extract(url_and_response):
 
 
 @cache
-def _resolve_country(country: str) -> int:
-    # get national newspapers (regional newspapers are also available)
+def _resolve_country(country: str) -> list[int]:
+    # get national newspapers
     results = directory.collection_list(name=f"{country} - national")["results"]
     # ignore research collections
     results = [r for r in results if "(Research Only)" not in r["name"]]
     assert len(results) == 1, f"Expected 1 result, got {len(results)} for {country}"
-    return results[0]["id"]
+    national = results[0]["id"]
+    # get regional newspapers
+    results = directory.collection_list(name=f"{country} - state & local")["results"]
+    regional = results[0]["id"]
+    return [national, regional]

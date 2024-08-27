@@ -46,20 +46,20 @@ function EventsTimeline({
 	});
 	const { today } = useToday();
 	const dataSourceInsertions: DataSourceInsertionType[] = [
-		{
-			date: dateToComparableDateItem(
-				new Date("2022-01-01T00:00:00.000Z"),
-				today,
-			),
-			name: "ACLED (Armed Conflict Location & Event Data Project)",
-		},
-		{
-			date: dateToComparableDateItem(
-				new Date("2022-07-01T00:00:00.000Z"),
-				today,
-			),
-			name: "Press Releases by Last Generation",
-		},
+		// {
+		// 	date: dateToComparableDateItem(
+		// 		new Date("2022-01-01T00:00:00.000Z"),
+		// 		today,
+		// 	),
+		// 	name: "ACLED (Armed Conflict Location & Event Data Project)",
+		// },
+		// {
+		// 	date: dateToComparableDateItem(
+		// 		new Date("2022-07-01T00:00:00.000Z"),
+		// 		today,
+		// 	),
+		// 	name: "Press Releases by Last Generation",
+		// },
 	];
 	if (eventsByOrgs.length === 0) return <EmptyEventsTimeline />;
 

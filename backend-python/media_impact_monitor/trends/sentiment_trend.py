@@ -5,7 +5,6 @@ from media_impact_monitor.types_ import FulltextSearch, TrendSearch
 from media_impact_monitor.util.cache import cache
 
 
-@cache
 def get_sentiment_trend(q: TrendSearch) -> tuple[pd.DataFrame | None, list[str]]:
     """
     Retrieves the sentiment trend for a given query and start date.

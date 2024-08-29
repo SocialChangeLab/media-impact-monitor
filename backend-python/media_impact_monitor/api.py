@@ -1,73 +1,172 @@
 """API for the Media Impact Monitor.
 
 Run with: `uvicorn media_impact_monitor.api:app --reload`
-Or, if necessary: `poetry run uvicorn media_impact_monitor.api:app --reload`
+Or, if necessary: `poetry run uvicorn media_impact_monitor.api:app --reload` in "backend-python/"
 """
 
-from functools import partial
+from datetime import date
+import json
+import logging
+import os
+from contextlib import asynccontextmanager
 
-import pandas as pd
-from fastapi import FastAPI
-from fastapi.responses import PlainTextResponse
-from typing_extensions import Literal
+import sentry_sdk
+from fastapi import FastAPI, Request
+from fastapi.responses import JSONResponse
+from starlette.middleware.cors import CORSMiddleware
+from starlette.responses import RedirectResponse
+from uvicorn.logging import AccessFormatter
 
-from media_impact_monitor.data_loaders.news_online.mediacloud_ import (
-    get_mediacloud_counts,
+from media_impact_monitor.cron import fill_cache, setup_cron
+from media_impact_monitor.events import get_events, organizers_with_id
+from media_impact_monitor.fulltexts import get_fulltexts
+from media_impact_monitor.impact import get_impact
+from media_impact_monitor.policy import get_policy
+from media_impact_monitor.trend import get_trend_for_api
+from media_impact_monitor.types_ import (
+    Event,
+    EventSearch,
+    Fulltext,
+    FulltextSearch,
+    Impact,
+    ImpactSearch,
+    Organizer,
+    PolicySearch,
+    Response,
+    Trend,
+    TrendSearch,
 )
-from media_impact_monitor.data_loaders.news_print.genios import get_genios_counts
-from media_impact_monitor.data_loaders.protest.acled import get_acled_events
-from media_impact_monitor.types_ import CountJson, CountType, EventJson
+from media_impact_monitor.util.env import SENTRY_DSN
 
-app = FastAPI()
+git_commit = (os.getenv("VCS_REF") or "")[:7]
+build_date = (os.getenv("BUILD_DATE") or "WIP").replace("T", " ")
+
+metadata = dict(
+    title="Media Impact Monitor API",
+    version=f"0.1.0+{git_commit} ({build_date})",
+    contact=dict(
+        name="Social Change Lab",
+        url="https://github.com/socialchangelab/media-impact-monitor",
+    ),
+    redoc_url="/docs",
+    # the original Swagger UI does not properly display POST parameters, so we disable it
+    docs_url=None,
+)
 
 
-@app.get("/", response_class=PlainTextResponse)
-def welcome() -> str:
-    version = "0.1.2"
-    return f"Media Impact Monitor API, v{version}\nDocumentation: /docs"
+# this is run only once at startup, rather than for every request
+@asynccontextmanager
+async def app_lifespan(app: FastAPI):
+    # setup logging to also include datetime
+    logger = logging.getLogger("uvicorn.access")
+    if logger.handlers:
+        console_formatter = AccessFormatter(
+            "{asctime} {levelprefix} {message}", style="{", use_colors=True
+        )
+        logger.handlers[0].setFormatter(console_formatter)
+    # setup cron to regularly fills the cache
+    setup_cron()
+    yield
 
 
-parse_date = partial(pd.to_datetime, format="%Y-%m-%d")
+sentry_sdk.init(dsn=SENTRY_DSN, traces_sample_rate=1.0, profiles_sample_rate=1.0)
 
 
-@app.get("/events/")
-def get_events(
-    types: list[Literal["protest"]],
-    keywords: list[str],
-    organizations: list[str],
-    start_date: str,
-    end_date: str,
-) -> list[EventJson]:
+app = FastAPI(**metadata, lifespan=app_lifespan)
+
+# configure cross-origin resource sharing
+# = which websites are allowed to access the API
+# (enforced by the browsers for "security" reasons)
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+
+@app.exception_handler(Exception)
+async def global_exception_handler(request: Request, exc: Exception):
+    # Log the exception details including the stack trace
+    logger = logging.getLogger(__name__)
+    logger.error(exc, exc_info=True)
+
+    # Return a JSON response to the client with the exception details
+    return JSONResponse(
+        status_code=500,
+        content={"message": "Internal server error", "details": str(exc)},
+        media_type="application/json",
+        headers={"Access-Control-Allow-Origin": "*"},
+    )
+
+
+@app.get("/", include_in_schema=False)
+def read_root():
+    return RedirectResponse(url="/docs")
+
+
+@app.get("/info")
+def get_info() -> dict:
+    """Get metadata (title, version, etc.)."""
+    return metadata
+
+
+@app.post("/events")
+def _get_events(q: EventSearch) -> Response[EventSearch, list[Event]]:
     """Fetch events from the Media Impact Monitor database."""
-    events = get_acled_events(keyword=keywords[0])
-    start_date = parse_date(start_date)
-    end_date = parse_date(end_date)
-    # ... TODO
-    return events.to_dict(orient="records")[:50]
+    q.end_date = q.end_date or date.today()
+    df = get_events(q)
+    data = json.loads(df.to_json(orient="records"))  # convert nan to None
+    return Response(query=q, data=data)
 
 
-@app.get("/counts/")
-def get_counts(
-    types: list[CountType],
-    keywords: list[str],
-    start_date: str,
-    end_date: str,
-) -> dict[CountType, list[CountJson]]:
+@app.post("/trend")
+def _get_trend(q: TrendSearch) -> Response[TrendSearch, Trend]:
     """Fetch media item counts from the Media Impact Monitor database."""
-    start_date = parse_date(start_date)
-    end_date = parse_date(end_date)
-    results = {}
-    if "news_online" in types:
-        results["news_online"] = get_mediacloud_counts(
-            query=keywords[0],
-            start_date=start_date,
-            end_date=end_date,
-        ).to_dict(orient="records")[:50]
-    if "news_print" in types:
-        results["news_print"] = get_genios_counts(
-            query=keywords[0],
-            start_date=start_date,
-            end_date=end_date,
-        ).to_dict(orient="records")[:50]
-    # ... TODO
-    return results
+    q.end_date = q.end_date or date.today()
+    data = get_trend_for_api(q)
+    return Response(query=q, data=data)
+
+
+@app.post("/fulltexts")
+def _get_fulltexts(q: FulltextSearch) -> Response[FulltextSearch, list[Fulltext]]:
+    """Fetch media fulltexts from the Media Impact Monitor database."""
+    q.end_date = q.end_date or date.today()
+    fulltexts = get_fulltexts(q)
+    if fulltexts is None:
+        return Response(query=q, data=[])
+    return Response(query=q, data=fulltexts.to_dict(orient="records"))
+
+
+@app.post("/impact")
+def _get_impact(q: ImpactSearch) -> Response[ImpactSearch, Impact]:
+    """Compute the impact of an event on a media trend."""
+    q.end_date = q.end_date or date.today()
+    impact = get_impact(q)
+    return Response(query=q, data=impact)
+
+
+@app.post("/policy")
+def _get_policy(q: PolicySearch):  # -> Response[PolicySearch, Policy]:
+    """Fetch policy data from the Media Impact Monitor database."""
+    q.end_date = q.end_date or date.today()
+    policy = get_policy(q)
+    return Response(query=q, data=policy.to_dict(orient="records"))
+
+
+@app.get("/organizers")
+def _get_organizers() -> list[Organizer]:
+    return organizers_with_id()
+
+
+@app.get("/fill_cache")
+def _fill_cache():
+    fill_cache()
+    return {"status": "success"}
+
+
+if __name__ == "__main__":
+    import uvicorn
+
+    uvicorn.run(app)

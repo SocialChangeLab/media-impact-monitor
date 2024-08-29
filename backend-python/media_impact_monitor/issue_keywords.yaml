@@ -1,0 +1,53 @@
+activism:
+  - \*protest*
+  - \*demo
+  - \*demonstr*
+  - \*kundgebung
+  - versamm*
+  - \*besetz*
+  - \*streik*
+  - \*blockade
+  - \*blockier*
+  - sitzblock*
+  - \*aktivis*
+  - \*marsch
+  - \*parade
+  - mahnwache
+  - hungerstreik
+  - ziviler ungehorsam
+climate_general:
+  - klimawandel
+  - klimaerwärmung
+  - erderwärmung
+  - klimaschutz
+climate_science:
+  - klimaforsch*
+  - klimawissenschaft*
+  - erderwärmung
+  - ipcc
+climate_policy:
+  - klimapoliti*
+  - klimaneutral*
+  - klimaziel*
+  - klimaschutzpaket
+  - klimaschutzgesetz
+  - klimaschutzmaßnahmen
+  - klimaschutzabkommen
+  - klimaschutzprogramm
+  - kohleausstieg
+  - erneuerbare energie*
+  - bürgerrat
+  - gesellschaftsrat
+  - tempolimit
+  - tempo 100
+  - 9-euro-ticket
+  - neun-euro-ticket
+  - vergesellschaftung
+  - schuldenschnitt
+  - klimagerechtigkeit
+climate_urgency:
+  - klimakrise
+  - klimakatastrophe
+  - klimakollaps
+  - klimanotstand
+  - klimagerechtigkeit

@@ -1,4 +1,5 @@
 import { cn } from "@/utility/classNames";
+import { texts } from "@/utility/textUtil";
 import { useSearchParams } from "next/navigation";
 import { memo, useMemo } from "react";
 import type { LegendOrganisation } from "./EventsTimeline/EventsTimelineLegend";
@@ -27,7 +28,7 @@ function OrgsLegendItem({
 					</div>
 					{org.count && (
 						<span className="font-mono text-xs text-grayDark">
-							({org.count.toLocaleString("en-GB")})
+							({org.count.toLocaleString(texts.language)})
 						</span>
 					)}
 				</span>

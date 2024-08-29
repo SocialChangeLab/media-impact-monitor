@@ -7,6 +7,7 @@ import {
 	arrayOfRandomLengthInRange,
 	randomInRange,
 } from "@/utility/randomUtil";
+import { texts } from "@/utility/textUtil";
 import useEvent from "@/utility/useEvent";
 import { QueryErrorResetBoundary } from "@tanstack/react-query";
 import { ErrorBoundary } from "next/dist/client/components/error-boundary";
@@ -56,13 +57,11 @@ const EventPageWithPopulatedData = memo(
 		);
 		const title = useMemo(() => {
 			if (!data) return <PlaceholderSkeleton width={80} height={20} />;
-			const prefix = `Protest on ${format(data.event.date, "LLLL d, yyyy")}`;
-			if (data.organisations.length === 0) return prefix;
-			return `${prefix} by ${
-				data.organisations.length > 1
-					? "multiple organisations"
-					: data.organisations[0].name
-			}`;
+			return texts.singleProtestPage.heading({
+				formattedDate: format(data.event.date, "LLLL d, yyyy"),
+				orgsCount: data.organisations.length,
+				orgName: data.organisations[0]?.name,
+			});
 		}, [data]);
 
 		const hasOrganisations = useMemo(
@@ -75,13 +74,19 @@ const EventPageWithPopulatedData = memo(
 				<div className="px-[var(--pagePadding)] pt-[max(1.25rem,2.5vmax)] pb-[max(1.25rem,4vmax)] flex flex-col gap-4 min-h-full">
 					<h1 className="text-3xl font-bold font-headlines">{title}</h1>
 					<dl className="inline-grid grid-cols-[auto,1fr] gap-x-6 gap-y-2 items-center">
-						<dt className="w-fit">City</dt>
+						<dt className="w-fit">
+							{texts.singleProtestPage.propertyNames.city}
+						</dt>
 						<dd>{data?.event.city ?? <PlaceholderSkeleton width={100} />}</dd>
-						<dt className="w-fit">Country</dt>
+						<dt className="w-fit">
+							{texts.singleProtestPage.propertyNames.country}
+						</dt>
 						<dd>{data?.event.country ?? <PlaceholderSkeleton width={80} />}</dd>
 						{hasOrganisations && (
 							<>
-								<dt className="w-fit self-start">Organisations</dt>
+								<dt className="w-fit self-start">
+									{texts.singleProtestPage.propertyNames.organisations}
+								</dt>
 								<dd className="flex flex-wrap">
 									{data?.organisations.map((org) => (
 										<span

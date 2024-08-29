@@ -1,4 +1,5 @@
 "use client";
+import { texts } from "@/utility/textUtil";
 import { ExternalLink } from "lucide-react";
 
 // Constants –––––––––––––––––––––––––––––––––
@@ -17,7 +18,7 @@ function UptimeStatusLink() {
 			rel="noopener noreferrer"
 			className="flex gap-2 items-center"
 		>
-			App status
+			{texts.footer.links.appStatus}
 			<ExternalLink size={16} className="opacity-50" />
 		</a>
 	);

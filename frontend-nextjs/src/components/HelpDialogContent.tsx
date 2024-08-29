@@ -1,6 +1,7 @@
 "use client";
 import { cn } from "@/utility/classNames";
 import { getDocsPage } from "@/utility/docsUtil";
+import { texts } from "@/utility/textUtil";
 import { ArrowRight } from "lucide-react";
 import DocsChartContentSection from "./DocsContentSection";
 import InternalLink from "./InternalLink";
@@ -26,18 +27,28 @@ function HelpDialogContent({ slug }: { slug: string }) {
 								"hover:text-fg hover:underline underline-offset-4 transition-colors",
 							)}
 						>
-							Read in the docs <ArrowRight size={16} />
+							{texts.charts.help.readInTheDocs} <ArrowRight size={16} />
 						</InternalLink>
 					</div>
 				</div>
 				<div className="w-full flex pt-6 overflow-x-auto -ml-4 translate-y-px px-content">
 					<div className="w-full max-w-prose mx-auto">
 						<TabsList>
-							{docsPage.info && <TabsTrigger value="info">Info</TabsTrigger>}
-							{docsPage.methodology && (
-								<TabsTrigger value="methodology">Methodology</TabsTrigger>
+							{docsPage.info && (
+								<TabsTrigger value="info">
+									{texts.charts.help.tabs.info}
+								</TabsTrigger>
 							)}
-							{docsPage.data && <TabsTrigger value="data">Data</TabsTrigger>}
+							{docsPage.methodology && (
+								<TabsTrigger value="methodology">
+									{texts.charts.help.tabs.methodology}
+								</TabsTrigger>
+							)}
+							{docsPage.data && (
+								<TabsTrigger value="data">
+									{texts.charts.help.tabs.data}
+								</TabsTrigger>
+							)}
 						</TabsList>
 					</div>
 				</div>

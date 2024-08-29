@@ -6,6 +6,7 @@ import headerImage from "@/images/header-bg.webp";
 import dashboardScreenshotDark from "@/images/home-screenshot-dashboard-dark.webp";
 import dashboardScreenshotLight from "@/images/home-screenshot-dashboard-light.webp";
 import { cn } from "@/utility/classNames";
+import { texts } from "@/utility/textUtil";
 import Image from "next/image";
 
 export default function HomePageWithSuspense() {
@@ -39,19 +40,19 @@ export default function HomePageWithSuspense() {
 						<span className="text-brandWhite opacity-50 text-sm">beta</span>
 					</span>
 					<h1 className="text-4xl font-bold font-headlines antialiased text-brandWhite pr-12 md:pr-0 mt-8 mb-6 text-balance">
-						Welcome to the Media Impact Monitor
+						{texts.homepage.hero.heading}
 					</h1>
-					<p className="text-brandWhite mb-3">
-						The Media Impact Monitor is a collaborative project aimed at
-						enabling protest groups and NGOs to evaluate their impact on public
-						discourse.
-					</p>
-					<p className="text-brandWhite mt-0">
-						Through the examination of various media sources, from local and
-						national newspapers to social media and parliamentary debates, the
-						tool provides a detailed view of how activism influences public
-						discussion.
-					</p>
+					{texts.homepage.hero.text.map((text, i) => (
+						<p
+							className="text-brandWhite mb-3 "
+							key={`${text}-${
+								// biome-ignore lint/suspicious/noArrayIndexKey: <explanation>
+								i
+							}`}
+						>
+							{text}
+						</p>
+					))}
 					<div className="flex gap-4 flex-wrap py-2 not-prose">
 						<InternalLink
 							href={"/dashboard"}
@@ -63,7 +64,7 @@ export default function HomePageWithSuspense() {
 								"hover:bg-brandGreen hover:text-brandWhite",
 							)}
 						>
-							{`Go to the dashboard`}
+							{texts.homepage.hero.buttons.goToDashboard}
 						</InternalLink>
 						<InternalLink
 							href={"/about"}
@@ -75,7 +76,7 @@ export default function HomePageWithSuspense() {
 								"hover:bg-brandGreen hover:text-brandWhite hover:border-brandGreen",
 							)}
 						>
-							{`About`}
+							{texts.homepage.hero.buttons.about}
 						</InternalLink>
 						<InternalLink
 							href={"/docs"}
@@ -87,12 +88,12 @@ export default function HomePageWithSuspense() {
 								"hover:bg-brandGreen hover:text-brandWhite hover:border-brandGreen",
 							)}
 						>
-							{`Documentation`}
+							{texts.homepage.hero.buttons.docs}
 						</InternalLink>
 					</div>
 					<div className="flex flex-col gap-4 text-brandWhite not-prose mt-12">
 						<h2 className="m-0 text-2xl font-headlines font-semibold text-balance">
-							Get notified when we launch the v1!
+							{texts.homepage.hero.newsletterCallout.heading}
 						</h2>
 						<NewsletterForm />
 					</div>
@@ -101,7 +102,7 @@ export default function HomePageWithSuspense() {
 			<div className="w-full h-[50vh] lg:h-[calc(100vh-4rem)] relative">
 				<Image
 					src={dashboardScreenshotLight}
-					alt="A screenshot of the dashboard (light mode)"
+					alt={texts.homepage.hero.backgroundImage.lightAlt}
 					priority
 					className={cn(
 						"absolute inset-y-0 inset-x-[var(--pagePadding)] xl:inset-0 object-cover object-left-top h-full",
@@ -111,7 +112,7 @@ export default function HomePageWithSuspense() {
 				/>
 				<Image
 					src={dashboardScreenshotDark}
-					alt="A screenshot of the dashboard (dark mode)"
+					alt={texts.homepage.hero.backgroundImage.darkAlt}
 					priority
 					className={cn(
 						"absolute inset-y-0 inset-x-[var(--pagePadding)] xl:inset-0 object-cover object-left-top h-full",

@@ -1,10 +1,12 @@
 "use client";
 import { slugifyCssClass } from "@/utility/cssSlugify";
+import { texts } from "@/utility/textUtil";
 import useTopics from "@/utility/useTopics";
 import useElementSize from "@custom-react-hooks/use-element-size";
 import { AnimatePresence, motion } from "framer-motion";
 import dynamic from "next/dynamic";
 import { type ReactNode, Suspense, useState } from "react";
+import type { DataCreditLegendSource } from "./DataCreditLegend";
 import TopicsLegend from "./TopicsLegend";
 import { Button } from "./ui/button";
 
@@ -19,10 +21,12 @@ function TrendWithImpactChartWrapper({
 	sentiment_target,
 	impactHeadline,
 	impactDescription,
+	sources,
 }: React.ComponentProps<typeof LazyLoadedImpactChart> & {
 	children: ReactNode;
 	impactHeadline?: string;
 	impactDescription?: string;
+	sources?: DataCreditLegendSource[];
 }) {
 	const [showComputedImpact, setShowComputedImpact] = useState(false);
 	const [parentRef, size] = useElementSize();
@@ -65,7 +69,9 @@ function TrendWithImpactChartWrapper({
 					<span className="absolute top-1/2 left-0 w-full h-px bg-gradient-to-r from-bg to-grayLight" />
 					<span className="pl-6 bg-bg relative z-20">
 						<Button onClick={() => setShowComputedImpact((prev) => !prev)}>
-							{showComputedImpact ? "Hide computed impacts" : "Compute impacts"}
+							{showComputedImpact
+								? texts.charts.impact.buttons.hideComputedImpacts
+								: texts.charts.impact.buttons.computeImpacts}
 						</Button>
 					</span>
 				</div>
@@ -101,6 +107,7 @@ function TrendWithImpactChartWrapper({
 				topics={topics}
 				sentiment_target={sentiment_target}
 				trend_type={trend_type}
+				sources={sources}
 			/>
 		</div>
 	);

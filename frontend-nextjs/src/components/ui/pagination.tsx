@@ -2,6 +2,7 @@ import * as React from "react";
 
 import { Button, type ButtonProps } from "@/components/ui/button";
 import { cn } from "@/utility/classNames";
+import { texts } from "@/utility/textUtil";
 import {
 	ChevronLeft,
 	ChevronRight,
@@ -101,7 +102,11 @@ PaginationFirst.displayName = "PaginationFirst";
 const PaginationLast = ({
 	...props
 }: React.ComponentProps<typeof PaginationLink>) => (
-	<PaginationLink aria-label="Go to last page" size="default" {...props}>
+	<PaginationLink
+		aria-label={texts.uiCommon.prevPageAriaLabel}
+		size="default"
+		{...props}
+	>
 		<ChevronsRight />
 	</PaginationLink>
 );
@@ -110,7 +115,11 @@ PaginationLast.displayName = "PaginationLast";
 const PaginationNext = ({
 	...props
 }: React.ComponentProps<typeof PaginationLink>) => (
-	<PaginationLink aria-label="Go to next page" size="default" {...props}>
+	<PaginationLink
+		aria-label={texts.uiCommon.nextPageAriaLabel}
+		size="default"
+		{...props}
+	>
 		<ChevronRight />
 	</PaginationLink>
 );

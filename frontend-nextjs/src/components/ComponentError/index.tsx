@@ -2,7 +2,8 @@
 import { Button } from "@/components/ui/button";
 import { useFiltersStore } from "@/providers/FiltersStoreProvider";
 import { cn } from "@/utility/classNames";
-import { AlertTriangle, X, XCircle, XSquare } from "lucide-react";
+import { texts } from "@/utility/textUtil";
+import { X } from "lucide-react";
 
 export type ComponentErrorProps = {
 	errorMessage: string;
@@ -12,7 +13,7 @@ export type ComponentErrorProps = {
 
 function ComponentError({
 	errorDetails,
-	errorMessage = "There was an unexpected error while fetching the data:",
+	errorMessage = texts.errors.apiErrorTranslations.defaultMessage(),
 	reset,
 }: ComponentErrorProps) {
 	const { from, to, resetAllFilters } = useFiltersStore(
@@ -28,7 +29,7 @@ function ComponentError({
 				<X size={48} strokeWidth={1} className="text-red-600 -ml-3" />
 			</div>
 			<div className="mb-3 relative min-w-full grid grid-cols-[auto,1fr] items-center gap-4">
-				<strong className="font-semibold">Error</strong>
+				<strong className="font-semibold">{texts.errors.heading}</strong>
 				<div className="h-px w-full bg-grayLight"></div>
 			</div>
 			<div className="">
@@ -47,12 +48,12 @@ function ComponentError({
 				<div className="flex gap-4 flex-wrap min-w-full justify-between pt-6">
 					{reset && (
 						<Button size="sm" onClick={reset}>
-							Try again
+							{texts.errors.buttons.tryAgain}
 						</Button>
 					)}
 					{from && to && (
 						<Button onClick={resetAllFilters} variant="outline">
-							Reset all filters
+							{texts.errors.buttons.resetFilters}
 						</Button>
 					)}
 				</div>{" "}

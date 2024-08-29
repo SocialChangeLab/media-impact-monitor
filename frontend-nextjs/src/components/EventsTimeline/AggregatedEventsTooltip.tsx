@@ -9,6 +9,7 @@ import {
 	type ParsedEventType,
 	compareOrganizationsByColors,
 } from "@/utility/eventsUtil";
+import { texts } from "@/utility/textUtil";
 import { type ReactNode, memo, useMemo } from "react";
 import OrgLine from "./EventTooltipOrgLine";
 import {
@@ -61,24 +62,19 @@ function AggregatedEventsTooltip({
 			<TooltipTrigger>{children}</TooltipTrigger>
 			<TooltipContent className="px-0">
 				<p className="text-base pt-2 pb-3 max-w-80 px-4">
-					The {aggregationUnit} of{" "}
-					<strong>
-						{aggregationUnit === "month"
-							? format(date, "LLLL yyyy")
-							: formattedDate}
-					</strong>{" "}
-					saw a total of{" "}
-					<strong>
-						{events.length.toLocaleString("en-GB")} protest
-						{events.length > 1 && "s"}
-					</strong>
-					{sumSize && (
-						<>
-							, comprising of{" "}
-							<strong>{sumSize.toLocaleString("en-GB")} participants</strong>
-						</>
-					)}
-					{`, and ${events.length > 1 ? "were" : "was"} organized by the following organization${orgs.length > 1 ? "s" : ""}:`}
+					{texts.charts.protest_timeline.tooltips.aggregated({
+						timeUnitLabel:
+							texts.charts.aggregationUnit[
+								aggregationUnit as keyof typeof texts.charts.aggregationUnit
+							],
+						timeValue:
+							aggregationUnit === "month"
+								? format(date, "LLLL yyyy")
+								: formattedDate,
+						protestCount: events.length,
+						participantCount: sumSize,
+						orgsCount: orgs.length,
+					})}
 				</p>
 				{orgs.map((org) => (
 					<OrgLine key={org.slug} {...org} />

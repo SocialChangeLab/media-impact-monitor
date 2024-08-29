@@ -1,4 +1,5 @@
 import { cn } from "@/utility/classNames";
+import { texts } from "@/utility/textUtil";
 import type { ScaleLinear } from "d3-scale";
 import { ArrowRight } from "lucide-react";
 import { memo, useMemo } from "react";
@@ -27,15 +28,15 @@ function EventsTimelineSizeLegend({
 	return (
 		<div className="flex flex-col gap-2">
 			<h5 className="font-bold flex gap-1 items-center">
-				<span>Size</span>
+				<span>{texts.charts.protest_timeline.legend.size}</span>
 				<ArrowRight size={16} className="text-grayDark" />
 				<span>
-					{aggragationUnit === "day"
-						? "Protest"
-						: `${aggragationUnit
-								.charAt(0)
-								.toUpperCase()}${aggragationUnit.slice(1)}ly`}{" "}
-					participants
+					{
+						texts.charts.protest_timeline.legend.participants[
+							(aggragationUnit as keyof typeof texts.charts.protest_timeline.legend.participants) ??
+								"day"
+						]
+					}
 				</span>
 			</h5>
 			<div className="flex flex-row-reverse items-start justify-end gap-y-1 h-48">
@@ -55,7 +56,9 @@ function EventsTimelineSizeLegend({
 									size ? "-translate-y-1/2 top-1/2" : "top-0 -translate-y-full",
 								)}
 							>
-								{size ? size.toLocaleString("en-GB") : "0 or unknown"}{" "}
+								{size
+									? size.toLocaleString(texts.language)
+									: texts.charts.protest_timeline.legend.zeroOrUnknown}{" "}
 							</span>
 						</span>
 					</div>

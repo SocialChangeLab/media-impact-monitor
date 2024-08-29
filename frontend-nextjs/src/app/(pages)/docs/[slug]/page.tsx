@@ -2,6 +2,7 @@ import DocsContentSection from "@/components/DocsContentSection";
 import { Mdx } from "@/components/Mdx";
 import { getAllDocsPages, getDocsPage } from "@/utility/docsUtil";
 import { notFound } from "next/navigation";
+import slugify from "slugify";
 
 export const generateStaticParams = () => {
 	const allDocsPages = getAllDocsPages();
@@ -21,11 +22,16 @@ const DocsPageLayout = ({ params }: { params: { slug: string } }) => {
 	return (
 		<article className="mx-auto container max-w-prose py-8" id="docs-content">
 			<div className="mb-8">
-				<h1 className="mt-2 scroll-m-20 text-5xl font-bold tracking-tight font-headlines">
+				<h1
+					className="mt-2 scroll-m-20 text-5xl font-bold tracking-tight font-headlines"
+					id={slugify(docsPage.title, { lower: true, strict: true })}
+				>
 					{docsPage.title}
 				</h1>
 			</div>
-			{docsPage.body?.code && <Mdx code={docsPage.body.code} />}
+			{docsPage.isTopLevel && docsPage.body?.code && (
+				<Mdx code={docsPage.body.code} />
+			)}
 			{!docsPage.isTopLevel && (
 				<>
 					{docsPage.intro && <DocsContentSection {...docsPage.intro} noTitle />}

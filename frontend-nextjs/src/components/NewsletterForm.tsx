@@ -1,6 +1,7 @@
 "use client";
 
 import { cn } from "@/utility/classNames";
+import { texts } from "@/utility/textUtil";
 import { AnimatePresence, motion } from "framer-motion";
 import { Check, X } from "lucide-react";
 import { type FormEvent, useCallback, useState } from "react";
@@ -35,7 +36,7 @@ export const NewsletterForm = ({
 			.safeParse(formData.get("email"));
 		if (!emailAddressValidation.success) {
 			setStatus("error");
-			setResponseMsg("Please enter a valid email address");
+			setResponseMsg(texts.newsLetterSection.invalidEmail);
 			return;
 		}
 		const emailAddress = emailAddressValidation.data;
@@ -66,7 +67,7 @@ export const NewsletterForm = ({
 			<div className="grid grid-cols-[1fr_auto] items-end">
 				<div className="flex flex-col gap-2 grow">
 					<label htmlFor="newsletter-email" className="text-sm">
-						What is your email address?
+						{texts.newsLetterSection.inputLabel}
 					</label>
 					<input
 						className={cn(
@@ -81,7 +82,7 @@ export const NewsletterForm = ({
 						name="email"
 						type="email"
 						required
-						placeholder="anna.smith@example.com"
+						placeholder={texts.newsLetterSection.inputPlaceholder}
 						disabled={status === "loading"}
 					/>
 				</div>
@@ -90,7 +91,7 @@ export const NewsletterForm = ({
 					className={cn(classNames.button)}
 					type="submit"
 				>
-					Subscribe
+					{texts.newsLetterSection.submitButton}
 				</Button>
 			</div>
 			<div className="relative h-px">

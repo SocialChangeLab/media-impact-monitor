@@ -2,8 +2,9 @@
 
 import { cn } from "@/utility/classNames";
 import { randomInRange } from "@/utility/randomUtil";
+import { texts } from "@/utility/textUtil";
 import { usePathname } from "next/navigation";
-import { memo, useEffect, useRef, useState } from "react";
+import { memo, useEffect, useState } from "react";
 
 type HeadingElement = {
 	id: string;
@@ -33,13 +34,13 @@ const PlaceholderSkeleton = memo(
 function DocsOnThisPage() {
 	const pathname = usePathname();
 	const [headingElements, setHeadingElements] = useState<HeadingElement[]>([]);
-	const initialized = useRef(false);
+	const [isLoading, setIsLoading] = useState(true);
 
 	// biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
 	useEffect(() => {
 		const container = document.getElementById("docs-content");
 		if (!container) return;
-		const headings = Array.from(container.querySelectorAll("h2, h3, h4"))
+		const headings = Array.from(container.querySelectorAll("h1, h2, h3, h4"))
 			.filter((node) => node.id)
 			.sort((a, b) => {
 				const aPosInPage = a.getBoundingClientRect().top;
@@ -68,7 +69,8 @@ function DocsOnThisPage() {
 	}, [pathname]);
 
 	useEffect(() => {
-		if (initialized.current) return;
+		if (!isLoading) return;
+		setIsLoading(false);
 		if (headingElements.length === 0) return;
 		const observer = new IntersectionObserver(onObserve);
 		function onObserve(entries: IntersectionObserverEntry[]) {
@@ -90,11 +92,11 @@ function DocsOnThisPage() {
 				observer.unobserve(heading.node);
 			}
 		};
-	}, [headingElements]);
+	}, [headingElements, isLoading]);
 
 	return (
 		<ul className="flex flex-col text-sm pb-8">
-			{headingElements.length === 0 && (
+			{isLoading && (
 				<ul aria-hidden="true" className="flex flex-col gap-3 text-sm">
 					{skeletons.map((skeleton) => (
 						<PlaceholderSkeleton
@@ -104,6 +106,9 @@ function DocsOnThisPage() {
 						/>
 					))}
 				</ul>
+			)}
+			{!isLoading && headingElements.length === 0 && (
+				<p className="text-grayDark">{texts.docsPage.tocNoContentsFound}</p>
 			)}
 			{headingElements.map((heading) => (
 				<li key={heading.id}>

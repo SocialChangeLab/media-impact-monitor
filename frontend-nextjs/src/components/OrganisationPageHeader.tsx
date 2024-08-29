@@ -3,6 +3,7 @@ import { cn } from "@/utility/classNames";
 import { parseErrorMessage } from "@/utility/errorHandlingUtil";
 import type { EventOrganizerSlugType } from "@/utility/eventsUtil";
 import { getOrgStats } from "@/utility/orgsUtil";
+import { texts } from "@/utility/textUtil";
 import useEvents from "@/utility/useEvents";
 import { QueryErrorResetBoundary } from "@tanstack/react-query";
 import { ArrowLeft } from "lucide-react";
@@ -68,50 +69,54 @@ const OrganisationPageWithPopulatedData = memo(
 						className="flex gap-2 items-center text-grayDark hover:text-fg hover:font-semibold transition-all"
 					>
 						<ArrowLeft size={16} className="text-grayDark" />
-						<span>All organisations</span>
+						<span>{texts.organisationsPage.allOrganisations}</span>
 					</InternalLink>
 					<h1 className="text-3xl font-bold font-headlines flex gap-3 items-center">
 						{title}
 					</h1>
 					<dl className="inline-grid grid-cols-[auto,1fr] gap-x-6 gap-y-2 items-center">
-						<dt>Total Events</dt>
+						<dt>{texts.organisationsPage.propertyNames.totalEvents}</dt>
 						<dd>
 							{stats ? (
-								Math.round(stats.totalEvents).toLocaleString("en-GB")
+								Math.round(stats.totalEvents).toLocaleString(texts.language)
 							) : (
 								<PlaceholderSkeleton height="1rem" width={30} />
 							)}
 						</dd>
-						<dt>Total Participants</dt>
+						<dt>{texts.organisationsPage.propertyNames.totalParticipants}</dt>
 						<dd>
 							{stats ? (
-								Math.round(stats.totalParticipants).toLocaleString("en-GB")
+								Math.round(stats.totalParticipants).toLocaleString(
+									texts.language,
+								)
 							) : (
 								<PlaceholderSkeleton height="1rem" width={60} />
 							)}
 						</dd>
-						<dt>Avg. Participants</dt>
+						<dt>{texts.organisationsPage.propertyNames.avgParticipants}</dt>
 						<dd>
 							{stats ? (
 								Math.round(stats.avgParticipantsPerEvent).toLocaleString(
-									"en-GB",
+									texts.language,
 								)
 							) : (
 								<PlaceholderSkeleton height="1rem" width={50} />
 							)}
 						</dd>
-						<dt>Avg. Partners</dt>
+						<dt>{texts.organisationsPage.propertyNames.avgPartners}</dt>
 						<dd>
 							{stats ? (
-								Math.round(stats.avgPartnerOrgsPerEvent).toLocaleString("en-GB")
+								Math.round(stats.avgPartnerOrgsPerEvent).toLocaleString(
+									texts.language,
+								)
 							) : (
 								<PlaceholderSkeleton height="1rem" width={20} />
 							)}
 						</dd>
-						<dt>Total Partners</dt>
+						<dt>{texts.organisationsPage.propertyNames.totalPartners}</dt>
 						<dd>
 							{stats ? (
-								Math.round(stats.totalPartners).toLocaleString("en-GB")
+								Math.round(stats.totalPartners).toLocaleString(texts.language)
 							) : (
 								<PlaceholderSkeleton height="1rem" width={30} />
 							)}

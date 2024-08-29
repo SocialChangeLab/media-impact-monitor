@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { useUiStore } from "@/providers/UiStoreProvider";
 import { cn } from "@/utility/classNames";
 import { getDocsToc } from "@/utility/docsUtil";
+import { texts } from "@/utility/textUtil";
 import { SidebarCloseIcon, SidebarOpenIcon } from "lucide-react";
 import { type ReactNode, Suspense, useEffect, useState } from "react";
 
@@ -37,7 +38,7 @@ function DocsLayout({ children }: { children: ReactNode }) {
 				)}
 			>
 				<nav
-					aria-label="Table of contents of the documentation"
+					aria-label={texts.docsPage.tocAriaLabel}
 					className={cn(
 						"border-r border-grayLight px-content max-xl:absolute",
 						"top-0 bottom-0 left-0 w-80 z-20 bg-bg transition-transform",
@@ -57,7 +58,7 @@ function DocsLayout({ children }: { children: ReactNode }) {
 						}}
 					>
 						<h2 className="font-headlines text-xl font-bold pb-1 border-b border-grayLight mb-4">
-							Documentation
+							{texts.docsPage.documentation}
 						</h2>
 						<ul className="mx-auto max-w-xl flex flex-col gap-2">
 							{docsPagesToc.map((docsPage) => (
@@ -84,7 +85,7 @@ function DocsLayout({ children }: { children: ReactNode }) {
 					<DocsPrevNextNav />
 				</section>
 				<nav
-					aria-label="On this page"
+					aria-label={texts.docsPage.onThisPage}
 					className={cn(
 						"border-l border-grayLight px-content max-2xl:absolute",
 						"top-0 bottom-0 right-0 w-80 z-20 bg-bg transition-transform",
@@ -104,7 +105,7 @@ function DocsLayout({ children }: { children: ReactNode }) {
 						}}
 					>
 						<h4 className="font-headlines text-xl font-bold pb-1 border-b border-grayLight mb-4">
-							On this page
+							{texts.docsPage.onThisPage}
 						</h4>
 						<DocsOnThisPage />
 					</div>
@@ -186,7 +187,7 @@ function DocsLayout({ children }: { children: ReactNode }) {
 						showRightSidebar && "w-0",
 					)}
 				>
-					Contents
+					{texts.docsPage.tocButtonText}
 				</span>
 				{showRightSidebar ? (
 					<SidebarOpenIcon className="size-6" />

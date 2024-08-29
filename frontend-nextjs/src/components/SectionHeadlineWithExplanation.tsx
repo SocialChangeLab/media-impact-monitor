@@ -1,4 +1,5 @@
 import { cn } from "@/utility/classNames";
+import { texts } from "@/utility/textUtil";
 import { HelpCircle } from "lucide-react";
 import { type ReactNode, memo } from "react";
 import HelpDialogContent from "./HelpDialogContent";
@@ -69,7 +70,7 @@ function SectionHeadlineWithExplanation({
 										"group-hover:decoration-fg group-hover:text-fg text-sm",
 									)}
 								>
-									How to read this
+									{texts.charts.help.howToReadThis}
 								</span>
 								<HelpCircle className="size-5 lg:size-6" />
 							</Button>

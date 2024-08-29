@@ -1,9 +1,11 @@
 import CollapsableSection from "@/components/CollapsableSection";
-import DataCreditLegend from "@/components/DataCreditLegend";
+import DataCreditLegend, {
+	type DataCreditLegendSource,
+} from "@/components/DataCreditLegend";
 import { cn } from "@/utility/classNames";
 import { slugifyCssClass } from "@/utility/cssSlugify";
 import type { TrendQueryProps } from "@/utility/mediaTrendUtil";
-import { titleCase } from "@/utility/textUtil";
+import { texts, titleCase } from "@/utility/textUtil";
 import { getTopicIcon, topicIsSentiment } from "@/utility/topicsUtil";
 import { memo } from "react";
 import slugify from "slugify";
@@ -35,10 +37,7 @@ function GenericTopicsLegend({
 		color: string;
 		sum?: number;
 	}[];
-	sources?: {
-		label: string;
-		links: { text: string; url: string }[];
-	}[];
+	sources?: DataCreditLegendSource[];
 }) {
 	return (
 		<div
@@ -48,7 +47,7 @@ function GenericTopicsLegend({
 		>
 			{topics.length > 0 ? (
 				<CollapsableSection
-					title="Legend"
+					title={texts.charts.common.legend}
 					storageKey={`media-coverage-legend-${id}-expanded`}
 					storageType="session"
 				>
@@ -61,7 +60,15 @@ function GenericTopicsLegend({
 									slugify(topic, { lower: true, strict: true }),
 								);
 								const keywordLabel = (
-									<ImpactKeywordLabel label={titleCase(topic)} color={color} />
+									<ImpactKeywordLabel
+										label={
+											texts.charts.topics[
+												topic as keyof typeof texts.charts.topics
+											] ?? titleCase(topic)
+										}
+										slug={topic}
+										color={color}
+									/>
 								);
 								return (
 									<li
@@ -85,7 +92,7 @@ function GenericTopicsLegend({
 											)}
 											{topics && (
 												<ImpactKeywordLabelTooltip
-													unitLabel="articles"
+													unitLabel={texts.charts.common.articlesUnit}
 													keywords={topics}
 												>
 													{keywordLabel}
@@ -93,7 +100,7 @@ function GenericTopicsLegend({
 											)}
 											{sum && (
 												<span className="font-mono text-xs text-grayDark">
-													({sum.toLocaleString("en-GB")})
+													({sum.toLocaleString(texts.language)})
 												</span>
 											)}
 										</span>
@@ -118,10 +125,12 @@ function TopicsLegend({
 	sentiment_target,
 	topics,
 	trend_type,
+	sources,
 }: {
 	sentiment_target?: TrendQueryProps["sentiment_target"];
 	topics?: { topic: string; color: string; sum: number }[];
 	trend_type: TrendQueryProps["trend_type"];
+	sources?: DataCreditLegendSource[];
 }) {
 	const sentimentTopics = [
 		{ topic: "positive", color: "var(--sentiment-positive)" },
@@ -146,6 +155,7 @@ function TopicsLegend({
 						? keywordTopics
 						: sentimentTopics
 			}
+			sources={sources}
 			id={`trend-with-impact-chart-${trend_type}-${sentiment_target || "none"}`}
 		/>
 	);

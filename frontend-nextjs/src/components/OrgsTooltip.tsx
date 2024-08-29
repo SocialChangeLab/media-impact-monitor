@@ -1,4 +1,5 @@
 import { cn } from "@/utility/classNames";
+import { texts } from "@/utility/textUtil";
 import type { ReactNode } from "react";
 import type { LegendOrganisation } from "./EventsTimeline/EventsTimelineLegend";
 import InternalLink from "./InternalLink";
@@ -39,7 +40,7 @@ function OrgsTooltip({
 									<span className="truncate">{subOrg.name}</span>
 									{subOrg.count && (
 										<span className="font-mono text-xs text-black/45">
-											({subOrg.count.toLocaleString("en-GB")})
+											({subOrg.count.toLocaleString(texts.language)})
 										</span>
 									)}
 								</InternalLink>

@@ -1,6 +1,7 @@
 import { cn } from "@/utility/classNames";
 import type { EventOrganizerSlugType } from "@/utility/eventsUtil";
 import type { ParsedMediaImpactItemType } from "@/utility/mediaImpactUtil";
+import { texts } from "@/utility/textUtil";
 import { type ScaleLinear, scaleLinear } from "d3-scale";
 import { useMemo } from "react";
 import ImpactChartColumnDescriptions from "./ImpactChartColumnDescriptions";
@@ -83,6 +84,11 @@ function ImpactChart(props: ImpactChartProps) {
 				<ImpactChartYAxis
 					{...scaleProps}
 					isPending={props.columns.some((c) => c.isPending)}
+					isError={props.columns.every(
+						(c) =>
+							c.error !== null ||
+							(c.limitations?.length && c.limitations?.length > 0),
+					)}
 				/>
 				{props.columns.map(
 					({ id, data, limitations, isPending, error }, idx) => {
@@ -142,11 +148,13 @@ function ImpactChart(props: ImpactChartProps) {
 function ImpactChartYAxis({
 	yAxisScale,
 	sizeScale,
-	isPending,
+	isPending = false,
+	isError = false,
 }: {
 	yAxisScale: ScaleLinear<number, number, never>;
 	sizeScale: ScaleLinear<number, number, never>;
 	isPending: boolean;
+	isError: boolean;
 }) {
 	const ticks = yAxisScale.ticks(5);
 	return (
@@ -154,7 +162,7 @@ function ImpactChartYAxis({
 			<div
 				className={cn(
 					"relative transition-opacity size-full",
-					isPending ? "opacity-0" : "opacity-100",
+					isPending || isError ? "opacity-0" : "opacity-100",
 				)}
 			>
 				{ticks.map((tick, idx) => (
@@ -183,7 +191,7 @@ function ImpactChartXAxisTick({ value, top }: { value: number; top: string }) {
 		>
 			<span>
 				{value === 0 ? "" : value > 0 ? "+" : "-"}
-				{Math.abs(value).toLocaleString("en-GB")}
+				{Math.abs(value).toLocaleString(texts.language)}
 			</span>
 		</div>
 	);

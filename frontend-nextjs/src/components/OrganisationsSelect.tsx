@@ -25,6 +25,7 @@ import type {
 	EventOrganizerSlugType,
 	OrganisationType,
 } from "@/utility/eventsUtil";
+import { texts } from "@/utility/textUtil";
 import { useOrganisations } from "@/utility/useOrganisations";
 import { useMemo, useState } from "react";
 import RoundedColorPill from "./RoundedColorPill";
@@ -100,7 +101,8 @@ export function OrganisationsSelect({
 							<div className="flex items-center gap-3">
 								<HeartHandshakeIcon className="shrink-0 text-grayDark size-5 lg:size-6" />
 								<span className="hidden md:inline text-sm lg:text-base">
-									Select organisation{multiple ? "s" : ""}
+									{texts.filters.organisations.selectOrganisation}
+									{multiple ? "s" : ""}
 								</span>
 							</div>
 							<Loader2
@@ -160,7 +162,9 @@ export function OrganisationsSelect({
 							placeholder="Search..."
 							className="focus-visible:ring-inset focus-visible:ring-offset-0 outline-offset-0 border-0 border-l"
 						/>
-						<CommandEmpty>No organisation found.</CommandEmpty>
+						<CommandEmpty>
+							{texts.filters.organisations.noOrganisationsFound}
+						</CommandEmpty>
 						<CommandGroup>
 							{multiple && (
 								<CommandItem
@@ -173,7 +177,7 @@ export function OrganisationsSelect({
 										onChange(newSlugs);
 									}}
 								>
-									Toggle all/none
+									{texts.filters.organisations.toggleAllNone}
 								</CommandItem>
 							)}
 							{orgsToSelectFrom.map((org) => (

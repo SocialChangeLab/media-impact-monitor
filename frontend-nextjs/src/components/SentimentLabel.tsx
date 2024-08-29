@@ -1,4 +1,5 @@
 "use client";
+import { texts } from "@/utility/textUtil";
 import { Frown, HelpCircle, Meh, Smile } from "lucide-react";
 import { Tooltip, TooltipContent, TooltipTrigger } from "./ui/tooltip";
 
@@ -32,9 +33,9 @@ export default SentimentLabel;
 
 export function getSentimentLabel(sentiment?: number | null) {
 	if (sentiment === undefined || sentiment === null) return "Unknown";
-	if (sentiment < negativeMax) return "Negative";
-	if (sentiment > positiveMin) return "Positive";
-	return "Neutral";
+	if (sentiment < negativeMax) return texts.charts.topics.negative;
+	if (sentiment > positiveMin) return texts.charts.topics.positive;
+	return texts.charts.topics.neutral;
 }
 
 function getSentimentColor(sentiment?: number | null) {

@@ -2,6 +2,7 @@ import { Tooltip, TooltipContent } from "@/components/ui/tooltip";
 import { cn } from "@/utility/classNames";
 import { format } from "@/utility/dateUtil";
 import type { OrganisationType, ParsedEventType } from "@/utility/eventsUtil";
+import { texts } from "@/utility/textUtil";
 import { Users } from "lucide-react";
 import { type PropsWithChildren, useMemo, useState } from "react";
 import { Button } from "../ui/button";
@@ -19,7 +20,7 @@ function EventTooltip({
 }>) {
 	const [descriptionExpanded, setDescriptionExpanded] = useState(false);
 	const orgs = useMemo(() => {
-		const unknownOrgName = "Unknown organisation";
+		const unknownOrgName = texts.filters.organisations.unknownOrganisation;
 		const mappedOrgs = event.organizers
 			.map((orgName) => {
 				const org = organisations.find((x) => x.slug === orgName.slug);
@@ -42,7 +43,7 @@ function EventTooltip({
 	const formattedImpact = useMemo(
 		() =>
 			event.size_number
-				? Math.round(event.size_number).toLocaleString("en-GB")
+				? Math.round(event.size_number).toLocaleString(texts.language)
 				: "?",
 		[event.size_number],
 	);
@@ -78,7 +79,9 @@ function EventTooltip({
 					onClick={() => setDescriptionExpanded(!descriptionExpanded)}
 					className="text-xs font-medium px-1 py-0.5 -translate-x-1 -mt-0.5 h-auto mb-3 hover:translate-x-0 transition ml-4"
 				>
-					{descriptionExpanded ? "Show less" : "Show more"}
+					{descriptionExpanded
+						? texts.uiCommon.showLess
+						: texts.uiCommon.showMore}
 				</Button>
 				{orgs.map((org) => (
 					<OrgLine key={org.slug} {...org} />

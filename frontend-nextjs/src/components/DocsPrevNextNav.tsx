@@ -1,8 +1,9 @@
 "use client";
 import { cn } from "@/utility/classNames";
 import { getDocsFlatToc } from "@/utility/docsUtil";
+import { texts } from "@/utility/textUtil";
 import { ArrowLeft, ArrowRight } from "lucide-react";
-import { usePathname, useSearchParams } from "next/navigation";
+import { usePathname } from "next/navigation";
 import InternalLink from "./InternalLink";
 
 function DocsPrevNextNav() {
@@ -41,10 +42,8 @@ function DocsPrevNextLink({
 	page: {
 		slug: string;
 		title: string;
-		isChartPage: boolean;
 	};
 }) {
-	const searchParams = useSearchParams();
 	return (
 		<InternalLink
 			href={`/docs/${page.slug}`}
@@ -59,7 +58,7 @@ function DocsPrevNextLink({
 			)}
 			<div className={cn("flex flex-col gap-y-2", isPrev && "text-right")}>
 				<span className="text-grayDark group-hover:text-fg transition-colors">
-					{isPrev ? "Previous page" : "Next page"}
+					{isPrev ? texts.docsPage.prevPage : texts.docsPage.nextPage}
 				</span>
 				<span className="font-bold font-headlines text-xl group-hover:underline underline-offset-4">
 					{page.title}

@@ -31,9 +31,9 @@ function ExternalLink({ href }: { href: string }) {
 						alt={`Favicon for ${hostname}`}
 						className={cn("shrink-0")}
 					/>
-					<span className="pl-2">{hostname}</span>
+					<span className="pl-2  text-nowrap">{hostname}</span>
 					{path && (
-						<span className="text-grayDark opacity-75 group-hover:opacity-100 group-hover:text-fg transition truncate max-w-full">
+						<span className="text-grayDark text-nowrap opacity-75 group-hover:opacity-100 group-hover:text-fg transition truncate max-w-full">
 							/{path}
 						</span>
 					)}

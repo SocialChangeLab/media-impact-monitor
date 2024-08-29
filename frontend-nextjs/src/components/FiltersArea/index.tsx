@@ -2,6 +2,7 @@
 import { useFiltersStore } from "@/providers/FiltersStoreProvider";
 import { useUiStore } from "@/providers/UiStoreProvider";
 import { cn } from "@/utility/classNames";
+import { texts } from "@/utility/textUtil";
 import { motion, useAnimationFrame } from "framer-motion";
 import { usePathname } from "next/navigation";
 import { type ReactNode, memo, useMemo, useRef } from "react";
@@ -103,13 +104,17 @@ function FiltersArea() {
 					<ul className="flex gap-4 lg:gap-6 items-center flex-wrap">
 						{display.media && (
 							<li className="flex flex-col gap-1 text-sm">
-								<FilterLabel show={isScrolledToTop}>Media source:</FilterLabel>
+								<FilterLabel show={isScrolledToTop}>
+									{texts.filters.mediaSource.label}:
+								</FilterLabel>
 								<MediaSourceSelect />
 							</li>
 						)}
 						{display.organisations && (
 							<li className="flex flex-col gap-1 text-sm">
-								<FilterLabel show={isScrolledToTop}>Organisations:</FilterLabel>
+								<FilterLabel show={isScrolledToTop}>
+									{texts.filters.organisations.label}:
+								</FilterLabel>
 								<OrganisationsSelect
 									multiple
 									selectedOrganisations={organizerSlugs}
@@ -121,7 +126,9 @@ function FiltersArea() {
 				)}
 				{display.time && (
 					<div className="flex flex-col gap-1 text-sm">
-						<FilterLabel show={isScrolledToTop}>Time range:</FilterLabel>
+						<FilterLabel show={isScrolledToTop}>
+							{texts.filters.timeRange.label}:
+						</FilterLabel>
 						<TimeFilter />
 					</div>
 				)}

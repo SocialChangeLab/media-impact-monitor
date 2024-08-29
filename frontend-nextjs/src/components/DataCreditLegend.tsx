@@ -1,16 +1,19 @@
+import { texts } from "@/utility/textUtil";
 import CollapsableSection from "./CollapsableSection";
 
+export type DataCreditLegendSource = {
+	label: string;
+	links: { text: string; url: string }[];
+};
+
 function DataCreditLegend({
-	title = "Data credit",
+	title = texts.charts.common.dataCredit,
 	storageKey = "data-credits-expanded",
 	sources = [],
 }: {
 	title?: string;
 	storageKey?: string;
-	sources?: {
-		label: string;
-		links: { text: string; url: string }[];
-	}[];
+	sources?: DataCreditLegendSource[];
 }) {
 	if (sources.length === 0) return null;
 	return (

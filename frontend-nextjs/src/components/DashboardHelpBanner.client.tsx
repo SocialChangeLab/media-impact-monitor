@@ -38,7 +38,7 @@ function ExpandedHelpBanner({ onCollapse }: HelpBannerActions) {
 				))}
 				<span className="flex gap-4 mt-5">
 					<Button size="sm" onClick={onCollapse}>
-						Got it!
+						{texts.info.welcome_message.buttons.cta}
 					</Button>{" "}
 					<InternalLink
 						className={cn(
@@ -47,7 +47,7 @@ function ExpandedHelpBanner({ onCollapse }: HelpBannerActions) {
 						)}
 						href="/docs"
 					>
-						Learn more
+						{texts.info.welcome_message.buttons.docs}
 					</InternalLink>
 				</span>
 			</div>
@@ -67,7 +67,7 @@ function ExpandedHelpBanner({ onCollapse }: HelpBannerActions) {
 					<span className="size-6 rounded-full bg-fg text-bg flex items-center justify-center">
 						1
 					</span>
-					<span>Set your filters</span>
+					<span>{texts.info.welcome_message.arrowHints.setYourFilters}</span>
 				</div>
 			</span>
 			<span
@@ -86,7 +86,7 @@ function ExpandedHelpBanner({ onCollapse }: HelpBannerActions) {
 					<span className="size-6 rounded-full bg-fg text-bg flex items-center justify-center">
 						2
 					</span>
-					<span>Scroll down and explore</span>
+					<span>{texts.info.welcome_message.arrowHints.scrollDown}</span>
 				</div>
 			</span>
 		</div>
@@ -97,7 +97,7 @@ function CollapsedHelpBanner({ onExpand }: HelpBannerActions) {
 	return (
 		<Button size="sm" variant="outline" onClick={onExpand}>
 			<HelpCircle size={20} className="text-grayDark" />
-			What is this dashboard?
+			{texts.info.welcome_message.buttons.whatIsThis}
 		</Button>
 	);
 }

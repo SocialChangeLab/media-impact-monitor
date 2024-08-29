@@ -1,6 +1,6 @@
 import { cn } from "@/utility/classNames";
 import { slugifyCssClass } from "@/utility/cssSlugify";
-import { titleCase } from "@/utility/textUtil";
+import { texts, titleCase } from "@/utility/textUtil";
 import Link from "next/link";
 import { type ReactNode, memo } from "react";
 import slugify from "slugify";
@@ -9,9 +9,10 @@ import { Portal, Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip";
 export const ImpactKeywordLabel = memo(
 	({
 		label,
+		slug,
 		color,
 		className,
-	}: { label: string; color: string; className?: string }) => {
+	}: { label: string; slug: string; color: string; className?: string }) => {
 		return (
 			<span
 				className={cn(
@@ -107,8 +108,12 @@ export const ImpactKeywordLabelTooltip = memo(
 				<Portal>
 					<TooltipContent>
 						<p className="mt-3 mb-2 w-96">
-							The category {children} encompasses {unitLabel} including one or
-							more of the following {keywords.length} keywords:
+							{texts.charts.keywordsTooltip.intro({
+								categoryNode: children,
+								keywordsCount: keywords[0].length.toLocaleString(
+									texts.language,
+								),
+							})}
 						</p>
 						<ul className="flex flex-wrap w-96 max-w-full gap-1 mb-2">
 							{keywords.reduce((acc, keywordList) => {
@@ -125,8 +130,12 @@ export const ImpactKeywordLabelTooltip = memo(
 								));
 								if (acc.length === 0) return keywords;
 								acc.push(
-									<p key="OR" className="mt-3 mb-2 w-96">
-										And one or more of the following keywords:
+									<p key="OR" className="mt-3 mb-0.5 w-96">
+										{texts.charts.keywordsTooltip.andText({
+											keywordsCount: keywordList.length.toLocaleString(
+												texts.language,
+											),
+										})}
 									</p>,
 								);
 								return acc.concat(keywords);
@@ -151,22 +160,22 @@ export const ImpactSentimentLabelTooltip = memo(
 				<Portal>
 					<TooltipContent>
 						<p className="mt-2 mb-1 max-w-80">
-							We use{" "}
-							<strong className="font-semibold">Large Language Models</strong>{" "}
-							(LLMs) to predict the sentiment of articles.
+							{texts.charts.sentimentTooltip.intro}
 						</p>
 						<p className="mb-2 max-w-80">
-							To know more about the methodology, see the{" "}
-							<Link
-								href="/docs/charts/mediaSentimentTrend/methodology"
-								className={cn(
-									"underline decoration-grayMed underline-offset-2 decoration-2",
-									"focusable hover:decoration-grayDark transition",
-								)}
-							>
-								documentation
-							</Link>
-							.
+							{texts.charts.sentimentTooltip.linkToDocs({
+								LinkWrapper: ({ children }: { children: ReactNode }) => (
+									<Link
+										href="/docs/charts/mediaSentimentTrend/methodology"
+										className={cn(
+											"underline decoration-grayMed underline-offset-2 decoration-2",
+											"focusable hover:decoration-grayDark transition",
+										)}
+									>
+										{children}
+									</Link>
+								),
+							})}
 						</p>
 					</TooltipContent>
 				</Portal>

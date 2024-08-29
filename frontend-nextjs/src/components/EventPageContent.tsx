@@ -45,7 +45,7 @@ function TrendHeadline({
 						</ImpactKeywordLabelTooltip>
 					</span>
 				),
-			})}{" "}
+			})}
 		</HeadlineWithLine>
 	);
 }

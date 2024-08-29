@@ -159,6 +159,7 @@ function DraggableTimeFilterRange() {
 			}
 			return values;
 		},
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 		[rangerInstance.getValueForClientX, rangerInstance.roundToStep],
 	);
 
@@ -270,7 +271,6 @@ const Handle = memo(
 		isDragging?: boolean;
 		isStart?: boolean;
 	}) => {
-		if (!comparableDateObject) return null;
 		const { date } = comparableDateObject;
 		const formattedDate = useMemo(() => format(date, "dd. MMM. yyyy"), [date]);
 
@@ -303,6 +303,7 @@ const Handle = memo(
 			() => `${rangerInstance.getPercentageForValue(value)}%`,
 			[rangerInstance, value],
 		);
+		if (!comparableDateObject) return null;
 		return (
 			<button
 				type="button"

@@ -1,9 +1,11 @@
+import type { ElementType, ReactNode } from "react";
+
 function HeadlineWithLine({
 	children,
 	as: Tag = "h4",
 }: {
-	children: React.ReactNode;
-	as?: React.ElementType;
+	children: ReactNode;
+	as?: ElementType;
 }) {
 	return (
 		<Tag className="w-full flex text-lg font-bold font-headlines antialiased relative z-10">

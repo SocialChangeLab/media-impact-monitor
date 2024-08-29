@@ -231,7 +231,7 @@ function ImpactChartColumnDescriptions({
 							{texts.charts.impact.error.message}
 						</p>
 						<p className="ml-4 font-semibold pl-5">
-							"{parseErrorMessage(error).message}"
+							{`"${parseErrorMessage(error).message}"`}
 							{parseErrorMessage(error).details && (
 								<pre
 									className={cn(

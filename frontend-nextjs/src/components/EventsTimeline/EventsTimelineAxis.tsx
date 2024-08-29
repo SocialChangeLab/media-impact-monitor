@@ -15,13 +15,12 @@ function EventsTimelineAxis({
 	aggregationUnit: AggregationUnitType;
 	width: number;
 }) {
-	if (eventColumns.length === 0) return null;
-
 	const idxsWithTicks = useMemo(
 		() => getIdxsWithTicks(eventColumns.length, width),
 		[eventColumns.length, width],
 	);
 
+	if (eventColumns.length === 0) return null;
 	return (
 		<div className="sticky bottom-0 w-full z-10">
 			<ul

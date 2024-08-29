@@ -89,7 +89,7 @@ const columns = [
 		header: texts.singleProtestPage.table.header.sentimentActivism,
 		cell: (info) => {
 			const sentiment = info.getValue();
-			return sentiment ? <SentimentLabel sentiment={sentiment} /> : "-";
+			return typeof sentiment === "number" ? <SentimentLabel sentiment={sentiment} /> : "-";
 		},
 		size: 50,
 	}),
@@ -97,7 +97,7 @@ const columns = [
 		header: texts.singleProtestPage.table.header.sentimentPolicy,
 		cell: (info) => {
 			const sentiment = info.getValue();
-			return sentiment ? <SentimentLabel sentiment={sentiment} /> : "-";
+			return typeof sentiment === "number" ? <SentimentLabel sentiment={sentiment} /> : "-";
 		},
 		size: 50,
 	}),

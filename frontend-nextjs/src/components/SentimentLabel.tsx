@@ -18,7 +18,7 @@ function Label({ sentiment }: { sentiment?: number }) {
 }
 
 function SentimentLabel({ sentiment }: { sentiment?: number }) {
-	if (!sentiment) return <Label />;
+	if (typeof sentiment !== "number") return <Label />;
 	return (
 		<Tooltip delayDuration={50}>
 			<TooltipTrigger>
@@ -32,14 +32,14 @@ function SentimentLabel({ sentiment }: { sentiment?: number }) {
 export default SentimentLabel;
 
 export function getSentimentLabel(sentiment?: number | null) {
-	if (sentiment === undefined || sentiment === null) return "Unknown";
+	if (typeof sentiment !== "number") return "Unknown";
 	if (sentiment < negativeMax) return texts.charts.topics.negative;
 	if (sentiment > positiveMin) return texts.charts.topics.positive;
 	return texts.charts.topics.neutral;
 }
 
 function getSentimentColor(sentiment?: number | null) {
-	if (sentiment === undefined || sentiment === null) return "text-grayMed";
+	if (typeof sentiment !== "number") return "text-grayMed";
 	if (sentiment < negativeMax) return "text-sentimentNegative";
 	if (sentiment > positiveMin) return "text-sentimentPositive";
 	return "text-sentimentNeutral";

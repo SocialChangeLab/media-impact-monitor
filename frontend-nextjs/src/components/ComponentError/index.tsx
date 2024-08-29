@@ -52,7 +52,7 @@ function ComponentError({
 						</Button>
 					)}
 					{from && to && (
-						<Button onClick={resetAllFilters} variant="outline">
+						<Button onClick={resetAllFilters} variant="outline" size="sm">
 							{texts.errors.buttons.resetFilters}
 						</Button>
 					)}

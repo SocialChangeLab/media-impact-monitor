@@ -22,7 +22,7 @@ export default function EventsPageWithSuspense() {
 							key={`${desc}-${
 								// biome-ignore lint/suspicious/noArrayIndexKey: <explanation>
 								i
-							}`}
+								}`}
 							className="text-pretty"
 						>
 							{desc}
@@ -39,7 +39,7 @@ export default function EventsPageWithSuspense() {
 						key={`${desc}-${
 							// biome-ignore lint/suspicious/noArrayIndexKey: <explanation>
 							i
-						}`}
+							}`}
 						className="text-pretty"
 					>
 						{desc}
@@ -51,6 +51,7 @@ export default function EventsPageWithSuspense() {
 					trend_type="keywords"
 					impactHeadline={texts.charts.topics_impact.heading}
 					impactDescription={texts.charts.topics_impact.description}
+					impactHelpSlug="topics-impact"
 					sources={texts.charts.topics_trend.data_credit}
 				>
 					<MediaCoverageChart />
@@ -64,7 +65,7 @@ export default function EventsPageWithSuspense() {
 							key={`${desc}-${
 								// biome-ignore lint/suspicious/noArrayIndexKey: <explanation>
 								i
-							}`}
+								}`}
 							className="text-pretty"
 						>
 							{desc}
@@ -78,6 +79,7 @@ export default function EventsPageWithSuspense() {
 					sentiment_target="activism"
 					impactHeadline={texts.charts.sentiment_protest_impact.heading}
 					impactDescription={texts.charts.sentiment_protest_impact.description}
+					impactHelpSlug="sentiment-impact"
 					sources={texts.charts.sentiment_protest.data_credit}
 				>
 					<MediaSentimentChart sentiment_target="activism" />
@@ -91,7 +93,7 @@ export default function EventsPageWithSuspense() {
 							key={`${desc}-${
 								// biome-ignore lint/suspicious/noArrayIndexKey: <explanation>
 								i
-							}`}
+								}`}
 							className="text-pretty"
 						>
 							{desc}
@@ -105,6 +107,7 @@ export default function EventsPageWithSuspense() {
 					sentiment_target="policy"
 					impactHeadline={texts.charts.sentiment_policy_impact.heading}
 					impactDescription={texts.charts.sentiment_policy_impact.description}
+					impactHelpSlug="sentiment-impact"
 					sources={texts.charts.sentiment_policy.data_credit}
 				>
 					<MediaSentimentChart sentiment_target="policy" />

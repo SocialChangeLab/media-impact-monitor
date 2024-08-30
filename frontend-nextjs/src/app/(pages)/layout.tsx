@@ -16,6 +16,7 @@ export default function RootLayout({
 	modal: ReactNode;
 }>) {
 	const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || `https://mediaimpactmonitor.app`;
+	const ogImageWithUrl = `${siteUrl}/${ogImage.src}`;
 	return (
 		<html
 			lang={texts.language}
@@ -32,7 +33,7 @@ export default function RootLayout({
 				{/* Open Graph Meta Tags */}
 				<meta property="og:title" content={texts.seo.siteTitle} />
 				<meta property="og:description" content={texts.seo.siteDescription} />
-				<meta property="og:image" content={ogImage.src} />
+				<meta property="og:image" content={ogImageWithUrl} />
 				<meta property="og:url" content={siteUrl} />
 				<meta property="og:type" content="website" />
 
@@ -40,7 +41,7 @@ export default function RootLayout({
 				<meta name="twitter:card" content="summary_large_image" />
 				<meta name="twitter:title" content={texts.seo.siteTitle} />
 				<meta name="twitter:description" content={texts.seo.siteDescription} />
-				<meta name="twitter:image" content={ogImage.src} />
+				<meta name="twitter:image" content={ogImageWithUrl} />
 				<meta name="twitter:url" content={siteUrl} />
 
 				{/* Favicon */}

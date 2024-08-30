@@ -24,18 +24,28 @@ const B: WrapperEl = ({ children }) => (
 
 const textsEnGB = {
 	language: "en-GB",
+	seo: {
+		siteTitle: "Media Impact Monitor",
+		siteDescription: "A collaborative project aimed at enabling protest groups and NGOs to evaluate their impact on public discourse.",
+	},
 	mainNavigation: {
 		home: "Home",
 		dashboard: "Dashboard",
 		organisations: "Organisations",
 		about: "About",
 		docs: "Docs",
+		fourOFour: "Page not found",
+		logoAssets: "Logo assets",
 		themeToggle: {
 			light: "Light",
 			dark: "Dark",
 			system: "System",
 			toggleText: "Toggle theme",
 		},
+	},
+	fourOFour: {
+		heading: "This page does not exist",
+		description: "It seems that the page you were looking for does not exist. Try the dashboard instead.",
 	},
 	errors: {
 		heading: "Error",
@@ -559,7 +569,7 @@ const textsEnGB = {
 			orgName: string;
 		}) =>
 			cn(
-				`Protests on ${formattedDate}`,
+				`Protest on ${formattedDate}`,
 				orgsCount > 1 && "multiple organisations",
 				orgsCount === 1 && orgName,
 			),
@@ -603,18 +613,28 @@ const textsEnGB = {
 
 const textsXXX = {
 	language: "XXX",
+	seo: {
+		siteTitle: "XXX",
+		siteDescription: "XXX",
+	},
 	mainNavigation: {
 		home: "XXX",
 		dashboard: "XXX",
 		organisations: "XXX",
 		about: "XXX",
 		docs: "XXX",
+		fourOFour: "XXX",
+		logoAssets: "XXX",
 		themeToggle: {
 			light: "XXX",
 			dark: "XXX",
 			system: "XXX",
 			toggleText: "XXX",
 		},
+	},
+	fourOFour: {
+		heading: "XXX",
+		description: "XXX",
 	},
 	errors: {
 		heading: "XXX",

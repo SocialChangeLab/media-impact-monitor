@@ -25,6 +25,7 @@ import mimStairsHybridLogo from "../../../../../public/images/logos/mim-stairs-h
 import mimStairsNegativeLogo from "../../../../../public/images/logos/mim-stairs-negative.svg";
 import mimStairsPositiveLogo from "../../../../../public/images/logos/mim-stairs-positive.svg";
 
+import { texts } from "@/utility/textUtil";
 import mimVerticalHybridLogo from "../../../../../public/images/logos/mim-vertical-hybrid.svg";
 import mimVerticalNegativeLogo from "../../../../../public/images/logos/mim-vertical-negative.svg";
 import mimVerticalPositiveLogo from "../../../../../public/images/logos/mim-vertical-positive.svg";
@@ -162,6 +163,11 @@ const logos: LogoType[] = [
 	...prototypeFundLogos,
 	...socialChangeLabLogos,
 ];
+
+export const metadata = {
+	title: `${texts.mainNavigation.logoAssets} | ${texts.seo.siteTitle}`,
+}
+
 export default async function AboutPage() {
 	return (
 		<>

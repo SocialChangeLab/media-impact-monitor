@@ -1,4 +1,9 @@
 import Team from "@/components/Team";
+import { texts } from "@/utility/textUtil";
+
+export const metadata = {
+	title: `${texts.mainNavigation.about} | ${texts.seo.siteTitle}`,
+}
 
 export default async function AboutPage() {
 	return (

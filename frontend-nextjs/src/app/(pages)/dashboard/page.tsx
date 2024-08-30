@@ -8,6 +8,10 @@ import SizeOptimizationNotice from "@/components/SizeOptimizationNotice.server";
 import TrendWithImpactChartWrapper from "@/components/TrendWithImpactChartWrapper";
 import { texts } from "@/utility/textUtil";
 
+export const metadata = {
+	title: `${texts.mainNavigation.dashboard} | ${texts.seo.siteTitle}`,
+}
+
 export default function EventsPageWithSuspense() {
 	return (
 		<>

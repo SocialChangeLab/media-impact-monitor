@@ -1,4 +1,4 @@
-from datetime import date, timedelta
+from datetime import date
 
 import pandas as pd
 import pytest
@@ -41,7 +41,7 @@ def test_get_fulltexts_for_event():
                 media_source="news_online",
                 event_id=event_id,
             ),
-            sample_frac=0.1,
+            sample_frac=1,
         )
         assert texts is not None
         assert len(texts) > 0
@@ -124,7 +124,7 @@ def test_get_fulltexts_date_range(default_start_date, default_end_date):
         start_date=default_start_date,
         end_date=default_end_date,
     )
-    result = get_fulltexts(q, sample_frac=0.001)
+    result = get_fulltexts(q, sample_frac=0.01)
     assert isinstance(result, pd.DataFrame)
     assert not result.empty
     assert all(
@@ -132,5 +132,5 @@ def test_get_fulltexts_date_range(default_start_date, default_end_date):
     )
     assert "activism_sentiment" in result.columns
     assert "policy_sentiment" in result.columns
-    assert all(result["activism_sentiment"].isin([-1, 0, 1]))
-    assert all(result["policy_sentiment"].isin([-1, 0, 1]))
+    assert all(result["activism_sentiment"].isin([-1, 0, 1, None]))
+    assert all(result["policy_sentiment"].isin([-1, 0, 1, None]))

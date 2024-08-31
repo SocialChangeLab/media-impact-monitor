@@ -6,6 +6,7 @@ import useElementSize from "@custom-react-hooks/use-element-size";
 import { AnimatePresence, motion } from "framer-motion";
 import dynamic from "next/dynamic";
 import { type ReactNode, Suspense, useState } from "react";
+import { ChartDocsDialog } from "./ChartDocsDialog";
 import type { DataCreditLegendSource } from "./DataCreditLegend";
 import TopicsLegend from "./TopicsLegend";
 import { Button } from "./ui/button";
@@ -22,11 +23,13 @@ function TrendWithImpactChartWrapper({
 	impactHeadline,
 	impactDescription,
 	sources,
+	impactHelpSlug,
 }: React.ComponentProps<typeof LazyLoadedImpactChart> & {
 	children: ReactNode;
 	impactHeadline?: string;
 	impactDescription?: string;
 	sources?: DataCreditLegendSource[];
+	impactHelpSlug?: string;
 }) {
 	const [showComputedImpact, setShowComputedImpact] = useState(false);
 	const [parentRef, size] = useElementSize();
@@ -80,7 +83,7 @@ function TrendWithImpactChartWrapper({
 				<AnimatePresence initial={false}>
 					{showComputedImpact && applicability && (
 						<motion.div
-							className="w-full overflow-clip -translate-y-[3.75rem] relative z-10"
+							className="w-full overflow-clip -translate-y-10 relative z-10"
 							initial={{ height: 0 }}
 							animate={{ height: "auto" }}
 							exit={{ height: 0 }}
@@ -89,11 +92,14 @@ function TrendWithImpactChartWrapper({
 								ease: "easeInOut",
 							}}
 						>
-							<div className="mb-6 flex flex-col gap-1">
+							<div className="pb-4 mb-2 flex flex-col gap-1 relative">
 								<h3 className="text-xl font-semibold font-headlines">
 									{impactHeadline}
 								</h3>
 								<p className="text-sm text-grayDark">{impactDescription}</p>
+								<div className="absolute bottom-2 right-0">
+									<ChartDocsDialog helpSlug={impactHelpSlug} />
+								</div>
 							</div>
 							<LazyLoadedImpactChart
 								trend_type={trend_type}

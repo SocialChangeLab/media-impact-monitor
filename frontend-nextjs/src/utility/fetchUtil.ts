@@ -1,7 +1,5 @@
 import {
 	type MediaSourceType,
-	datasetEndDate,
-	datasetStartDate,
 } from "@/stores/filtersStore";
 import { format } from "@/utility/dateUtil";
 import type { EventOrganizerSlugType, OrganisationType } from "./eventsUtil";
@@ -70,8 +68,8 @@ export function formatInput(
 	if (!from || !to)
 		return {
 			...normalizedInput,
-			start_date: format(datasetStartDate, "yyyy-MM-dd"),
-			end_date: format(datasetEndDate, "yyyy-MM-dd"),
+			start_date: null,
+			end_date: null,
 		};
 	return {
 		...normalizedInput,

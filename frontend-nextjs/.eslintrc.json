@@ -1,6 +1,6 @@
 {
   "$schema": "https://json.schemastore.org/eslintrc",
-  "extends": "next/core-web-vitals",
+  "extends": ["next", "prettier"],
   "rules": {
     "react/display-name": "off"
   }

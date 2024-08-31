@@ -104,7 +104,7 @@ function validateGetDataResponse(
 				})),
 				...dateToComparableDateItem(x.date, today),
 			}))
-			.sort((a, b) => dateSortCompare(a.date, b.date));
+			.sort((a, b) => dateSortCompare(a.date, b.date, today));
 		return parsedEventZodSchema.array().parse(eventsWithFixedOrgs);
 	} catch (error) {
 		throw formatZodError(error);

@@ -1,9 +1,9 @@
+import { ComparableDateItemType } from "@/utility/comparableDateItemSchema";
 import type { OrganisationType, ParsedEventType } from "@/utility/eventsUtil";
 import type { UseEventsReturnType } from "@/utility/useEvents";
 import useTimeIntervals, {
 	isInSameAggregationUnit,
 } from "@/utility/useTimeIntervals";
-import useTimeScale from "@/utility/useTimeScale";
 import { scalePow } from "d3-scale";
 import { useCallback, useMemo } from "react";
 import defaultConfig from "./eventsTimelineConfig";
@@ -49,19 +49,18 @@ function useTimelineEvents({
 	};
 }) {
 	const intervals = useTimeIntervals({ aggregationUnit, from, to });
-	const timeScale = useTimeScale(size.width);
 	const columnsCount = intervals.length;
 	const isInSameUnit = useCallback(
-		(event: ParsedEventType, b: Date) =>
+		(event: ParsedEventType, b: ComparableDateItemType) =>
 			isInSameAggregationUnit(aggregationUnit, event, b),
 		[aggregationUnit],
 	);
 
-	const eventColumns = useMemo(() => {
-		if (!timeScale || !data?.eventsByOrgs || !data?.organisations) return [];
+	const eventColumnsWithoutOrgs = useMemo(() => {
+		if (!data?.allEvents) return [];
 		return intervals.map((comparableDateObject) => {
-			const columnEvents = data.eventsByOrgs.filter((evt) =>
-				isInSameUnit(evt, comparableDateObject.date),
+			const columnEvents = data.allEvents.filter((evt) =>
+				isInSameUnit(evt, comparableDateObject),
 			);
 			const eventsWithSize = columnEvents.sort((a, b) => {
 				const aSize = a.size_number ?? 0;
@@ -78,21 +77,22 @@ function useTimelineEvents({
 				sumSize: columnEvents.reduce((acc, evt) => {
 					return acc + (evt.size_number ?? 0);
 				}, 0),
-				combinedOrganizers: combineOrganizers(columnEvents, data.organisations),
-				combinedSelectedOrganizers: combineOrganizers(
-					columnEvents,
-					data.selectedOrganisations,
-				),
-			};
-		});
-	}, [
-		data?.eventsByOrgs,
-		timeScale,
-		intervals,
-		isInSameUnit,
-		data?.organisations,
-		data?.selectedOrganisations,
-	]);
+				columnEvents,
+			}
+		})
+	}, [data.allEvents, intervals, isInSameUnit])
+
+	const eventColumns = useMemo(() => {
+		if (!data?.organisations) return [];
+		return eventColumnsWithoutOrgs.map((d) => ({
+			...d,
+			combinedOrganizers: combineOrganizers(d.columnEvents, data.organisations),
+			combinedSelectedOrganizers: combineOrganizers(
+				d.columnEvents,
+				data.selectedOrganisations,
+			),
+		}));
+	}, [data.organisations, data.selectedOrganisations, eventColumnsWithoutOrgs]);
 
 	const sizeScale = useMemo(() => {
 		const displayedEvents = eventColumns.reduce((acc, day) => {

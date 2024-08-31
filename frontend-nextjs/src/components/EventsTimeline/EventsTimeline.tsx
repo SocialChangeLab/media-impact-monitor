@@ -1,10 +1,8 @@
 "use client";
 import LoadingEventsTimeline from "@/components/EventsTimeline/LoadingEventsTimeline";
-import { useToday } from "@/providers/TodayProvider";
 import { cn } from "@/utility/classNames";
 import {
-	type ComparableDateItemType,
-	dateToComparableDateItem,
+	type ComparableDateItemType
 } from "@/utility/comparableDateItemSchema";
 import { format } from "@/utility/dateUtil";
 import { parseErrorMessage } from "@/utility/errorHandlingUtil";
@@ -44,7 +42,7 @@ function EventsTimeline({
 		data,
 		aggregationUnit,
 	});
-	const { today } = useToday();
+	// const { today } = useToday();
 	const dataSourceInsertions: DataSourceInsertionType[] = [
 		// {
 		// 	date: dateToComparableDateItem(
@@ -68,16 +66,17 @@ function EventsTimeline({
 			<EventsTimelineScrollWrapper>
 				<EventsTimelineChartWrapper columnsCount={columnsCount + 1}>
 					{eventColumns.map(
-						({
-							time,
-							date,
-							eventsWithSize,
-							sumSize,
-							combinedOrganizers,
-							combinedSelectedOrganizers,
-						}) => {
+						(props) => {
+							const {
+								time,
+								date,
+								eventsWithSize,
+								sumSize,
+								combinedOrganizers,
+								combinedSelectedOrganizers,
+							} = props;
 							const insertedDataSource = dataSourceInsertions.find((d) =>
-								isInSameAggregationUnit(aggregationUnit, d.date, date),
+								isInSameAggregationUnit(aggregationUnit, d.date, props),
 							);
 							const indexOfDataSourceInsertion = dataSourceInsertions.findIndex(
 								(d) => d === insertedDataSource,
@@ -96,7 +95,7 @@ function EventsTimeline({
 												"w-px h-full absolute top-0 left-1/2 -translate-x-1/2 pointer-events-none",
 												"bg-grayLight group-hover:opacity-50 event-line opacity-0 transition-opacity",
 												insertedDataSource &&
-													"opacity-100 group-hover:opacity-100 bg-gradient-to-t via-grayLight from-grayUltraLight to-fg",
+												"opacity-100 group-hover:opacity-100 bg-gradient-to-t via-grayLight from-grayUltraLight to-fg",
 											)}
 											aria-hidden={!insertedDataSource}
 										>

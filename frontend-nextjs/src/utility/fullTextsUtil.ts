@@ -1,5 +1,5 @@
 import type { MediaSourceType } from "@/stores/filtersStore";
-import { parse } from "date-fns";
+import { compareAsc, parse } from "date-fns";
 import { z } from "zod";
 import type { EventOrganizerSlugType, OrganisationType } from "./eventsUtil";
 import { fetchApiData, formatInput } from "./fetchUtil";
@@ -80,7 +80,7 @@ function validateFullTextsResponse(
 			)
 			.parse(response);
 		const sortedMedia = parsedResponse.sort(
-			(a, b) => a.date.getTime() - b.date.getTime(),
+			(a, b) => compareAsc(a.date, b.date),
 		);
 		return parsedResponseDataZodSchema.parse(sortedMedia);
 	} catch (error) {

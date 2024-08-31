@@ -1,13 +1,13 @@
 "use client";
 import { useFiltersStore } from "@/providers/FiltersStoreProvider";
 import { queryOptions, useQuery } from "@tanstack/react-query";
-import { endOfDay } from "date-fns";
 import {
 	type EventMediaInputQueryType,
 	eventMediaInputQueryZodSchema,
 	getEventMediaData,
 } from "./eventMediaUtil";
 import type { OrganisationType, ParsedEventType } from "./eventsUtil";
+import { getStaleTime } from "./queryUtil";
 import { today } from "./today";
 import useEvents from "./useEvents";
 import useQueryErrorToast from "./useQueryErrorToast";
@@ -33,7 +33,7 @@ export function getEventMediaQueryOptions(
 						allOrganisations,
 					)
 				: null,
-		staleTime: endOfDay(today).getTime() - today.getTime(),
+		staleTime: getStaleTime(today),
 		enabled: queryParsing.success,
 	});
 }

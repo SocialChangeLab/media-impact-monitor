@@ -1,6 +1,7 @@
 import DocsContentSection from "@/components/DocsContentSection";
 import { Mdx } from "@/components/Mdx";
 import { getAllDocsPages, getDocsPage } from "@/utility/docsUtil";
+import { texts } from "@/utility/textUtil";
 import { notFound } from "next/navigation";
 import slugify from "slugify";
 
@@ -12,7 +13,7 @@ export const generateStaticParams = () => {
 export const generateMetadata = ({ params }: { params: { slug: string } }) => {
 	const docsPage = getDocsPage(params.slug);
 	if (!docsPage) throw new Error(`DocsPage not found for slug: ${params.slug}`);
-	return { title: docsPage.title };
+	return { title: `${docsPage.title} | ${texts.mainNavigation.docs} | ${texts.seo.siteTitle}` };
 };
 
 const DocsPageLayout = ({ params }: { params: { slug: string } }) => {

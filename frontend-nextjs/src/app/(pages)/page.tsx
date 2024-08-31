@@ -9,6 +9,10 @@ import { cn } from "@/utility/classNames";
 import { texts } from "@/utility/textUtil";
 import Image from "next/image";
 
+export const metadata = {
+	title: `${texts.mainNavigation.home} | ${texts.seo.siteTitle}`,
+}
+
 export default function HomePageWithSuspense() {
 	return (
 		<div
@@ -48,7 +52,7 @@ export default function HomePageWithSuspense() {
 							key={`${text}-${
 								// biome-ignore lint/suspicious/noArrayIndexKey: <explanation>
 								i
-							}`}
+								}`}
 						>
 							{text}
 						</p>

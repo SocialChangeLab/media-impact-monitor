@@ -34,9 +34,9 @@ function TrendHeadline({
 							<ImpactKeywordLabel
 								label={
 									texts.charts.topics[
-										topic
-											.toLowerCase()
-											.replaceAll("-", " ") as keyof typeof texts.charts.topics
+									topic
+										.toLowerCase()
+										.replaceAll("-", " ") as keyof typeof texts.charts.topics
 									] ?? titleCase(topic)
 								}
 								slug={label}
@@ -57,14 +57,13 @@ function EventPageContent({ id }: { id: string }) {
 			<SectionHeadlineWithExplanation
 				headline={texts.singleProtestPage.table.heading}
 				description={texts.singleProtestPage.table.description}
-				helpSlug="mediaMentions"
 			>
 				<EventMediaTable id={id} />
 			</SectionHeadlineWithExplanation>
 			<SectionHeadlineWithExplanation
 				headline={texts.singleProtestPage.charts.heading}
 				description={texts.singleProtestPage.charts.description}
-				helpSlug="sentimentTrend"
+				helpSlug="sentiment-trends"
 			>
 				<div className="flex flex-col gap-x-8 gap-y-6 xl:grid xl:grid-cols-2">
 					<div className="flex flex-col gap-4">

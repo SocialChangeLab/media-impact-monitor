@@ -1,11 +1,12 @@
 import {
-	getDay,
+	getDate,
 	getMonth,
 	getTime,
+	getWeek,
 	getYear,
+	isValid,
 	parse,
-	startOfDay,
-	startOfWeek,
+	startOfDay
 } from "date-fns";
 import { z } from "zod";
 import { today as defaultToday } from "./today";
@@ -27,12 +28,15 @@ export const dateToComparableDateItem = (
 	const date = startOfDay(
 		typeof d === "string" ? parse(d, "yyyy-MM-dd", today) : d,
 	);
+	if (!isValid(date)) {
+		throw new Error(`Invalid date provided to dateToComparableDateItem: ${d}`);
+	}
 	const dateObj = {
 		date,
 		year: getYear(date),
 		month: getMonth(date),
-		week: getTime(startOfWeek(date, { weekStartsOn: 1 })),
-		day: getDay(date),
+		week: getWeek(date),
+		day: getDate(date),
 		time: getTime(date),
 	};
 	return dateObj;

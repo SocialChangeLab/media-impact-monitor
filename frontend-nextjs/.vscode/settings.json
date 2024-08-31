@@ -3,6 +3,6 @@
 	"editor.defaultFormatter": "biomejs.biome",
 	"biome.lspBin": "./frontend-nextjs/node_modules/@biomejs/biome/bin/biome",
 	"[typescriptreact]": {
-		"editor.defaultFormatter": "biomejs.biome"
+		"editor.defaultFormatter": "vscode.typescript-language-features"
 	}
 }

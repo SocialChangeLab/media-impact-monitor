@@ -6,7 +6,7 @@ import CustomQueryClientProvider from "./components/QueryClientProvider";
 import { FiltersStoreProvider } from "./providers/FiltersStoreProvider";
 import { TodayProvider } from "./providers/TodayProvider";
 import { UiStoreProvider } from "./providers/UiStoreProvider";
-import { defaultInitState } from "./stores/filtersStore";
+import { getDefaultInitState } from "./stores/filtersStore";
 
 function Providers({
 	children,
@@ -15,10 +15,11 @@ function Providers({
 	return (
 		<CustomQueryClientProvider>
 			<FiltersStoreProvider
+				today={today}
 				initialState={{
-					...defaultInitState,
-					defaultTo: endOfDay(subDays(today, 1)),
+					...getDefaultInitState(today),
 					defaultFrom: startOfDay(subMonths(startOfDay(today), 2)),
+					defaultTo: endOfDay(subDays(today, 1)),
 				}}
 			>
 				<TodayProvider value={today}>

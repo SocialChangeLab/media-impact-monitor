@@ -90,7 +90,8 @@ export function useFullTextsTrends({
 			return acc;
 		}, new Map<string, FullTextsTrendItem>());
 		const trends = ensureSevenDays(
-			Array.from(dateToValMap.values()).sort(dateSortCompare),
+			Array.from(dateToValMap.values()).sort((a, b) =>
+				dateSortCompare(a.date, b.date, today)),
 		);
 		return {
 			applicability: true,

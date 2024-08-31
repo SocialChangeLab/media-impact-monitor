@@ -3,7 +3,7 @@
 	"version": "0.1.0",
 	"private": true,
 	"scripts": {
-		"dev": "cross-env NODE_OPTIONS=--max_old_space_size=4096 next dev",
+		"dev": "cross-env NODE_OPTIONS=--max_old_space_size=4096 next dev -p 3000",
 		"build": "npm run check && next build",
 		"start": "next start",
 		"check": "npx biome check --write src"

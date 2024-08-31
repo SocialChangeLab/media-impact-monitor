@@ -1,4 +1,5 @@
 import { cn } from "@/utility/classNames";
+import { texts } from "@/utility/textUtil";
 import { Loader2 } from "lucide-react";
 
 function ChartLoadingPlaceholder() {
@@ -15,7 +16,7 @@ function ChartLoadingPlaceholder() {
 					)}
 					aria-hidden="true"
 				/>
-				Loading chart data...
+				{texts.charts.common.loading}
 			</span>
 		</div>
 	);

@@ -2,6 +2,7 @@ import type {
 	EventOrganizerSlugType,
 	OrganisationType,
 } from "@/utility/eventsUtil";
+import { texts } from "@/utility/textUtil";
 import useElementSize from "@custom-react-hooks/use-element-size";
 import { type ScaleLinear, scaleLinear } from "d3-scale";
 import CollapsableSection from "../CollapsableSection";
@@ -116,7 +117,7 @@ function EventsTimelineLegend({
 			ref={parentRef}
 		>
 			<CollapsableSection
-				title="Legend"
+				title={texts.charts.common.legend}
 				storageKey="protest-timeline-legend-expanded"
 				storageType="session"
 			>
@@ -130,17 +131,7 @@ function EventsTimelineLegend({
 			</CollapsableSection>
 			<DataCreditLegend
 				storageKey={"protest-timeline-data-credit-expanded"}
-				sources={[
-					{
-						label: "Protest data",
-						links: [
-							{
-								text: "Armed Conflict Location & Event Data Project (ACLED)",
-								url: "https://acleddata.com",
-							},
-						],
-					},
-				]}
+				sources={texts.charts.protest_timeline.data_credit}
 			/>
 		</div>
 	);

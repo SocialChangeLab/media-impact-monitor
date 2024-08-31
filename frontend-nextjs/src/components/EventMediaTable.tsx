@@ -1,6 +1,7 @@
 "use client";
 import { format } from "@/utility/dateUtil";
 import type { ParsedFullTextType } from "@/utility/fullTextsUtil";
+import { texts } from "@/utility/textUtil";
 import { useFullTexts } from "@/utility/useFullTexts";
 import { createColumnHelper } from "@tanstack/react-table";
 import DataTableWithState from "./DataTable";
@@ -20,7 +21,7 @@ const columnHelper = createColumnHelper<ParsedFullTextType>();
 // }
 const columns = [
 	columnHelper.accessor("title", {
-		header: "Title",
+		header: texts.singleProtestPage.table.header.title,
 		cell: (info) => {
 			const title = info.getValue();
 			if (title.length < 100)
@@ -41,7 +42,7 @@ const columns = [
 		size: 300,
 	}),
 	columnHelper.accessor("text", {
-		header: "Summary",
+		header: texts.singleProtestPage.table.header.summary,
 		cell: ({ getValue, row }) => {
 			const title = row.original.title;
 			const text = getValue();
@@ -71,7 +72,7 @@ const columns = [
 		size: 500,
 	}),
 	columnHelper.accessor("date", {
-		header: "Date",
+		header: texts.singleProtestPage.table.header.date,
 		cell: (info) => (
 			<span className="whitespace-nowrap">
 				{format(info.getValue(), "LLL. d, yyyy")}
@@ -80,23 +81,23 @@ const columns = [
 		size: 100,
 	}),
 	columnHelper.accessor("url", {
-		header: "URL",
+		header: texts.singleProtestPage.table.header.url,
 		cell: ({ getValue }) => <ExternalLink href={getValue()} />,
 		size: 300,
 	}),
 	columnHelper.accessor("activism_sentiment", {
-		header: "Sent. Activism",
+		header: texts.singleProtestPage.table.header.sentimentActivism,
 		cell: (info) => {
 			const sentiment = info.getValue();
-			return sentiment ? <SentimentLabel sentiment={sentiment} /> : "-";
+			return typeof sentiment === "number" ? <SentimentLabel sentiment={sentiment} /> : "-";
 		},
 		size: 50,
 	}),
 	columnHelper.accessor("policy_sentiment", {
-		header: "Sent. Policy",
+		header: texts.singleProtestPage.table.header.sentimentPolicy,
 		cell: (info) => {
 			const sentiment = info.getValue();
-			return sentiment ? <SentimentLabel sentiment={sentiment} /> : "-";
+			return typeof sentiment === "number" ? <SentimentLabel sentiment={sentiment} /> : "-";
 		},
 		size: 50,
 	}),

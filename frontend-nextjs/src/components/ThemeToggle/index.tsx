@@ -10,6 +10,7 @@ import {
 	DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { cn } from "@/utility/classNames";
+import { texts } from "@/utility/textUtil";
 import {
 	Check,
 	Laptop,
@@ -27,17 +28,17 @@ type ThemeOptionType = {
 const themeOptions: ThemeOptionType[] = [
 	{
 		name: "system",
-		label: "System",
+		label: texts.mainNavigation.themeToggle.system,
 		Icon: Laptop,
 	},
 	{
 		name: "light",
-		label: "Light",
+		label: texts.mainNavigation.themeToggle.light,
 		Icon: SunIcon,
 	},
 	{
 		name: "dark",
-		label: "Dark",
+		label: texts.mainNavigation.themeToggle.dark,
 		Icon: MoonIcon,
 	},
 ];
@@ -63,7 +64,9 @@ export default function ThemeToggle() {
 							)}
 						/>
 					))}
-					<span className="sr-only">Toggle theme</span>
+					<span className="sr-only">
+						{texts.mainNavigation.themeToggle.toggleText}
+					</span>
 				</Button>
 			</DropdownMenuTrigger>
 			<DropdownMenuContent align="end" className="z-[70]">

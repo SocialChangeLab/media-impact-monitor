@@ -1,5 +1,6 @@
-export function parseErrorMessage(error: unknown, dataName = "data") {
-	const defaultMessage = `There was unexpected issue while retrieving the ${dataName}. Please try again in a few minutes.`;
+import { texts } from "./textUtil";
+
+export function parseErrorMessage(error: unknown, datasetName = "data") {
 	const errorString =
 		error instanceof Error
 			? error.message
@@ -8,19 +9,19 @@ export function parseErrorMessage(error: unknown, dataName = "data") {
 				: "";
 	const [name, message] = errorString.split("&&&");
 	const details = process.env.NODE_ENV === "development" ? message : undefined;
-	if (name === "ApiFetchError")
-		return {
-			message: `We are facing issues with our API and where not able to retrieve the ${dataName}. Please try again in a few minutes.`,
-			details,
-		};
-	if (name === "ZodError") {
-		return {
-			message: `The ${dataName} returned from the API are/is not in the expected format. Please try again in a few minutes or contact the developers.`,
-			details,
-		};
-	}
+	const defaultMessageFn = texts.errors.apiErrorTranslations.defaultMessage;
+	const originalMessageFn =
+		texts.errors.apiErrorTranslations[
+			name as keyof typeof texts.errors.apiErrorTranslations
+		];
+	const originalDetailsFn =
+		texts.errors.apiErrorTranslations[
+			details as keyof typeof texts.errors.apiErrorTranslations
+		];
+	const messageFn = originalMessageFn ?? defaultMessageFn;
+	const detailsFn = originalDetailsFn ?? (() => details);
 	return {
-		message: defaultMessage,
-		details,
+		message: messageFn({ datasetName }),
+		details: detailsFn({ datasetName }),
 	};
 }

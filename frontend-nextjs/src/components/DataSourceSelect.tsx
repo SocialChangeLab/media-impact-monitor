@@ -14,6 +14,7 @@ import {
 import { useFiltersStore } from "@/providers/FiltersStoreProvider";
 import type { MediaSourceType } from "@/stores/filtersStore";
 import { cn } from "@/utility/classNames";
+import { texts } from "@/utility/textUtil";
 import {
 	ChevronsUpDownIcon,
 	GlobeIcon,
@@ -38,44 +39,25 @@ type OptionType = {
 
 const options: OptionType[] = [
 	{
-		name: "Online News",
+		name: texts.filters.mediaSource.values.onlineNews.name,
 		value: "news_online",
 		Icon: GlobeIcon,
-		description: "Articles from online news pages.",
-		links: [
-			{
-				label: "Official Website",
-				href: "https://www.mediacloud.org/",
-			},
-		],
+		description: texts.filters.mediaSource.values.onlineNews.description,
+		links: texts.filters.mediaSource.values.onlineNews.links,
 	},
 	{
-		name: "Print News",
+		name: texts.filters.mediaSource.values.printNews.name,
 		value: "news_print",
 		Icon: NewspaperIcon,
-		description: "Articles from print newspapers.",
-		links: [
-			{
-				label: "Official Website",
-				href: "https://www.genios.de/",
-			},
-			{
-				label: "Press Page",
-				href: "https://www.genios.de/browse/Alle/Presse",
-			},
-		],
+		description: texts.filters.mediaSource.values.printNews.description,
+		links: texts.filters.mediaSource.values.printNews.links,
 	},
 	{
-		name: "Google Trends",
+		name: texts.filters.mediaSource.values.googleTrends.name,
 		value: "web_google",
 		Icon: SearchIcon,
-		description: "Search trends from Google.",
-		links: [
-			{
-				label: "Official Website",
-				href: "https://trends.google.com/trends/",
-			},
-		],
+		description: texts.filters.mediaSource.values.googleTrends.description,
+		links: texts.filters.mediaSource.values.googleTrends.links,
 	},
 ];
 const optionsMap = new Map(options.map((o) => [o.value, o]));
@@ -108,7 +90,8 @@ export default function MediaSourceSelect() {
 							/>
 						)}
 						<span className="hidden md:inline text-sm lg:text-base">
-							{selectedValue?.name || "Select data source"}
+							{selectedValue?.name ||
+								texts.filters.mediaSource.fieldPlaceholder}
 						</span>
 					</div>
 					<ChevronsUpDownIcon className="ml-2 h-4 w-4 shrink-0 opacity-50" />

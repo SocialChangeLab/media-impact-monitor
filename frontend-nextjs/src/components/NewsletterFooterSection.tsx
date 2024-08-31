@@ -4,6 +4,7 @@ import headerImage from "@/images/header-bg.webp";
 import dashboardScreenshotDark from "@/images/home-screenshot-dashboard-dark.webp";
 import dashboardScreenshotLight from "@/images/home-screenshot-dashboard-light.webp";
 import { cn } from "@/utility/classNames";
+import { texts } from "@/utility/textUtil";
 import Image from "next/image";
 
 function NewsletterFooterSection() {
@@ -38,7 +39,7 @@ function NewsletterFooterSection() {
 					</span>
 					<div className="flex flex-col gap-6 text-brandWhite not-prose mt-8">
 						<h2 className="m-0 text-2xl xl:text-3xl font-headlines text-balance font-semibold">
-							Receive updates and get notified when we launch the v1!
+							{texts.newsLetterSection.heading}
 						</h2>
 						<NewsletterForm />
 					</div>
@@ -47,7 +48,7 @@ function NewsletterFooterSection() {
 			<div className="w-full h-80 xl:h-full relative">
 				<Image
 					src={dashboardScreenshotLight}
-					alt="A screenshot of the dashboard (light mode)"
+					alt={texts.newsLetterSection.screenshotLightAlt}
 					priority
 					className={cn(
 						"absolute inset-y-0 inset-x-[var(--pagePadding)] xl:inset-0 object-cover object-left-top h-full",
@@ -57,7 +58,7 @@ function NewsletterFooterSection() {
 				/>
 				<Image
 					src={dashboardScreenshotDark}
-					alt="A screenshot of the dashboard (dark mode)"
+					alt={texts.newsLetterSection.screenshotDarkAlt}
 					priority
 					className={cn(
 						"absolute inset-y-0 inset-x-[var(--pagePadding)] xl:inset-0 object-cover object-left-top h-full",

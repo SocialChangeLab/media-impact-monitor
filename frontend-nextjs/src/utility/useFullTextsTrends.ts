@@ -60,7 +60,8 @@ export function useFullTextsTrends({
 				trends: [],
 			};
 		}
-		const dateToValMap = query.data.reduce((acc, d) => {
+		const dateToValMap = query.data
+			.reduce((acc, d) => {
 			const currentSentiment =
 				sentiment_target === "policy"
 					? d.policy_sentiment
@@ -69,6 +70,7 @@ export function useFullTextsTrends({
 				lower: true,
 				strict: true,
 			});
+			console.log(currentSentiment);
 			if (currentSentiment === null) return acc;
 			const key = format(d.date, "yyyy-MM-dd");
 			const existingVal = acc.get(key);

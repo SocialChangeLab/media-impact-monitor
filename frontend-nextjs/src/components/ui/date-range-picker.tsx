@@ -13,6 +13,7 @@ import {
 import { useToday } from "@/providers/TodayProvider";
 import { cn } from "@/utility/classNames";
 import { format } from "@/utility/dateUtil";
+import { texts } from "@/utility/textUtil";
 import { CalendarDays } from "lucide-react";
 import {
 	type ReactNode,
@@ -127,7 +128,7 @@ export const DatePickerWithRange = memo(
 							align="end"
 						>
 							<div className="flex gap-4 p-3 border-b border-grayUltraLight items-center justify-end">
-								<span className="grow">Presets:</span>
+								<span className="grow">{texts.filters.timeRange.presets}:</span>
 								<LastTwelveMonthButton
 									currentRange={date}
 									onChange={(range) => {
@@ -170,16 +171,18 @@ export const DatePickerWithRange = memo(
 											onReset();
 										}}
 									>
-										Reset defaults
+										{texts.filters.timeRange.buttons.resetDefaults}
 									</Button>
 								)}
 								<Button
 									variant="outline"
 									onClick={() => onRangeChange(lastRange.current || dateRange)}
 								>
-									Cancel
+									{texts.filters.timeRange.buttons.cancel}
 								</Button>
-								<Button onClick={() => onRangeChange(date)}>Apply</Button>
+								<Button onClick={() => onRangeChange(date)}>
+									{texts.filters.timeRange.buttons.apply}
+								</Button>
 							</div>
 						</PopoverContent>
 					)}
@@ -207,8 +210,12 @@ const LastSixMonthButton = memo(
 				}}
 				onChange={onChange}
 			>
-				<span className="hidden md:inline">Last 6 months</span>
-				<span className="inline md:hidden">-6M</span>
+				<span className="hidden md:inline">
+					{texts.filters.timeRange.last6MonthsLong}
+				</span>
+				<span className="inline md:hidden">
+					{texts.filters.timeRange.last6MonthsShort}
+				</span>
 			</PresetButton>
 		);
 	},
@@ -232,8 +239,12 @@ const LastTwelveMonthButton = memo(
 				}}
 				onChange={onChange}
 			>
-				<span className="hidden md:inline">Last 12 months</span>
-				<span className="inline md:hidden">-12M</span>
+				<span className="hidden md:inline">
+					{texts.filters.timeRange.last12MonthsLong}
+				</span>
+				<span className="inline md:hidden">
+					{texts.filters.timeRange.last12MonthsShort}
+				</span>
 			</PresetButton>
 		);
 	},
@@ -257,8 +268,12 @@ const LastMonthButton = memo(
 				}}
 				onChange={onChange}
 			>
-				<span className="hidden md:inline">Last 30 days</span>
-				<span className="inline md:hidden">-30D</span>
+				<span className="hidden md:inline">
+					{texts.filters.timeRange.last30DaysLong}
+				</span>
+				<span className="inline md:hidden">
+					{texts.filters.timeRange.last30DaysShort}
+				</span>
 			</PresetButton>
 		);
 	},

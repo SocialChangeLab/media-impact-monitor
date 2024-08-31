@@ -14,6 +14,7 @@ import {
 import TopicChartTooltip from "@/components/TopicChartTooltip";
 import { slugifyCssClass } from "@/utility/cssSlugify";
 import { parseErrorMessage } from "@/utility/errorHandlingUtil";
+import { texts } from "@/utility/textUtil";
 import useMediaTrends from "@/utility/useMediaTrends";
 import useTopics from "@/utility/useTopics";
 import { QueryErrorResetBoundary } from "@tanstack/react-query";
@@ -73,7 +74,9 @@ const MediaCoverageChart = memo(() => {
 							stroke="var(--grayDark)"
 							strokeWidth={0.25}
 							fontSize="0.875rem"
-							tickFormatter={(value) => `${value.toLocaleString("en-GB")}`}
+							tickFormatter={(value) =>
+								`${value.toLocaleString(texts.language)}`
+							}
 						/>
 						<Tooltip
 							formatter={(value) => `${value} articles`}

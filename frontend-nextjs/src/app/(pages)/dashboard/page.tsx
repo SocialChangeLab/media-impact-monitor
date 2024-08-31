@@ -6,6 +6,7 @@ import NewsletterFooterSection from "@/components/NewsletterFooterSection";
 import SectionHeadlineWithExplanation from "@/components/SectionHeadlineWithExplanation";
 import SizeOptimizationNotice from "@/components/SizeOptimizationNotice.server";
 import TrendWithImpactChartWrapper from "@/components/TrendWithImpactChartWrapper";
+import { texts } from "@/utility/textUtil";
 
 export default function EventsPageWithSuspense() {
 	return (
@@ -13,63 +14,98 @@ export default function EventsPageWithSuspense() {
 			<SizeOptimizationNotice />
 			<DashboardHelpBanner />
 			<SectionHeadlineWithExplanation
-				headline="What protests are happening?"
-				description={
-					<>
-						<p className="text-pretty">
-							See protests over time for each of the selected organisations.
+				headline={texts.charts.protest_timeline.heading}
+				helpSlug="protest_timeline"
+				description={texts.charts.protest_timeline.description.map(
+					(desc, i) => (
+						<p
+							key={`${desc}-${
+								// biome-ignore lint/suspicious/noArrayIndexKey: <explanation>
+								i
+							}`}
+							className="text-pretty"
+						>
+							{desc}
 						</p>
-						<p className="text-pretty">
-							Hover and click on the bubbles for more information on the
-							individual protest events.
-						</p>
-						<p className="text-pretty">
-							Currently, we cover only climate protests in Germany.
-						</p>
-					</>
-				}
+					),
+				)}
 			>
 				<EventsTimeline />
 			</SectionHeadlineWithExplanation>
 			<SectionHeadlineWithExplanation
-				headline="How prominent are the issues in public discourse?"
-				description={
-					<>
-						<p className="text-pretty">
-							See how many articles are published on various topics over time.
-						</p>
-						<p className="text-pretty">
-							Use the filters to switch between online newspaper articles, print
-							newspaper articles, and queries that people search for on Google.
-						</p>
-					</>
-				}
-				helpSlug="mediaTrend"
+				headline={texts.charts.topics_trend.heading}
+				description={texts.charts.topics_trend.description.map((desc, i) => (
+					<p
+						key={`${desc}-${
+							// biome-ignore lint/suspicious/noArrayIndexKey: <explanation>
+							i
+						}`}
+						className="text-pretty"
+					>
+						{desc}
+					</p>
+				))}
+				helpSlug="topics-trend"
 			>
-				<TrendWithImpactChartWrapper trend_type="keywords">
+				<TrendWithImpactChartWrapper
+					trend_type="keywords"
+					impactHeadline={texts.charts.topics_impact.heading}
+					impactDescription={texts.charts.topics_impact.description}
+					sources={texts.charts.topics_trend.data_credit}
+				>
 					<MediaCoverageChart />
 				</TrendWithImpactChartWrapper>
 			</SectionHeadlineWithExplanation>
 			<SectionHeadlineWithExplanation
-				headline="What sentiment does the media have towards the protests?"
-				description="See whether the media's coverage of the protests is positive, negative, or neutral."
-				helpSlug="sentimentTrend"
+				headline={texts.charts.sentiment_protest.heading}
+				description={texts.charts.sentiment_protest.description.map(
+					(desc, i) => (
+						<p
+							key={`${desc}-${
+								// biome-ignore lint/suspicious/noArrayIndexKey: <explanation>
+								i
+							}`}
+							className="text-pretty"
+						>
+							{desc}
+						</p>
+					),
+				)}
+				helpSlug="sentiment-trends"
 			>
 				<TrendWithImpactChartWrapper
 					trend_type="sentiment"
 					sentiment_target="activism"
+					impactHeadline={texts.charts.sentiment_protest_impact.heading}
+					impactDescription={texts.charts.sentiment_protest_impact.description}
+					sources={texts.charts.sentiment_protest.data_credit}
 				>
 					<MediaSentimentChart sentiment_target="activism" />
 				</TrendWithImpactChartWrapper>
 			</SectionHeadlineWithExplanation>
 			<SectionHeadlineWithExplanation
-				headline="What stance does the media have towards progressive climate policies?"
-				description="See whether the media supports or opposes policies aimed at mitigating climate change."
-				helpSlug="sentimentTrend"
+				headline={texts.charts.sentiment_policy.heading}
+				description={texts.charts.sentiment_policy.description.map(
+					(desc, i) => (
+						<p
+							key={`${desc}-${
+								// biome-ignore lint/suspicious/noArrayIndexKey: <explanation>
+								i
+							}`}
+							className="text-pretty"
+						>
+							{desc}
+						</p>
+					),
+				)}
+				helpSlug="sentiment-trends"
 			>
 				<TrendWithImpactChartWrapper
 					trend_type="sentiment"
 					sentiment_target="policy"
+					impactHeadline={texts.charts.sentiment_policy_impact.heading}
+					impactDescription={texts.charts.sentiment_policy_impact.description}
+					sources={texts.charts.sentiment_policy.data_credit}
 				>
 					<MediaSentimentChart sentiment_target="policy" />
 				</TrendWithImpactChartWrapper>

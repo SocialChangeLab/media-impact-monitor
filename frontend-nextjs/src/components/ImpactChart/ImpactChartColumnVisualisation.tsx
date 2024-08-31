@@ -3,7 +3,7 @@ import { slugifyCssClass } from "@/utility/cssSlugify";
 import { parseErrorMessage } from "@/utility/errorHandlingUtil";
 import type { ParsedMediaImpactItemType } from "@/utility/mediaImpactUtil";
 import { seededRandom } from "@/utility/randomUtil";
-import { titleCase } from "@/utility/textUtil";
+import { texts, titleCase } from "@/utility/textUtil";
 import { getTopicIcon } from "@/utility/topicsUtil";
 import { type ScaleLinear, scaleLinear } from "d3-scale";
 import { Asterisk } from "lucide-react";
@@ -109,21 +109,27 @@ function ImpactChartColumnVisualisationLimitations({
 					<Asterisk size={48} strokeWidth={1} className="text-grayMed -ml-3" />
 				</div>
 				<div className="mb-1 relative min-w-full grid grid-cols-[auto,1fr] items-center gap-4">
-					<strong className="font-semibold">Limitation</strong>
+					<strong className="font-semibold">
+						{texts.charts.impact.limitation.title}
+					</strong>
 					<div className="h-px w-full bg-grayLight"></div>
 				</div>
 				<p className="text-grayDark relative">
-					The impact cannot be computed because of the following limitations:
+					{texts.charts.impact.limitation.message({
+						organisationNode: "",
+					})}
 				</p>
 				<ul className="flex flex-col gap-2 list-disc marker:text-grayMed">
 					{limitations.map((l) => (
 						<li key={l} className="ml-4 pl-1 font-semibold">
-							{l}
+							{texts.charts.impact.limitation.limitationTranslations[
+								l as keyof typeof texts.charts.impact.limitation.limitationTranslations
+							] ?? l}
 						</li>
 					))}
 				</ul>
 				<p className="text-grayDark">
-					Widen your filters or choose another organisation.
+					{texts.charts.impact.limitation.widenYourFilters}
 				</p>
 			</div>
 		</div>
@@ -193,7 +199,12 @@ function ImpactChartColumnVisualisationImpacts({
 							>
 								<Icon size={16} color={color} className="shrink-0" />
 								<ImpactKeywordLabel
-									label={titleCase(label)}
+									label={
+										texts.charts.topics[
+											label as keyof typeof texts.charts.topics
+										] ?? titleCase(label)
+									}
+									slug={label}
 									color={color}
 									className="whitespace-nowrap"
 								/>
@@ -203,7 +214,7 @@ function ImpactChartColumnVisualisationImpacts({
 									<ImpactChartColumnVisualisationImpactLabel
 										top={`${upperY}rem`}
 										impact={impact.upper}
-										prefix="No impact:"
+										prefix={texts.charts.impact.tooltips.noImpact}
 										className={`translate-y-1`}
 									/>
 									<div
@@ -226,12 +237,16 @@ function ImpactChartColumnVisualisationImpacts({
 									<ImpactChartColumnVisualisationImpactLabel
 										top={`calc(${upperY}rem - 1.5rem)`}
 										impact={impact.upper}
-										prefix="Up to"
+										prefix={texts.charts.impact.tooltips.upTo}
 									/>
 									<ImpactChartColumnVisualisationImpactLabel
 										top={`${upperY + height + 0.5}rem`}
 										impact={impact.lower}
-										prefix={impact.lower < 0 ? "Down to" : "At least"}
+										prefix={
+											impact.lower < 0
+												? texts.charts.impact.tooltips.downTo
+												: texts.charts.impact.tooltips.atLeast
+										}
 									/>
 								</>
 							)}

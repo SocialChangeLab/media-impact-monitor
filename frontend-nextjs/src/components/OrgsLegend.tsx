@@ -1,5 +1,6 @@
 "use client";
 import type { EventOrganizerSlugType } from "@/utility/eventsUtil";
+import { texts } from "@/utility/textUtil";
 import { ArrowRight } from "lucide-react";
 import { useMemo } from "react";
 import type { LegendOrganisation } from "./EventsTimeline/EventsTimelineLegend";
@@ -8,7 +9,7 @@ import OrgsLegendItem from "./OrgsLegendItem";
 function getOtherOrg(organisations: LegendOrganisation[]) {
 	return {
 		slug: "other" as EventOrganizerSlugType,
-		name: "Other",
+		name: texts.charts.protest_timeline.legend.other,
 		count: organisations.reduce((acc, org) => acc + (org.count ?? 0), 0),
 		color: `var(--grayDark)`,
 		isMain: false,
@@ -57,9 +58,9 @@ function OrgsLegend({
 	return (
 		<div className="flex flex-col gap-2">
 			<h5 className="font-bold flex gap-1 items-center">
-				<span>Color</span>
+				<span>{texts.charts.protest_timeline.legend.color}</span>
 				<ArrowRight size={16} className="text-grayDark" />
-				Organizations
+				{texts.charts.protest_timeline.legend.organisations}
 			</h5>
 			<ul className="grid grid-cols-[repeat(auto-fill,minmax(min(13rem,100%),1fr))] gap-x-6 relative z-20 legend-orgs-container">
 				{allOrgs.map((org) => (

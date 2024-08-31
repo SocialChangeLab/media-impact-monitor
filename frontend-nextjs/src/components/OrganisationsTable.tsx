@@ -1,6 +1,7 @@
 import { useFiltersStore } from "@/providers/FiltersStoreProvider";
 import { cn } from "@/utility/classNames";
 import { getOrgStats } from "@/utility/orgsUtil";
+import { texts } from "@/utility/textUtil";
 import useEvents from "@/utility/useEvents";
 import { createColumnHelper } from "@tanstack/react-table";
 import { useMemo } from "react";
@@ -11,7 +12,7 @@ import RoundedColorPill from "./RoundedColorPill";
 
 function formatNumber(num: number) {
 	if (Number.isNaN(num)) return "?";
-	return Math.round(num).toLocaleString("en-GB");
+	return Math.round(num).toLocaleString(texts.language);
 }
 
 function OrganisationsTable() {
@@ -40,7 +41,7 @@ function OrganisationsTable() {
 		const columnHelper = createColumnHelper<(typeof extendedData)[0]>();
 		return [
 			columnHelper.accessor("name", {
-				header: "Name",
+				header: texts.organisationsPage.propertyNames.name,
 				cell: function render({ getValue, row }) {
 					const { name, slug, color } = row.original;
 					return (
@@ -61,35 +62,35 @@ function OrganisationsTable() {
 				size: 1000,
 			}),
 			columnHelper.accessor("totalEvents", {
-				header: "Total Events",
+				header: texts.organisationsPage.propertyNames.totalEvents,
 				cell: function render({ getValue }) {
-					return Math.round(getValue()).toLocaleString("en-GB");
+					return Math.round(getValue()).toLocaleString(texts.language);
 				},
 				size: 50,
 			}),
 			columnHelper.accessor("totalParticipants", {
-				header: "Total Participants",
+				header: texts.organisationsPage.propertyNames.totalParticipants,
 				cell: function render({ getValue }) {
 					return formatNumber(getValue());
 				},
 				size: 50,
 			}),
 			columnHelper.accessor("avgParticipantsPerEvent", {
-				header: "Avg. Participants",
+				header: texts.organisationsPage.propertyNames.avgParticipants,
 				cell: function render({ getValue }) {
 					return formatNumber(getValue());
 				},
 				size: 50,
 			}),
 			columnHelper.accessor("avgPartnerOrgsPerEvent", {
-				header: "Avg. Partners",
+				header: texts.organisationsPage.propertyNames.avgPartners,
 				cell: function render({ getValue }) {
 					return formatNumber(getValue());
 				},
 				size: 50,
 			}),
 			columnHelper.accessor("totalPartners", {
-				header: "Total Partners",
+				header: texts.organisationsPage.propertyNames.totalPartners,
 				cell: function render({ getValue, row }) {
 					const partners = row.original.partners.sort((a, b) => {
 						if (a.count < b.count) return 1;
@@ -102,7 +103,7 @@ function OrganisationsTable() {
 							<button
 								type="button"
 								className="underline underline-offset-4 decoration-grayMed cursor-pointer focusable"
-								aria-label="Show partners tooltip"
+								aria-label={texts.organisationsPage.showPartnersAriaLabel}
 							>
 								{formatNumber(getValue())}
 							</button>

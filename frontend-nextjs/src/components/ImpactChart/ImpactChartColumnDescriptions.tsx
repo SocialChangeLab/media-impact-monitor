@@ -9,6 +9,7 @@ import type {
 	OrganisationType,
 } from "@/utility/eventsUtil";
 import type { ParsedMediaImpactItemType } from "@/utility/mediaImpactUtil";
+import { texts, titleCase } from "@/utility/textUtil";
 import { topicIsSentiment } from "@/utility/topicsUtil";
 import useEvents from "@/utility/useEvents";
 import { useOrganisation } from "@/utility/useOrganisations";
@@ -22,7 +23,7 @@ import {
 	X,
 	type icons,
 } from "lucide-react";
-import { type ReactNode, memo, useEffect, useMemo, useState } from "react";
+import { memo, useEffect, useMemo, useState } from "react";
 import slugify from "slugify";
 import { OrganisationsSelect } from "../OrganisationsSelect";
 import { Portal, Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip";
@@ -84,7 +85,7 @@ const SelectedTimeframeTooltip = memo(
 							textDecorationColor: showNotice ? (color as string) : undefined,
 						}}
 					>
-						selected timeframe
+						{texts.charts.impact.introduction.selectedTimeFrame.label}
 						{showNotice && (
 							<AlertCircle
 								className="w-4 h-4"
@@ -96,21 +97,32 @@ const SelectedTimeframeTooltip = memo(
 				<Portal>
 					<TooltipContent className="w-fit">
 						<p className="py-1 px-1 max-w-80">
-							The selected timeframe is:
-							<br />
-							<strong className="font-bold">{from}</strong> to{" "}
-							<strong className="font-bold">{to}</strong>.
+							{texts.charts.impact.introduction.selectedTimeFrame.tooltipMessage(
+								{
+									fromNode: <strong className="font-bold">{from}</strong>,
+									toNode: <strong className="font-bold">{to}</strong>,
+								},
+							)}
 						</p>
 						{showNotice && (
 							<p className="py-1 px-1 max-w-80">
-								Only{" "}
-								<span className="font-bold" style={{ color: color as string }}>
-									{Math.round(percentageOfOrgsInTimeframe ?? 0)}%
-								</span>{" "}
-								of protests from{" "}
-								<strong className="font-bold">{organisation?.name}</strong> are
-								within the selected timeframe. Select a longer timeframe to get
-								a more reliable impact estimate.
+								{texts.charts.impact.introduction.selectedTimeFrame.tooltipNotice(
+									{
+										percentageNode: (
+											<span
+												className="font-bold"
+												style={{ color: color as string }}
+											>
+												{Math.round(percentageOfOrgsInTimeframe ?? 0)}%
+											</span>
+										),
+										organisationNode: (
+											<strong className="font-bold">
+												{organisation?.name}
+											</strong>
+										),
+									},
+								)}
 							</p>
 						)}
 					</TooltipContent>
@@ -190,21 +202,25 @@ function ImpactChartColumnDescriptions({
 					<>
 						<p className="mt-2 text-grayDark relative pl-9">
 							<Asterisk className="absolute left-0 -top-1 text-grayDark opacity-50 size-6 translate-y-0.5" />
-							The impact of an average protest by{" "}
-							<strong className="text-fg font-semibold">
-								{organisation.name}
-							</strong>{" "}
-							cannot be computed because of the following limitations:
+							{texts.charts.impact.limitation.message({
+								organisationNode: (
+									<strong className="text-fg font-semibold">
+										{organisation.name}
+									</strong>
+								),
+							})}
 						</p>
 						<ul className="flex flex-col gap-2 list-disc marker:text-grayMed pl-9">
 							{limitations.map((l) => (
 								<li key={l} className="ml-4 pl-1 font-semibold">
-									{l}
+									{texts.charts.impact.limitation.limitationTranslations[
+										l.trim() as keyof typeof texts.charts.impact.limitation.limitationTranslations
+									] ?? l}
 								</li>
 							))}
 						</ul>
 						<p className="text-grayDark pl-9">
-							Widen your filters or choose another organisation.
+							{texts.charts.impact.limitation.widenYourFilters}
 						</p>
 					</>
 				)}
@@ -212,10 +228,10 @@ function ImpactChartColumnDescriptions({
 					<>
 						<p className="mt-2 text-grayDark relative pl-9">
 							<X className="absolute left-0 -top-1 text-red-600 size-6 translate-y-0.5" />
-							The impact cannot be computed because of an error:
+							{texts.charts.impact.error.message}
 						</p>
 						<p className="ml-4 font-semibold pl-5">
-							"{parseErrorMessage(error).message}"
+							{`"${parseErrorMessage(error).message}"`}
 							{parseErrorMessage(error).details && (
 								<pre
 									className={cn(
@@ -224,24 +240,28 @@ function ImpactChartColumnDescriptions({
 										"text-mono text-bg max-w-full overflow-x-auto",
 									)}
 								>
-									<code>fjlw fwelkf wlf </code>
+									<code>{parseErrorMessage(error).details}</code>
 								</pre>
 							)}
 						</p>
 						<p className="text-grayDark pl-9">
-							Try to change your filters or to choose another organisation.
+							{texts.charts.impact.error.changeYourFilters}
 						</p>
 					</>
 				)}
 				{((!error && !hasLimitations) || isPending) && (
 					<p className="mt-4">
-						An average protest by{" "}
-						{!organisation ? (
-							<span className="h-4 w-32 inline-block rounded bg-grayLight animate-pulse translate-y-[0.15rem]" />
-						) : (
-							<strong>{organisation.name}</strong>
-						)}{" "}
-						within the <SelectedTimeframeTooltip organisation={organisation} />:
+						{texts.charts.impact.introduction.message({
+							organisationNode: !organisation ? (
+								<span className="h-4 w-32 inline-block rounded bg-grayLight animate-pulse translate-y-[0.15rem]" />
+							) : (
+								<strong>{organisation.name}</strong>
+							),
+							selectedTimeFrameNode: (
+								<SelectedTimeframeTooltip organisation={organisation} />
+							),
+						})}
+						:
 					</p>
 				)}
 				{!isPending &&
@@ -280,7 +300,9 @@ function ImpactChartColumnDescriptions({
 function formatValue(value: number) {
 	return [
 		value === 0 ? "" : value > 0 ? "+" : "−",
-		Number.parseFloat(Math.abs(value).toFixed(2)).toLocaleString("en-GB"),
+		Number.parseFloat(Math.abs(value).toFixed(2)).toLocaleString(
+			texts.language,
+		),
 	].join("");
 }
 
@@ -308,7 +330,16 @@ function ImpactChartColumnDescriptionsSentence(
 	}, [unclearTendency, i.impact.mean]);
 
 	const topicNodeWithoutTooltip = useMemo(
-		() => <ImpactKeywordLabel {...i} />,
+		() => (
+			<ImpactKeywordLabel
+				{...i}
+				slug={i.label}
+				label={
+					texts.charts.topics[i.label as keyof typeof texts.charts.topics] ??
+					titleCase(i.label)
+				}
+			/>
+		),
 		[i],
 	);
 
@@ -329,6 +360,18 @@ function ImpactChartColumnDescriptionsSentence(
 		);
 	}, [i.unitLabel, i.label, topicNodeWithoutTooltip, isSentiment]);
 
+	const {
+		unclearChange,
+		clearChange,
+		noChange: noChangeFn,
+	} = texts.charts.impact.descriptions;
+	const textFnProps = {
+		isSentiment,
+		topicNode,
+		isIncreasing: i.impact.lower > 0,
+		leastBound,
+		mostBound,
+	};
 	return (
 		<p
 			className={cn(
@@ -342,47 +385,11 @@ function ImpactChartColumnDescriptionsSentence(
 					unclearTendency && "opacity-50",
 				)}
 			/>
-			{unclearTendency && !noChange && (
-				<>
-					{`shows `}
-					<B>no clear evidence</B>
-					{` of an increase or decrease in the publication of `}
-					{isSentiment && <> {topicNode} </>}
-					{` ${i.unitLabel} `}
-					{!isSentiment && <>about {topicNode}</>}
-				</>
-			)}
-			{!unclearTendency && !noChange && (
-				<>
-					{`shows ${incdeclabel === `increase` ? `an ` : `a `}`}
-					<B>{incdeclabel}</B>
-					{` in the publication of `}
-					{isSentiment && <> {topicNode} </>}
-					{` ${i.unitLabel}  `}
-					{!isSentiment && <>about {topicNode}</>}
-					{" by at least "}
-					<B>{leastBound}</B>
-					{` and up to `}
-					<B>{mostBound}</B>
-					{` ${i.unitLabel}`}
-				</>
-			)}
-			{noChange && (
-				<>
-					{`shows `}
-					<B>no impact</B>
-					{` in the publication of `}
-					{isSentiment && <> {topicNode} </>}
-					{` ${i.unitLabel} `}
-					{!isSentiment && <>about {topicNode}</>}
-				</>
-			)}
+			{unclearTendency && !noChange && unclearChange(textFnProps)}
+			{!unclearTendency && !noChange && clearChange(textFnProps)}
+			{noChange && noChangeFn(textFnProps)}
 		</p>
 	);
-}
-
-function B(props: { children: ReactNode }) {
-	return <strong className="font-semibold text-fg">{props.children}</strong>;
 }
 
 export default ImpactChartColumnDescriptions;

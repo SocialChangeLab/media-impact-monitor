@@ -2,6 +2,7 @@
 import ThemeToggle from "@/components/ThemeToggle";
 import AppLogo from "@/components/logos/AppLogo";
 import { cn } from "@/utility/classNames";
+import { texts } from "@/utility/textUtil";
 import useMediaQuery from "@custom-react-hooks/use-media-query";
 import { useAnimationFrame } from "framer-motion";
 import { MenuIcon } from "lucide-react";
@@ -24,7 +25,7 @@ type MenuItemType = {
 const menuItems: MenuItemType[] = [
 	{
 		name: "home",
-		label: "Home",
+		label: texts.mainNavigation.home,
 		route: "/",
 		showMediaFilter: false,
 		showOrganisationsFilter: false,
@@ -32,7 +33,7 @@ const menuItems: MenuItemType[] = [
 	},
 	{
 		name: "dashboard",
-		label: "Dashboard",
+		label: texts.mainNavigation.dashboard,
 		route: "/dashboard",
 		showMediaFilter: true,
 		showOrganisationsFilter: true,
@@ -40,7 +41,7 @@ const menuItems: MenuItemType[] = [
 	},
 	{
 		name: "organisations",
-		label: "Organisations",
+		label: texts.mainNavigation.organisations,
 		route: "/organisations",
 		showTimeFilter: true,
 		showOrganisationsFilter: true,
@@ -48,12 +49,12 @@ const menuItems: MenuItemType[] = [
 	},
 	{
 		name: "about",
-		label: "About",
+		label: texts.mainNavigation.about,
 		route: "/about",
 	},
 	{
 		name: "docs",
-		label: "Docs",
+		label: texts.mainNavigation.docs,
 		route: "/docs",
 	},
 ];

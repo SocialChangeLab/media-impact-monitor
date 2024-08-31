@@ -7,6 +7,7 @@ import PrototypeFundLogo from "@/components/logos/PrototypeFundLogo";
 import SocialChangeLabLogo from "@/components/logos/SocialChangeLabLogo";
 import { useToday } from "@/providers/TodayProvider";
 import { cn } from "@/utility/classNames";
+import { texts } from "@/utility/textUtil";
 import { useAnimationFrame } from "framer-motion";
 import { ArrowUp, ExternalLink, GithubIcon } from "lucide-react";
 import { useRef } from "react";
@@ -47,7 +48,7 @@ function Footer() {
 							className="no-underline focusable hover:text-fg transition-colors w-fit"
 							scroll={false}
 						>
-							Logo assets
+							{texts.footer.links.logoAssets}
 						</InternalLink>
 						<UptimeStatusLink />
 						<a
@@ -57,11 +58,11 @@ function Footer() {
 							className="no-underline focusable hover:text-fg transition-colors w-fit flex gap-1 items-center"
 						>
 							<GithubIcon className="size-4 text-grayDark" />
-							GitHub
+							{texts.footer.links.gitHub}
 							<ExternalLink className="size-4 opacity-50" />
 						</a>
 						<span aria-label={`Copyright ${year}`}>
-							© {year} - Social Change Lab
+							© {year} - {texts.footer.copyRightOwner}
 						</span>
 					</div>
 				</div>
@@ -75,7 +76,7 @@ function Footer() {
 							title="Social Change Lab"
 						>
 							<span className="no-underline text-sm text-grayDark">
-								Hosted by
+								{texts.footer.hostedBy}
 							</span>
 							<SocialChangeLabLogo
 								className={cn(
@@ -98,7 +99,7 @@ function Footer() {
 							title="Bundesministerium für Bildung und Forschung"
 						>
 							<span className="no-underline text-sm text-grayDark w-fit">
-								Sponsored by
+								{texts.footer.sponsoredBy}
 							</span>
 							<BMBFLogo
 								className={cn(

@@ -1,14 +1,17 @@
 "use client";
 import { cn } from "@/utility/classNames";
 import { getDocsPage } from "@/utility/docsUtil";
+import { texts } from "@/utility/textUtil";
 import { ArrowRight } from "lucide-react";
-import DocsChartContentSection from "./DocsChartContentSection";
+import DocsChartContentSection from "./DocsContentSection";
 import InternalLink from "./InternalLink";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "./ui/tabs";
 
 function HelpDialogContent({ slug }: { slug: string }) {
 	const docsPage = getDocsPage(slug);
-	if (!docsPage || !docsPage.isChartPage) return null;
+	if (!docsPage || docsPage.isTopLevel) return null;
+	const hasAnySubpage = docsPage.info || docsPage.methodology || docsPage.data;
+	if (!hasAnySubpage) return null;
 	return (
 		<Tabs>
 			<div className="w-full bg-grayUltraLight pt-8 border-b border-grayLight sticky top-0 z-10">
@@ -24,32 +27,48 @@ function HelpDialogContent({ slug }: { slug: string }) {
 								"hover:text-fg hover:underline underline-offset-4 transition-colors",
 							)}
 						>
-							Read in the docs <ArrowRight size={16} />
+							{texts.charts.help.readInTheDocs} <ArrowRight size={16} />
 						</InternalLink>
 					</div>
 				</div>
 				<div className="w-full flex pt-6 overflow-x-auto -ml-4 translate-y-px px-content">
 					<div className="w-full max-w-prose mx-auto">
 						<TabsList>
-							<TabsTrigger value="info">{docsPage.info.title}</TabsTrigger>
-							<TabsTrigger value="methodology">
-								{docsPage.methodology.title}
-							</TabsTrigger>
-							<TabsTrigger value="data">{docsPage.data.title}</TabsTrigger>
+							{docsPage.info && (
+								<TabsTrigger value="info">
+									{texts.charts.help.tabs.info}
+								</TabsTrigger>
+							)}
+							{docsPage.methodology && (
+								<TabsTrigger value="methodology">
+									{texts.charts.help.tabs.methodology}
+								</TabsTrigger>
+							)}
+							{docsPage.data && (
+								<TabsTrigger value="data">
+									{texts.charts.help.tabs.data}
+								</TabsTrigger>
+							)}
 						</TabsList>
 					</div>
 				</div>
 			</div>
 			<div className="flex flex-col items-center w-full max-w-screen-lg px-content pt-8 pb-16 px-content">
-				<TabsContent value="info">
-					<DocsChartContentSection {...docsPage.info} />
-				</TabsContent>
-				<TabsContent value="methodology">
-					<DocsChartContentSection {...docsPage.methodology} />
-				</TabsContent>
-				<TabsContent value="data">
-					<DocsChartContentSection {...docsPage.data} />
-				</TabsContent>
+				{docsPage.info && (
+					<TabsContent value="info">
+						<DocsChartContentSection {...docsPage.info} />
+					</TabsContent>
+				)}
+				{docsPage.methodology && (
+					<TabsContent value="methodology">
+						<DocsChartContentSection {...docsPage.methodology} />
+					</TabsContent>
+				)}
+				{docsPage.data && (
+					<TabsContent value="data">
+						<DocsChartContentSection {...docsPage.data} />
+					</TabsContent>
+				)}
 			</div>
 		</Tabs>
 	);

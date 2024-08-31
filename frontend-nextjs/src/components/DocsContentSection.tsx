@@ -1,7 +1,7 @@
 import type { DocsPage } from "contentlayer/generated";
 import { Mdx } from "./Mdx";
 
-function DocsChartContentSection({
+function DocsContentSection({
 	noTitle = false,
 	...doc
 }: DocsPage & { noTitle?: boolean }) {
@@ -18,11 +18,11 @@ function DocsChartContentSection({
 					</a>
 				</h2>
 			)}
-			<Mdx code={doc.body.code} />
+			{doc.body?.code && <Mdx code={doc.body.code} />}
 			<hr className="my-4 md:my-8 border-grayLight text-grayLight" />
 			<br />
 		</>
 	);
 }
 
-export default DocsChartContentSection;
+export default DocsContentSection;

@@ -1,4 +1,5 @@
 import { cn } from "@/utility/classNames";
+import { texts } from "@/utility/textUtil";
 import { HelpCircle } from "lucide-react";
 import { type ReactNode, memo } from "react";
 import HelpDialogContent from "./HelpDialogContent";
@@ -22,7 +23,7 @@ function SectionHeadlineWithExplanation({
 		<section
 			className={cn(
 				"px-[var(--pagePadding)] py-[max(1.25rem,2.5vmax)]",
-				children && "pb-[max(1.5rem,4vmax)]",
+				!!children && "pb-[max(1.5rem,4vmax)]",
 				"border-b border-grayMed last-of-type:border-b-0",
 			)}
 		>
@@ -30,7 +31,7 @@ function SectionHeadlineWithExplanation({
 				<div
 					className={cn(
 						"flex justify-between items-center flex-wrap gap-3",
-						children && "mb-8",
+						!!children && "mb-8",
 					)}
 				>
 					<div className="w-fit flex flex-col ">
@@ -69,7 +70,7 @@ function SectionHeadlineWithExplanation({
 										"group-hover:decoration-fg group-hover:text-fg text-sm",
 									)}
 								>
-									How to read this
+									{texts.charts.help.howToReadThis}
 								</span>
 								<HelpCircle className="size-5 lg:size-6" />
 							</Button>

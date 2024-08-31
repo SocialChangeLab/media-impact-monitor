@@ -190,6 +190,7 @@ def get_mediacloud_fulltexts(
     label = "Extracting fulltexts"
     df["text"] = parallel_tqdm(_extract, urls_and_responses, desc=f"{label:<{40}}")
     df = df.dropna(subset=["text"]).rename(columns={"publish_date": "date"})
+    df = df[(df["date"] >= start_date) & (df["date"] <= end_date)]
     df = df[
         [
             # "id",

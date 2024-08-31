@@ -6,7 +6,7 @@ import { type StoreApi, useStore } from "zustand";
 import {
 	type FiltersStore,
 	createFiltersStore,
-	defaultInitState,
+	getDefaultInitState,
 } from "@/stores/filtersStore";
 
 export const FiltersStoreContext = createContext<StoreApi<FiltersStore> | null>(
@@ -16,17 +16,20 @@ export const FiltersStoreContext = createContext<StoreApi<FiltersStore> | null>(
 export interface FiltersStoreProviderProps {
 	children: ReactNode;
 	initialState?: Partial<FiltersStore>;
+	today: Date;
 }
 
 export const FiltersStoreProvider = ({
 	children,
-	initialState = defaultInitState,
+	today,
+	initialState
 }: FiltersStoreProviderProps) => {
+	const defaultInitState = getDefaultInitState(today);
 	const storeRef = useRef<StoreApi<FiltersStore>>();
 	if (!storeRef.current) {
-		storeRef.current = createFiltersStore({
+		storeRef.current = createFiltersStore(today, {
 			...defaultInitState,
-			...initialState,
+			...(initialState || {}),
 		});
 	}
 

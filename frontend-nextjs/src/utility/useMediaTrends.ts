@@ -2,11 +2,11 @@
 import { useFiltersStore } from "@/providers/FiltersStoreProvider";
 import { useToday } from "@/providers/TodayProvider";
 import { useQuery } from "@tanstack/react-query";
-import { endOfDay } from "date-fns";
 import { useMemo } from "react";
 import slugify from "slugify";
 import { format } from "./dateUtil";
 import { type TrendQueryProps, getMediaTrendData } from "./mediaTrendUtil";
+import { getStaleTime } from "./queryUtil";
 import useEvents from "./useEvents";
 import useQueryErrorToast from "./useQueryErrorToast";
 
@@ -63,7 +63,7 @@ function useMediaTrends({
 				},
 				today,
 			),
-		staleTime: endOfDay(today).getTime() - today.getTime(),
+		staleTime: getStaleTime(today),
 		enabled,
 	});
 

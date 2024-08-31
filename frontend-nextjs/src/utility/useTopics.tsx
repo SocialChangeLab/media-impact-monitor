@@ -18,13 +18,13 @@ function useTopics({
 	sentiment_target: TrendQueryProps["sentiment_target"];
 }) {
 	const query = useMediaTrends({ trend_type, sentiment_target });
-	const data = query.data?.trends || [];
+	const data = useMemo(() => query.data?.trends || [], [query.data?.trends]);
 
 	const aggregationUnit = useAggregationUnit(containerWidth);
 	const intervals = useTimeIntervals({ aggregationUnit });
 
 	const isInSameUnit = useCallback(
-		(comparableDateItem: ComparableDateItemType, date: Date) =>
+		(comparableDateItem: ComparableDateItemType, date: ComparableDateItemType) =>
 			isInSameAggregationUnit(aggregationUnit, comparableDateItem, date),
 		[aggregationUnit],
 	);
@@ -40,7 +40,7 @@ function useTopics({
 		);
 		const filteredData = intervals.map((comparableDateObject) => {
 			const daysInUnit = data.filter((day) =>
-				isInSameUnit(comparableDateObject, new Date(day.date)),
+				isInSameUnit(comparableDateObject, day),
 			);
 			return allTopics.reduce(
 				(acc, topic) => {

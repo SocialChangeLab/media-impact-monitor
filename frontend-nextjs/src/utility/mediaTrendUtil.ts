@@ -92,7 +92,7 @@ function validateGetDataResponse(
 			}))
 			.parse(response);
 		const sortedMedia = parsedResponse.trends.sort((a, b) =>
-			dateSortCompare(a.date, b.date),
+			dateSortCompare(a.date, b.date, today),
 		);
 		return parsedResponseDataZodSchema.parse({
 			applicability: parsedResponse.data.applicability,

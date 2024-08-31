@@ -1,14 +1,15 @@
+import { getDatasetRange } from "@/providers/TodayProvider";
 import { format } from "@/utility/dateUtil";
 import type { EventOrganizerSlugType } from "@/utility/eventsUtil";
-import { today } from "@/utility/today";
 import {
 	endOfDay,
 	isAfter,
 	isBefore,
+	isValid,
 	parse,
 	startOfDay,
 	subDays,
-	subMonths,
+	subMonths
 } from "date-fns";
 import { z } from "zod";
 import { create } from "zustand";
@@ -18,8 +19,6 @@ import {
 	persist,
 } from "zustand/middleware";
 
-const defaultTo = endOfDay(subDays(today, 1));
-const defaultFrom = startOfDay(subMonths(startOfDay(today), 2));
 
 export type MediaSourceType = "news_online" | "news_print" | "web_google";
 
@@ -45,26 +44,38 @@ export type FiltersActions = {
 
 export type FiltersStore = FiltersState & FiltersActions;
 
-export const defaultInitState: FiltersState = {
-	from: defaultFrom,
-	to: defaultTo,
-	defaultFrom: defaultFrom,
-	defaultTo: defaultTo,
-	fromDateString: format(defaultFrom, "yyyy-MM-dd"),
-	toDateString: format(defaultTo, "yyyy-MM-dd"),
-	isDefaultTimeRange: true,
-	organizers: [] as EventOrganizerSlugType[],
-	mediaSource: "news_online",
-};
+export const getDefaultInitState = (today: Date): FiltersState => {
+	const defaultTo = endOfDay(subDays(today, 1));
+	const defaultFrom = startOfDay(subMonths(startOfDay(today), 2));
+	return {
+		from: defaultFrom,
+		to: defaultTo,
+		defaultFrom: defaultFrom,
+		defaultTo: defaultTo,
+		fromDateString: format(defaultFrom, "yyyy-MM-dd"),
+		toDateString: format(defaultTo, "yyyy-MM-dd"),
+		isDefaultTimeRange: true,
+		organizers: [] as EventOrganizerSlugType[],
+		mediaSource: "news_online",
+	};
+}
 
-const filtersZodSchema = z
+const preprossedDate = z.preprocess((arg) => {
+	if (typeof arg !== 'string') return arg;
+	if (arg.length === 10) return parse(arg, "yyyy-MM-dd", new Date());
+	return new Date(arg);
+}, z.date())
+
+const getFiltersZodSchema = (today: Date) => {
+	const defaultInitState = getDefaultInitState(today);
+	return z
 	.object({
-		from: z.coerce.date().default(defaultInitState.from),
-		to: z.coerce.date().default(defaultInitState.to),
-		defaultFrom: z.coerce.date().default(defaultInitState.defaultFrom),
-		defaultTo: z.coerce.date().default(defaultInitState.defaultTo),
-		fromDateString: z.string().default(defaultInitState.fromDateString),
-		toDateString: z.string().default(defaultInitState.toDateString),
+		from: preprossedDate,
+		to: preprossedDate,
+		defaultFrom: z.preprocess(() => defaultInitState.defaultFrom, z.date()),
+		defaultTo: z.preprocess(() => defaultInitState.defaultTo, z.date()),
+		fromDateString: z.string(),
+		toDateString: z.string(),
 		isDefaultTimeRange: z
 			.boolean()
 			.default(defaultInitState.isDefaultTimeRange),
@@ -72,29 +83,35 @@ const filtersZodSchema = z
 		mediaSource: z.enum(["news_online", "news_print", "web_google"]),
 	})
 	.default(defaultInitState);
+}
 
-const getUrlSearch = () => {
+const getUrlSearch = (today: Date = new Date()) => {
 	if (typeof window === "undefined") return new URLSearchParams();
 	const searchParamsString = window.location.search.slice(1);
 	const searchParams = new URLSearchParams(searchParamsString);
 	const filters = searchParams.get("filters");
-	const parsingResult = z
-		.object({ state: filtersZodSchema })
-		.safeParse(JSON.parse(JSON.parse(filters || `"{\\"state\\":{}}"`)));
-	const state = parsingResult.success
-		? parsingResult.data.state
-		: defaultInitState;
-	const newJSONState = { ...state, ...limitDateRange(state) };
+	const zodSchema = getFiltersZodSchema(today);
+	const defaultInitState = getDefaultInitState(today);
+	let state = defaultInitState;
+	try {
+		state = z
+			.object({ state: zodSchema })
+			.parse(JSON.parse(filters || `"{\\"state\\":{}}"`))
+			.state as FiltersState;
+	} catch (err) {
+		console.error(err);
+	} 
+	const newJSONState = { ...state, ...limitDateRange({ ...state, today}) };
 	searchParams.set(
 		"filters",
 		JSON.stringify(
 			JSON.stringify({
 				state: {
 					...newJSONState,
-					from: newJSONState.from.toISOString(),
-					to: newJSONState.to.toISOString(),
-					defaultFrom: newJSONState.defaultFrom.toISOString(),
-					defaultTo: newJSONState.defaultTo.toISOString(),
+					from: format(newJSONState.from, "yyyy-MM-dd"),
+					to: format(newJSONState.to, "yyyy-MM-dd"),
+					defaultFrom: format(newJSONState.defaultFrom, "yyyy-MM-dd"),
+					defaultTo: format(newJSONState.defaultTo, "yyyy-MM-dd"),
 				},
 			}),
 		),
@@ -102,34 +119,43 @@ const getUrlSearch = () => {
 	return searchParams;
 };
 
-const persistentStorage: StateStorage = {
+const getPersistentStorage = (today: Date): StateStorage => ({
 	getItem: (key: string): string => {
-		const searchParams = getUrlSearch();
+		const searchParams = getUrlSearch(today);
 		const storedValue = searchParams.get(key);
 		return JSON.parse(storedValue as string);
 	},
 	setItem: (key, newValue): void => {
-		const searchParams = getUrlSearch();
-		searchParams.set(key, JSON.stringify(newValue));
+		const searchParams = getUrlSearch(today);
+		try {
+			const existingValue = JSON.parse(JSON.parse(searchParams.get(key) as string));
+			const newParsedValue = JSON.parse(newValue);
+			const mergedValue = { state: { ...existingValue.state, ...newParsedValue.state } };
+			searchParams.set(key, JSON.stringify(mergedValue));
+		} catch(err) {
+			console.error(err);
+		}
 		window.history.replaceState(null, "", `?${searchParams.toString()}`);
 		localStorage.setItem(key, JSON.stringify(newValue));
 	},
 	removeItem: (key): void => {
-		const searchParams = getUrlSearch();
+		const searchParams = getUrlSearch(today);
 		searchParams.delete(key);
 		window.location.search = searchParams.toString();
 	},
-};
+});
 
-const storageOptions = {
+const getStorageOptions = (today: Date) => ({
 	name: "filters",
-	storage: createJSONStorage<FiltersStore>(() => persistentStorage),
-};
+	storage: createJSONStorage<FiltersStore>(() => getPersistentStorage(today)),
+});
 
 export const createFiltersStore = (
-	initState: FiltersState = defaultInitState,
-) =>
-	create(
+	today: Date,
+	initState: FiltersState = getDefaultInitState(today),
+) => {
+	const defaultInitState = getDefaultInitState(today);
+	return create(
 		persist<FiltersStore>(
 			(set) => ({
 				...defaultInitState,
@@ -137,8 +163,9 @@ export const createFiltersStore = (
 				setDateRange: (range) =>
 					set(() =>
 						limitDateRange({
-							from: startOfDay(range.from),
-							to: endOfDay(range.to),
+							from: range.from,
+							to: range.to,
+							today,
 						}),
 					),
 				resetAllFilters: () => set(() => defaultInitState),
@@ -154,22 +181,24 @@ export const createFiltersStore = (
 				setMediaSource: (mediaSource: MediaSourceType) =>
 					set(() => ({ mediaSource })),
 			}),
-			storageOptions,
+			getStorageOptions(today),
 		),
 	);
+}
 
-export const datasetStartDate = startOfDay(
-	parse("01-01-2020", "dd-MM-yyyy", today),
-);
-export const datasetEndDate = endOfDay(subDays(today, 1));
-
-export function limitDateRange({ from, to }: { from: Date; to: Date }) {
-	const newFrom = isBefore(from, datasetStartDate) ? datasetStartDate : from;
-	const newTo = isAfter(to, datasetEndDate) ? datasetEndDate : to;
+export function limitDateRange({ from, to, today }: { from: Date; to: Date; today: Date; }) {
+	const { datasetStartDate, datasetEndDate } = getDatasetRange(today);
+	const defaultInitState = getDefaultInitState(today);
+	const validFrom = isValid(from) ? from : defaultInitState.from;
+	const validTo = isValid(to) ? to : defaultInitState.to;
+	const newFrom = isBefore(validFrom, datasetStartDate) ? datasetStartDate : validFrom;
+	const newTo = isAfter(validTo, datasetEndDate) ? datasetEndDate : validTo;
+	const earliestDate = isBefore(newFrom, newTo) ? newFrom : newTo;
+	const latestDate = isAfter(newFrom, newTo) ? newFrom : newTo;
 	return {
-		from: newFrom,
-		to: newTo,
-		fromDateString: format(newFrom, "yyyy-MM-dd"),
-		toDateString: format(newTo, "yyyy-MM-dd"),
+		from: earliestDate,
+		to: latestDate,
+		fromDateString: format(earliestDate, "yyyy-MM-dd"),
+		toDateString: format(latestDate, "yyyy-MM-dd"),
 	};
 }

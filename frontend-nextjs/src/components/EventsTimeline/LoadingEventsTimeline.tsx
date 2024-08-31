@@ -23,11 +23,10 @@ const sizeScale = scalePow(
 
 const LoadingEventsTimeline = memo(() => {
 	const [parentRef, size] = useElementSize();
-	const { today } = useToday();
-	const startDate = new Date("2023-01-01T00:00:00.000Z");
+	const { today, datasetStartDate } = useToday();
 	const intervals = Array.from({ length: 30 }, (_, idx) => idx + 1).reduce(
 		(acc, idx) =>
-			acc.concat(dateToComparableDateItem(addDays(startDate, idx), today)),
+			acc.concat(dateToComparableDateItem(addDays(datasetStartDate, idx), today)),
 		[] as ComparableDateItemType[],
 	);
 

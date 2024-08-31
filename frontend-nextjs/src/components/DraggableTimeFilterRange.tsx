@@ -11,7 +11,7 @@ import { isInSameAggregationUnit } from "@/utility/useTimeIntervals";
 import useDebounce from "@custom-react-hooks/use-debounce";
 import useElementSize from "@custom-react-hooks/use-element-size";
 import { type Ranger, useRanger } from "@tanstack/react-ranger";
-import { addDays, differenceInDays, startOfDay } from "date-fns";
+import { addDays, compareAsc, differenceInDays } from "date-fns";
 import {
 	type KeyboardEvent as ReactKeyboardEvent,
 	type MouseEvent as ReactMouseEvent,
@@ -33,13 +33,13 @@ function DraggableTimeFilterRange() {
 	const rangerRef = useRef<HTMLDivElement>(null);
 	const midSegmentRef = useRef<HTMLButtonElement>(null);
 	const { from, to, setDateRange } = useFiltersStore((state) => ({
-		from: state.from,
-		to: state.to,
+		from: dateToComparableDateItem(state.from),
+		to: dateToComparableDateItem(state.to),
 		setDateRange: state.setDateRange,
 	}));
 	const { today, datasetStartDate, datasetEndDate } = useToday();
 	const amountOfDays = differenceInDays(datasetEndDate, datasetStartDate) + 1;
-	const intervals = new Array(amountOfDays)
+	const intervals = new Array(Math.abs(amountOfDays))
 		.fill(null)
 		.map((_, i) =>
 			dateToComparableDateItem(addDays(datasetStartDate, i), today),
@@ -50,14 +50,14 @@ function DraggableTimeFilterRange() {
 	const indexOfFrom = useMemo(
 		() =>
 			intervals.findIndex((d) =>
-				isInSameAggregationUnit("day", d, startOfDay(from)),
+				isInSameAggregationUnit("day", d, from),
 			),
 		[from, intervals],
 	);
 	const indexOfTo = useMemo(
 		() =>
 			intervals.findIndex((d) =>
-				isInSameAggregationUnit("day", d, startOfDay(to)),
+				isInSameAggregationUnit("day", d, to),
 			),
 		[to, intervals],
 	);
@@ -90,11 +90,11 @@ function DraggableTimeFilterRange() {
 			intervals[vals[0]] ?? intervals[0],
 			intervals[vals[1]] ?? intervals[intervals.length - 1],
 		]
-			.map((d) => d.time)
-			.sort();
+			.map((d) => new Date(d.time))
+			.sort(compareAsc);
 
 		setTempValues(vals);
-		setDateRange({ from: new Date(from), to: new Date(to) });
+		setDateRange({ from, to });
 	}, []);
 
 	const onChange = useCallback(
@@ -194,8 +194,8 @@ function DraggableTimeFilterRange() {
 		[handleSegmentDrag, onValuesChange, values, startDragging],
 	);
 
-	const handles = rangerInstance.handles().slice(0, 2);
-	const steps = rangerInstance.getSteps().slice(0, 3);
+	const handles = rangerInstance.handles()
+	const steps = rangerInstance.getSteps();
 	return (
 		<div
 			className={cn(
@@ -211,7 +211,7 @@ function DraggableTimeFilterRange() {
 					"relative select-none h-full",
 				)}
 			>
-				{steps.map(({ left, width }, i) => (
+				{steps.slice(0, 3).map(({ left, width }, i) => (
 					<button
 						type="button"
 						// biome-ignore lint/suspicious/noArrayIndexKey: <explanation>
@@ -221,9 +221,9 @@ function DraggableTimeFilterRange() {
 							`draggable-time-filter-range-segment`,
 							`absolute h-full w-full left-0 top-0`,
 							i === 1 &&
-								`ring-[1px] ring-grayMed focusable focus-visible:rounded-sm`,
+							`ring-[1px] ring-grayMed focusable focus-visible:rounded-sm`,
 							i !== 1 &&
-								`bg-grayUltraLight mix-blend-multiply dark:mix-blend-screen`,
+							`bg-grayUltraLight mix-blend-multiply dark:mix-blend-screen`,
 						)}
 						tabIndex={i === 1 ? 0 : -1}
 						onMouseDown={(e) => handleSegmentPress(e)}
@@ -231,12 +231,13 @@ function DraggableTimeFilterRange() {
 						style={{ left: `${left}%`, width: `${width}%` }}
 					/>
 				))}
-				{handles.map((props, i) => {
-					const val = intervals[props.value];
+				{handles.slice(0, 2).map((props, i) => {
+					const val = intervals[Math.max(0, Math.min(intervals.length - 1, props.value))];
+					if (!val) return null;
 					return (
 						<Handle
 							{...props}
-							key={`handle-${val?.time ?? ""}`}
+							key={`handle-${val.time}-${val.year}-${val.month}-${val.day}-${i}`}
 							comparableDateObject={val}
 							rangerInstance={rangerInstance}
 							isDragging={isDragging}
@@ -357,10 +358,10 @@ const HandleTooptip = memo(
 					isDragging && `opacity-100`,
 					isDragging && isStart && `-translate-y-1`,
 					isStart &&
-						`[.draggable-time-filter-range:has(.draggable-time-filter-range-segment:hover)_&]:-translate-y-1`,
+					`[.draggable-time-filter-range:has(.draggable-time-filter-range-segment:hover)_&]:-translate-y-1`,
 					isDragging && !isStart && `translate-y-1`,
 					!isStart &&
-						`[.draggable-time-filter-range:has(.draggable-time-filter-range-segment:hover)_&]:translate-y-1`,
+					`[.draggable-time-filter-range:has(.draggable-time-filter-range-segment:hover)_&]:translate-y-1`,
 				)}
 			>
 				{formattedDate.split(" ").map((part, i) => (

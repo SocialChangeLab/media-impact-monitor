@@ -17,7 +17,7 @@ import {
 	startOfDay,
 	startOfMonth,
 	startOfWeek,
-	startOfYear,
+	startOfYear
 } from "date-fns";
 import { useMemo } from "react";
 import {
@@ -54,7 +54,6 @@ function useTimeIntervals({
 	const range = { from, to };
 	const { today } = useToday();
 
-	// biome-ignore lint/correctness/useExhaustiveDependencies: Using the fromDateString and toDateString to avoid the exact date (which changes on each render) to be used as dependencies of the useEffect
 	const eventColumns = useMemo(() => {
 		const { from, to } = range;
 		if (!from || !to) return [];
@@ -72,6 +71,7 @@ function useTimeIntervals({
 					today,
 				),
 			);
+	// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [fromDateString, toDateString, aggregationUnit]);
 
 	return eventColumns;
@@ -126,17 +126,15 @@ export function getDateRangeByAggregationUnit({
 
 export function isInSameAggregationUnit(
 	aggregationUnit: AggregationUnitType,
-	comparableDateItem: ComparableDateItemType,
-	date: Date,
+	a: ComparableDateItemType,
+	b: ComparableDateItemType,
 ) {
-	if (aggregationUnit === "day")
-		return comparableDateItem.time === date.getTime();
-	if (aggregationUnit === "week")
-		return comparableDateItem.week === date.getTime();
-	if (aggregationUnit === "month")
-		return (
-			comparableDateItem.month === date.getUTCMonth() &&
-			comparableDateItem.year === date.getUTCFullYear()
-		);
-	return comparableDateItem.year === date.getUTCFullYear();
+	const isSameDay = a.day === b.day;
+	const isSameWeek = a.week === b.week;
+	const isSameMonth = a.month === b.month;
+	const isSameYear = a.year === b.year;
+	if (aggregationUnit === "day") return isSameYear && isSameMonth && isSameDay;
+	if (aggregationUnit === "week") return isSameYear && isSameMonth && isSameWeek;
+	if (aggregationUnit === "month") return isSameYear && isSameMonth;
+	return isSameYear
 }

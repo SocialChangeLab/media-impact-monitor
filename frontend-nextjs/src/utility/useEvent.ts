@@ -1,12 +1,12 @@
 "use client";
 import { queryOptions, useQuery } from "@tanstack/react-query";
-import { endOfDay } from "date-fns";
 import { useMemo } from "react";
 import {
 	type ParsedEventType,
 	extractEventOrganisations,
 	getEventData,
 } from "./eventsUtil";
+import { getStaleTime } from "./queryUtil";
 import { today } from "./today";
 import useQueryErrorToast from "./useQueryErrorToast";
 
@@ -14,7 +14,7 @@ export function getEventQueryOptions(id?: ParsedEventType["event_id"]) {
 	return queryOptions({
 		queryKey: ["events", id],
 		queryFn: () => (id ? getEventData(id) : null),
-		staleTime: endOfDay(today).getTime() - today.getTime(),
+		staleTime: getStaleTime(today),
 		enabled: id !== undefined,
 	});
 }

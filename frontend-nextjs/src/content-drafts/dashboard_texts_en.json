@@ -25,7 +25,7 @@
 			]
 		},
 		"topics_trend": {
-			"heading": "What topics are the focus of public discourse?",
+			"heading": "How prominent are the issues in public discourse?",
 			"description": [
 				"See how many articles are published on various topics over time.",
 				"Use the filters to switch between online newspaper articles, print newspaper articles, and queries that people search for on Google."
@@ -38,7 +38,6 @@
 				}
 			]
 		},
-
 		"topics_impact": {
 			"heading": "Computed impacts",
 			"description": [

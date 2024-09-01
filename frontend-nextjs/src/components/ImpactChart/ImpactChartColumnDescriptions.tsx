@@ -1,19 +1,19 @@
-"use client";
-import { useFiltersStore } from "@/providers/FiltersStoreProvider";
-import { cn } from "@/utility/classNames";
-import { slugifyCssClass } from "@/utility/cssSlugify";
-import { format } from "@/utility/dateUtil";
-import { parseErrorMessage } from "@/utility/errorHandlingUtil";
+'use client'
+import { useFiltersStore } from '@/providers/FiltersStoreProvider'
+import { cn } from '@/utility/classNames'
+import { slugifyCssClass } from '@/utility/cssSlugify'
+import { format } from '@/utility/dateUtil'
+import { parseErrorMessage } from '@/utility/errorHandlingUtil'
 import type {
 	EventOrganizerSlugType,
 	OrganisationType,
-} from "@/utility/eventsUtil";
-import type { ParsedMediaImpactItemType } from "@/utility/mediaImpactUtil";
-import { texts, titleCase } from "@/utility/textUtil";
-import { topicIsSentiment } from "@/utility/topicsUtil";
-import useEvents from "@/utility/useEvents";
-import { useOrganisation } from "@/utility/useOrganisations";
-import { scaleQuantize } from "d3-scale";
+} from '@/utility/eventsUtil'
+import type { ParsedMediaImpactItemType } from '@/utility/mediaImpactUtil'
+import { texts, titleCase } from '@/utility/textUtil'
+import { topicIsSentiment } from '@/utility/topicsUtil'
+import useEvents from '@/utility/useEvents'
+import { useOrganisation } from '@/utility/useOrganisations'
+import { scaleQuantize } from 'd3-scale'
 import {
 	AlertCircle,
 	ArrowDown,
@@ -22,30 +22,26 @@ import {
 	Minus,
 	X,
 	type icons,
-} from "lucide-react";
-import { memo, useEffect, useMemo, useState } from "react";
-import slugify from "slugify";
-import { OrganisationsSelect } from "../OrganisationsSelect";
-import { Portal, Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip";
+} from 'lucide-react'
+import { memo, useEffect, useMemo, useState } from 'react'
+import slugify from 'slugify'
+import { OrganisationsSelect } from '../OrganisationsSelect'
+import { Portal, Tooltip, TooltipContent, TooltipTrigger } from '../ui/tooltip'
 import {
 	ImpactKeywordLabel,
 	ImpactKeywordLabelTooltip,
 	ImpactSentimentLabelTooltip,
 	topicsMap,
-} from "./ImpactKeywordLabel";
+} from './ImpactKeywordLabel'
 
 const SelectedTimeframeTooltip = memo(
-	({
-		organisation,
-	}: {
-		organisation?: OrganisationType;
-	}) => {
+	({ organisation }: { organisation?: OrganisationType }) => {
 		const { from, to } = useFiltersStore(({ from, to }) => ({
-			from: format(from, "LLLL d, yyyy"),
-			to: format(to, "LLLL d, yyyy"),
-		}));
-		const { data } = useEvents();
-		const minPercentageConsideredGood = 40;
+			from: format(from, 'LLLL d, yyyy'),
+			to: format(to, 'LLLL d, yyyy'),
+		}))
+		const { data } = useEvents()
+		const minPercentageConsideredGood = 40
 
 		const { color, percentageOfOrgsInTimeframe, showNotice } = useMemo(() => {
 			if (!data || !organisation)
@@ -53,28 +49,28 @@ const SelectedTimeframeTooltip = memo(
 					color: undefined,
 					percentageOfOrgsInTimeframe: undefined,
 					showNotice: false,
-				};
+				}
 			const allEventsFromOrg = data.allEvents.filter((e) =>
 				e.organizers.find((o) => o.slug === organisation.slug),
-			).length;
+			).length
 			const eventsFromOrgInTimeframe = data.events.filter((e) =>
 				e.organizers.find((o) => o.slug === organisation.slug),
-			).length;
+			).length
 			const percentageOfOrgsInTimeframe =
-				(eventsFromOrgInTimeframe / allEventsFromOrg) * 100;
+				(eventsFromOrgInTimeframe / allEventsFromOrg) * 100
 			const scale = scaleQuantize<number, string>()
 				.domain([0, minPercentageConsideredGood])
 				.range([
-					"var(--sentiment-negative)",
-					"var(--sentiment-neutral)",
-				] as unknown as number[]);
-			const color = scale(percentageOfOrgsInTimeframe);
+					'var(--sentiment-negative)',
+					'var(--sentiment-neutral)',
+				] as unknown as number[])
+			const color = scale(percentageOfOrgsInTimeframe)
 			return {
-				color: typeof color === "string" ? color : undefined,
+				color: typeof color === 'string' ? color : undefined,
 				percentageOfOrgsInTimeframe,
 				showNotice: percentageOfOrgsInTimeframe < minPercentageConsideredGood,
-			};
-		}, [data, organisation]);
+			}
+		}, [data, organisation])
 
 		return (
 			<Tooltip delayDuration={0}>
@@ -128,22 +124,22 @@ const SelectedTimeframeTooltip = memo(
 					</TooltipContent>
 				</Portal>
 			</Tooltip>
-		);
+		)
 	},
-);
+)
 
 type ImpactChartColumnDescriptionsProps = {
-	impacts: ParsedMediaImpactItemType[] | null;
-	icon?: keyof typeof icons;
-	unitLabel: string;
-	limitations?: string[];
-	error?: Error | null;
-	defaultOrganizer?: EventOrganizerSlugType;
-	onOrgChange?: (organiser: EventOrganizerSlugType) => void;
-	isPending?: boolean;
-	itemsCountPerColumn?: number;
-	colIdx: number;
-};
+	impacts: ParsedMediaImpactItemType[] | null
+	icon?: keyof typeof icons
+	unitLabel: string
+	limitations?: string[]
+	error?: Error | null
+	defaultOrganizer?: EventOrganizerSlugType
+	onOrgChange?: (organiser: EventOrganizerSlugType) => void
+	isPending?: boolean
+	itemsCountPerColumn?: number
+	colIdx: number
+}
 
 function ImpactChartColumnDescriptions({
 	impacts,
@@ -158,32 +154,30 @@ function ImpactChartColumnDescriptions({
 }: ImpactChartColumnDescriptionsProps) {
 	const sortedImpacts = (impacts ?? []).sort((a, b) =>
 		a.label.localeCompare(b.label),
-	);
+	)
 
 	const [organizer, setOrganizer] = useState<
 		EventOrganizerSlugType | undefined
-	>(defaultOrganizer);
-	const selectedOrganizers = useFiltersStore((state) =>
-		state.organizers.sort(),
-	);
-	const { organisation } = useOrganisation(organizer);
+	>(defaultOrganizer)
+	const selectedOrganizers = useFiltersStore((state) => state.organizers.sort())
+	const { organisation } = useOrganisation(organizer)
 
 	useEffect(() => {
-		if (!defaultOrganizer) return;
-		setOrganizer(defaultOrganizer);
-	}, [defaultOrganizer]);
+		if (!defaultOrganizer) return
+		setOrganizer(defaultOrganizer)
+	}, [defaultOrganizer])
 
 	const hasLimitations = useMemo(
 		() => !isPending && limitations.length > 0,
 		[limitations, isPending],
-	);
+	)
 
 	return (
 		<div
 			className={cn(
-				"flex flex-col gap-6 pr-6",
-				colIdx === 1 && "max-md:hidden",
-				colIdx === 2 && "max-lg:hidden",
+				'flex flex-col gap-6 md:pr-6',
+				colIdx === 1 && 'max-md:hidden',
+				colIdx === 2 && 'max-lg:hidden',
 			)}
 		>
 			<div className="flex flex-col gap-2">
@@ -194,8 +188,8 @@ function ImpactChartColumnDescriptions({
 					}
 					selectedOrganisations={organizer ? [organizer] : []}
 					onChange={(orgs) => {
-						setOrganizer(orgs[0]);
-						onOrgChange(orgs[0]);
+						setOrganizer(orgs[0])
+						onOrgChange(orgs[0])
 					}}
 				/>
 				{hasLimitations && !!organisation && !error && (
@@ -235,9 +229,9 @@ function ImpactChartColumnDescriptions({
 							{parseErrorMessage(error).details && (
 								<pre
 									className={cn(
-										"min-w-full px-3 py-2 bg-grayDark mt-2 text-sm",
-										"dark:bg-bg dark:text-fg dark:border dark:border-grayLight",
-										"text-mono text-bg max-w-full overflow-x-auto",
+										'min-w-full px-3 py-2 bg-grayDark mt-2 text-sm',
+										'dark:bg-bg dark:text-fg dark:border dark:border-grayLight',
+										'text-mono text-bg max-w-full overflow-x-auto',
 									)}
 								>
 									<code>{parseErrorMessage(error).details}</code>
@@ -284,8 +278,8 @@ function ImpactChartColumnDescriptions({
 						>
 							<Minus
 								className={cn(
-									"absolute left-0 top-0.5 text-grayDark size-4 translate-y-0.5",
-									"opacity-50",
+									'absolute left-0 top-0.5 text-grayDark size-4 translate-y-0.5',
+									'opacity-50',
 								)}
 							/>
 							<span className="h-4 w-full inline-block rounded bg-grayLight animate-pulse translate-y-1" />
@@ -294,40 +288,40 @@ function ImpactChartColumnDescriptions({
 					))}
 			</div>
 		</div>
-	);
+	)
 }
 
 function formatValue(value: number) {
 	return [
-		value === 0 ? "" : value > 0 ? "+" : "−",
+		value === 0 ? '' : value > 0 ? '+' : '−',
 		Number.parseFloat(Math.abs(value).toFixed(2)).toLocaleString(
 			texts.language,
 		),
-	].join("");
+	].join('')
 }
 
 function ImpactChartColumnDescriptionsSentence(
 	i: ParsedMediaImpactItemType & {
-		unitLabel: string;
+		unitLabel: string
 	},
 ) {
-	const incdeclabel = i.impact.lower > 0 ? "increase" : "decrease";
-	const formattedLowerBound = formatValue(i.impact.lower);
-	const formattedUpperBound = formatValue(i.impact.upper);
+	const incdeclabel = i.impact.lower > 0 ? 'increase' : 'decrease'
+	const formattedLowerBound = formatValue(i.impact.lower)
+	const formattedUpperBound = formatValue(i.impact.upper)
 	const unclearTendency =
 		(i.impact.upper > 0 && i.impact.lower < 0) ||
-		(formattedLowerBound === "0" && formattedUpperBound === "0");
+		(formattedLowerBound === '0' && formattedUpperBound === '0')
 	const noChange =
-		formattedLowerBound === formattedUpperBound && formattedLowerBound === "0";
-	const isSentiment = topicIsSentiment(i.label);
+		formattedLowerBound === formattedUpperBound && formattedLowerBound === '0'
+	const isSentiment = topicIsSentiment(i.label)
 	const leastBound =
-		incdeclabel === "increase" ? formattedLowerBound : formattedUpperBound;
+		incdeclabel === 'increase' ? formattedLowerBound : formattedUpperBound
 	const mostBound =
-		incdeclabel === "increase" ? formattedUpperBound : formattedLowerBound;
+		incdeclabel === 'increase' ? formattedUpperBound : formattedLowerBound
 	const ChangeIcon = useMemo(() => {
-		if (unclearTendency) return Minus;
-		return i.impact.mean > 0 ? ArrowUp : ArrowDown;
-	}, [unclearTendency, i.impact.mean]);
+		if (unclearTendency) return Minus
+		return i.impact.mean > 0 ? ArrowUp : ArrowDown
+	}, [unclearTendency, i.impact.mean])
 
 	const topicNodeWithoutTooltip = useMemo(
 		() => (
@@ -341,7 +335,7 @@ function ImpactChartColumnDescriptionsSentence(
 			/>
 		),
 		[i],
-	);
+	)
 
 	const topicNode = useMemo(() => {
 		return isSentiment ? (
@@ -357,39 +351,39 @@ function ImpactChartColumnDescriptionsSentence(
 			>
 				{topicNodeWithoutTooltip}
 			</ImpactKeywordLabelTooltip>
-		);
-	}, [i.unitLabel, i.label, topicNodeWithoutTooltip, isSentiment]);
+		)
+	}, [i.unitLabel, i.label, topicNodeWithoutTooltip, isSentiment])
 
 	const {
 		unclearChange,
 		clearChange,
 		noChange: noChangeFn,
-	} = texts.charts.impact.descriptions;
+	} = texts.charts.impact.descriptions
 	const textFnProps = {
 		isSentiment,
 		topicNode,
 		isIncreasing: i.impact.lower > 0,
 		leastBound,
 		mostBound,
-	};
+	}
 	return (
 		<p
 			className={cn(
-				"mt-2 pl-5 relative text-grayDark text-balance",
+				'mt-2 pl-5 relative text-grayDark text-balance',
 				`legend-topic legend-topic-${slugifyCssClass(i.label)}`,
 			)}
 		>
 			<ChangeIcon
 				className={cn(
-					"absolute left-0 top-0 text-grayDark size-4 translate-y-0.5",
-					unclearTendency && "opacity-50",
+					'absolute left-0 top-0 text-grayDark size-4 translate-y-0.5',
+					unclearTendency && 'opacity-50',
 				)}
 			/>
 			{unclearTendency && !noChange && unclearChange(textFnProps)}
 			{!unclearTendency && !noChange && clearChange(textFnProps)}
 			{noChange && noChangeFn(textFnProps)}
 		</p>
-	);
+	)
 }
 
-export default ImpactChartColumnDescriptions;
+export default ImpactChartColumnDescriptions

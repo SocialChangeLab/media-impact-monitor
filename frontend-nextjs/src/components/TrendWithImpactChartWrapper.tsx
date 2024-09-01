@@ -27,6 +27,23 @@ type TrendWithImpactChartWrapperProps = React.ComponentProps<
 	impactHelpSlug?: string
 }
 
+function ComputeImpactsButton({
+	onClick = () => {},
+	children,
+}: {
+	onClick?: () => void
+	children: ReactNode
+}) {
+	return (
+		<div className="relative py-6 flex justify-end">
+			<span className="absolute top-1/2 left-0 w-full h-px bg-gradient-to-r from-bg to-grayLight" />
+			<span className="pl-6 bg-bg relative z-20">
+				<Button onClick={onClick}>{children}</Button>
+			</span>
+		</div>
+	)
+}
+
 function TrendWithImpactChartWrapper({
 	children,
 	trend_type,
@@ -73,16 +90,13 @@ function TrendWithImpactChartWrapper({
 			`}</style>
 			{children}
 			{applicability && (
-				<div className="relative py-6 flex justify-end">
-					<span className="absolute top-1/2 left-0 w-full h-px bg-gradient-to-r from-bg to-grayLight" />
-					<span className="pl-6 bg-bg relative z-20">
-						<Button onClick={() => setShowComputedImpact((prev) => !prev)}>
-							{showComputedImpact
-								? texts.charts.impact.buttons.hideComputedImpacts
-								: texts.charts.impact.buttons.computeImpacts}
-						</Button>
-					</span>
-				</div>
+				<ComputeImpactsButton
+					onClick={() => setShowComputedImpact((prev) => !prev)}
+				>
+					{showComputedImpact
+						? texts.charts.impact.buttons.hideComputedImpacts
+						: texts.charts.impact.buttons.computeImpacts}
+				</ComputeImpactsButton>
 			)}
 			<Suspense>
 				<AnimatePresence initial={false}>
@@ -132,6 +146,9 @@ export default function TrendWithImpactChartWrapperInView(
 			fallback={
 				<>
 					{props.children}
+					<ComputeImpactsButton>
+						{texts.charts.impact.buttons.computeImpacts}
+					</ComputeImpactsButton>
 					<TopicsLegend
 						sentiment_target={props.sentiment_target}
 						trend_type={props.trend_type}

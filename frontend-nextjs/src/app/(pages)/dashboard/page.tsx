@@ -1,12 +1,11 @@
-import DashboardHelpBanner from "@/components/DashboardHelpBanner.server";
-import EventsTimeline from "@/components/EventsTimeline/EventsTimeline";
-import MediaCoverageChart from "@/components/MediaCoverageChart";
-import MediaSentimentChart from "@/components/MediaSentimentChart";
-import NewsletterFooterSection from "@/components/NewsletterFooterSection";
-import SectionHeadlineWithExplanation from "@/components/SectionHeadlineWithExplanation";
-import SizeOptimizationNotice from "@/components/SizeOptimizationNotice.server";
-import TrendWithImpactChartWrapper from "@/components/TrendWithImpactChartWrapper";
-import { texts } from "@/utility/textUtil";
+import DashboardHelpBanner from '@/components/DashboardHelpBanner.server'
+import EventsTimeline from '@/components/EventsTimeline/EventsTimeline'
+import MediaCoverageChart from '@/components/MediaCoverageChart'
+import MediaSentimentChart from '@/components/MediaSentimentChart'
+import NewsletterFooterSection from '@/components/NewsletterFooterSection'
+import SectionHeadlineWithExplanation from '@/components/SectionHeadlineWithExplanation'
+import TrendWithImpactChartWrapper from '@/components/TrendWithImpactChartWrapper'
+import { texts } from '@/utility/textUtil'
 
 export const metadata = {
 	title: `${texts.mainNavigation.dashboard} | ${texts.seo.siteTitle}`,
@@ -15,7 +14,6 @@ export const metadata = {
 export default function EventsPageWithSuspense() {
 	return (
 		<>
-			<SizeOptimizationNotice />
 			<DashboardHelpBanner />
 			<SectionHeadlineWithExplanation
 				headline={texts.charts.protest_timeline.heading}
@@ -26,7 +24,7 @@ export default function EventsPageWithSuspense() {
 							key={`${desc}-${
 								// biome-ignore lint/suspicious/noArrayIndexKey: <explanation>
 								i
-								}`}
+							}`}
 							className="text-pretty"
 						>
 							{desc}
@@ -43,7 +41,7 @@ export default function EventsPageWithSuspense() {
 						key={`${desc}-${
 							// biome-ignore lint/suspicious/noArrayIndexKey: <explanation>
 							i
-							}`}
+						}`}
 						className="text-pretty"
 					>
 						{desc}
@@ -69,7 +67,7 @@ export default function EventsPageWithSuspense() {
 							key={`${desc}-${
 								// biome-ignore lint/suspicious/noArrayIndexKey: <explanation>
 								i
-								}`}
+							}`}
 							className="text-pretty"
 						>
 							{desc}
@@ -97,7 +95,7 @@ export default function EventsPageWithSuspense() {
 							key={`${desc}-${
 								// biome-ignore lint/suspicious/noArrayIndexKey: <explanation>
 								i
-								}`}
+							}`}
 							className="text-pretty"
 						>
 							{desc}
@@ -119,5 +117,5 @@ export default function EventsPageWithSuspense() {
 			</SectionHeadlineWithExplanation>
 			<NewsletterFooterSection />
 		</>
-	);
+	)
 }

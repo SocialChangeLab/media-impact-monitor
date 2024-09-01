@@ -94,7 +94,10 @@ function DraggableTimeFilterRange() {
 					onRangeDragStart={() => setIsDragging(true)}
 					onThumbDragStart={() => setIsDragging(true)}
 					id="draggable-time-filter-range"
-					className="group"
+					className={cn(
+						'group transition-opacity',
+						isLoading && 'opacity-0 pointer-events-none',
+					)}
 					disabled={isLoading}
 				/>
 				<HandleTooptip

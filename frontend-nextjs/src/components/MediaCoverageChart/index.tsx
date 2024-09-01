@@ -1,6 +1,6 @@
-"use client";
-import useElementSize from "@custom-react-hooks/use-element-size";
-import { Suspense, memo } from "react";
+'use client'
+import useElementSize from '@custom-react-hooks/use-element-size'
+import { Suspense, memo, useMemo } from 'react'
 import {
 	CartesianGrid,
 	Line,
@@ -9,29 +9,29 @@ import {
 	Tooltip,
 	XAxis,
 	YAxis,
-} from "recharts";
+} from 'recharts'
 
-import TopicChartTooltip from "@/components/TopicChartTooltip";
-import { slugifyCssClass } from "@/utility/cssSlugify";
-import { parseErrorMessage } from "@/utility/errorHandlingUtil";
-import { texts } from "@/utility/textUtil";
-import useMediaTrends from "@/utility/useMediaTrends";
-import useTopics from "@/utility/useTopics";
-import { QueryErrorResetBoundary } from "@tanstack/react-query";
-import { LineChartIcon } from "lucide-react";
-import { ErrorBoundary } from "next/dist/client/components/error-boundary";
-import ChartLimitations from "../ChartLimitations";
-import MediaCoverageChartEmpty from "./MediaCoverageChartEmpty";
-import MediaCoverageChartError from "./MediaCoverageChartError";
-import MediaCoverageChartLoading from "./MediaCoverageChartLoading";
+import TopicChartTooltip from '@/components/TopicChartTooltip'
+import { slugifyCssClass } from '@/utility/cssSlugify'
+import { parseErrorMessage } from '@/utility/errorHandlingUtil'
+import { texts } from '@/utility/textUtil'
+import useMediaTrends from '@/utility/useMediaTrends'
+import useTopics from '@/utility/useTopics'
+import { QueryErrorResetBoundary } from '@tanstack/react-query'
+import { LineChartIcon } from 'lucide-react'
+import { ErrorBoundary } from 'next/dist/client/components/error-boundary'
+import ChartLimitations from '../ChartLimitations'
+import MediaCoverageChartEmpty from './MediaCoverageChartEmpty'
+import MediaCoverageChartError from './MediaCoverageChartError'
+import MediaCoverageChartLoading from './MediaCoverageChartLoading'
 
 const MediaCoverageChart = memo(() => {
-	const [parentRef, size] = useElementSize();
+	const [parentRef, size] = useElementSize()
 	const { topics, filteredData, aggregationUnit } = useTopics({
 		containerWidth: size.width,
-		trend_type: "keywords",
+		trend_type: 'keywords',
 		sentiment_target: null,
-	});
+	})
 
 	return (
 		<div className="max-w-content">
@@ -67,7 +67,7 @@ const MediaCoverageChart = memo(() => {
 							tickSize={8}
 							tickLine={{
 								strokeOpacity: 1,
-								stroke: "var(--grayDark)",
+								stroke: 'var(--grayDark)',
 							}}
 						/>
 						<YAxis
@@ -80,58 +80,59 @@ const MediaCoverageChart = memo(() => {
 						/>
 						<Tooltip
 							formatter={(value) => `${value} articles`}
-							cursor={{ stroke: "var(--grayMed)" }}
+							cursor={{ stroke: 'var(--grayMed)' }}
 							content={({ payload, active }) => {
-								const item = payload?.at(0)?.payload;
-								if (!active || !payload || !item) return null;
+								const item = payload?.at(0)?.payload
+								if (!active || !payload || !item) return null
 								return (
 									<TopicChartTooltip
 										topics={topics}
 										aggregationUnit={aggregationUnit}
 										item={item}
 									/>
-								);
+								)
 							}}
 						/>
-						{topics.map(({ topic, color }, idx) => (
-							<Line
-								key={topic}
-								type="monotone"
-								dataKey={topic}
-								stroke={color}
-								fill={color}
-								className={`topic-chart-item topic-chart-item-topic-${slugifyCssClass(
-									topic,
-								)} transition-all`}
-								activeDot={{ r: 6, stroke: "var(--grayUltraLight)" }}
-							/>
-						))}
+						{useMemo(
+							() =>
+								topics.map(({ topic, color }, idx) => (
+									<Line
+										key={topic}
+										type="monotone"
+										dataKey={topic}
+										stroke={color}
+										fill={color}
+										className={`topic-chart-item topic-chart-item-topic-${slugifyCssClass(
+											topic,
+										)} transition-all`}
+										activeDot={{ r: 6, stroke: 'var(--grayUltraLight)' }}
+										isAnimationActive={false}
+									/>
+								)),
+							[topics],
+						)}
 					</LineChart>
 				</ResponsiveContainer>
 			</div>
 		</div>
-	);
-});
+	)
+})
 
-function MediaCoverageChartWithData({
-	reset,
-}: {
-	reset?: () => void;
-}) {
+function MediaCoverageChartWithData({ reset }: { reset?: () => void }) {
 	const { data, isError, isSuccess, isPending } = useMediaTrends({
-		trend_type: "keywords",
-	});
-	if (isPending) return <MediaCoverageChartLoading />;
+		trend_type: 'keywords',
+	})
+	if (isPending) return <MediaCoverageChartLoading />
 	if (isError)
 		return (
 			<MediaCoverageChartError {...parseErrorMessage(isError)} reset={reset} />
-		);
+		)
 	if (isSuccess && data.limitations.length > 0)
 		return (
 			<ChartLimitations limitations={data.limitations} Icon={LineChartIcon} />
-		);
-	if (isSuccess && data.applicability) return <MediaCoverageChart />;
-	return <MediaCoverageChartEmpty />;
+		)
+	if (isSuccess && data.applicability) return <MediaCoverageChart />
+	return <MediaCoverageChartEmpty />
 }
 export default function MediaCoverageChartWithErrorBoundary() {
 	return (
@@ -151,5 +152,5 @@ export default function MediaCoverageChartWithErrorBoundary() {
 				</ErrorBoundary>
 			)}
 		</QueryErrorResetBoundary>
-	);
+	)
 }

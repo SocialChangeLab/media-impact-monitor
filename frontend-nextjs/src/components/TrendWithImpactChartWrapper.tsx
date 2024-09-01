@@ -128,7 +128,18 @@ export default function TrendWithImpactChartWrapperInView(
 	props: TrendWithImpactChartWrapperProps,
 ) {
 	return (
-		<InViewContainer fallback={<>{props.children}</>}>
+		<InViewContainer
+			fallback={
+				<>
+					{props.children}
+					<TopicsLegend
+						sentiment_target={props.sentiment_target}
+						trend_type={props.trend_type}
+						sources={props.sources}
+					/>
+				</>
+			}
+		>
 			<TrendWithImpactChartWrapper {...props} />
 		</InViewContainer>
 	)

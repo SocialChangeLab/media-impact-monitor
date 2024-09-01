@@ -1,5 +1,6 @@
 import { useFiltersStore } from '@/providers/FiltersStoreProvider'
 import { useToday } from '@/providers/TodayProvider'
+import '@/styles/draggable-time-filter-range.css'
 import { cn } from '@/utility/classNames'
 import { dateToComparableDateItem } from '@/utility/comparableDateItemSchema'
 import { format } from '@/utility/dateUtil'
@@ -10,7 +11,6 @@ import useElementSize from '@custom-react-hooks/use-element-size'
 import { addDays, compareAsc, differenceInDays } from 'date-fns'
 import { memo, useCallback, useEffect, useMemo, useState } from 'react'
 import RangeSlider from 'react-range-slider-input'
-import 'react-range-slider-input/dist/style.css'
 import useTimelineEvents from './EventsTimeline/useTimelineEvents'
 
 function DraggableTimeFilterRange() {
@@ -72,38 +72,6 @@ function DraggableTimeFilterRange() {
 
 	return (
 		<>
-			<style global jsx>{`
-				#draggable-time-filter-range {
-					height: 100%;
-					background: var(--grayLight);
-					mix-blend-mode: multiply;
-				}
-
-				:root[data-theme='dark'] #draggable-time-filter-range {
-					mix-blend-mode: screen;
-				}
-
-				#draggable-time-filter-range > .range-slider__thumb {
-					border-radius: 999px;
-					background: var(--grayDark);
-					width: 0.75rem;
-					transition: background 0.15s ease;
-				}
-
-				#draggable-time-filter-range > .range-slider__thumb:hover {
-					background: var(--fg);
-				}
-
-				#draggable-time-filter-range > .range-slider__thumb:focus-visible {
-					box-shadow:
-						0 0 0 4px var(--bg),
-						0 0 0 6px var(--fg);
-				}
-
-				#draggable-time-filter-range > .range-slider__range {
-					background: var(--bg);
-				}
-			`}</style>
 			<div
 				className={cn(
 					`w-full h-7 border border-grayLight`,

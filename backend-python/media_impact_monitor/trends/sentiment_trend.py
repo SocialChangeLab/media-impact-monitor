@@ -1,3 +1,4 @@
+from media_impact_monitor.util.env import AI_TREND_RESOLUTION
 import pandas as pd
 
 from media_impact_monitor.fulltexts import get_fulltexts
@@ -28,7 +29,7 @@ def get_sentiment_trend(q: TrendSearch) -> tuple[pd.DataFrame | None, list[str]]
     params = dict(q)
     del params["trend_type"]
     del params["aggregation"]
-    fulltexts = get_fulltexts(FulltextSearch(**params), sample_frac=0.01)
+    fulltexts = get_fulltexts(FulltextSearch(**params), sample_frac=AI_TREND_RESOLUTION)
 
     # aggregate positive, neutral, negative sentiments by day
     df = fulltexts.groupby("date")[field].agg(

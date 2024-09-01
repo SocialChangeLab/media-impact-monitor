@@ -88,7 +88,7 @@ function TrendWithImpactChartWrapper({
 				<AnimatePresence initial={false}>
 					{showComputedImpact && applicability && (
 						<motion.div
-							className="w-full overflow-clip -translate-y-10 relative z-10"
+							className="w-full overflow-clip xl:-translate-y-10 relative z-10"
 							initial={{ height: 0 }}
 							animate={{ height: 'auto' }}
 							exit={{ height: 0 }}

@@ -12,7 +12,7 @@ export function useIsInViewport(ref: RefObject<HTMLElement>) {
 	const observer = useMemo(() => {
 		if (typeof window === 'undefined') return
 		return new IntersectionObserver(([entry]) =>
-			setIsIntersecting(entry.isIntersecting && entry.intersectionRatio > 0.3),
+			setIsIntersecting(entry.isIntersecting),
 		)
 	}, [])
 

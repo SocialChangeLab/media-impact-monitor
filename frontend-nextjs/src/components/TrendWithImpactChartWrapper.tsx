@@ -102,7 +102,7 @@ function TrendWithImpactChartWrapper({
 									{impactHeadline}
 								</h3>
 								<p className="text-sm text-grayDark">{impactDescription}</p>
-								<div className="absolute bottom-2 right-0">
+								<div className="xl:absolute bottom-2 right-0">
 									<ChartDocsDialog helpSlug={impactHelpSlug} />
 								</div>
 							</div>

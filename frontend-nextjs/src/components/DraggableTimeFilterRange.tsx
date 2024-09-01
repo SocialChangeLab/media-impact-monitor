@@ -14,6 +14,7 @@ import RangeSlider from 'react-range-slider-input'
 import useTimelineEvents from './EventsTimeline/useTimelineEvents'
 
 function DraggableTimeFilterRange() {
+	const { isLoading } = useEvents()
 	const { from, to, setDateRange } = useFiltersStore((state) => ({
 		from: dateToComparableDateItem(state.from),
 		to: dateToComparableDateItem(state.to),
@@ -56,6 +57,7 @@ function DraggableTimeFilterRange() {
 
 	const onChange = useCallback(
 		([fromIdx, toIdx]: [number, number]) => {
+			setIsDragging(false)
 			const [from, to] = [
 				intervals[fromIdx] ?? intervals[0],
 				intervals[toIdx] ?? intervals[intervals.length - 1],
@@ -64,7 +66,6 @@ function DraggableTimeFilterRange() {
 				.sort(compareAsc)
 
 			setDateRange({ from, to })
-			setIsDragging(false)
 		},
 		[intervals, setDateRange],
 	)
@@ -94,6 +95,7 @@ function DraggableTimeFilterRange() {
 					onThumbDragStart={() => setIsDragging(true)}
 					id="draggable-time-filter-range"
 					className="group"
+					disabled={isLoading}
 				/>
 				<HandleTooptip
 					formattedDate={leftDate}

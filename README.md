@@ -1,4 +1,4 @@
-[![Logo of the Media Impact Monitor app](https://mediaimpactmonitor.app/assets/logos/mim-alternate-hybrid.svg)](https://mediaimpactmonitor.app/)
+[![Logo of the Media Impact Monitor app](frontend-nextjs/public/images/logos/mim-alternate-hybrid.svg)](https://mediaimpactmonitor.app/)
 
 <br />
 
@@ -10,13 +10,13 @@ _Media Impact Monitor_ makes you explore the world of protest and activism, and 
 
 - [x] **Explore what protests are happening.** We visualize all protests that are happening, and you can filter by time range, geographic area, and the topics and organizations that you are interested in. Currently we focus on climate protests in Germany, with plans to expand to more topics and countries.
 
-- [ ] **Analyze the coverage of specific protest events.** Find the events that you have attended or organized, and see how newspapers have reported about them. We find all articles about your event, analyze their sentiment towards the protest, as well as the support for the cause that you pursue.
+- [x] **Analyze the coverage of specific protest events.** Find the events that you have attended or organized, and see how newspapers have reported about them. We find all articles about your event, analyze their sentiment towards the protest, as well as the support for the cause that you pursue.
 
 - [x] **Understand trends in societal discourse.** The _theory of change_ of how most protests achieve an impact is: via media attention, societal discourse, popular opinion, and eventually policy change. Not everything can be quantified, but some things can. We collect data and analyze it with regard to your protest and your cause, from:
 
   - [x] online newspapers
-  - [ ] print newspapers
-  - [ ] trends on Google and Wikipedia
+  - [x] print newspapers (fulltexts still todo)
+  - [x] trends on Google and Wikipedia (wikipedia still todo)
   - [ ] social media
   - [ ] parliamentary debates
   - [ ] political processes
@@ -82,6 +82,6 @@ For details check out the [full license text](LICENSE).
 
 ## Partners
 
-| Hosted by                                                                                                                                                                    | Sponsored by                                                                                                                                         |                                                                                                                                  |
-| ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------- |
-| [![Logo of the Social Change Lab](https://mediaimpactmonitor.app/assets/logos/socialchangelab-hybrid.svg)](https://socialchangelab.org/)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; | [![Logo of the Bundesministerium für Bildung und Forschung](https://mediaimpactmonitor.app/assets/logos/bmbf-hybrid.svg)](https://prototypefund.de/) | [![Logo of the Prototype Fund](https://mediaimpactmonitor.app/assets/logos/prototypefund-hybrid.svg)](https://prototypefund.de/) |
+| Hosted by                                                                                                                                                            | Sponsored by                                                                                                                                 |                                                                                                                          |
+| -------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------ |
+| [![Logo of the Social Change Lab](frontend-nextjs/public/images/logos/socialchangelab-hybrid.svg)](https://socialchangelab.org/)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; | [![Logo of the Bundesministerium für Bildung und Forschung](frontend-nextjs/public/images/logos/bmbf-hybrid.svg)](https://prototypefund.de/) | [![Logo of the Prototype Fund](frontend-nextjs/public/images/logos/prototypefund-hybrid.svg)](https://prototypefund.de/) |

@@ -21,6 +21,7 @@ import { QueryErrorResetBoundary } from '@tanstack/react-query'
 import { BarChartIcon } from 'lucide-react'
 import { ErrorBoundary } from 'next/dist/client/components/error-boundary'
 import ChartLimitations from '../ChartLimitations'
+import InViewContainer from '../InViewContainer'
 import MediaSentimentChartEmpty from '../MediaSentimentChart/MediaSentimentChartEmpty'
 import MediaSentimentChartError from '../MediaSentimentChart/MediaSentimentChartError'
 import MediaSentimentChartLoading from '../MediaSentimentChart/MediaSentimentChartLoading'
@@ -165,25 +166,27 @@ export default function MediaCoverageChartWithErrorBoundary({
 	event_id: string
 }) {
 	return (
-		<QueryErrorResetBoundary>
-			{({ reset }) => (
-				<ErrorBoundary
-					errorComponent={({ error }) => (
-						<MediaSentimentChartError
-							{...parseErrorMessage(error)}
-							reset={reset}
-						/>
-					)}
-				>
-					<Suspense fallback={<MediaSentimentChartLoading />}>
-						<FullTextsSentimentChartWithData
-							reset={reset}
-							sentiment_target={sentiment_target}
-							event_id={event_id}
-						/>
-					</Suspense>
-				</ErrorBoundary>
-			)}
-		</QueryErrorResetBoundary>
+		<InViewContainer fallback={<MediaSentimentChartLoading />}>
+			<QueryErrorResetBoundary>
+				{({ reset }) => (
+					<ErrorBoundary
+						errorComponent={({ error }) => (
+							<MediaSentimentChartError
+								{...parseErrorMessage(error)}
+								reset={reset}
+							/>
+						)}
+					>
+						<Suspense fallback={<MediaSentimentChartLoading />}>
+							<FullTextsSentimentChartWithData
+								reset={reset}
+								sentiment_target={sentiment_target}
+								event_id={event_id}
+							/>
+						</Suspense>
+					</ErrorBoundary>
+				)}
+			</QueryErrorResetBoundary>
+		</InViewContainer>
 	)
 }

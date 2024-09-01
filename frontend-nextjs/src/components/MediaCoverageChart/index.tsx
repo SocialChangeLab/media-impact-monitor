@@ -21,6 +21,7 @@ import { QueryErrorResetBoundary } from '@tanstack/react-query'
 import { LineChartIcon } from 'lucide-react'
 import { ErrorBoundary } from 'next/dist/client/components/error-boundary'
 import ChartLimitations from '../ChartLimitations'
+import InViewContainer from '../InViewContainer'
 import MediaCoverageChartEmpty from './MediaCoverageChartEmpty'
 import MediaCoverageChartError from './MediaCoverageChartError'
 import MediaCoverageChartLoading from './MediaCoverageChartLoading'
@@ -136,21 +137,23 @@ function MediaCoverageChartWithData({ reset }: { reset?: () => void }) {
 }
 export default function MediaCoverageChartWithErrorBoundary() {
 	return (
-		<QueryErrorResetBoundary>
-			{({ reset }) => (
-				<ErrorBoundary
-					errorComponent={({ error }) => (
-						<MediaCoverageChartError
-							{...parseErrorMessage(error)}
-							reset={reset}
-						/>
-					)}
-				>
-					<Suspense fallback={<MediaCoverageChartLoading />}>
-						<MediaCoverageChartWithData reset={reset} />
-					</Suspense>
-				</ErrorBoundary>
-			)}
-		</QueryErrorResetBoundary>
+		<InViewContainer fallback={<MediaCoverageChartLoading />}>
+			<QueryErrorResetBoundary>
+				{({ reset }) => (
+					<ErrorBoundary
+						errorComponent={({ error }) => (
+							<MediaCoverageChartError
+								{...parseErrorMessage(error)}
+								reset={reset}
+							/>
+						)}
+					>
+						<Suspense fallback={<MediaCoverageChartLoading />}>
+							<MediaCoverageChartWithData reset={reset} />
+						</Suspense>
+					</ErrorBoundary>
+				)}
+			</QueryErrorResetBoundary>
+		</InViewContainer>
 	)
 }

@@ -1,20 +1,31 @@
-"use client";
-import { slugifyCssClass } from "@/utility/cssSlugify";
-import { texts } from "@/utility/textUtil";
-import useTopics from "@/utility/useTopics";
-import useElementSize from "@custom-react-hooks/use-element-size";
-import { AnimatePresence, motion } from "framer-motion";
-import dynamic from "next/dynamic";
-import { type ReactNode, Suspense, useState } from "react";
-import { ChartDocsDialog } from "./ChartDocsDialog";
-import type { DataCreditLegendSource } from "./DataCreditLegend";
-import TopicsLegend from "./TopicsLegend";
-import { Button } from "./ui/button";
+'use client'
+import { slugifyCssClass } from '@/utility/cssSlugify'
+import { texts } from '@/utility/textUtil'
+import useTopics from '@/utility/useTopics'
+import useElementSize from '@custom-react-hooks/use-element-size'
+import { AnimatePresence, motion } from 'framer-motion'
+import dynamic from 'next/dynamic'
+import { type ReactNode, Suspense, useState } from 'react'
+import { ChartDocsDialog } from './ChartDocsDialog'
+import type { DataCreditLegendSource } from './DataCreditLegend'
+import InViewContainer from './InViewContainer'
+import TopicsLegend from './TopicsLegend'
+import { Button } from './ui/button'
 
 const LazyLoadedImpactChart = dynamic(
-	() => import("@/components/ImpactChart"),
+	() => import('@/components/ImpactChart'),
 	{ ssr: false },
-);
+)
+
+type TrendWithImpactChartWrapperProps = React.ComponentProps<
+	typeof LazyLoadedImpactChart
+> & {
+	children: ReactNode
+	impactHeadline?: string
+	impactDescription?: string
+	sources?: DataCreditLegendSource[]
+	impactHelpSlug?: string
+}
 
 function TrendWithImpactChartWrapper({
 	children,
@@ -24,20 +35,14 @@ function TrendWithImpactChartWrapper({
 	impactDescription,
 	sources,
 	impactHelpSlug,
-}: React.ComponentProps<typeof LazyLoadedImpactChart> & {
-	children: ReactNode;
-	impactHeadline?: string;
-	impactDescription?: string;
-	sources?: DataCreditLegendSource[];
-	impactHelpSlug?: string;
-}) {
-	const [showComputedImpact, setShowComputedImpact] = useState(false);
-	const [parentRef, size] = useElementSize();
+}: TrendWithImpactChartWrapperProps) {
+	const [showComputedImpact, setShowComputedImpact] = useState(false)
+	const [parentRef, size] = useElementSize()
 	const { topics, applicability } = useTopics({
 		containerWidth: size.width,
 		trend_type,
 		sentiment_target,
-	});
+	})
 
 	return (
 		<div ref={parentRef} className="topic-chart-wrapper">
@@ -55,16 +60,16 @@ function TrendWithImpactChartWrapper({
 				}
 				${topics
 					.map(({ topic }) => {
-						const slug = slugifyCssClass(topic);
+						const slug = slugifyCssClass(topic)
 						return `
 							html .topic-chart-wrapper:has(.legend-topic-${slug}:hover)
 								.topic-chart-item-topic-${slug} {
 									opacity: 1 !important;
 									filter: grayscale(0%) !important;
 								}
-						`;
+						`
 					})
-					.join("")}
+					.join('')}
 			`}</style>
 			{children}
 			{applicability && (
@@ -85,11 +90,11 @@ function TrendWithImpactChartWrapper({
 						<motion.div
 							className="w-full overflow-clip -translate-y-10 relative z-10"
 							initial={{ height: 0 }}
-							animate={{ height: "auto" }}
+							animate={{ height: 'auto' }}
 							exit={{ height: 0 }}
 							transition={{
 								duration: 0.3,
-								ease: "easeInOut",
+								ease: 'easeInOut',
 							}}
 						>
 							<div className="pb-4 mb-2 flex flex-col gap-1 relative">
@@ -116,7 +121,15 @@ function TrendWithImpactChartWrapper({
 				sources={sources}
 			/>
 		</div>
-	);
+	)
 }
 
-export default TrendWithImpactChartWrapper;
+export default function TrendWithImpactChartWrapperInView(
+	props: TrendWithImpactChartWrapperProps,
+) {
+	return (
+		<InViewContainer fallback={<>{props.children}</>}>
+			<TrendWithImpactChartWrapper {...props} />
+		</InViewContainer>
+	)
+}

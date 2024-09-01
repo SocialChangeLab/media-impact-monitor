@@ -36,10 +36,8 @@ import {
 
 const SelectedTimeframeTooltip = memo(
 	({ organisation }: { organisation?: OrganisationType }) => {
-		const { from, to } = useFiltersStore(({ from, to }) => ({
-			from: format(from, 'LLLL d, yyyy'),
-			to: format(to, 'LLLL d, yyyy'),
-		}))
+		const from = useFiltersStore(({ from }) => format(from, 'LLLL d, yyyy'))
+		const to = useFiltersStore(({ to }) => format(to, 'LLLL d, yyyy'))
 		const { data } = useEvents()
 		const minPercentageConsideredGood = 40
 

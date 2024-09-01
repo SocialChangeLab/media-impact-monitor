@@ -1,25 +1,23 @@
-import { useFiltersStore } from "@/providers/FiltersStoreProvider";
-import { cn } from "@/utility/classNames";
-import { getOrgStats } from "@/utility/orgsUtil";
-import { texts } from "@/utility/textUtil";
-import useEvents from "@/utility/useEvents";
-import { createColumnHelper } from "@tanstack/react-table";
-import { useMemo } from "react";
-import { DataTable } from "./DataTable/DataTable";
-import InternalLink from "./InternalLink";
-import OrgsTooltip from "./OrgsTooltip";
-import RoundedColorPill from "./RoundedColorPill";
+import { useFiltersStore } from '@/providers/FiltersStoreProvider'
+import { cn } from '@/utility/classNames'
+import { getOrgStats } from '@/utility/orgsUtil'
+import { texts } from '@/utility/textUtil'
+import useEvents from '@/utility/useEvents'
+import { createColumnHelper } from '@tanstack/react-table'
+import { useMemo } from 'react'
+import { DataTable } from './DataTable/DataTable'
+import InternalLink from './InternalLink'
+import OrgsTooltip from './OrgsTooltip'
+import RoundedColorPill from './RoundedColorPill'
 
 function formatNumber(num: number) {
-	if (Number.isNaN(num)) return "?";
-	return Math.round(num).toLocaleString(texts.language);
+	if (Number.isNaN(num)) return '?'
+	return Math.round(num).toLocaleString(texts.language)
 }
 
 function OrganisationsTable() {
-	const { data, isPending } = useEvents();
-	const { organizers } = useFiltersStore((state) => ({
-		organizers: state.organizers,
-	}));
+	const { data, isPending } = useEvents()
+	const organizers = useFiltersStore(({ organizers }) => organizers)
 
 	const extendedData = useMemo(
 		() =>
@@ -35,21 +33,21 @@ function OrganisationsTable() {
 					}),
 				),
 		[organizers, data],
-	);
+	)
 
 	const columns = useMemo(() => {
-		const columnHelper = createColumnHelper<(typeof extendedData)[0]>();
+		const columnHelper = createColumnHelper<(typeof extendedData)[0]>()
 		return [
-			columnHelper.accessor("name", {
+			columnHelper.accessor('name', {
 				header: texts.organisationsPage.propertyNames.name,
 				cell: function render({ getValue, row }) {
-					const { name, slug, color } = row.original;
+					const { name, slug, color } = row.original
 					return (
 						<InternalLink
 							href={`/organisations/${slug}`}
 							className={cn(
-								"grid grid-cols-[auto_1fr_auto] gap-x-2 items-center",
-								"hover:font-semibold transition-all w-fit focusable",
+								'grid grid-cols-[auto_1fr_auto] gap-x-2 items-center',
+								'hover:font-semibold transition-all w-fit focusable',
 							)}
 						>
 							<RoundedColorPill color={color} />
@@ -57,47 +55,47 @@ function OrganisationsTable() {
 								{name}
 							</div>
 						</InternalLink>
-					);
+					)
 				},
 				size: 1000,
 			}),
-			columnHelper.accessor("totalEvents", {
+			columnHelper.accessor('totalEvents', {
 				header: texts.organisationsPage.propertyNames.totalEvents,
 				cell: function render({ getValue }) {
-					return Math.round(getValue()).toLocaleString(texts.language);
+					return Math.round(getValue()).toLocaleString(texts.language)
 				},
 				size: 50,
 			}),
-			columnHelper.accessor("totalParticipants", {
+			columnHelper.accessor('totalParticipants', {
 				header: texts.organisationsPage.propertyNames.totalParticipants,
 				cell: function render({ getValue }) {
-					return formatNumber(getValue());
+					return formatNumber(getValue())
 				},
 				size: 50,
 			}),
-			columnHelper.accessor("avgParticipantsPerEvent", {
+			columnHelper.accessor('avgParticipantsPerEvent', {
 				header: texts.organisationsPage.propertyNames.avgParticipants,
 				cell: function render({ getValue }) {
-					return formatNumber(getValue());
+					return formatNumber(getValue())
 				},
 				size: 50,
 			}),
-			columnHelper.accessor("avgPartnerOrgsPerEvent", {
+			columnHelper.accessor('avgPartnerOrgsPerEvent', {
 				header: texts.organisationsPage.propertyNames.avgPartners,
 				cell: function render({ getValue }) {
-					return formatNumber(getValue());
+					return formatNumber(getValue())
 				},
 				size: 50,
 			}),
-			columnHelper.accessor("totalPartners", {
+			columnHelper.accessor('totalPartners', {
 				header: texts.organisationsPage.propertyNames.totalPartners,
 				cell: function render({ getValue, row }) {
 					const partners = row.original.partners.sort((a, b) => {
-						if (a.count < b.count) return 1;
-						if (a.count > b.count) return -1;
-						return a.name.localeCompare(b.name);
-					});
-					if (partners.length === 0) return <span>0</span>;
+						if (a.count < b.count) return 1
+						if (a.count > b.count) return -1
+						return a.name.localeCompare(b.name)
+					})
+					if (partners.length === 0) return <span>0</span>
 					return (
 						<OrgsTooltip otherOrgs={partners} withPills>
 							<button
@@ -108,14 +106,14 @@ function OrganisationsTable() {
 								{formatNumber(getValue())}
 							</button>
 						</OrgsTooltip>
-					);
+					)
 				},
 				size: 50,
 			}),
-		];
-	}, []);
+		]
+	}, [])
 
-	if (!data) return null;
+	if (!data) return null
 
 	return (
 		<DataTable<(typeof extendedData)[0]>
@@ -123,7 +121,7 @@ function OrganisationsTable() {
 			data={extendedData}
 			isLoading={isPending ?? true}
 		/>
-	);
+	)
 }
 
-export default OrganisationsTable;
+export default OrganisationsTable

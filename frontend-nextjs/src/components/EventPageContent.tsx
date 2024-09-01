@@ -1,26 +1,26 @@
-import EventPageHeader from "@/components/EventPageHeader";
-import FullTextsSentimentChart from "@/components/FullTextsSentimentChart";
-import SectionHeadlineWithExplanation from "@/components/SectionHeadlineWithExplanation";
-import { texts, titleCase } from "@/utility/textUtil";
-import { getTopicIcon } from "@/utility/topicsUtil";
-import EventMediaTable from "./EventMediaTable";
-import HeadlineWithLine from "./HeadlineWithLine";
+import EventPageHeader from '@/components/EventPageHeader'
+import FullTextsSentimentChart from '@/components/FullTextsSentimentChart'
+import SectionHeadlineWithExplanation from '@/components/SectionHeadlineWithExplanation'
+import { texts, titleCase } from '@/utility/textUtil'
+import { getTopicIcon } from '@/utility/topicsUtil'
+import EventMediaTable from './EventMediaTable'
+import HeadlineWithLine from './HeadlineWithLine'
 import {
 	ImpactKeywordLabel,
 	ImpactKeywordLabelTooltip,
 	topicsMap,
-} from "./ImpactChart/ImpactKeywordLabel";
-import TopicsLegend from "./TopicsLegend";
+} from './ImpactChart/ImpactKeywordLabel'
+import TopicsLegend from './TopicsLegend'
 
 function TrendHeadline({
 	topic,
 	label,
 }: {
-	topic: "climate-activism" | "climate-policy";
-	label: string;
+	topic: 'climate-activism' | 'climate-policy'
+	label: string
 }) {
-	const Icon = getTopicIcon(topic);
-	const color = `var(--keyword-${topic})`;
+	const Icon = getTopicIcon(topic)
+	const color = `var(--keyword-${topic})`
 	return (
 		<HeadlineWithLine>
 			{texts.singleProtestPage.charts.sentimentTowards({
@@ -34,9 +34,9 @@ function TrendHeadline({
 							<ImpactKeywordLabel
 								label={
 									texts.charts.topics[
-									topic
-										.toLowerCase()
-										.replaceAll("-", " ") as keyof typeof texts.charts.topics
+										topic
+											.toLowerCase()
+											.replaceAll('-', ' ') as keyof typeof texts.charts.topics
 									] ?? titleCase(topic)
 								}
 								slug={label}
@@ -47,7 +47,7 @@ function TrendHeadline({
 				),
 			})}
 		</HeadlineWithLine>
-	);
+	)
 }
 
 function EventPageContent({ id }: { id: string }) {
@@ -75,10 +75,7 @@ function EventPageContent({ id }: { id: string }) {
 					</div>
 					<div className="flex flex-col gap-4">
 						<TrendHeadline topic="climate-policy" label="Policy" />
-						<FullTextsSentimentChart
-							sentiment_target="activism"
-							event_id={id}
-						/>
+						<FullTextsSentimentChart sentiment_target="policy" event_id={id} />
 					</div>
 				</div>
 				<TopicsLegend
@@ -87,7 +84,7 @@ function EventPageContent({ id }: { id: string }) {
 				/>
 			</SectionHeadlineWithExplanation>
 		</>
-	);
+	)
 }
 
-export default EventPageContent;
+export default EventPageContent

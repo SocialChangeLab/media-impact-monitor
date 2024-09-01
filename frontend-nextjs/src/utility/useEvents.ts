@@ -30,21 +30,14 @@ export type UseEventsReturnType = Omit<
 	};
 };
 
-function useEvents({
-	from: inputFrom,
-	to: inputTo,
-}: { from?: Date; to?: Date } = {}): UseEventsReturnType {
+function useEvents(): UseEventsReturnType {
 	const queryClient = useQueryClient();
 	const { today } = useToday();
-	const filterStore = useFiltersStore((state) => ({
-		from: state.from,
-		fromTime: getTime(state.from),
-		to: state.to,
-		toTime: getTime(state.to),
-		fromDateString: state.fromDateString,
-		toDateString: state.toDateString,
-		organizers: state.organizers,
-	}));
+	const fromTime = useFiltersStore(({ from }) => getTime(from));
+	const toTime = useFiltersStore(({ to }) => getTime(to));
+	const fromDateString = useFiltersStore(({ fromDateString }) => fromDateString);
+	const toDateString = useFiltersStore(({ toDateString }) => toDateString);
+	const organizers = useFiltersStore(({ organizers }) => organizers);
 	const queryKey = ["events"];
 	const query = useQuery({
 		queryKey,
@@ -56,24 +49,24 @@ function useEvents({
 	useQueryErrorToast("protests", error);
 
 	const organisersKey = useMemo(
-		() => filterStore.organizers.sort().join("-"),
-		[filterStore.organizers],
+		() => organizers.sort().join("-"),
+		[organizers],
 	);
 	const events = useMemo(() => {
 		return (data ?? []).filter((e) => {
 			if (!e.date) return false;
-			const beforeFrom = e.time < filterStore.fromTime;
-			const afterTo = e.time > filterStore.toTime;
+			const beforeFrom = e.time < fromTime;
+			const afterTo = e.time > toTime;
 			if (beforeFrom || afterTo) return false;
 			return true;
 		});
 	// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [data, filterStore.fromDateString, filterStore.toDateString]);
+	}, [data, fromDateString, toDateString]);
 
 	const eventFilteredByOrganizers = useMemo(() => {
-		if (filterStore.organizers.length === 0) return events;
+		if (organizers.length === 0) return events;
 		return events.filter((e) =>
-			filterStore.organizers.find((orgSlug) =>
+			organizers.find((orgSlug) =>
 				e.organizers.find((x) => x.slug === orgSlug),
 			),
 		);
@@ -91,12 +84,12 @@ function useEvents({
 	);
 
 	const selectedOrganisations = useMemo(() => {
-		if (filterStore.organizers.length === 0) return orgsFromFilteredEvents;
+		if (organizers.length === 0) return orgsFromFilteredEvents;
 		const selectedOrs = orgsFromFilteredEvents.filter((org) =>
-			filterStore.organizers.find((o) => o === org.slug),
+			organizers.find((o) => o === org.slug),
 		);
 		return selectedOrs.length === 0 ? orgsFromFilteredEvents : selectedOrs;
-	}, [filterStore.organizers, orgsFromFilteredEvents]);
+	}, [organizers, orgsFromFilteredEvents]);
 
 	useEffect(() => {
 		if (!data || data.length === 0) return;

@@ -1,37 +1,37 @@
-"use client";
-import { useFiltersStore } from "@/providers/FiltersStoreProvider";
-import { cn } from "@/utility/classNames";
+'use client'
+import { useFiltersStore } from '@/providers/FiltersStoreProvider'
+import { cn } from '@/utility/classNames'
 import {
 	type OrganisationType,
 	type ParsedEventType,
 	compareOrganizationsByColors,
-} from "@/utility/eventsUtil";
-import { getDateRangeByAggregationUnit } from "@/utility/useTimeIntervals";
-import { useSearchParams } from "next/navigation";
-import { memo } from "react";
-import InternalLink from "../InternalLink";
-import { TooltipTrigger } from "../ui/tooltip";
-import type { AggregatedItemType } from "./EventsTimelineAggregatedItem";
+} from '@/utility/eventsUtil'
+import { getDateRangeByAggregationUnit } from '@/utility/useTimeIntervals'
+import { useSearchParams } from 'next/navigation'
+import { memo } from 'react'
+import InternalLink from '../InternalLink'
+import { TooltipTrigger } from '../ui/tooltip'
+import type { AggregatedItemType } from './EventsTimelineAggregatedItem'
 
 type EventBubbleLinkProps = {
-	event: ParsedEventType;
-	organisations: OrganisationType[];
-};
+	event: ParsedEventType
+	organisations: OrganisationType[]
+}
 
 const bubbleClasses = cn(
-	"absolute inset-0 rounded-full bg-grayMed",
-	"ring-0 ring-fg transition-all hover:ring-2",
-	"ring-offset-0 ring-offset-bg hover:ring-offset-2",
-	"focus-visible:ring-offset-2 focus-visible:ring-2",
-	"cursor-pointer active:cursor-pointer focusable",
-);
+	'absolute inset-0 rounded-full bg-grayMed',
+	'ring-0 ring-fg transition-all hover:ring-2',
+	'ring-offset-0 ring-offset-bg hover:ring-offset-2',
+	'focus-visible:ring-offset-2 focus-visible:ring-2',
+	'cursor-pointer active:cursor-pointer focusable',
+)
 
 function EventBubbleLink({
 	event,
 	organisations,
 	...otherProps
 }: EventBubbleLinkProps) {
-	const searchParams = useSearchParams();
+	const searchParams = useSearchParams()
 	return (
 		<TooltipTrigger asChild>
 			<InternalLink
@@ -45,17 +45,17 @@ function EventBubbleLink({
 				{...otherProps}
 			>
 				<span className="sr-only">
-					{`Protest by ${event.organizers.slice(0, 3).join(", ")}${
+					{`Protest by ${event.organizers.slice(0, 3).join(', ')}${
 						event.organizers.length > 3
 							? `and ${event.organizers.length - 3} more`
-							: ""
+							: ''
 					}: "${event.description.slice(0, 300)}${
-						event.description.length > 300 ? "..." : ""
+						event.description.length > 300 ? '...' : ''
 					}"`}
 				</span>
 			</InternalLink>
 		</TooltipTrigger>
-	);
+	)
 }
 
 export function AggregatedEventsBubble({
@@ -65,9 +65,7 @@ export function AggregatedEventsBubble({
 	events,
 	sumSize,
 }: AggregatedItemType) {
-	const { setDateRange } = useFiltersStore(({ setDateRange }) => ({
-		setDateRange,
-	}));
+	const setDateRange = useFiltersStore(({ setDateRange }) => setDateRange)
 
 	return (
 		<button
@@ -75,56 +73,56 @@ export function AggregatedEventsBubble({
 			onClick={() =>
 				setDateRange(getDateRangeByAggregationUnit({ aggregationUnit, date }))
 			}
-			className={cn(bubbleClasses, "rounded-sm")}
+			className={cn(bubbleClasses, 'rounded-sm')}
 			style={{
 				background: getCSSStyleGradientWithPercentages(
 					getColorPercentagesByParticipants(selectedOrganisations, events),
 				),
 			}}
 		/>
-	);
+	)
 }
 
-type ColorsWithPercentages = Record<string, number>;
+type ColorsWithPercentages = Record<string, number>
 
 function getColorPercentagesByParticipants(
 	organisations: OrganisationType[],
 	events: ParsedEventType[],
 ): ColorsWithPercentages {
-	if (organisations.length === 0) return {};
+	if (organisations.length === 0) return {}
 	const organisationsColors = organisations
 		.sort(compareOrganizationsByColors)
-		.map((x) => x.color);
-	const uniqueColors = Array.from(new Set(organisationsColors));
+		.map((x) => x.color)
+	const uniqueColors = Array.from(new Set(organisationsColors))
 	const colors2OrgsCount = events.reduce(
 		(acc, event) => {
-			const eventSum = event.size_number ?? 0 / event.organizers.length;
+			const eventSum = event.size_number ?? 0 / event.organizers.length
 			for (const organizer of event.organizers) {
-				const org = organisations.find((x) => x.slug === organizer.slug);
-				if (!org) continue;
-				const currentColorCount = acc[org.color] ?? 0;
-				acc[org.color] = currentColorCount + eventSum;
+				const org = organisations.find((x) => x.slug === organizer.slug)
+				if (!org) continue
+				const currentColorCount = acc[org.color] ?? 0
+				acc[org.color] = currentColorCount + eventSum
 			}
-			return acc;
+			return acc
 		},
 		{} as Record<string, number>,
-	);
+	)
 	const sumSize = Object.values(colors2OrgsCount).reduce(
 		(acc, count) => acc + count,
 		0,
-	);
+	)
 	return uniqueColors.reduce((acc, color) => {
-		const count = colors2OrgsCount[color] ?? 0;
-		const sum = sumSize ?? 0;
-		acc[color] = (count / sum) * 100;
-		return acc;
-	}, {} as ColorsWithPercentages);
+		const count = colors2OrgsCount[color] ?? 0
+		const sum = sumSize ?? 0
+		acc[color] = (count / sum) * 100
+		return acc
+	}, {} as ColorsWithPercentages)
 }
 
 function getCSSStyleGradientWithEqualSteps(colors: string[]) {
-	if (colors.length === 0) return;
-	if (colors.length === 1) return colors[0];
-	const stepPercentage = Math.round(100 / colors.length);
+	if (colors.length === 0) return
+	if (colors.length === 1) return colors[0]
+	const stepPercentage = Math.round(100 / colors.length)
 	return `linear-gradient(0deg, ${colors
 		.map(
 			(color, i) =>
@@ -132,27 +130,27 @@ function getCSSStyleGradientWithEqualSteps(colors: string[]) {
 					(i + 1) * stepPercentage
 				}%`,
 		)
-		.join(", ")})`;
+		.join(', ')})`
 }
 
 function getCSSStyleGradientWithPercentages(
 	colorsWithPercentages: ColorsWithPercentages,
 ) {
-	let lastPercentage = 0;
+	let lastPercentage = 0
 	return `linear-gradient(0deg, ${Object.entries(colorsWithPercentages)
 		.sort((a, b) => {
-			if (a[0] === "var(--grayDark)" && b[0] !== "var(--grayDark)") return -1;
-			if (a[0] !== "var(--grayDark)" && b[0] === "var(--grayDark)") return 1;
-			if (a[1] < b[1]) return -1;
-			if (a[1] > b[1]) return 1;
-			return a[0].localeCompare(b[0]);
+			if (a[0] === 'var(--grayDark)' && b[0] !== 'var(--grayDark)') return -1
+			if (a[0] !== 'var(--grayDark)' && b[0] === 'var(--grayDark)') return 1
+			if (a[1] < b[1]) return -1
+			if (a[1] > b[1]) return 1
+			return a[0].localeCompare(b[0])
 		})
 		.map(([color, percentage]) => {
-			const newPercentage = `${color} ${lastPercentage}%, ${color} ${lastPercentage + percentage}%`;
-			lastPercentage += percentage;
-			return newPercentage;
+			const newPercentage = `${color} ${lastPercentage}%, ${color} ${lastPercentage + percentage}%`
+			lastPercentage += percentage
+			return newPercentage
 		})
-		.join(", ")})`;
+		.join(', ')})`
 }
 
-export default memo(EventBubbleLink);
+export default memo(EventBubbleLink)

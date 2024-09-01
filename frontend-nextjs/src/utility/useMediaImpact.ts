@@ -1,7 +1,6 @@
 "use client";
 import { useFiltersStore } from "@/providers/FiltersStoreProvider";
 import { useQuery } from "@tanstack/react-query";
-import { format } from "./dateUtil";
 import type { EventOrganizerSlugType } from "./eventsUtil";
 import { getMediaImpactData } from "./mediaImpactUtil";
 import type { TrendQueryProps } from "./mediaTrendUtil";
@@ -19,11 +18,11 @@ function useMediaImpactData({
 	trend_type: TrendQueryProps["trend_type"];
 	sentiment_target: TrendQueryProps["sentiment_target"];
 }) {
-	const { from, to, mediaSource } = useFiltersStore(
-		({ from, to, mediaSource }) => ({ from, to, mediaSource }),
-	);
-	const fromDateString = format(from, "yyyy-MM-dd");
-	const toDateString = format(to, "yyyy-MM-dd");
+	const from = useFiltersStore(({ from }) => from);
+	const to = useFiltersStore(({ to }) => to);
+	const mediaSource = useFiltersStore(({ mediaSource }) => mediaSource);
+	const fromDateString = useFiltersStore(({ fromDateString }) => fromDateString);
+	const toDateString = useFiltersStore(({ toDateString }) => toDateString);
 	const queryKey = [
 		"mediaImpact",
 		trend_type,

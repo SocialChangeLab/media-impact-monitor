@@ -15,11 +15,9 @@ import useTimelineEvents from './EventsTimeline/useTimelineEvents'
 
 function DraggableTimeFilterRange() {
 	const { isLoading } = useEvents()
-	const { from, to, setDateRange } = useFiltersStore((state) => ({
-		from: dateToComparableDateItem(state.from),
-		to: dateToComparableDateItem(state.to),
-		setDateRange: state.setDateRange,
-	}))
+	const from = useFiltersStore(({ from }) => dateToComparableDateItem(from))
+	const to = useFiltersStore(({ to }) => dateToComparableDateItem(to))
+	const setDateRange = useFiltersStore(({ setDateRange }) => setDateRange)
 	const { today, datasetStartDate, datasetEndDate } = useToday()
 	const amountOfDays = differenceInDays(datasetEndDate, datasetStartDate) + 1
 	const intervals = new Array(Math.abs(amountOfDays))
@@ -149,10 +147,7 @@ const HandleTooptip = memo(
 const BackgroundVis = memo(() => {
 	const [parentRef, size] = useElementSize()
 	const { datasetStartDate, datasetEndDate } = useToday()
-	const { data } = useEvents({
-		from: datasetStartDate,
-		to: datasetEndDate,
-	})
+	const { data } = useEvents()
 	const { eventColumns, columnsCount, sizeScale } = useTimelineEvents({
 		size,
 		data,

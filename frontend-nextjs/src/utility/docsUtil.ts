@@ -104,6 +104,7 @@ export function getDocsToc() {
 	const docsPages = getAllDocsPages();
 	return docsPages.sort(sortPages).map((docsPage) => ({
 		...docsPage,
+		slug: docsPage.children?.length ? docsPage.children[0].slug : docsPage.slug,
 		children: docsPage.children?.sort(sortPages),
 	}));
 }

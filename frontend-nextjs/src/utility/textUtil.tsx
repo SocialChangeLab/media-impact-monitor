@@ -214,7 +214,7 @@ const textsEnGB = {
 	},
 	charts: {
 		help: {
-			howToReadThis: 'How to read this',
+			howToReadThis: 'How to read this chart',
 			readInTheDocs: 'Read in the docs',
 			tabs: {
 				info: 'Info',
@@ -295,6 +295,11 @@ const textsEnGB = {
 				downTo: 'Down to',
 				atLeast: 'At least',
 				noImpact: 'No impact',
+			},
+			disclaimer: {
+				title: 'Caution!',
+				description:
+					'The results shown below are flawed and for demo purposes only. We are still working on integrating  reliable and validated impact estimation methods.',
 			},
 			descriptions: {
 				unclearChange: ({ isSentiment, topicNode }: ImpactDescriptionProps) => (
@@ -880,6 +885,10 @@ const textsXXX = {
 				downTo: 'XXX',
 				atLeast: 'XXX',
 				noImpact: 'XXX',
+			},
+			disclaimer: {
+				title: 'XXX',
+				description: 'XXX',
 			},
 			descriptions: {
 				unclearChange: ({ isSentiment, topicNode }: ImpactDescriptionProps) => (

@@ -1,101 +1,101 @@
-"use client";
-import ThemeToggle from "@/components/ThemeToggle";
-import AppLogo from "@/components/logos/AppLogo";
-import { cn } from "@/utility/classNames";
-import { texts } from "@/utility/textUtil";
-import useMediaQuery from "@custom-react-hooks/use-media-query";
-import { useAnimationFrame } from "framer-motion";
-import { MenuIcon } from "lucide-react";
-import { memo, useEffect, useRef, useState } from "react";
-import InternalLink from "../InternalLink";
-import { Button } from "../ui/button";
-import { Drawer, DrawerContent, DrawerTrigger } from "../ui/drawer";
-import HeaderMenuLink from "./HeaderMenuLink";
+'use client'
+import ThemeToggle from '@/components/ThemeToggle'
+import AppLogo from '@/components/logos/AppLogo'
+import { cn } from '@/utility/classNames'
+import { texts } from '@/utility/textUtil'
+import useMediaQuery from '@custom-react-hooks/use-media-query'
+import { useAnimationFrame } from 'framer-motion'
+import { MenuIcon } from 'lucide-react'
+import { memo, useEffect, useRef, useState } from 'react'
+import InternalLink from '../InternalLink'
+import { Button } from '../ui/button'
+import { Drawer, DrawerContent, DrawerTrigger } from '../ui/drawer'
+import HeaderMenuLink from './HeaderMenuLink'
 
 type MenuItemType = {
-	name: string;
-	label: string;
-	route: string;
-	showMediaFilter?: boolean;
-	showOrganisationsFilter?: boolean;
-	showTimeFilter?: boolean;
-	cascade?: boolean;
-};
+	name: string
+	label: string
+	route: string
+	showMediaFilter?: boolean
+	showOrganisationsFilter?: boolean
+	showTimeFilter?: boolean
+	cascade?: boolean
+}
 
 const menuItems: MenuItemType[] = [
 	{
-		name: "home",
+		name: 'home',
 		label: texts.mainNavigation.home,
-		route: "/",
+		route: '/',
 		showMediaFilter: false,
 		showOrganisationsFilter: false,
 		showTimeFilter: false,
 	},
 	{
-		name: "dashboard",
+		name: 'dashboard',
 		label: texts.mainNavigation.dashboard,
-		route: "/dashboard",
+		route: '/dashboard',
 		showMediaFilter: true,
 		showOrganisationsFilter: true,
 		showTimeFilter: true,
 	},
 	{
-		name: "organisations",
+		name: 'organisations',
 		label: texts.mainNavigation.organisations,
-		route: "/organisations",
+		route: '/organisations',
 		showTimeFilter: true,
 		showOrganisationsFilter: true,
 		cascade: true,
 	},
 	{
-		name: "about",
+		name: 'about',
 		label: texts.mainNavigation.about,
-		route: "/about",
+		route: '/about',
 	},
 	{
-		name: "docs",
+		name: 'docs',
 		label: texts.mainNavigation.docs,
-		route: "/docs",
+		route: '/docs',
 	},
-];
+]
 
 function getMenuItemByPathname(pathname: string) {
 	const item = menuItems.find((i) => {
-		if (i.route === "/") return pathname === "/";
-		return pathname.startsWith(i.route);
-	});
-	if (!item) return undefined;
-	if (item.route === pathname) return item;
-	return item.cascade ? item : undefined;
+		if (i.route === '/') return pathname === '/'
+		return pathname.startsWith(i.route)
+	})
+	if (!item) return undefined
+	if (item.route === pathname) return item
+	return item.cascade ? item : undefined
 }
 
 export function doesPathnameShowAnyFilter(pathname: string) {
-	const menuItem = getMenuItemByPathname(pathname);
-	if (!menuItem) return false;
+	const menuItem = getMenuItemByPathname(pathname)
+	if (!menuItem) return false
 	const showAnyFilter = Boolean(
 		menuItem.showMediaFilter ||
 			menuItem.showOrganisationsFilter ||
 			menuItem.showTimeFilter,
-	);
-	return showAnyFilter;
+	)
+	return showAnyFilter
 }
 
 export function doesPathnameShowMediaFilter(pathname: string) {
-	const menuItem = getMenuItemByPathname(pathname);
-	if (!menuItem) return false;
-	return menuItem.showMediaFilter;
+	const menuItem = getMenuItemByPathname(pathname)
+	if (!menuItem) return false
+	return menuItem.showMediaFilter
 }
 
 export function doesPathnameShowOrganisationsFilter(pathname: string) {
-	const menuItem = getMenuItemByPathname(pathname);
-	if (!menuItem) return false;
-	return menuItem.showOrganisationsFilter;
+	const menuItem = getMenuItemByPathname(pathname)
+	if (!menuItem) return false
+	return menuItem.showOrganisationsFilter
 }
 
 export function doesPathnameShowTimeFilter(pathname: string) {
-	const menuItem = getMenuItemByPathname(pathname);
-	if (!menuItem) return false;
-	return menuItem.showTimeFilter;
+	const menuItem = getMenuItemByPathname(pathname)
+	if (!menuItem) return false
+	return menuItem.showTimeFilter
 }
 
 const MobileNavigation = memo(
@@ -105,10 +105,10 @@ const MobileNavigation = memo(
 		isOpened = false,
 		onOpenChange,
 	}: {
-		menuItems: MenuItemType[];
-		currentPage: string;
-		isOpened?: boolean;
-		onOpenChange?: (isOpened: boolean) => void;
+		menuItems: MenuItemType[]
+		currentPage: string
+		isOpened?: boolean
+		onOpenChange?: (isOpened: boolean) => void
 	}) => (
 		<ul
 			className={cn(`flex flex-row-reverse gap-4 items-center lg:hidden`)}
@@ -149,13 +149,16 @@ const MobileNavigation = memo(
 			</li>
 		</ul>
 	),
-);
+)
 
 const DesktopNavigation = memo(
 	({
 		menuItems,
 		currentPage,
-	}: { menuItems: MenuItemType[]; currentPage: string }) => (
+	}: {
+		menuItems: MenuItemType[]
+		currentPage: string
+	}) => (
 		<ul
 			className={cn(`flex-row gap-2 xl:gap-3 items-center`, `hidden lg:flex`)}
 			aria-label="Main menu items"
@@ -181,46 +184,46 @@ const DesktopNavigation = memo(
 			</li>
 		</ul>
 	),
-);
+)
 
 function HeaderMenu({ currentPage }: { currentPage: string }) {
-	const mediaQuery = useMediaQuery("(max-width: 1024px)");
-	const [isMobile, setIsMobile] = useState(false);
-	const [isMenuOpen, setIsMenuOpen] = useState(false);
-	const mainNavRef = useRef<HTMLElement>(null);
+	const mediaQuery = useMediaQuery('(max-width: 1024px)')
+	const [isMobile, setIsMobile] = useState(false)
+	const [isMenuOpen, setIsMenuOpen] = useState(false)
+	const mainNavRef = useRef<HTMLElement>(null)
 
 	useEffect(() => {
-		!isMobile && setIsMenuOpen(false);
-	}, [isMobile]);
+		!isMobile && setIsMenuOpen(false)
+	}, [isMobile])
 
-	useEffect(() => setIsMobile(mediaQuery), [mediaQuery]);
+	useEffect(() => setIsMobile(mediaQuery), [mediaQuery])
 
 	useAnimationFrame(() => {
-		if (!mainNavRef.current) return;
-		const height = mainNavRef.current.getBoundingClientRect().height;
+		if (!mainNavRef.current) return
+		const height = mainNavRef.current.getBoundingClientRect().height
 		document.documentElement.style.setProperty(
-			"--headerHeight",
+			'--headerHeight',
 			`${Math.floor(height)}px`,
-		);
-	});
+		)
+	})
 
 	return (
 		<nav
 			ref={mainNavRef}
 			id="main-navigation"
 			className={cn(
-				"px-[var(--pagePadding)] py-4 flex gap-6 flex-wrap items-center justify-between",
-				"border-b border-grayLight w-screen overflow-clip z-50 relative",
+				'px-content py-4 flex gap-6 flex-wrap items-center justify-between',
+				'border-b border-grayLight w-screen overflow-clip z-50 relative',
 				`max-w-page mx-auto maxPage:border-x maxPage:border-grayLight bg-bg z-50`,
-				"pointer-events-auto",
+				'pointer-events-auto',
 			)}
 		>
 			<InternalLink
 				href="/dashboard"
 				title="Home"
 				className={cn(
-					"opacity-100 motion-safe:transition-opacity hover:opacity-80 focusable",
-					"flex items-center lg:items-start gap-3",
+					'opacity-100 motion-safe:transition-opacity hover:opacity-80 focusable',
+					'flex items-center lg:items-start gap-3',
 				)}
 			>
 				<AppLogo /> <span className="text-grayDark text-sm">beta</span>
@@ -235,7 +238,7 @@ function HeaderMenu({ currentPage }: { currentPage: string }) {
 				/>
 			)}
 		</nav>
-	);
+	)
 }
 
-export default memo(HeaderMenu);
+export default memo(HeaderMenu)

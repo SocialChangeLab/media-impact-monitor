@@ -23,13 +23,14 @@
 	}
 
 	:root,
-	:root[data-theme='light'] {
+	:root[data-theme='light'],
+	.colors-light {
 		--pageMaxWidth: 1920px;
 		--pageFullWidth: min(100vw, var(--pageMaxWidth));
 		--pagePadding: clamp(1.5rem, 2vmax, 4rem);
 		--headerHeight: 75px;
 		--filtersHeight: 141px;
-		--footerHeight: 251px;
+		--footerHeight: 323OrganisationPageAdBannerpx;
 
 		--fg: var(--brandGreen);
 		--bg: var(--brandWhite);
@@ -69,7 +70,8 @@
 		--media-sentiment-chart-height: max(30lvh, 20rem);
 	}
 
-	:root[data-theme='dark'] {
+	:root[data-theme='dark'],
+	.colors-dark {
 		--fg: #fff;
 		--bg: #010d0d;
 		--bgOverlay: rgba(66, 66, 66, 0.5);
@@ -81,7 +83,8 @@
 	}
 
 	@media (prefers-contrast: more) {
-		:root[data-theme='light'] {
+		:root[data-theme='light'],
+		.colors-light {
 			--fg: #042f2e;
 			--bg: #fcfeff;
 			--bgOverlay: rgba(93, 114, 128, 0.5);
@@ -91,7 +94,8 @@
 			--grayLight: #e1ecf2;
 			--grayUltraLight: #f1faff;
 		}
-		:root[data-theme='dark'] {
+		:root[data-theme='dark'],
+		.colors-dark {
 			--fg: #fff;
 			--bg: #001111;
 			--bgOverlay: rgba(66, 66, 66, 0.5);
@@ -309,6 +313,26 @@
 
 	.gap-content {
 		@apply gap-[var(--pagePadding)];
+	}
+
+	.inset-x-content {
+		@apply inset-x-[var(--pagePadding)];
+	}
+
+	.left-content {
+		@apply left-[var(--pagePadding)];
+	}
+
+	.right-content {
+		@apply right-[var(--pagePadding)];
+	}
+
+	.top-content {
+		@apply top-[var(--pagePadding)];
+	}
+
+	.bottom-content {
+		@apply left-[var(--pagePadding)];
 	}
 
 	.min-h-content {

@@ -4,12 +4,14 @@ import { texts } from '@/utility/textUtil'
 import useTopics from '@/utility/useTopics'
 import useElementSize from '@custom-react-hooks/use-element-size'
 import { AnimatePresence, motion } from 'framer-motion'
+import { AlertTriangle } from 'lucide-react'
 import dynamic from 'next/dynamic'
 import { type ReactNode, Suspense, useState } from 'react'
 import { ChartDocsDialog } from './ChartDocsDialog'
 import type { DataCreditLegendSource } from './DataCreditLegend'
 import InViewContainer from './InViewContainer'
 import TopicsLegend from './TopicsLegend'
+import { Alert, AlertDescription, AlertTitle } from './ui/alert'
 import { Button } from './ui/button'
 
 const LazyLoadedImpactChart = dynamic(
@@ -116,7 +118,16 @@ function TrendWithImpactChartWrapper({
 									{impactHeadline}
 								</h3>
 								<p className="text-sm text-grayDark">{impactDescription}</p>
-								<div className="xl:absolute bottom-2 right-0">
+								<Alert className="mt-2 px-2 py-1 flex-row flex items-baseline gap-4 xl:w-[calc(100%-12rem)]">
+									<AlertTitle className="inline-flex items-baseline gap-2 text-nowrap">
+										<AlertTriangle className="w-4 h-4 translate-y-0.5" />
+										{texts.charts.impact.disclaimer.title}
+									</AlertTitle>
+									<AlertDescription className="inline-block">
+										{texts.charts.impact.disclaimer.description}
+									</AlertDescription>
+								</Alert>
+								<div className="xl:absolute top-7 right-0">
 									<ChartDocsDialog helpSlug={impactHelpSlug} />
 								</div>
 							</div>

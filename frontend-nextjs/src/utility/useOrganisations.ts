@@ -82,7 +82,7 @@ export function useOrganisation(slug: EventOrganizerSlugType | undefined) {
 	const query = useQuery({
 		queryKey: ["organisations", slug],
 		queryFn: () => slug ? organisations.find(({ slug: s }) => s === slug) : undefined,
-		enabled: !!slug && !isLoading && organisations.length > 0,
+		enabled: !!slug && !isLoading
 	});
 
 	return {

@@ -37,6 +37,8 @@ const textsEnGB = {
 		docs: 'Docs',
 		fourOFour: 'Page not found',
 		logoAssets: 'Logo assets',
+		imprint: 'Imprint',
+		dataPrivacy: 'Data Privacy',
 		themeToggle: {
 			light: 'Light',
 			dark: 'Dark',
@@ -57,31 +59,31 @@ const textsEnGB = {
 		},
 		errorLoadingChartData: (
 			{ chartName = 'chart' }: { chartName?: string } = { chartName: 'chart' },
-		) => `Error fetching the ${chartName} impact data`,
+		) => `Error fetching the ${chartName} data`,
 		apiErrorTranslations: {
 			defaultMessage: (
 				{ datasetName = 'data' }: { datasetName?: string } = {
 					datasetName: 'data',
 				},
 			) =>
-				`There was unexpected issue while retrieving the ${datasetName}. Please try again in a few minutes.`,
+				`There was an unexpected issue while retrieving the ${datasetName}. Please try again in a few minutes.`,
 			ApiFetchError: (
 				{ datasetName = 'data' }: { datasetName?: string } = {
 					datasetName: 'data',
 				},
 			) =>
-				`We are facing issues with our API and where not able to retrieve the ${datasetName}. Please try again in a few minutes.`,
+				`We are facing issues with our API and are unable to retrieve the ${datasetName}. Please try again in a few minutes.`,
 			ZodError: (
 				{ datasetName = 'data' }: { datasetName?: string } = {
 					datasetName: 'data',
 				},
 			) =>
-				`The ${datasetName} returned from the API are/is not in the expected format. Please try again in a few minutes or contact the developers.`,
+				`The ${datasetName} returned from the API are not in the expected format. Please try again in a few minutes or contact the developers.`,
 			'An error has occured:  500': (
 				{ datasetName = 'data' }: { datasetName?: string } = {
 					datasetName: 'data',
 				},
-			) => 'There was an unecpected error: 500',
+			) => 'There was an unexpected error: 500',
 		},
 	},
 	footer: {
@@ -89,8 +91,10 @@ const textsEnGB = {
 			logoAssets: 'Logo assets',
 			gitHub: 'GitHub',
 			appStatus: 'App status',
+			imprint: 'Imprint',
+			privacy: 'Privacy',
 		},
-		copyRightOwner: `Social Change Lab`,
+		copyRightOwner: 'Social Change Lab',
 		hostedBy: 'Hosted by',
 		sponsoredBy: 'Sponsored by',
 	},
@@ -214,7 +218,7 @@ const textsEnGB = {
 	},
 	charts: {
 		help: {
-			howToReadThis: 'How to read this',
+			howToReadThis: 'How to read this chart',
 			readInTheDocs: 'Read in the docs',
 			tabs: {
 				info: 'Info',
@@ -229,14 +233,14 @@ const textsEnGB = {
 			total: 'Total',
 			loading: 'Loading chart data...',
 			cantShowThisChart: {
-				heading: "We can't show this chart",
+				heading: "Chart unavailable for selected data source",
 				text: 'Given the the following limitations:',
 				limitationTranslations: {
 					// CAUTION: The text below is the the original message from the API
 					// used as s key to translate it. Only change the value on the right
 					// of the colon ":"
-					'Sentiment trend requires fulltext analysis, which is only available for news_online, not web_google.': `This chart can only be displayed when selecting the meda source "Online News". The source "Google Trends" is not supported.`,
-					'Sentiment trend requires fulltext analysis, which is only available for news_online, not news_print.': `This chart can only be displayed when selecting the meda source "Online News". The source "Print News" is not supported.`,
+					'Sentiment trend requires fulltext analysis, which is only available for news_online, not web_google.': `This chart can only be displayed when selecting the media source "Online News", for which we can collect fulltexts and perform sentiment analysis. The source "Google Trends" is not supported.`,
+					'Sentiment trend requires fulltext analysis, which is only available for news_online, not news_print.': `This chart can only be displayed when selecting the media source "Online News", for which we can collect fulltexts and perform sentiment analysis. The source "Print News" is not supported, because we are still working on integrating fulltext analysis for print news.`,
 				},
 			},
 		},
@@ -274,13 +278,13 @@ const textsEnGB = {
 		sentimentTooltip: {
 			intro: (
 				<>
-					We use <B>Large Language Models</B> (LLMs) to predict the sentiment of
+					We use an <B>AI Language Model</B> (LLM) to predict the sentiment of
 					articles.
 				</>
 			),
 			linkToDocs: ({ LinkWrapper }: { LinkWrapper: WrapperEl }) => (
 				<>
-					To know more about the methodology, see the{' '}
+					To learn more about the methodology, see the{' '}
 					<LinkWrapper>documentation</LinkWrapper>.
 				</>
 			),
@@ -295,6 +299,11 @@ const textsEnGB = {
 				downTo: 'Down to',
 				atLeast: 'At least',
 				noImpact: 'No impact',
+			},
+			disclaimer: {
+				title: 'Caution!',
+				description:
+					'The results shown below are flawed and for demo purposes only. We are still working on integrating  reliable and validated impact estimation methods.',
 			},
 			descriptions: {
 				unclearChange: ({ isSentiment, topicNode }: ImpactDescriptionProps) => (
@@ -393,7 +402,7 @@ const textsEnGB = {
 						organisationNode: ReactNode
 					}) => (
 						<>
-							Only {percentageNode} of protests from {organisationNode} are
+							Only {percentageNode} of protests by {organisationNode} are
 							within the selected timeframe. Select a longer timeframe to get a
 							more reliable impact estimate.
 						</>
@@ -404,9 +413,9 @@ const textsEnGB = {
 		protest_timeline: {
 			heading: 'What protests are happening?',
 			description: [
-				'See protests over time for all of the selected organisations.',
+				'See protests over time for all selected organisations.',
 				'Hover or click on the bubbles for more information on individual protest events.',
-				'Currently, we only cover climate protests in Germany since 2020.',
+				'Currently, we cover climate protests in Germany since 2020.',
 			],
 			data_credit: [
 				{
@@ -467,7 +476,7 @@ const textsEnGB = {
 			},
 		},
 		topics_trend: {
-			heading: 'What topics are the focus of public discourse?',
+			heading: 'How prominent are the issues in public discourse?',
 			description: [
 				'See how many articles are published on various topics over time.',
 				'Use the filters to switch between online newspaper articles, print newspaper articles, and queries that people search for on Google.',
@@ -567,6 +576,19 @@ const textsEnGB = {
 			avgParticipants: 'Avg. Participants',
 			totalPartners: 'Partners',
 		},
+		adBanner: {
+			heading: ({ organisationNode }: { organisationNode: ReactNode }) => (
+				<>Interested in a deeper analysis for {organisationNode}?</>
+			),
+			description: ({ organisationNode }: { organisationNode: ReactNode }) => (
+				<>
+					If you are a member of {organisationNode} and wondering about your media impact, then we would love to cooperate with you, for example by providing a custom dashboard for your organisation.
+				</>
+			),
+			buttons: {
+				contactUs: 'Contact us',
+			},
+		},
 	},
 	singleProtestPage: {
 		heading: ({
@@ -635,6 +657,8 @@ const textsXXX = {
 		docs: 'XXX',
 		fourOFour: 'XXX',
 		logoAssets: 'XXX',
+		imprint: 'XXX',
+		dataPrivacy: 'XXX',
 		themeToggle: {
 			light: 'XXX',
 			dark: 'XXX',
@@ -683,6 +707,8 @@ const textsXXX = {
 			logoAssets: 'XXX',
 			gitHub: 'XXX',
 			appStatus: 'XXX',
+			imprint: 'XXX',
+			privacy: 'XXX',
 		},
 		copyRightOwner: 'XXX',
 		hostedBy: 'XXX',
@@ -880,6 +906,10 @@ const textsXXX = {
 				downTo: 'XXX',
 				atLeast: 'XXX',
 				noImpact: 'XXX',
+			},
+			disclaimer: {
+				title: 'XXX',
+				description: 'XXX',
 			},
 			descriptions: {
 				unclearChange: ({ isSentiment, topicNode }: ImpactDescriptionProps) => (
@@ -1092,6 +1122,11 @@ const textsXXX = {
 			totalParticipants: 'XXX',
 			avgParticipants: 'XXX',
 			totalPartners: 'XXX',
+		},
+		adBanner: {
+			heading: (_props: { organisationNode: ReactNode }) => <>XXX</>,
+			description: (_props: { organisationNode: ReactNode }) => <>XXX</>,
+			buttons: { contactUs: 'XXX' },
 		},
 	},
 	singleProtestPage: {

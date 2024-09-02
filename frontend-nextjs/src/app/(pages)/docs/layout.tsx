@@ -1,51 +1,51 @@
-"use client";
+'use client'
 
-import DocsOnThisPage from "@/components/DocsOnThisPage";
-import DocsPrevNextNav from "@/components/DocsPrevNextNav";
-import { DocsTocLink } from "@/components/DocsTocLink";
-import NewsletterFooterSection from "@/components/NewsletterFooterSection";
-import { Button } from "@/components/ui/button";
-import { useUiStore } from "@/providers/UiStoreProvider";
-import { cn } from "@/utility/classNames";
-import { getDocsToc } from "@/utility/docsUtil";
-import { texts } from "@/utility/textUtil";
-import { SidebarCloseIcon, SidebarOpenIcon } from "lucide-react";
-import { type ReactNode, Suspense, useEffect, useState } from "react";
+import DocsOnThisPage from '@/components/DocsOnThisPage'
+import DocsPrevNextNav from '@/components/DocsPrevNextNav'
+import { DocsTocLink } from '@/components/DocsTocLink'
+import NewsletterFooterSection from '@/components/NewsletterFooterSection'
+import { Button } from '@/components/ui/button'
+import { useUiStore } from '@/providers/UiStoreProvider'
+import { cn } from '@/utility/classNames'
+import { getDocsToc } from '@/utility/docsUtil'
+import { texts } from '@/utility/textUtil'
+import { SidebarCloseIcon, SidebarOpenIcon } from 'lucide-react'
+import { type ReactNode, Suspense, useEffect, useState } from 'react'
 
 function DocsLayout({ children }: { children: ReactNode }) {
-	const docsPagesToc = getDocsToc();
-	const [showLeftSidebar, setShowLeftSidebar] = useState(false);
-	const [showRightSidebar, setShowRightSidebar] = useState(false);
+	const docsPagesToc = getDocsToc()
+	const [showLeftSidebar, setShowLeftSidebar] = useState(false)
+	const [showRightSidebar, setShowRightSidebar] = useState(false)
 
 	const uiState = useUiStore((state) => ({
 		isScrolledToTop: state.isScrolledToTop,
 		isScrollingUp: state.isScrollingUp,
-	}));
+	}))
 
 	useEffect(() => {
 		if (showLeftSidebar || showRightSidebar) {
-			document.body.classList.add("overflow-clip");
+			document.body.classList.add('overflow-clip')
 		} else {
-			document.body.classList.remove("overflow-clip");
+			document.body.classList.remove('overflow-clip')
 		}
-	}, [showLeftSidebar, showRightSidebar]);
+	}, [showLeftSidebar, showRightSidebar])
 
 	return (
 		<>
 			<main
 				className={cn(
-					"grid min-h-content grid-cols-1 xl:grid-cols-[20rem_1fr] 2xl:grid-cols-[20rem_1fr_20rem]",
+					'grid min-h-content grid-cols-1 xl:grid-cols-[20rem_1fr] 2xl:grid-cols-[20rem_1fr_20rem]',
 				)}
 			>
 				<nav
 					aria-label={texts.docsPage.tocAriaLabel}
 					className={cn(
-						"border-r border-grayLight px-content max-xl:absolute",
-						"top-0 bottom-0 left-0 w-80 z-20 bg-bg transition-transform",
-						"duration-1000 ease-smooth-out",
+						'border-r border-grayLight px-content max-xl:absolute',
+						'top-0 bottom-0 left-0 w-80 z-20 bg-bg transition-transform',
+						'duration-1000 ease-smooth-out',
 						showLeftSidebar
-							? "max-xl:translate-x-0"
-							: "max-xl:-translate-x-full",
+							? 'max-xl:translate-x-0'
+							: 'max-xl:-translate-x-full',
 					)}
 				>
 					<div
@@ -53,7 +53,7 @@ function DocsLayout({ children }: { children: ReactNode }) {
 						style={{
 							top:
 								uiState.isScrolledToTop || uiState.isScrollingUp
-									? "var(--headerHeight)"
+									? 'var(--headerHeight)'
 									: 0,
 						}}
 					>
@@ -87,12 +87,12 @@ function DocsLayout({ children }: { children: ReactNode }) {
 				<nav
 					aria-label={texts.docsPage.onThisPage}
 					className={cn(
-						"border-l border-grayLight px-content max-2xl:absolute",
-						"top-0 bottom-0 right-0 w-80 z-20 bg-bg transition-transform",
-						"duration-1000 ease-smooth-out",
+						'border-l border-grayLight px-content max-2xl:absolute',
+						'top-0 bottom-0 right-0 w-80 z-20 bg-bg transition-transform',
+						'duration-1000 ease-smooth-out',
 						showRightSidebar
-							? "max-2xl:translate-x-0"
-							: "max-2xl:translate-x-full max-2xl:pointer-events-none",
+							? 'max-2xl:translate-x-0'
+							: 'max-2xl:translate-x-full max-2xl:pointer-events-none',
 					)}
 				>
 					<div
@@ -100,7 +100,7 @@ function DocsLayout({ children }: { children: ReactNode }) {
 						style={{
 							top:
 								uiState.isScrolledToTop || uiState.isScrollingUp
-									? "var(--headerHeight)"
+									? 'var(--headerHeight)'
 									: 0,
 						}}
 					>
@@ -113,35 +113,35 @@ function DocsLayout({ children }: { children: ReactNode }) {
 			</main>
 			<button
 				className={cn(
-					"fixed inset-0 bg-bgOverlay opacity-0 pointer-events-none transition-opacity z-10",
+					'fixed inset-0 bg-bgOverlay opacity-0 pointer-events-none transition-opacity z-10',
 					(showLeftSidebar || showRightSidebar) &&
-						"max-xl:opacity-100 max-xl:pointer-events-auto",
+						'max-xl:opacity-100 max-xl:pointer-events-auto',
 				)}
 				type="button"
 				onClick={() => {
-					setShowLeftSidebar(false);
-					setShowRightSidebar(false);
+					setShowLeftSidebar(false)
+					setShowRightSidebar(false)
 				}}
 			/>
 			<Button
 				size="icon"
 				variant="outline"
 				className={cn(
-					"xl:hidden",
-					"bg-bg fixed top-[calc(var(--headerHeight)+1rem)] z-20",
-					"shadow-lg shadow-black/5 dark:shadow-black/50",
-					"inline-flex items-center transition-all",
-					"duration-1000 ease-smooth-out left-[var(--pagePadding)]",
+					'xl:hidden',
+					'bg-bg fixed top-[calc(var(--headerHeight)+1rem)] z-20',
+					'shadow-lg shadow-black/5 dark:shadow-black/50',
+					'inline-flex items-center transition-all',
+					'duration-1000 ease-smooth-out left-content',
 					showLeftSidebar &&
-						"translate-x-80 -left-2 xs:left-4 gap-0 shadow-none",
-					showRightSidebar && "-translate-x-80",
+						'translate-x-80 -left-2 xs:left-4 gap-0 shadow-none',
+					showRightSidebar && '-translate-x-80',
 					!uiState.isScrolledToTop &&
 						!uiState.isScrollingUp &&
-						"-translate-y-[var(--headerHeight)]",
+						'-translate-y-[var(--headerHeight)]',
 				)}
 				onClick={() => {
-					setShowLeftSidebar(!showLeftSidebar);
-					setShowRightSidebar(false);
+					setShowLeftSidebar(!showLeftSidebar)
+					setShowRightSidebar(false)
 				}}
 			>
 				{showLeftSidebar ? (
@@ -151,9 +151,9 @@ function DocsLayout({ children }: { children: ReactNode }) {
 				)}
 				<span
 					className={cn(
-						"pt-0.5 w-16 overflow-clip transition-all",
-						"duration-1000 ease-smooth-out",
-						showLeftSidebar && "w-0",
+						'pt-0.5 w-16 overflow-clip transition-all',
+						'duration-1000 ease-smooth-out',
+						showLeftSidebar && 'w-0',
 					)}
 				>
 					Pages
@@ -163,28 +163,28 @@ function DocsLayout({ children }: { children: ReactNode }) {
 				size="icon"
 				variant="outline"
 				className={cn(
-					"2xl:hidden",
-					"bg-bg fixed top-[calc(var(--headerHeight)+1rem)] z-20",
-					"shadow-lg shadow-black/5 dark:shadow-black/50",
-					"inline-flex items-center transition-all px-3 gap-1 justify-around",
-					"duration-1000 ease-smooth-out right-[var(--pagePadding)]",
+					'2xl:hidden',
+					'bg-bg fixed top-[calc(var(--headerHeight)+1rem)] z-20',
+					'shadow-lg shadow-black/5 dark:shadow-black/50',
+					'inline-flex items-center transition-all px-3 gap-1 justify-around',
+					'duration-1000 ease-smooth-out right-content',
 					showRightSidebar &&
-						"-translate-x-80 -right-2 xs:right-4 gap-0 shadow-none",
-					showLeftSidebar && "translate-x-80",
+						'-translate-x-80 -right-2 xs:right-4 gap-0 shadow-none',
+					showLeftSidebar && 'translate-x-80',
 					!uiState.isScrolledToTop &&
 						!uiState.isScrollingUp &&
-						"-translate-y-[var(--headerHeight)]",
+						'-translate-y-[var(--headerHeight)]',
 				)}
 				onClick={() => {
-					setShowLeftSidebar(false);
-					setShowRightSidebar(!showRightSidebar);
+					setShowLeftSidebar(false)
+					setShowRightSidebar(!showRightSidebar)
 				}}
 			>
 				<span
 					className={cn(
-						"pt-0.5 w-24 overflow-clip transition-all",
-						"duration-1000 ease-smooth-out",
-						showRightSidebar && "w-0",
+						'pt-0.5 w-24 overflow-clip transition-all',
+						'duration-1000 ease-smooth-out',
+						showRightSidebar && 'w-0',
 					)}
 				>
 					{texts.docsPage.tocButtonText}
@@ -197,7 +197,7 @@ function DocsLayout({ children }: { children: ReactNode }) {
 			</Button>
 			<NewsletterFooterSection />
 		</>
-	);
+	)
 }
 
-export default DocsLayout;
+export default DocsLayout

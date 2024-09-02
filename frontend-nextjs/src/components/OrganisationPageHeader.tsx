@@ -70,7 +70,7 @@ const OrganisationPageHeader = memo(
 
 		return (
 			<div className="grid md:grid-cols-[3fr,1fr] lg:grid-cols-[2fr,1fr] border-b border-grayLight min-h-56">
-				<div className="px-[var(--pagePadding)] pt-[max(1.25rem,2.5vmax)] pb-[max(1.25rem,4vmax)] flex flex-col gap-4 min-h-full">
+				<div className="px-content pt-[max(1.25rem,2.5vmax)] pb-[max(1.25rem,4vmax)] flex flex-col gap-4 min-h-full">
 					<InternalLink
 						href={`/organisations`}
 						className="flex gap-2 items-center text-grayDark hover:text-fg hover:font-semibold transition-all"

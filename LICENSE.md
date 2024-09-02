@@ -2,6 +2,14 @@
 
 (c) 2024 Social Change Lab
 
+We use a combined license, in short:
+
+- Only noncommercial use is permitted (**Commons Clause**).
+- Only ethical use is permitted (**NoHarm Clause**).
+- Derivative works must be made open source (**General Public License**).
+
+In detail:
+
 ## Commons Clause
 
 [“Commons Clause” License Condition v1.0](https://commonsclause.com/)

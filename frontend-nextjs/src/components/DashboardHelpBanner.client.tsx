@@ -1,26 +1,26 @@
-"use client";
-import { cn } from "@/utility/classNames";
-import { texts } from "@/utility/textUtil";
-import { motion } from "framer-motion";
-import { CornerLeftDown, CornerLeftUp, HelpCircle } from "lucide-react";
-import { useCallback, useMemo, useState } from "react";
-import InternalLink from "./InternalLink";
-import { Button, buttonVariants } from "./ui/button";
+'use client'
+import { cn } from '@/utility/classNames'
+import { texts } from '@/utility/textUtil'
+import { motion } from 'framer-motion'
+import { CornerLeftDown, CornerLeftUp, HelpCircle } from 'lucide-react'
+import { useCallback, useMemo, useState } from 'react'
+import InternalLink from './InternalLink'
+import { Button, buttonVariants } from './ui/button'
 
 type HelpBannerActions = {
-	onExpand: () => void;
-	onCollapse: () => void;
-};
+	onExpand: () => void
+	onCollapse: () => void
+}
 
 function ExpandedHelpBanner({ onCollapse }: HelpBannerActions) {
 	return (
-		<div className={cn("flex justify-between items-center relative")}>
+		<div className={cn('flex justify-between items-center relative')}>
 			<div className="w-fit flex flex-col ">
 				<h1
 					className={cn(
-						"font-headlines text-2xl lg:text-3xl font-bold",
-						"flex items-center mb-1 lg:mb-3 antialiased gap-2",
-						"leading-7",
+						'font-headlines text-2xl lg:text-3xl font-bold',
+						'flex items-center mb-1 lg:mb-3 antialiased gap-2',
+						'leading-7',
 					)}
 				>
 					{texts.info.welcome_message.heading}
@@ -39,11 +39,11 @@ function ExpandedHelpBanner({ onCollapse }: HelpBannerActions) {
 				<span className="flex gap-4 mt-5">
 					<Button size="sm" onClick={onCollapse}>
 						{texts.info.welcome_message.buttons.cta}
-					</Button>{" "}
+					</Button>{' '}
 					<InternalLink
 						className={cn(
-							buttonVariants({ variant: "outline", size: "sm" }),
-							"border-grayLight",
+							buttonVariants({ variant: 'outline', size: 'sm' }),
+							'border-grayLight',
 						)}
 						href="/docs"
 					>
@@ -53,8 +53,8 @@ function ExpandedHelpBanner({ onCollapse }: HelpBannerActions) {
 			</div>
 			<span
 				className={cn(
-					"absolute gap-1 top-4 right-0 2xl:right-1/3 pointer-events-none",
-					"hidden lg:flex",
+					'absolute gap-1 top-4 right-0 2xl:right-1/3 pointer-events-none',
+					'hidden lg:flex',
 				)}
 				aria-hidden="true"
 			>
@@ -72,8 +72,8 @@ function ExpandedHelpBanner({ onCollapse }: HelpBannerActions) {
 			</span>
 			<span
 				className={cn(
-					"absolute flex gap-1 bottom-4 right-0 2xl:right-[15%] pointer-events-none",
-					"hidden lg:flex",
+					'absolute flex gap-1 bottom-4 right-0 2xl:right-[15%] pointer-events-none',
+					'hidden lg:flex',
 				)}
 				aria-hidden="true"
 			>
@@ -90,7 +90,7 @@ function ExpandedHelpBanner({ onCollapse }: HelpBannerActions) {
 				</div>
 			</span>
 		</div>
-	);
+	)
 }
 
 function CollapsedHelpBanner({ onExpand }: HelpBannerActions) {
@@ -99,25 +99,25 @@ function CollapsedHelpBanner({ onExpand }: HelpBannerActions) {
 			<HelpCircle size={20} className="text-grayDark" />
 			{texts.info.welcome_message.buttons.whatIsThis}
 		</Button>
-	);
+	)
 }
 
 function DashboardHelpBannerClient({
 	defaultIsExpanded = true,
 	persistIsExpanded = () => {},
 }: {
-	defaultIsExpanded?: boolean | undefined;
-	persistIsExpanded?: (value: boolean) => void;
+	defaultIsExpanded?: boolean | undefined
+	persistIsExpanded?: (value: boolean) => void
 }) {
-	const [isExpanded, setIsExpanded] = useState(defaultIsExpanded);
+	const [isExpanded, setIsExpanded] = useState(defaultIsExpanded)
 
 	const setIsExpandedValue = useCallback(
 		(value: boolean) => {
-			setIsExpanded(value);
-			persistIsExpanded(value);
+			setIsExpanded(value)
+			persistIsExpanded(value)
 		},
 		[persistIsExpanded],
-	);
+	)
 
 	const actions = useMemo(
 		() => ({
@@ -125,7 +125,7 @@ function DashboardHelpBannerClient({
 			onCollapse: () => setIsExpandedValue(false),
 		}),
 		[setIsExpandedValue],
-	);
+	)
 
 	return (
 		<motion.section
@@ -141,11 +141,11 @@ function DashboardHelpBannerClient({
 					paddingBottom: `1rem`,
 				},
 			}}
-			initial={isExpanded ? "expanded" : "collapsed"}
-			animate={isExpanded ? "expanded" : "collapsed"}
+			initial={isExpanded ? 'expanded' : 'collapsed'}
+			animate={isExpanded ? 'expanded' : 'collapsed'}
 			className={cn(
-				"px-[var(--pagePadding)] overflow-clip flex flex-col justify-center",
-				"border-b border-grayLight last-of-type:border-b-0",
+				'px-content overflow-clip flex flex-col justify-center',
+				'border-b border-grayLight last-of-type:border-b-0',
 			)}
 		>
 			{isExpanded ? (
@@ -154,7 +154,7 @@ function DashboardHelpBannerClient({
 				<CollapsedHelpBanner {...actions} />
 			)}
 		</motion.section>
-	);
+	)
 }
 
-export default DashboardHelpBannerClient;
+export default DashboardHelpBannerClient

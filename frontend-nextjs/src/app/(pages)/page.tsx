@@ -21,7 +21,7 @@ export default function HomePageWithSuspense() {
 				'overflow-clip grid grid-cols-1 xl:grid-cols-[2fr_3fr] gap-12 items-center justify-center',
 			)}
 		>
-			<div className="flex flex-col gap-4 justify-center items-center px-[var(--pagePadding)] py-[clamp(2rem,4vmax,8rem)]">
+			<div className="flex flex-col gap-4 justify-center items-center px-content py-[clamp(2rem,4vmax,8rem)]">
 				<Image
 					src={headerImage}
 					alt="A decorative header image of a crowd protesting"
@@ -109,7 +109,7 @@ export default function HomePageWithSuspense() {
 					alt={texts.homepage.hero.backgroundImage.lightAlt}
 					priority
 					className={cn(
-						'absolute inset-y-0 inset-x-[var(--pagePadding)] xl:inset-0 object-cover object-left-top h-full',
+						'absolute inset-y-0 inset-x-content xl:inset-0 object-cover object-left-top h-full',
 						'xl:translate-y-24 rounded-tl-lg shadow-black/30 shadow-xl',
 						'dark:hidden',
 					)}
@@ -119,7 +119,7 @@ export default function HomePageWithSuspense() {
 					alt={texts.homepage.hero.backgroundImage.darkAlt}
 					priority
 					className={cn(
-						'absolute inset-y-0 inset-x-[var(--pagePadding)] xl:inset-0 object-cover object-left-top h-full',
+						'absolute inset-y-0 inset-x-content xl:inset-0 object-cover object-left-top h-full',
 						'xl:translate-y-24 rounded-tl-lg shadow-black/30 shadow-xl',
 						'hidden dark:block',
 					)}

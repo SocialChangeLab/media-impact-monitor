@@ -10,46 +10,26 @@ export default async function AboutPage() {
 		<>
 			<h1 className="text-3xl">About the Media Impact Monitor</h1>
 			<p className="lead">
-				<em>Media Impact Monitor</em> is a novel tool for protest groups and
-				NGOs to measure and visualize their impact on public discourse. The tool
-				shows how activist events affect the discourse across various media
-				sources, such as local and national newspapers, social media,
-				parliamentary debates, and more. Protest groups can use it to
-				quantitatively and qualitatively evaluate their actions and adapt them
-				in a targeted manner to draw attention to their issues.
+				<em>Media Impact Monitor</em> makes you explore the world of protest and activism, and the impact that it has on societal discourse. Activists want to change the world -- whether it is about climate change mitigation, animal welfare, human rights, or any other important topic -- but it is hard to measure how successful they are at it. <em>Media Impact Monitor</em> takes all the data that is available, visualizes it, and makes statistical estimates of how successful different groups and different protest types are at creating attention and support for the cause that they care about.
 			</p>
-			<h2 id="background">Background</h2>
-			<p>
-				NGOs and protest groups often want to draw more public attention to
-				important issues in order to initiate social change. To do this, they
-				organise panel discussions, publish articles on social media, send out
-				press releases, organize demonstrations, practice civil disobedience,
-				implement art actions, and so on. To evaluate their work, organizations
-				often use &quot;press hits&quot; as a metric - but this is a poor
-				substitute for the broader impact on agenda setting within public
-				discourse, which the organizations are interested in but cannot easily
-				analyze.
-			</p>
-			<p>
-				This impact on agenda setting is difficult to capture statistically
-				because of the complex causal relationship between discourse, action
-				events, and external events. A correlational and even a simple
-				regression analysis would therefore lead to statistically biased
-				results.
-			</p>
-			<p>
-				This is where the <em>Media Impact Monitor</em> comes in: It uses
-				innovative causal inference methods to quantify and visualize how action
-				events affect agenda setting in public discourse.
-			</p>
-			<p>
-				<strong>Examples:</strong> Protest groups such as &quot;Last
-				Generation&quot; can use it to see whether their actions distract from
-				actual climate policy discussion or contribute to it constructively; and
-				NGOs such as Greenpeace can evaluate which of their formats are most
-				effective in media terms, and can use their media impact as an argument
-				for donating to them.
-			</p>
+			<h2 id="background">Features and Background</h2>
+			<ul>
+				<li><strong>Explore what protests are happening.</strong> We visualize all protests that are happening, and you can filter by time range, geographic area, and the topics and organizations that you are interested in. Currently we focus on climate protests in Germany, with plans to expand to more topics and countries.</li>
+				<li><strong>Analyze the coverage of specific protest events.</strong> Find the events that you have attended or organized, and see how newspapers have reported about them. We find all articles about your event, analyze their sentiment towards the protest, as well as the support for the cause that you pursue.</li>
+				<li><strong>Understand trends in societal discourse.</strong> The <em>theory of change</em> of how most protests achieve an impact is: via media attention, societal discourse, popular opinion, and eventually policy change. Not everything can be quantified, but some things can. We collect data and analyze it with regard to your protest and your cause, from:
+					<ul>
+						<li>online newspapers</li>
+						<li>print newspapers (fulltexts still in progress)</li>
+						<li>trends on Google and Wikipedia (wikipedia still todo)</li>
+						<li>social media (todo)</li>
+						<li>parliamentary debates (todo)</li>
+						<li>political processes (todo)</li>
+						<li>social surveys (todo)</li>
+					</ul>
+				</li>
+				<li><strong>Quantify the impact of activism (in progress).</strong> Activists often count the amount of coverage about themselves, but that is a mediocre metric for measuring success. We use rigorous statistics from causal inference to estimate the impact of protests on general trends in attention and support for the <em>area of concern</em> of the protests. For example, how much more is climate policy discussed in newspapers, due to the protests? You can compare the impact of different organizations, and the impact of moderate and radical protest tactics. And since statistics is somewhat complicated, we explain our methods and show intermediate steps.</li>
+				<li><strong>Keep track of your organization (todo).</strong> If you're part of an organization and want to measure your media impact, then we can collect data and compute statistics just for your organization. You can have your own dashboard with your own events, and see your impact on all the media sources that we monitor, or on your own outcome metrics. We collect citations from politicians and journalists about your work, and provide transparent estimates of your reach. Share your dashboard with your members and supporters to motivate them to donate and take action.</li>
+			</ul>
 			<h2 id="team">Team</h2>
 			<Team />
 			<h2 id="contact">Contact</h2>

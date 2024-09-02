@@ -571,6 +571,21 @@ const textsEnGB = {
 			avgParticipants: 'Avg. Participants',
 			totalPartners: 'Partners',
 		},
+		adBanner: {
+			heading: ({ organisationNode }: { organisationNode: ReactNode }) => (
+				<>Interested in a deeper analysis for {organisationNode}?</>
+			),
+			description: ({ organisationNode }: { organisationNode: ReactNode }) => (
+				<>
+					If {organisationNode} is your organisation, or if you want a more
+					detailed analysis of their impact, media coverage or sentiment,
+					contact us.
+				</>
+			),
+			buttons: {
+				contactUs: 'Contact us',
+			},
+		},
 	},
 	singleProtestPage: {
 		heading: ({
@@ -1100,6 +1115,11 @@ const textsXXX = {
 			totalParticipants: 'XXX',
 			avgParticipants: 'XXX',
 			totalPartners: 'XXX',
+		},
+		adBanner: {
+			heading: (_props: { organisationNode: ReactNode }) => <>XXX</>,
+			description: (_props: { organisationNode: ReactNode }) => <>XXX</>,
+			buttons: { contactUs: 'XXX' },
 		},
 	},
 	singleProtestPage: {

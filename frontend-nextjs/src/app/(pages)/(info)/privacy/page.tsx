@@ -30,8 +30,8 @@ export default async function PrivacyPage() {
 				</li>
 				<li>
 					<strong>Feedback Information:</strong> Through{' '}
-					<a href="https://sentry.io/">Sentry</a>'s feedback functionality, we
-					collect your name (if provided), email address, comments, and
+					<a href="https://sentry.io/">Sentry</a>&apos;s feedback functionality,
+					we collect your name (if provided), email address, comments, and
 					screenshots to better understand your experience and address any
 					issues you may encounter.
 				</li>

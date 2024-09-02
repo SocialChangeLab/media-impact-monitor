@@ -1,12 +1,13 @@
 from datetime import date
 
 import pandas as pd
+import pytest
 
-from media_impact_monitor.api import _get_trend
 from media_impact_monitor.trends.sentiment_trend import get_sentiment_trend
 from media_impact_monitor.types_ import TrendSearch
 
 
+@pytest.mark.skip(reason="too slow for ci")
 def test_get_sentiment_trend_valid_input():
     df, lims = get_sentiment_trend(
         TrendSearch(

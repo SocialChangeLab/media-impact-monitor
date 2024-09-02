@@ -26,7 +26,7 @@ import type {
 	OrganisationType,
 } from '@/utility/eventsUtil'
 import { texts } from '@/utility/textUtil'
-import { useOrganisations } from '@/utility/useOrganisations'
+import { useAllOrganisations } from '@/utility/useOrganisations'
 import { useMemo, useState } from 'react'
 import RoundedColorPill from './RoundedColorPill'
 
@@ -44,7 +44,7 @@ export function OrganisationsSelect({
 	onChange?: (orgs: EventOrganizerSlugType[]) => void
 }) {
 	const [open, setOpen] = useState(false)
-	const { isPending, organisations: allOrganisations } = useOrganisations()
+	const { isPending, organisations: allOrganisations } = useAllOrganisations()
 
 	const selectedOrgs = useMemo(() => {
 		return selectedOrganisations
@@ -172,7 +172,9 @@ export function OrganisationsSelect({
 									onSelect={() => {
 										const newSlugs =
 											selectedOrganizerSlugs.length === selectedOrgs.length
-												? []
+												? selectedOrganizerSlugs.length === 0
+													? allOrganisations.map((x) => x.slug)
+													: []
 												: selectedOrganizerSlugs
 										onChange(newSlugs)
 									}}

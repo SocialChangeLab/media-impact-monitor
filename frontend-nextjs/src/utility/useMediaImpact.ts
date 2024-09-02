@@ -6,7 +6,7 @@ import { getMediaImpactData } from "./mediaImpactUtil";
 import type { TrendQueryProps } from "./mediaTrendUtil";
 import { getStaleTime } from "./queryUtil";
 import { today } from "./today";
-import useEvents from "./useEvents";
+import { useAllOrganisations } from "./useOrganisations";
 import useQueryErrorToast from "./useQueryErrorToast";
 
 function useMediaImpactData({
@@ -32,7 +32,7 @@ function useMediaImpactData({
 		toDateString,
 		mediaSource,
 	];
-	const { data } = useEvents();
+	const { organisations, isLoading } = useAllOrganisations();
 	const query = useQuery({
 		queryKey,
 		queryFn: async () => {
@@ -46,11 +46,11 @@ function useMediaImpactData({
 					organizer,
 					mediaSource,
 				},
-				allOrganisations: data?.organisations || [],
+				allOrganisations: organisations || [],
 			});
 		},
 		staleTime: getStaleTime(today),
-		enabled: organizer !== undefined && data?.organisations?.length > 0,
+		enabled: organizer !== undefined && organisations?.length > 0 && !isLoading,
 	});
 
 	useQueryErrorToast(`media ${trend_type} impact`, query.error);

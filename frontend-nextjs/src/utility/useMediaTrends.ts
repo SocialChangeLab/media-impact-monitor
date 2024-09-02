@@ -5,7 +5,7 @@ import { useQuery } from "@tanstack/react-query";
 import slugify from "slugify";
 import { type TrendQueryProps, getMediaTrendData } from "./mediaTrendUtil";
 import { getStaleTime } from "./queryUtil";
-import useEvents from "./useEvents";
+import { useAllOrganisations } from "./useOrganisations";
 import useQueryErrorToast from "./useQueryErrorToast";
 
 function useMediaTrends({
@@ -28,7 +28,7 @@ function useMediaTrends({
 				.sort()
 				.join("-"),
 	);
-	const { data } = useEvents();
+	const { organisations, isLoading } = useAllOrganisations();
 	const { today } = useToday();
 	const queryKey = [
 		"mediaTrends",
@@ -52,12 +52,12 @@ function useMediaTrends({
 						organizers,
 						mediaSource,
 					},
-					allOrganisations: data.organisations || [],
+					allOrganisations: organisations || [],
 				},
 				today,
 			),
 		staleTime: getStaleTime(today),
-		enabled,
+		enabled: enabled && !isLoading,
 	});
 
 	useQueryErrorToast(`media ${trend_type} trends`, query.error);

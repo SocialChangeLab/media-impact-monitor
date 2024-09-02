@@ -10,7 +10,7 @@ export function getOrgStats(data: {
 	organisation: OrganisationType;
 }) {
 	const { events, organisations, organisation: org } = data;
-	const orgEvents = data.events.filter((e) =>
+	const orgEvents = events.filter((e) =>
 		e.organizers.find((o) => o.slug === org.slug),
 	);
 	const totalEvents = orgEvents.length ?? 0;
@@ -23,7 +23,7 @@ export function getOrgStats(data: {
 			.reduce((acc, e) => {
 				for (const partner of e.organizers) {
 					if (partner.slug === org.slug) continue;
-					const partnerOrg = data.organisations.find(
+					const partnerOrg = organisations.find(
 						(o) => o.slug === partner.slug,
 					);
 					if (!partnerOrg) continue;
@@ -33,16 +33,14 @@ export function getOrgStats(data: {
 			}, new Map<EventOrganizerSlugType, OrganisationType>())
 			.values(),
 	);
+
 	return {
 		...org,
 		slug: org.slug,
 		name: org.name,
 		totalEvents: totalEvents,
 		totalParticipants,
-		avgParticipantsPerEvent:
-			totalEvents === 0 ? 0 : totalParticipants / totalEvents,
-		avgPartnerOrgsPerEvent:
-			totalEvents === 0 ? 0 : partners.length / totalEvents,
+		avgParticipantsPerEvent: Math.ceil(totalParticipants / Math.max(1, totalEvents)),
 		totalPartners: partners.length,
 		partners,
 	};

@@ -11,7 +11,7 @@ import type {
 import type { ParsedMediaImpactItemType } from '@/utility/mediaImpactUtil'
 import { texts, titleCase } from '@/utility/textUtil'
 import { topicIsSentiment } from '@/utility/topicsUtil'
-import useEvents from '@/utility/useEvents'
+import { useAllEvents, useFilteredEvents } from '@/utility/useEvents'
 import { useOrganisation } from '@/utility/useOrganisations'
 import { scaleQuantize } from 'd3-scale'
 import {
@@ -38,20 +38,21 @@ const SelectedTimeframeTooltip = memo(
 	({ organisation }: { organisation?: OrganisationType }) => {
 		const from = useFiltersStore(({ from }) => format(from, 'LLLL d, yyyy'))
 		const to = useFiltersStore(({ to }) => format(to, 'LLLL d, yyyy'))
-		const { data } = useEvents()
+		const { allEvents } = useAllEvents()
+		const { filteredEvents } = useFilteredEvents()
 		const minPercentageConsideredGood = 40
 
 		const { color, percentageOfOrgsInTimeframe, showNotice } = useMemo(() => {
-			if (!data || !organisation)
+			if (!allEvents || !organisation)
 				return {
 					color: undefined,
 					percentageOfOrgsInTimeframe: undefined,
 					showNotice: false,
 				}
-			const allEventsFromOrg = data.allEvents.filter((e) =>
+			const allEventsFromOrg = allEvents.filter((e) =>
 				e.organizers.find((o) => o.slug === organisation.slug),
 			).length
-			const eventsFromOrgInTimeframe = data.events.filter((e) =>
+			const eventsFromOrgInTimeframe = filteredEvents.filter((e) =>
 				e.organizers.find((o) => o.slug === organisation.slug),
 			).length
 			const percentageOfOrgsInTimeframe =
@@ -68,7 +69,7 @@ const SelectedTimeframeTooltip = memo(
 				percentageOfOrgsInTimeframe,
 				showNotice: percentageOfOrgsInTimeframe < minPercentageConsideredGood,
 			}
-		}, [data, organisation])
+		}, [allEvents, filteredEvents, organisation])
 
 		return (
 			<Tooltip delayDuration={0}>

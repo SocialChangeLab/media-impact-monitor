@@ -1,8 +1,11 @@
-import { useFiltersStore } from '@/providers/FiltersStoreProvider'
 import { cn } from '@/utility/classNames'
 import { getOrgStats } from '@/utility/orgsUtil'
 import { texts } from '@/utility/textUtil'
-import useEvents from '@/utility/useEvents'
+import { useTimeFilteredEvents } from '@/utility/useEvents'
+import {
+	useAllOrganisations,
+	useSelectedOrganisations,
+} from '@/utility/useOrganisations'
 import { createColumnHelper } from '@tanstack/react-table'
 import { useMemo } from 'react'
 import { DataTable } from './DataTable/DataTable'
@@ -12,27 +15,26 @@ import RoundedColorPill from './RoundedColorPill'
 
 function formatNumber(num: number) {
 	if (Number.isNaN(num)) return '?'
-	return Math.round(num).toLocaleString(texts.language)
+	return Number.parseFloat(num.toFixed(2)).toLocaleString(texts.language)
 }
 
 function OrganisationsTable() {
-	const { data, isPending } = useEvents()
-	const organizers = useFiltersStore(({ organizers }) => organizers)
+	const { isLoading: isLoadingSelectedOrgs, selectedOrganisations } =
+		useSelectedOrganisations()
+	const { isLoading: isLoadingEvents, timeFilteredEvents } =
+		useTimeFilteredEvents()
+	const { organisations } = useAllOrganisations()
 
 	const extendedData = useMemo(
 		() =>
-			data?.organisations
-				.filter(
-					(org) => organizers.length === 0 || organizers.includes(org.slug),
-				)
-				.map((org) =>
-					getOrgStats({
-						events: data.events,
-						organisations: data.organisations,
-						organisation: org,
-					}),
-				),
-		[organizers, data],
+			selectedOrganisations.map((org) =>
+				getOrgStats({
+					events: timeFilteredEvents,
+					organisations,
+					organisation: org,
+				}),
+			),
+		[organisations, selectedOrganisations, timeFilteredEvents],
 	)
 
 	const columns = useMemo(() => {
@@ -80,13 +82,6 @@ function OrganisationsTable() {
 				},
 				size: 50,
 			}),
-			columnHelper.accessor('avgPartnerOrgsPerEvent', {
-				header: texts.organisationsPage.propertyNames.avgPartners,
-				cell: function render({ getValue }) {
-					return formatNumber(getValue())
-				},
-				size: 50,
-			}),
 			columnHelper.accessor('totalPartners', {
 				header: texts.organisationsPage.propertyNames.totalPartners,
 				cell: function render({ getValue, row }) {
@@ -113,13 +108,12 @@ function OrganisationsTable() {
 		]
 	}, [])
 
-	if (!data) return null
-
+	const isLoadingAny = Boolean(isLoadingSelectedOrgs || isLoadingEvents)
 	return (
 		<DataTable<(typeof extendedData)[0]>
 			columns={columns}
 			data={extendedData}
-			isLoading={isPending ?? true}
+			isLoading={isLoadingAny}
 		/>
 	)
 }

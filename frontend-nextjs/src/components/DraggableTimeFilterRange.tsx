@@ -4,7 +4,7 @@ import '@/styles/draggable-time-filter-range.css'
 import { cn } from '@/utility/classNames'
 import { dateToComparableDateItem } from '@/utility/comparableDateItemSchema'
 import { format } from '@/utility/dateUtil'
-import useEvents from '@/utility/useEvents'
+import { useAllEvents } from '@/utility/useEvents'
 import { isInSameAggregationUnit } from '@/utility/useTimeIntervals'
 import useDebounce from '@custom-react-hooks/use-debounce'
 import useElementSize from '@custom-react-hooks/use-element-size'
@@ -14,7 +14,7 @@ import RangeSlider from 'react-range-slider-input'
 import useTimelineEvents from './EventsTimeline/useTimelineEvents'
 
 function DraggableTimeFilterRange() {
-	const { isLoading } = useEvents()
+	const { isLoading } = useAllEvents()
 	const from = useFiltersStore(({ from }) => dateToComparableDateItem(from))
 	const to = useFiltersStore(({ to }) => dateToComparableDateItem(to))
 	const setDateRange = useFiltersStore(({ setDateRange }) => setDateRange)
@@ -147,10 +147,8 @@ const HandleTooptip = memo(
 const BackgroundVis = memo(() => {
 	const [parentRef, size] = useElementSize()
 	const { datasetStartDate, datasetEndDate } = useToday()
-	const { data } = useEvents()
 	const { eventColumns, columnsCount, sizeScale } = useTimelineEvents({
 		size,
-		data,
 		aggregationUnit: 'week',
 		config: {
 			eventMinHeight: 2,

@@ -4,7 +4,12 @@ import { cn } from '@/utility/classNames'
 import { type ComparableDateItemType } from '@/utility/comparableDateItemSchema'
 import { format } from '@/utility/dateUtil'
 import { parseErrorMessage } from '@/utility/errorHandlingUtil'
-import useEvents, { type UseEventsReturnType } from '@/utility/useEvents'
+import { useAllEvents, useFilteredEvents } from '@/utility/useEvents'
+import {
+	useAllOrganisations,
+	useFilteredEventsOrganisations,
+	useSelectedOrganisations,
+} from '@/utility/useOrganisations'
 import { isInSameAggregationUnit } from '@/utility/useTimeIntervals'
 import useElementSize from '@custom-react-hooks/use-element-size'
 import { QueryErrorResetBoundary } from '@tanstack/react-query'
@@ -28,13 +33,15 @@ type DataSourceInsertionType = {
 	name: string
 }
 
-function EventsTimeline({ data }: { data: UseEventsReturnType['data'] }) {
+function EventsTimeline() {
 	const [parentRef, size] = useElementSize()
-	const { organisations, eventsByOrgs, selectedOrganisations } = data
 	const aggregationUnit = useAggregationUnit(size.width)
+	const { filteredEvents, isLoading } = useFilteredEvents()
+	const { organisations } = useAllOrganisations()
+	const { filteredEventsOrganisations } = useFilteredEventsOrganisations()
+	const { selectedOrganisations } = useSelectedOrganisations()
 	const { eventColumns, columnsCount, sizeScale } = useTimelineEvents({
 		size,
-		data,
 		aggregationUnit,
 	})
 	// const { today } = useToday();
@@ -54,7 +61,8 @@ function EventsTimeline({ data }: { data: UseEventsReturnType['data'] }) {
 		// 	name: "Press Releases by Last Generation",
 		// },
 	]
-	if (eventsByOrgs.length === 0) return <EmptyEventsTimeline />
+
+	if (!isLoading && filteredEvents.length === 0) return <EmptyEventsTimeline />
 
 	return (
 		<EventsTimelineWrapper organisations={organisations} ref={parentRef}>
@@ -119,7 +127,7 @@ function EventsTimeline({ data }: { data: UseEventsReturnType['data'] }) {
 												key={event.event_id}
 												event={event}
 												organisations={organisations}
-												selectedOrganisations={selectedOrganisations}
+												selectedOrganisations={filteredEventsOrganisations}
 												height={sizeScale(event.size_number ?? 0)}
 											/>
 										))}
@@ -129,7 +137,7 @@ function EventsTimeline({ data }: { data: UseEventsReturnType['data'] }) {
 											sumSize={sumSize}
 											height={Math.ceil(sizeScale(sumSize))}
 											organisations={combinedOrganizers}
-											selectedOrganisations={combinedSelectedOrganizers}
+											selectedOrganisations={filteredEventsOrganisations}
 											events={eventsWithSize}
 											aggregationUnit={aggregationUnit}
 										/>
@@ -147,6 +155,7 @@ function EventsTimeline({ data }: { data: UseEventsReturnType['data'] }) {
 			</EventsTimelineScrollWrapper>
 			<EventsTimelineLegend
 				sizeScale={sizeScale}
+				organisations={filteredEventsOrganisations}
 				selectedOrganisations={selectedOrganisations}
 			/>
 		</EventsTimelineWrapper>
@@ -154,11 +163,11 @@ function EventsTimeline({ data }: { data: UseEventsReturnType['data'] }) {
 }
 
 function EventsTimelineWithData({ reset }: { reset?: () => void }) {
-	const { data, isFetching, isPending, error, isError } = useEvents()
+	const { allEvents, isFetching, isPending, error, isError } = useAllEvents()
 	if (isFetching || isPending) return <LoadingEventsTimeline />
 	if (isError)
 		return <ErrorEventsTimeline {...parseErrorMessage(error)} reset={reset} />
-	if (data?.events.length > 0) return <EventsTimeline data={data} />
+	if (allEvents.length > 0) return <EventsTimeline />
 	return <EmptyEventsTimeline />
 }
 export default function EventsTimelineWithErrorBoundary() {

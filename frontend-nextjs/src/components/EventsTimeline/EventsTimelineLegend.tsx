@@ -13,6 +13,7 @@ import useAggregationUnit from './useAggregationUnit'
 
 export type LegendOrganisation = Omit<OrganisationType, 'count'> & {
 	count?: number
+	isActive?: boolean
 }
 
 const placeholderOrganisations: LegendOrganisation[] = [
@@ -105,9 +106,11 @@ const placeholderOrganisations: LegendOrganisation[] = [
 function EventsTimelineLegend({
 	sizeScale = scaleLinear().domain([10, 100000]).range([10, 193.397]),
 	selectedOrganisations = placeholderOrganisations,
+	organisations = placeholderOrganisations,
 }: {
 	sizeScale?: ScaleLinear<number, number, never>
 	selectedOrganisations?: LegendOrganisation[]
+	organisations?: LegendOrganisation[]
 }) {
 	const [parentRef, { width }] = useElementSize()
 	const aggregationUnit = useAggregationUnit(width)
@@ -126,7 +129,10 @@ function EventsTimelineLegend({
 						sizeScale={sizeScale}
 						aggragationUnit={aggregationUnit}
 					/>
-					<OrgsLegend organisations={selectedOrganisations} />
+					<OrgsLegend
+						organisations={organisations}
+						selectedOrganisations={selectedOrganisations}
+					/>
 				</div>
 			</CollapsableSection>
 			<DataCreditLegend

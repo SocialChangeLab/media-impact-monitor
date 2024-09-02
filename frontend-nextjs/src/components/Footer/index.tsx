@@ -1,38 +1,38 @@
-"use client";
+'use client'
 
-import UptimeStatusLink from "@/components/UptimeStatusLink";
-import Logo from "@/components/logos/AppLogo";
-import BMBFLogo from "@/components/logos/BMBFLogo";
-import PrototypeFundLogo from "@/components/logos/PrototypeFundLogo";
-import SocialChangeLabLogo from "@/components/logos/SocialChangeLabLogo";
-import { useToday } from "@/providers/TodayProvider";
-import { cn } from "@/utility/classNames";
-import { texts } from "@/utility/textUtil";
-import { useAnimationFrame } from "framer-motion";
-import { ArrowUp, ExternalLink, GithubIcon } from "lucide-react";
-import { useRef } from "react";
-import InternalLink from "../InternalLink";
+import UptimeStatusLink from '@/components/UptimeStatusLink'
+import Logo from '@/components/logos/AppLogo'
+import BMBFLogo from '@/components/logos/BMBFLogo'
+import PrototypeFundLogo from '@/components/logos/PrototypeFundLogo'
+import SocialChangeLabLogo from '@/components/logos/SocialChangeLabLogo'
+import { useToday } from '@/providers/TodayProvider'
+import { cn } from '@/utility/classNames'
+import { texts } from '@/utility/textUtil'
+import { useAnimationFrame } from 'framer-motion'
+import { ArrowUp, ExternalLink, GithubIcon } from 'lucide-react'
+import { useRef } from 'react'
+import InternalLink from '../InternalLink'
 
 function Footer() {
-	const footerRef = useRef<HTMLElement>(null);
-	const { today } = useToday();
-	const year = today.getFullYear();
+	const footerRef = useRef<HTMLElement>(null)
+	const { today } = useToday()
+	const year = today.getFullYear()
 
 	useAnimationFrame(() => {
-		if (!footerRef.current) return;
-		const height = footerRef.current.getBoundingClientRect().height;
+		if (!footerRef.current) return
+		const height = footerRef.current.getBoundingClientRect().height
 		document.documentElement.style.setProperty(
-			"--footerHeight",
+			'--footerHeight',
 			`${Math.floor(height)}px`,
-		);
-	});
+		)
+	})
 	return (
 		<footer
 			className="mx-auto w-full relative"
 			aria-label="Main page footer"
 			ref={footerRef}
 		>
-			<div className="flex flex-wrap gap-8 items-end w-full px-6 py-8 relative border-y border-grayLight">
+			<div className="flex flex-wrap gap-8 items-start w-full px-6 py-8 relative border-y border-grayLight">
 				<div className="flex md:flex-col gap-4 justify-between">
 					<InternalLink
 						href="/dashboard"
@@ -61,12 +61,26 @@ function Footer() {
 							{texts.footer.links.gitHub}
 							<ExternalLink className="size-4 opacity-50" />
 						</a>
+						<InternalLink
+							href="/imprint"
+							className="no-underline focusable hover:text-fg transition-colors w-fit"
+							scroll={false}
+						>
+							{texts.footer.links.imprint}
+						</InternalLink>
+						<InternalLink
+							href="/privacy"
+							className="no-underline focusable hover:text-fg transition-colors w-fit"
+							scroll={false}
+						>
+							{texts.footer.links.privacy}
+						</InternalLink>
 						<span aria-label={`Copyright ${year}`}>
 							© {year} - {texts.footer.copyRightOwner}
 						</span>
 					</div>
 				</div>
-				<div className="flex flex-wrap gap-x-6 md:gap-x-8 lg:gap-x-16 gap-y-8 max-w-full pr-4 max-sm:border-t border-grayLight max-sm:pt-6 max-sm:w-full">
+				<div className="flex flex-wrap gap-x-6 md:gap-x-8 lg:gap-x-16 gap-y-8 max-w-full pr-4 max-sm:border-t border-grayLight max-sm:pt-6 max-sm:w-full md:pt-14">
 					<div className="flex flex-wrap gap-x-16">
 						<a
 							className="h-fit focusable flex flex-col gap-4 group"
@@ -80,9 +94,9 @@ function Footer() {
 							</span>
 							<SocialChangeLabLogo
 								className={cn(
-									"origin-top-left transition-transform group-hover:scale-105",
-									"text-[#3552C8] w-[112px] h-[56px] lg:w-[150px] lg:h-[75px]",
-									"dark:text-white dark:opacity-80 dark:grayscale dark:brightness-[10]",
+									'origin-top-left transition-transform group-hover:scale-105',
+									'text-[#3552C8] w-[112px] h-[56px] lg:w-[150px] lg:h-[75px]',
+									'dark:text-white dark:opacity-80 dark:grayscale dark:brightness-[10]',
 								)}
 								aria-label="Social Change Lab Logo"
 								width={105}
@@ -103,9 +117,9 @@ function Footer() {
 							</span>
 							<BMBFLogo
 								className={cn(
-									"origin-top-left transition-transform group-hover:scale-105",
-									"text-fg w-[112px] h-[56px] lg:w-[150px] lg:h-[75px]",
-									"dark:text-white dark:opacity-80 dark:grayscale dark:brightness-[10]",
+									'origin-top-left transition-transform group-hover:scale-105',
+									'text-fg w-[112px] h-[56px] lg:w-[150px] lg:h-[75px]',
+									'dark:text-white dark:opacity-80 dark:grayscale dark:brightness-[10]',
 								)}
 								aria-label="Bundesministerium für Bildung und Forschung"
 							/>
@@ -120,9 +134,9 @@ function Footer() {
 							<span className="no-underline text-fg ">&nbsp;</span>
 							<PrototypeFundLogo
 								className={cn(
-									"origin-top-left transition-transform group-hover:scale-105",
-									"text-fg w-[28px] h-[51px] lg:w-[56px] lg:h-[102px]",
-									"dark:text-white dark:opacity-80 dark:grayscale dark:brightness-[10]",
+									'origin-top-left transition-transform group-hover:scale-105',
+									'text-fg w-[28px] h-[51px] lg:w-[56px] lg:h-[102px]',
+									'dark:text-white dark:opacity-80 dark:grayscale dark:brightness-[10]',
 								)}
 								aria-label="Prototype Fund Logo"
 								width={56}
@@ -143,14 +157,14 @@ function Footer() {
 					`focusable hover:border-grayLight`,
 				)}
 				onClick={() => {
-					if (typeof window === "undefined") return;
-					window.scrollTo({ top: 0, behavior: "smooth" });
+					if (typeof window === 'undefined') return
+					window.scrollTo({ top: 0, behavior: 'smooth' })
 				}}
 			>
 				<ArrowUp />
 			</button>
 		</footer>
-	);
+	)
 }
 
-export default Footer;
+export default Footer

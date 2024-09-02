@@ -1,24 +1,21 @@
-"use client";
-import { cn } from "@/utility/classNames";
-import { format } from "@/utility/dateUtil";
-import { parseErrorMessage } from "@/utility/errorHandlingUtil";
-import type { ParsedEventType } from "@/utility/eventsUtil";
-import {
-	arrayOfRandomLengthInRange,
-	randomInRange,
-} from "@/utility/randomUtil";
-import { texts } from "@/utility/textUtil";
-import useEvent from "@/utility/useEvent";
-import { QueryErrorResetBoundary } from "@tanstack/react-query";
-import { ErrorBoundary } from "next/dist/client/components/error-boundary";
-import Image from "next/image";
-import { Suspense, memo, useMemo } from "react";
-import seed from "seed-random";
-import placeholderImage from "../assets/images/placeholder-image.avif";
-import ComponentError from "./ComponentError";
+'use client'
+import { cn } from '@/utility/classNames'
+import { format } from '@/utility/dateUtil'
+import { parseErrorMessage } from '@/utility/errorHandlingUtil'
+import type { ParsedEventType } from '@/utility/eventsUtil'
+import { arrayOfRandomLengthInRange, randomInRange } from '@/utility/randomUtil'
+import { texts } from '@/utility/textUtil'
+import useEvent from '@/utility/useEvent'
+import { QueryErrorResetBoundary } from '@tanstack/react-query'
+import { ErrorBoundary } from 'next/dist/client/components/error-boundary'
+import Image from 'next/image'
+import { Suspense, memo, useMemo } from 'react'
+import seed from 'seed-random'
+import placeholderImage from '../assets/images/placeholder-image.avif'
+import ComponentError from './ComponentError'
 
-const seededRandom = seed("event-page-loading");
-const randomUntil = (max: number) => Math.ceil(seededRandom() * max);
+const seededRandom = seed('event-page-loading')
+const randomUntil = (max: number) => Math.ceil(seededRandom() * max)
 
 const PlaceholderSkeleton = memo(
 	({ width, height }: { width: number | string; height?: number | string }) => (
@@ -27,17 +24,17 @@ const PlaceholderSkeleton = memo(
 			style={{ width, height }}
 		/>
 	),
-);
+)
 
 const EventPageWithPopulatedData = memo(
-	({ data }: { data?: ReturnType<typeof useEvent>["data"] }) => {
+	({ data }: { data?: ReturnType<typeof useEvent>['data'] }) => {
 		const orgsPlaceholders = useMemo(
 			() =>
 				arrayOfRandomLengthInRange(3).map((idx, _i, arr) => (
 					<PlaceholderSkeleton key={idx} width={randomUntil(200)} />
 				)),
 			[],
-		);
+		)
 		const descPlaceholderLines = useMemo(
 			() => (
 				<span className="flex flex-col gap-y-1">
@@ -54,24 +51,24 @@ const EventPageWithPopulatedData = memo(
 				</span>
 			),
 			[],
-		);
+		)
 		const title = useMemo(() => {
-			if (!data) return <PlaceholderSkeleton width={80} height={20} />;
+			if (!data) return <PlaceholderSkeleton width={80} height={20} />
 			return texts.singleProtestPage.heading({
-				formattedDate: format(data.event.date, "LLLL d, yyyy"),
+				formattedDate: format(data.event.date, 'LLLL d, yyyy'),
 				orgsCount: data.organisations.length,
 				orgName: data.organisations[0]?.name,
-			});
-		}, [data]);
+			})
+		}, [data])
 
 		const hasOrganisations = useMemo(
 			() =>
 				Boolean(data?.organisations?.length && data?.organisations.length > 0),
 			[data],
-		);
+		)
 		return (
 			<div className="grid md:grid-cols-[3fr,1fr] lg:grid-cols-[2fr,1fr] border-b border-grayLight">
-				<div className="px-[var(--pagePadding)] pt-[max(1.25rem,2.5vmax)] pb-[max(1.25rem,4vmax)] flex flex-col gap-4 min-h-full">
+				<div className="px-content pt-[max(1.25rem,2.5vmax)] pb-[max(1.25rem,4vmax)] flex flex-col gap-4 min-h-full">
 					<h1 className="text-3xl font-bold font-headlines">{title}</h1>
 					<dl className="inline-grid grid-cols-[auto,1fr] gap-x-6 gap-y-2 items-center">
 						<dt className="w-fit">
@@ -92,13 +89,13 @@ const EventPageWithPopulatedData = memo(
 										<span
 											key={org.slug}
 											className={cn(
-												"grid grid-cols-[auto_1fr_auto] gap-x-2",
+												'grid grid-cols-[auto_1fr_auto] gap-x-2',
 												`items-center cursor-pointer`,
 											)}
 										>
 											<span
 												className={cn(
-													"size-4 rounded-full shadow-[inset_0_0_0_1px_rgba(0,0,0,0.1)] bg-grayDark",
+													'size-4 rounded-full shadow-[inset_0_0_0_1px_rgba(0,0,0,0.1)] bg-grayDark',
 												)}
 												style={{ backgroundColor: org.color }}
 												aria-hidden="true"
@@ -126,31 +123,33 @@ const EventPageWithPopulatedData = memo(
 					/>
 				</div>
 			</div>
-		);
+		)
 	},
-);
+)
 
-const EventPageContent = memo(({ id }: { id: ParsedEventType["event_id"] }) => {
-	const { data } = useEvent(id);
-	return <EventPageWithPopulatedData data={data} />;
-});
+const EventPageContent = memo(({ id }: { id: ParsedEventType['event_id'] }) => {
+	const { data } = useEvent(id)
+	return <EventPageWithPopulatedData data={data} />
+})
 
 export default function EventPageContentWithData({
 	id,
-}: { id: ParsedEventType["event_id"] }) {
+}: {
+	id: ParsedEventType['event_id']
+}) {
 	return (
 		<QueryErrorResetBoundary>
 			{({ reset }) => (
 				<ErrorBoundary
 					errorComponent={({ error }) => {
-						const { message, details } = parseErrorMessage(error);
+						const { message, details } = parseErrorMessage(error)
 						return (
 							<ComponentError
 								errorMessage={message}
 								errorDetails={details}
 								reset={reset}
 							/>
-						);
+						)
 					}}
 				>
 					<Suspense fallback={<EventPageWithPopulatedData />}>
@@ -159,5 +158,5 @@ export default function EventPageContentWithData({
 				</ErrorBoundary>
 			)}
 		</QueryErrorResetBoundary>
-	);
+	)
 }

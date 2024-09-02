@@ -29,7 +29,7 @@
 		--pagePadding: clamp(1.5rem, 2vmax, 4rem);
 		--headerHeight: 75px;
 		--filtersHeight: 141px;
-		--footerHeight: 251px;
+		--footerHeight: 323px;
 
 		--fg: var(--brandGreen);
 		--bg: var(--brandWhite);

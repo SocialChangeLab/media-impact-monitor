@@ -300,6 +300,11 @@ const textsEnGB = {
 				atLeast: 'At least',
 				noImpact: 'No impact',
 			},
+			disclaimer: {
+				title: 'Caution!',
+				description:
+					'The results shown below are flawed and for demo purposes only. We are still working on integrating  reliable and validated impact estimation methods.',
+			},
 			descriptions: {
 				unclearChange: ({ isSentiment, topicNode }: ImpactDescriptionProps) => (
 					<>
@@ -901,6 +906,10 @@ const textsXXX = {
 				downTo: 'XXX',
 				atLeast: 'XXX',
 				noImpact: 'XXX',
+			},
+			disclaimer: {
+				title: 'XXX',
+				description: 'XXX',
 			},
 			descriptions: {
 				unclearChange: ({ isSentiment, topicNode }: ImpactDescriptionProps) => (

@@ -4,6 +4,7 @@ import MediaCoverageChart from '@/components/MediaCoverageChart'
 import MediaSentimentChart from '@/components/MediaSentimentChart'
 import NewsletterFooterSection from '@/components/NewsletterFooterSection'
 import SectionHeadlineWithExplanation from '@/components/SectionHeadlineWithExplanation'
+import SizeOptimizationNoticeServer from '@/components/SizeOptimizationNotice.server'
 import TrendWithImpactChartWrapper from '@/components/TrendWithImpactChartWrapper'
 import { texts } from '@/utility/textUtil'
 
@@ -14,6 +15,7 @@ export const metadata = {
 export default function EventsPageWithSuspense() {
 	return (
 		<>
+			<SizeOptimizationNoticeServer />
 			<DashboardHelpBanner />
 			<SectionHeadlineWithExplanation
 				headline={texts.charts.protest_timeline.heading}

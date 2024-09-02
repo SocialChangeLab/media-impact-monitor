@@ -214,7 +214,7 @@ const textsEnGB = {
 	},
 	charts: {
 		help: {
-			howToReadThis: 'How to read this',
+			howToReadThis: 'How to read this chart',
 			readInTheDocs: 'Read in the docs',
 			tabs: {
 				info: 'Info',
@@ -297,9 +297,9 @@ const textsEnGB = {
 				noImpact: 'No impact',
 			},
 			disclaimer: {
-				title: 'Heads up!',
+				title: 'Caution!',
 				description:
-					'Lorem, ipsum dolor sit amet consectetur adipisicing elit. Nobis, delectus in ex animi harum deleniti sed beatae repellat placeat voluptatibus eligendi alias temporibus aut saepe mollitia nam adipisci!',
+					'The results shown below are flawed and for demo purposes only. We are still working on integrating  reliable and validated impact estimation methods.',
 			},
 			descriptions: {
 				unclearChange: ({ isSentiment, topicNode }: ImpactDescriptionProps) => (

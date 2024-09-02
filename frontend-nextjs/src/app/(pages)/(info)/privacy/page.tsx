@@ -9,7 +9,7 @@ export default async function PrivacyPage() {
 		<>
 			<h1 className="text-3xl">Privacy Policy</h1>
 			<p className="lead">
-				At Media Impact Monitoring, we are committed to protecting your privacy.
+				At Media Impact Monitor, we are committed to protecting your privacy.
 				This policy explains how we collect, use, and safeguard your
 				information.
 			</p>
@@ -55,8 +55,8 @@ export default async function PrivacyPage() {
 			<h2>Data Deletion Requests</h2>
 			<p>
 				If you wish to request the deletion of your data, please contact us at{' '}
-				<a href="mailto:davidpomerenke@mailbox.org">
-					davidpomerenke@mailbox.org
+				<a href="mailto:team@mediaimpactmonitor.app">
+					team@mediaimpactmonitor.app
 				</a>
 				. We will process your request promptly and ensure that your data is
 				deleted from our records.
@@ -65,9 +65,9 @@ export default async function PrivacyPage() {
 			<h2>Contact Information</h2>
 			<p>
 				If you have any questions or concerns about our privacy policy, please
-				contact David Pomerenke at{' '}
-				<a href="mailto:davidpomerenke@mailbox.org">
-					davidpomerenke@mailbox.org
+				contact us at{' '}
+				<a href="mailto:team@mediaimpactmonitor.app">
+					team@mediaimpactmonitor.app
 				</a>
 				.
 			</p>

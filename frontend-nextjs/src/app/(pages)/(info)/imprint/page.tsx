@@ -9,30 +9,20 @@ export default async function ImprintPage() {
 		<>
 			<h1 className="text-3xl">Imprint</h1>
 			<p>
-				<strong>Media Impact Monitoring</strong>
+				<strong>Media Impact Monitor</strong>
+				<br />
+				David Pomerenke
 				<br />
 				Römerstr. 60
 				<br />
 				70180 Stuttgart
 				<br />
 				Germany
-			</p>
-
-			<p>
-				<strong>Represented by:</strong>
-				<br />
-				David Pomerenke
 				<br />
 				Email:{' '}
-				<a href="mailto:davidpomerenke@mailbox.org">
-					davidpomerenke@mailbox.org
+				<a href="mailto:team@mediaimpactmonitor.app">
+					team@mediaimpactmonitor.app
 				</a>
-			</p>
-
-			<p>
-				<strong>VAT Identification Number:</strong>
-				<br />
-				DE365633057
 			</p>
 
 			<p>

@@ -160,7 +160,7 @@ class PolicySearch(BaseModel):
 
 class FulltextSearch(BaseModel):
     """
-    You can set parameters for media_source and date_range, and filter by one of the following: topic, organizers, query, or event_id. For now you cannot combine the latter filters, since they all affect the query in different ways.
+    You can set parameters for media_source, and filter by one of the following: topic, organizers, query, or event_id. For now you cannot combine the latter filters, since they all affect the query in different ways.
     """
 
     media_source: MediaSource = Field(

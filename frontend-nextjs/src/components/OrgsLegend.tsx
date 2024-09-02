@@ -1,60 +1,69 @@
-"use client";
-import type { EventOrganizerSlugType } from "@/utility/eventsUtil";
-import { texts } from "@/utility/textUtil";
-import { ArrowRight } from "lucide-react";
-import { useMemo } from "react";
-import type { LegendOrganisation } from "./EventsTimeline/EventsTimelineLegend";
-import OrgsLegendItem from "./OrgsLegendItem";
+'use client'
+import type { EventOrganizerSlugType } from '@/utility/eventsUtil'
+import { texts } from '@/utility/textUtil'
+import { ArrowRight } from 'lucide-react'
+import { useMemo } from 'react'
+import type { LegendOrganisation } from './EventsTimeline/EventsTimelineLegend'
+import OrgsLegendItem from './OrgsLegendItem'
 
 function getOtherOrg(organisations: LegendOrganisation[]) {
 	return {
-		slug: "other" as EventOrganizerSlugType,
+		slug: 'other' as EventOrganizerSlugType,
 		name: texts.charts.protest_timeline.legend.other,
 		count: organisations.reduce((acc, org) => acc + (org.count ?? 0), 0),
 		color: `var(--grayDark)`,
 		isMain: false,
 		orgs: organisations.sort((a, b) => {
-			if (!a.count || !b.count) return a.name.localeCompare(b.name);
-			if (a.count > b.count) return -1;
-			if (a.count < b.count) return 1;
-			return a.name.localeCompare(b.name);
+			if (!a.count || !b.count) return a.name.localeCompare(b.name)
+			if (a.count > b.count) return -1
+			if (a.count < b.count) return 1
+			return a.name.localeCompare(b.name)
 		}),
-	};
+	}
 }
 
 function OrgsLegend({
 	organisations,
+	selectedOrganisations,
 }: {
-	organisations: LegendOrganisation[];
+	organisations: LegendOrganisation[]
+	selectedOrganisations: LegendOrganisation[]
 }) {
 	const { allOrgs, otherOrgs } = useMemo(() => {
-		const mainOrgs: LegendOrganisation[] = [];
-		const otherOrgs: LegendOrganisation[] = [];
+		const mainOrgs: LegendOrganisation[] = []
+		const otherOrgs: LegendOrganisation[] = []
 
 		for (const org of organisations) {
-			if (!org.isMain) otherOrgs.push(org);
-			else mainOrgs.push(org);
+			if (!org.isMain) otherOrgs.push(org)
+			else
+				mainOrgs.push({
+					...org,
+					isActive:
+						selectedOrganisations.length !== organisations.length &&
+						!!selectedOrganisations.find((x) => x.slug === org.slug),
+				})
 		}
 
 		if (mainOrgs.length === 0) {
 			return {
 				allOrgs: organisations
 					.slice(0, 16)
-					.concat(getOtherOrg(organisations.slice(16))),
+					.concat(getOtherOrg(organisations.slice(16)))
+					.map((org) => ({ ...org, isActive: false })),
 				otherOrgs: organisations.slice(16),
-			};
+			}
 		}
 		if (organisations.length < 16) {
-			return { allOrgs: [...mainOrgs, ...otherOrgs], otherOrgs: [] };
+			return { allOrgs: [...mainOrgs, ...otherOrgs], otherOrgs: [] }
 		}
-		if (otherOrgs.length === 0) return { allOrgs: mainOrgs, otherOrgs: [] };
+		if (otherOrgs.length === 0) return { allOrgs: mainOrgs, otherOrgs: [] }
 		return {
 			allOrgs: [...mainOrgs, getOtherOrg(otherOrgs)],
 			otherOrgs,
-		};
-	}, [organisations]);
+		}
+	}, [organisations, selectedOrganisations])
 
-	if (allOrgs.length === 0) return null;
+	if (allOrgs.length === 0) return null
 	return (
 		<div className="flex flex-col gap-2">
 			<h5 className="font-bold flex gap-1 items-center">
@@ -68,7 +77,7 @@ function OrgsLegend({
 				))}
 			</ul>
 		</div>
-	);
+	)
 }
 
-export default OrgsLegend;
+export default OrgsLegend

@@ -1,13 +1,12 @@
 "use client";
 import { useFiltersStore } from "@/providers/FiltersStoreProvider";
 import { useQuery } from "@tanstack/react-query";
-import { format } from "./dateUtil";
 import type { EventOrganizerSlugType } from "./eventsUtil";
 import { getMediaImpactData } from "./mediaImpactUtil";
 import type { TrendQueryProps } from "./mediaTrendUtil";
 import { getStaleTime } from "./queryUtil";
 import { today } from "./today";
-import useEvents from "./useEvents";
+import { useAllOrganisations } from "./useOrganisations";
 import useQueryErrorToast from "./useQueryErrorToast";
 
 function useMediaImpactData({
@@ -19,11 +18,11 @@ function useMediaImpactData({
 	trend_type: TrendQueryProps["trend_type"];
 	sentiment_target: TrendQueryProps["sentiment_target"];
 }) {
-	const { from, to, mediaSource } = useFiltersStore(
-		({ from, to, mediaSource }) => ({ from, to, mediaSource }),
-	);
-	const fromDateString = format(from, "yyyy-MM-dd");
-	const toDateString = format(to, "yyyy-MM-dd");
+	const from = useFiltersStore(({ from }) => from);
+	const to = useFiltersStore(({ to }) => to);
+	const mediaSource = useFiltersStore(({ mediaSource }) => mediaSource);
+	const fromDateString = useFiltersStore(({ fromDateString }) => fromDateString);
+	const toDateString = useFiltersStore(({ toDateString }) => toDateString);
 	const queryKey = [
 		"mediaImpact",
 		trend_type,
@@ -33,7 +32,7 @@ function useMediaImpactData({
 		toDateString,
 		mediaSource,
 	];
-	const { data } = useEvents();
+	const { organisations, isLoading } = useAllOrganisations();
 	const query = useQuery({
 		queryKey,
 		queryFn: async () => {
@@ -47,11 +46,11 @@ function useMediaImpactData({
 					organizer,
 					mediaSource,
 				},
-				allOrganisations: data?.organisations || [],
+				allOrganisations: organisations || [],
 			});
 		},
 		staleTime: getStaleTime(today),
-		enabled: organizer !== undefined && data?.organisations?.length > 0,
+		enabled: organizer !== undefined && organisations?.length > 0 && !isLoading,
 	});
 
 	useQueryErrorToast(`media ${trend_type} impact`, query.error);

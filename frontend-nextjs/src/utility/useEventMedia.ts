@@ -9,11 +9,12 @@ import {
 import type { OrganisationType, ParsedEventType } from "./eventsUtil";
 import { getStaleTime } from "./queryUtil";
 import { today } from "./today";
-import useEvents from "./useEvents";
+import { useAllOrganisations } from "./useOrganisations";
 import useQueryErrorToast from "./useQueryErrorToast";
 
-export function getEventMediaQueryOptions(
+function getEventMediaQueryOptions(
 	allOrganisations: OrganisationType[],
+	isLoading: boolean,
 	query?: Partial<EventMediaInputQueryType>,
 ) {
 	const queryParsing = eventMediaInputQueryZodSchema.safeParse(query);
@@ -34,22 +35,18 @@ export function getEventMediaQueryOptions(
 					)
 				: null,
 		staleTime: getStaleTime(today),
-		enabled: queryParsing.success,
+		enabled: !isLoading && queryParsing.success,
 	});
 }
 
 function useEventMedia(eventId?: ParsedEventType["event_id"]) {
-	const { data } = useEvents();
-	const { organizers, mediaSource, from, to } = useFiltersStore(
-		({ organizers, mediaSource, from, to }) => ({
-			organizers,
-			mediaSource,
-			from,
-			to,
-		}),
-	);
+	const { organisations, isLoading } = useAllOrganisations();
+	const organizers = useFiltersStore(({ organizers }) => organizers);
+	const mediaSource = useFiltersStore(({ mediaSource }) => mediaSource);
+	const from = useFiltersStore(({ from }) => from);
+	const to = useFiltersStore(({ to }) => to);
 	const query = useQuery(
-		getEventMediaQueryOptions(data?.organisations || [], {
+		getEventMediaQueryOptions(organisations || [], isLoading, {
 			eventId,
 			organizers,
 			from,

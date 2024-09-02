@@ -1,31 +1,29 @@
-"use client";
-import { Button } from "@/components/ui/button";
-import { useFiltersStore } from "@/providers/FiltersStoreProvider";
-import { cn } from "@/utility/classNames";
-import { texts } from "@/utility/textUtil";
-import { X } from "lucide-react";
+'use client'
+import { Button } from '@/components/ui/button'
+import { useFiltersStore } from '@/providers/FiltersStoreProvider'
+import { cn } from '@/utility/classNames'
+import { texts } from '@/utility/textUtil'
+import { X } from 'lucide-react'
 
 export type ComponentErrorProps = {
-	errorMessage: string;
-	errorDetails?: string;
-	reset?: () => void;
-};
+	errorMessage: string
+	errorDetails?: string
+	reset?: () => void
+}
 
 function ComponentError({
 	errorDetails,
 	errorMessage = texts.errors.apiErrorTranslations.defaultMessage(),
 	reset,
 }: ComponentErrorProps) {
-	const { from, to, resetAllFilters } = useFiltersStore(
-		({ from, to, resetAllFilters }) => ({
-			from,
-			to,
-			resetAllFilters,
-		}),
-	);
+	const from = useFiltersStore(({ from }) => from)
+	const to = useFiltersStore(({ to }) => to)
+	const resetAllFilters = useFiltersStore(
+		({ resetAllFilters }) => resetAllFilters,
+	)
 	return (
 		<div className="w-fit max-w-96 flex flex-col">
-			<div className={cn("mb-3 w-fit h-fit")}>
+			<div className={cn('mb-3 w-fit h-fit')}>
 				<X size={48} strokeWidth={1} className="text-red-600 -ml-3" />
 			</div>
 			<div className="mb-3 relative min-w-full grid grid-cols-[auto,1fr] items-center gap-4">
@@ -37,9 +35,9 @@ function ComponentError({
 				{errorDetails && (
 					<pre
 						className={cn(
-							"min-w-full px-6 py-5 bg-grayDark mt-2",
-							"dark:bg-bg dark:text-fg dark:border dark:border-grayLight",
-							"text-mono text-bg max-w-full overflow-x-auto",
+							'min-w-full px-6 py-5 bg-grayDark mt-2',
+							'dark:bg-bg dark:text-fg dark:border dark:border-grayLight',
+							'text-mono text-bg max-w-full overflow-x-auto',
 						)}
 					>
 						<code>{errorDetails}</code>
@@ -56,10 +54,10 @@ function ComponentError({
 							{texts.errors.buttons.resetFilters}
 						</Button>
 					)}
-				</div>{" "}
+				</div>{' '}
 			</div>
 		</div>
-	);
+	)
 }
 
-export default ComponentError;
+export default ComponentError

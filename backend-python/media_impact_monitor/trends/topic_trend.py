@@ -1,4 +1,5 @@
 from datetime import date
+from media_impact_monitor.util.env import AI_TREND_RESOLUTION
 import pandas as pd
 
 from media_impact_monitor.fulltexts import get_fulltexts
@@ -9,7 +10,10 @@ from media_impact_monitor.util.cache import cache
 @cache
 def get_topic_trend(q: TrendSearch) -> tuple[pd.DataFrame | None, list[str]]:
     if q.media_source != "news_online":
-        return None, f"Topic trend requires fulltext analysis, which is only available for news_online, not {q.media_source}."
+        return (
+            None,
+            f"Topic trend requires fulltext analysis, which is only available for news_online, not {q.media_source}.",
+        )
     limitations = []
     if q.start_date and q.start_date.year < 2022:
         limitations.append("MediaCloud only goes back until 2022.")
@@ -17,7 +21,7 @@ def get_topic_trend(q: TrendSearch) -> tuple[pd.DataFrame | None, list[str]]:
     params = dict(q)
     del params["trend_type"]
     del params["aggregation"]
-    df = get_fulltexts(FulltextSearch(**params), sample_frac=0.01)
+    df = get_fulltexts(FulltextSearch(**params), sample_frac=AI_TREND_RESOLUTION)
     df = pd.concat([df["date"], df["topics"].apply(pd.Series)], axis=1)
     # TODO: normalize!!
     df = df.groupby("date").sum()

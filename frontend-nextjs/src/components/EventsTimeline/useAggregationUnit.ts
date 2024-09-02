@@ -15,26 +15,19 @@ import config from "./eventsTimelineConfig";
 export type AggregationUnitType = "day" | "week" | "month" | "year";
 
 function useAggregationUnit(parentWidth: number): AggregationUnitType {
-	const range = useFiltersStore(
-		({ from, to, fromDateString, toDateString }) => ({
-			from,
-			to,
-			fromDateString,
-			toDateString,
-		}),
-	);
+	const from = useFiltersStore(({ from }) => from)
+	const to = useFiltersStore(({ to }) => to)
+	const fromDateString = useFiltersStore(({ fromDateString }) => fromDateString)
+	const toDateString = useFiltersStore(({ toDateString }) => toDateString)
 
-	// biome-ignore lint/correctness/useExhaustiveDependencies: using the fromDateString and toDateString to avoid the exact date (which changes on each render) to be used as dependencies of the useMemo
 	const aggregationUnit = useMemo(
 		() =>
 			getAggregationUnitByRange(
-				{
-					from: range.from,
-					to: range.to,
-				},
+				{ from, to },
 				parentWidth,
 			),
-		[parentWidth, range.fromDateString, range.toDateString],
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+		[parentWidth, fromDateString, toDateString],
 	);
 
 	return aggregationUnit;

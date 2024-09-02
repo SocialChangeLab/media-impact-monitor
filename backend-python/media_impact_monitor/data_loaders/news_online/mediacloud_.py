@@ -190,6 +190,7 @@ def get_mediacloud_fulltexts(
     label = "Extracting fulltexts"
     df["text"] = parallel_tqdm(_extract, urls_and_responses, desc=f"{label:<{40}}")
     df = df.dropna(subset=["text"]).rename(columns={"publish_date": "date"})
+    df = df[(df["date"] >= start_date) & (df["date"] <= end_date)]
     df = df[
         [
             # "id",
@@ -223,7 +224,11 @@ def _resolve_country(country: str) -> list[int]:
     results = directory.collection_list(name=f"{country} - national")["results"]
     # ignore research collections
     results = [r for r in results if "(Research Only)" not in r["name"]]
-    assert len(results) == 1, f"Expected 1 result, got {len(results)} for {country}"
+    # if there is a specific collection for MIM, use it!
+    if any("Media Impact Monitor" in r["name"] for r in results):
+        results = [r for r in results if "Media Impact Monitor" in r["name"]]
+    if len(results) != 1:
+        print(f"Expected 1 result, got {len(results)} for {country}")
     national = results[0]["id"]
     # get regional newspapers
     results = directory.collection_list(name=f"{country} - state & local")["results"]

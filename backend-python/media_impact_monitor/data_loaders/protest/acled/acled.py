@@ -111,7 +111,7 @@ def process_orgs(df: pd.DataFrame) -> pd.DataFrame:
         "Labor Group",
         "Women",
         "Christian Group",
-        "Government of Germany (2021-)",
+        "Government of Germany",
         "Civilians",
         "Protesters",
     ]

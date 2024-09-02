@@ -54,6 +54,7 @@ def test_get_keyword_trend():
     assert isinstance(limitations, list), "Limitations should be a list"
 
 
+@pytest.mark.skip("too slow for ci (>2 min)")
 @pytest.mark.parametrize("media_source", ["news_online", "web_google"])
 def test_get_keyword_trend_other_sources(media_source):
     q = TrendSearch(

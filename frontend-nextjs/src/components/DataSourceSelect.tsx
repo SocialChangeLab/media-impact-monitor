@@ -1,20 +1,20 @@
-import { Button } from "@/components/ui/button";
-import { Command, CommandItem, CommandList } from "@/components/ui/command";
+import { Button } from '@/components/ui/button'
+import { Command, CommandItem, CommandList } from '@/components/ui/command'
 import {
 	Popover,
 	PopoverContent,
 	PopoverTrigger,
-} from "@/components/ui/popover";
+} from '@/components/ui/popover'
 import {
 	Tooltip,
 	TooltipContent,
 	TooltipProvider,
 	TooltipTrigger,
-} from "@/components/ui/tooltip";
-import { useFiltersStore } from "@/providers/FiltersStoreProvider";
-import type { MediaSourceType } from "@/stores/filtersStore";
-import { cn } from "@/utility/classNames";
-import { texts } from "@/utility/textUtil";
+} from '@/components/ui/tooltip'
+import { useFiltersStore } from '@/providers/FiltersStoreProvider'
+import type { MediaSourceType } from '@/stores/filtersStore'
+import { cn } from '@/utility/classNames'
+import { texts } from '@/utility/textUtil'
 import {
 	ChevronsUpDownIcon,
 	GlobeIcon,
@@ -23,57 +23,53 @@ import {
 	type LucideIcon,
 	NewspaperIcon,
 	SearchIcon,
-} from "lucide-react";
-import { useMemo, useState } from "react";
+} from 'lucide-react'
+import { useMemo, useState } from 'react'
 
 type OptionType = {
-	name: string;
-	value: MediaSourceType;
-	Icon: LucideIcon;
-	description: string;
+	name: string
+	value: MediaSourceType
+	Icon: LucideIcon
+	description: string
 	links: {
-		label: string;
-		href: string;
-	}[];
-};
+		label: string
+		href: string
+	}[]
+}
 
 const options: OptionType[] = [
 	{
 		name: texts.filters.mediaSource.values.onlineNews.name,
-		value: "news_online",
+		value: 'news_online',
 		Icon: GlobeIcon,
 		description: texts.filters.mediaSource.values.onlineNews.description,
 		links: texts.filters.mediaSource.values.onlineNews.links,
 	},
 	{
 		name: texts.filters.mediaSource.values.printNews.name,
-		value: "news_print",
+		value: 'news_print',
 		Icon: NewspaperIcon,
 		description: texts.filters.mediaSource.values.printNews.description,
 		links: texts.filters.mediaSource.values.printNews.links,
 	},
 	{
 		name: texts.filters.mediaSource.values.googleTrends.name,
-		value: "web_google",
+		value: 'web_google',
 		Icon: SearchIcon,
 		description: texts.filters.mediaSource.values.googleTrends.description,
 		links: texts.filters.mediaSource.values.googleTrends.links,
 	},
-];
-const optionsMap = new Map(options.map((o) => [o.value, o]));
+]
+const optionsMap = new Map(options.map((o) => [o.value, o]))
 
 export default function MediaSourceSelect() {
-	const { mediaSource, setMediaSource } = useFiltersStore(
-		({ mediaSource, setMediaSource }) => ({
-			mediaSource,
-			setMediaSource,
-		}),
-	);
-	const [isOpened, setIsOpened] = useState(false);
+	const mediaSource = useFiltersStore(({ mediaSource }) => mediaSource)
+	const setMediaSource = useFiltersStore(({ setMediaSource }) => setMediaSource)
+	const [isOpened, setIsOpened] = useState(false)
 	const selectedValue = useMemo(
 		() => (mediaSource && optionsMap.get(mediaSource)) || undefined,
 		[mediaSource],
-	);
+	)
 	return (
 		<Popover open={isOpened} onOpenChange={setIsOpened}>
 			<PopoverTrigger asChild>
@@ -107,14 +103,14 @@ export default function MediaSourceSelect() {
 							<CommandItem
 								key={option.value}
 								className={cn(
-									"flex justify-between items-start group cursor-pointer",
-									"aria-selected:bg-fg aria-selected:text-bg aria-selected:cursor-default",
-									"hover:bg-grayUltraLight focusable ring-inset",
+									'flex justify-between items-start group cursor-pointer',
+									'aria-selected:bg-fg aria-selected:text-bg aria-selected:cursor-default',
+									'hover:bg-grayUltraLight focusable ring-inset',
 								)}
 								value={option.value}
 								onSelect={() => {
-									setMediaSource(option.value);
-									setIsOpened(false);
+									setMediaSource(option.value)
+									setIsOpened(false)
 								}}
 							>
 								<TooltipProvider>
@@ -164,5 +160,5 @@ export default function MediaSourceSelect() {
 				</Command>
 			</PopoverContent>
 		</Popover>
-	);
+	)
 }

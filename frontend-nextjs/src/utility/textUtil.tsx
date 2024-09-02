@@ -296,6 +296,11 @@ const textsEnGB = {
 				atLeast: 'At least',
 				noImpact: 'No impact',
 			},
+			disclaimer: {
+				title: 'Heads up!',
+				description:
+					'Lorem, ipsum dolor sit amet consectetur adipisicing elit. Nobis, delectus in ex animi harum deleniti sed beatae repellat placeat voluptatibus eligendi alias temporibus aut saepe mollitia nam adipisci!',
+			},
 			descriptions: {
 				unclearChange: ({ isSentiment, topicNode }: ImpactDescriptionProps) => (
 					<>
@@ -880,6 +885,10 @@ const textsXXX = {
 				downTo: 'XXX',
 				atLeast: 'XXX',
 				noImpact: 'XXX',
+			},
+			disclaimer: {
+				title: 'XXX',
+				description: 'XXX',
 			},
 			descriptions: {
 				unclearChange: ({ isSentiment, topicNode }: ImpactDescriptionProps) => (

@@ -77,7 +77,7 @@ export default async function AboutPage() {
 				dreams, and your feedback on our prototypes!
 			</p>
 			<p>
-				Please <a href="mailto:david@socialchangelab.org">send us an email</a>{' '}
+				Please <a href="mailto:team@mediaimpactmonitor.app">send us an email</a>{' '}
 				or{' '}
 				<a href="https://cal.com/davidpomerenke/meeting-mim">
 					book a short meeting

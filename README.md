@@ -43,7 +43,7 @@ The project team consists of:
 
 We are seeking activists and NGO employees to help us shape the tool: We are curious about your experience with media evaluation, your ideas and dreams, and your feedback on our prototypes!
 
-Please [send us an email](mailto:david@socialchangelab.org) or [book a short meeting](https://cal.com/davidpomerenke/meeting-mim) with us 🤗
+Please [send us an email](mailto:team@mediaimpactmonitor.app) or [book a short meeting](https://cal.com/davidpomerenke/meeting-mim) with us 🤗
 
 ## Contributors
 

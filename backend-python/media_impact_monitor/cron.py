@@ -51,7 +51,7 @@ def fill_cache():
             )
         except Exception as e:
             errors.append(f"events {data_source}: {e}")
-    for media_source in ["news_online", "news_print", "web_google"]:
+    for media_source in ["news_online", "news_print", "social_tiktok", "web_google"]:
         for trend_type in ["keywords", "sentiment"]:
             for aggregation in ["daily", "weekly"]:
                 if aggregation == "daily" and media_source == "web_google":

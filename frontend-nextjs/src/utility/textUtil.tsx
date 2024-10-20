@@ -141,7 +141,7 @@ const textsEnGB = {
 			values: {
 				onlineNews: {
 					name: 'Online News',
-					description: 'Articles from online news pages.',
+					description: 'Articles in online news pages.',
 					links: [
 						{
 							label: 'Official Website',
@@ -151,7 +151,7 @@ const textsEnGB = {
 				},
 				printNews: {
 					name: 'Print News',
-					description: 'Articles from print newspapers.',
+					description: 'Articles in print newspapers.',
 					links: [
 						{
 							label: 'Official Website',
@@ -163,9 +163,19 @@ const textsEnGB = {
 						},
 					],
 				},
+				tiktok: {
+					name: 'TikTok',
+					description: 'Video posts on TikTok.',
+					links: [
+						{
+							label: 'Official Website',
+							href: 'https://www.tiktok.com/',
+						},
+					],
+				},
 				googleTrends: {
 					name: 'Google Trends',
-					description: 'Search trends from Google.',
+					description: 'Search trends on Google.',
 					links: [
 						{
 							label: 'Official Website',
@@ -770,6 +780,16 @@ const textsXXX = {
 							label: 'XXX',
 							href: 'XXX',
 						},
+						{
+							label: 'XXX',
+							href: 'XXX',
+						},
+					],
+				},
+				tiktok: {
+					name: 'XXX',
+					description: 'XXX',
+					links: [
 						{
 							label: 'XXX',
 							href: 'XXX',

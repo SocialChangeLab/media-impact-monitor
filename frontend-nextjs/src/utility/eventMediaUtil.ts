@@ -9,7 +9,7 @@ import { today } from "./today";
 import { formatZodError } from "./zodUtil";
 
 export const eventMediaInputQueryZodSchema = z.object({
-	mediaSource: z.enum(["news_online", "news_print", "web_google"]),
+	mediaSource: z.enum(["news_online", "news_print", "social_tiktok", "web_google"]),
 	from: z.date().optional(),
 	to: z.date().optional(),
 	eventId: z.string(),
@@ -22,7 +22,7 @@ export type EventMediaInputQueryType = z.infer<
 >;
 
 const eventMediaOutputQueryZodSchema = z.object({
-	media_source: z.enum(["news_online", "news_print", "web_google"]),
+	media_source: z.enum(["news_online", "news_print", "social_tiktok", "web_google"]),
 	start_date: z.string().optional(),
 	end_date: z.string().optional(),
 	event_id: z.string(),

@@ -5,6 +5,9 @@ from media_impact_monitor.data_loaders.news_online.mediacloud_ import (
     get_mediacloud_counts,
 )
 from media_impact_monitor.data_loaders.news_print.genios import get_genios_counts
+from media_impact_monitor.data_loaders.social_media.tiktok import (
+    get_video_history_for_hashtag,
+)
 from media_impact_monitor.data_loaders.web.google_trends import get_google_trends_counts
 from media_impact_monitor.types_ import TrendSearch
 from media_impact_monitor.util.paths import src
@@ -31,6 +34,8 @@ def get_keyword_trend(q: TrendSearch) -> tuple[pd.DataFrame | None, list[str]]:
                 )
             case "web_google":
                 ds = get_google_trends_counts(query=query, end_date=q.end_date)
+            case "social_tiktok":
+                ds = get_video_history_for_hashtag(query, n=1000, verbose=True)["posts"]
             case _:
                 raise ValueError(f"Unsupported media source: {q.media_source}")
         dss[topic] = ds
@@ -65,7 +70,14 @@ def topic_queries(media_source: str) -> dict[str, str]:
         #     media_source,
         # ),
     }
-    if media_source != "web_google":
+    if media_source == "social_tiktok":
+        keyword_queries = {
+            "climate activism": "climateprotest",  # TODO: improve
+            "climate policy": "climateaction",  # TODO: improve
+            "climate science": "climatechange",  # TODO: improve
+            "climate crisis framing": "climatecrisis",  # TODO: improve
+        }
+    elif media_source != "web_google":
         keyword_queries["climate activism"] = xs_with_ys(
             keywords["climate_science"]
             + keywords["climate_policy"]

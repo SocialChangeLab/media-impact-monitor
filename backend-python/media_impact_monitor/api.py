@@ -69,7 +69,7 @@ async def app_lifespan(app: FastAPI):
     yield
 
 
-sentry_sdk.init(dsn=SENTRY_DSN, traces_sample_rate=1.0, profiles_sample_rate=1.0)
+# sentry_sdk.init(dsn=SENTRY_DSN, traces_sample_rate=1.0, profiles_sample_rate=1.0)
 
 
 app = FastAPI(**metadata, lifespan=app_lifespan)

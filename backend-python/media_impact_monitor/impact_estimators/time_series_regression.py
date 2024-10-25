@@ -1,7 +1,8 @@
 import pandas as pd
 import statsmodels.api as sm
 
-from media_impact_monitor.types_ import Aggregation
+from collections import Counter
+from itertools import chain
 
 
 def add_lags(df: pd.DataFrame, lags: list[int]):
@@ -39,61 +40,77 @@ def regress(
 ):
     """Get regression result where the outcome is `day` days after the treatment."""
     lags = range(1, lags + 1)
-    media_df = pd.DataFrame(media_df, columns=["count"])
-    # protest_df = add_lags(protest_df, lags=[])
-    media_df = add_lags(media_df, lags=[4, 5, 6, 7, 8])
+    outcomes = media_df.columns
+
+    placebo = False
+    if placebo:
+        protest_df = protest_df.copy().sample(frac=1)
+    results = {}
+    protest_df = add_lags(protest_df, lags=[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13])
+    media_df = add_lags(media_df, lags=[4, 5, 6, 7, 8, 9, 10, 11, 12, 13])
     # protest_df = add_emws(protest_df)
     # media_df = add_emws(media_df, spans=[14])
     df = pd.concat([protest_df, media_df], axis=1)
     df = add_weekday_dummies(df)
-    treatment = "protest"
-    outcome = "count"
-    df[outcome] = df[outcome].shift(-day)
-    if cumulative:
-        # TODO write tests for this
-        if day < 0:
-            indexer = pd.api.indexers.FixedForwardWindowIndexer(window_size=-day)
-            df[outcome] = -df[outcome].rolling(window=indexer).sum()
-        else:
-            df[outcome] = df[outcome].rolling(day + 1).sum()
-    df = df.dropna()
-    placebo = False
-    if placebo:
-        df[treatment] = df.sample(frac=1)[treatment].to_list()
-    X = df.drop(columns=[outcome])
-    y = df[outcome]
-    model = sm.OLS(y, sm.add_constant(X))
-    model = model.fit(cov_type="HC3")
-    alpha = 0.1
-    return {
-        "date": day,
-        "mean": model.params[treatment],
-        "p_value": model.pvalues[treatment],
-        "ci_lower": model.conf_int(alpha=alpha)[0][treatment],
-        "ci_upper": model.conf_int(alpha=alpha)[1][treatment],
-    }
+    for outcome in outcomes:
+        df[outcome] = df[outcome].shift(-day)
+        if cumulative:
+            # TODO write tests for this
+            if day < 0:
+                indexer = pd.api.indexers.FixedForwardWindowIndexer(window_size=-day)
+                df[outcome] = -df[outcome].rolling(window=indexer).sum()
+            else:
+                df[outcome] = df[outcome].rolling(day + 1).sum()
+        df = df.dropna()
+        X = df.drop(columns=[outcome])
+        y = df[outcome]
+        model = sm.OLS(y, sm.add_constant(X))
+        model = model.fit(cov_type="HC3")
+        alpha = 0.1
+        results[outcome] = {}
+        for org in protest_df.columns:
+            results[outcome][org] = {
+                "date": day,
+                "mean": model.params[org],
+                "p_value": model.pvalues[org],
+                "ci_lower": model.conf_int(alpha=alpha)[0][org],
+                "ci_upper": model.conf_int(alpha=alpha)[1][org],
+            }
+    return results
 
 
-def agg_protests(df: pd.DataFrame):
-    start = df["date"].min()  # HACK
-    end = df["date"].max()  # HACK
-    df = df.groupby("date")["date"].count().to_frame("protest")
+def agg_protests(events: pd.DataFrame):
+    start = events["date"].min()  # HACK
+    end = events["date"].max()  # HACK
+    # we want to reduce the amount of organizers for our simple regression
+    # (when using multilevel models later, we can relax this)
+    # only use primary organizers for each event
+    primary_orgs = events["organizers"].apply(lambda x: x[0] if x else None)
+    # only keep most frequent organizers
+    orgs = [k for k, v in Counter(primary_orgs).items() if k and v > 10]
+    # create dummy columns for each organizer
+    orgs_df = pd.DataFrame({org: primary_orgs == org for org in orgs})
+    orgs_df["date"] = events["date"]
+    orgs_df = orgs_df.set_index("date")
+    # create time series by counting protests per day for each organizer
+    ts = orgs_df.groupby("date").agg({org: "any" for org in orgs}).astype(int)
     idx = pd.date_range(start=start, end=end)
-    df = df.reindex(idx).fillna(0)
-    return df
+    ts = ts.reindex(idx).fillna(0)
+    return ts
 
 
 def estimate_impact(
     events: pd.DataFrame,
     article_counts: pd.Series,
-    aggregation: Aggregation,
     cumulative: bool = True,
     lags: int = 14,
     outcome_days: list[int] = range(-14, 14),
 ):
     protest_df = agg_protests(events)
-    n = protest_df["protest"].sum()
-    limitations = [f"There have only been {n} protests."]
+    return regress(
+        protest_df, article_counts, day=7, lags=lags, cumulative=cumulative
+    ), []
+    # TODO: do this per day:
     impacts = pd.DataFrame(
         [
             regress(
@@ -103,4 +120,5 @@ def estimate_impact(
         ]
     )
     impacts = impacts.set_index("date")[["mean", "ci_lower", "ci_upper", "p_value"]]
+    limitations = []
     return impacts, limitations

@@ -26,12 +26,13 @@ def get_impact(q: ImpactSearch) -> Impact:
     events = get_events(
         EventSearch(
             source="acled",
-            organizers=[q.organizer],
+            topic="climate_change",
             start_date=q.start_date,
             end_date=q.end_date,
         )
     )
-    n_event_days = events["date"].nunique()
+    events_from_org = events[events["organizers"].apply(lambda x: q.organizer in x)]
+    n_event_days = events_from_org["date"].nunique()
     if n_event_days < 5:
         return Impact(
             method_applicability=False,
@@ -50,85 +51,32 @@ def get_impact(q: ImpactSearch) -> Impact:
             ],
             impact_estimates=None,
         )
-    applicabilities = []
-    lims_list = []
-    dfs = dict()
-    for topic in trends.columns:
-        trend = trends[topic]
-        if trend.empty:
-            applicabilities.append(False)
-            lims_list.append([f"No media data available for {q.impacted_trend}."])
-            continue
-        trend.name = "count"
-        appl, limitations, impact = get_impact_for_single_trend(
-            events=events,
-            trend=trend,
-            method=q.method,
-            aggregation=q.impacted_trend.aggregation,
-        )
-        dfs[topic] = impact
-        applicabilities.append(appl)
-        lims_list.append(limitations)
-    assert len(set(applicabilities)) == 1, "All topics should have same applicability."
-    assert (
-        len(set([str(lims) for lims in lims_list])) == 1
-    ), "All topics should have same limitations."
-    n_days = 7 - 1
-    return Impact(
-        method_applicability=applicabilities[0],
-        method_limitations=lims_list[0],
-        impact_estimates={
-            topic: ImpactEstimate(
-                absolute_impact=MeanWithUncertainty(
-                    mean=impact["mean"].loc[n_days],
-                    ci_upper=impact["ci_upper"].loc[n_days],
-                    ci_lower=impact["ci_lower"].loc[n_days],
-                    p_value=impact["p_value"].loc[n_days],
-                ),
-                absolute_impact_time_series=[
-                    DatedMeanWithUncertainty(**d)
-                    for d in dfs[topic].reset_index().to_dict(orient="records")
-                ],
-                # relative_impact=MeanWithUncertainty(  # TODO: calculate relative impact
-                #     mean=1.0,
-                #     ci_upper=1.0,
-                #     ci_lower=1.0,
-                # ),
-                # relative_impact_time_series=[],
-            )
-            for topic, impact in dfs.items()
-        }
-        if applicabilities[0]
-        else None,
-    )
-
-
-def get_impact_for_single_trend(
-    events: pd.DataFrame,
-    trend: pd.DataFrame,
-    method: Method,
-    aggregation="daily",
-) -> tuple[bool, list[str], pd.DataFrame]:
-    hidden_days_before_protest = 7
-    horizon = 28
-    match method:
+    match q.method:
         case "interrupted_time_series":
-            mean_impact, limitations = interrupted_time_series(
-                events=events,
-                article_counts=trend,
-                horizon=horizon,
-                hidden_days_before_protest=hidden_days_before_protest,
-                aggregation=aggregation,
-            )
+            raise NotImplementedError("Interrupted time series is not up to date.")
         case "synthetic_control":
             raise NotImplementedError("Synthetic control is not yet implemented.")
         case "time_series_regression":
-            mean_impact, limitations = time_series_regression(
-                events=events,
-                article_counts=trend,
-                aggregation=aggregation,
+            mean_impacts, limitations = time_series_regression(
+                events=events, article_counts=trends
             )
         case _:
-            raise ValueError(f"Unsupported method: {method}")
-    return True, limitations, mean_impact
-    # TODO: divide impact by number of events on that day (by the same org)
+            raise ValueError(f"Unsupported method: {q.method}")
+    org = q.organizer
+    n_days = 7 - 1
+    return Impact(
+        method_applicability=True,
+        method_limitations=[],
+        impact_estimates={
+            topic_name: ImpactEstimate(
+                absolute_impact=MeanWithUncertainty(
+                    mean=topic_impact[org]["mean"],
+                    ci_upper=topic_impact[org]["ci_upper"],
+                    ci_lower=topic_impact[org]["ci_lower"],
+                    p_value=topic_impact[org]["p_value"],
+                ),
+                absolute_impact_time_series=[],
+            )
+            for topic_name, topic_impact in mean_impacts.items()
+        },
+    )

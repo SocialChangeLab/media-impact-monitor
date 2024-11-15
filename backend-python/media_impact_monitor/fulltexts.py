@@ -81,7 +81,7 @@ def get_fulltexts(q: FulltextSearch, sample_frac: float = 0.1) -> pd.DataFrame |
                 query=query,
                 start_date=q.start_date,
                 end_date=q.end_date,
-                countries=["Germany"],
+                countries=["Finland"],
                 sample_frac=sample_frac,
             )
         case _:

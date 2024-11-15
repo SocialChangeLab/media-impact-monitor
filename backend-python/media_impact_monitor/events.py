@@ -20,7 +20,7 @@ from media_impact_monitor.util.cache import cache
 def get_events(q: EventSearch) -> pd.DataFrame | None:
     match q.source:
         case "acled":
-            df = get_acled_events(end_date=q.end_date, countries=["Germany"])
+            df = get_acled_events(end_date=q.end_date, countries=["Finland"])
         case "press_releases":
             df = get_press_release_events(end_date=q.end_date)
     if df.empty:
@@ -59,7 +59,7 @@ def filter_climate_orgs(df: pd.DataFrame) -> pd.DataFrame:
 @cache
 def org_freqs():
     # hacky solution to get the frequency of organizers, in a stable way
-    df = get_acled_events(end_date=date(2024, 1, 1), countries=["Germany"])
+    df = get_acled_events(end_date=date(2024, 1, 1), countries=["Finland"])
     df = filter_climate_orgs(df)
     return df["organizers"].str[0].value_counts()
 

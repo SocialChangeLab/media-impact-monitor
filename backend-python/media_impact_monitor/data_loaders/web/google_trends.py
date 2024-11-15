@@ -20,14 +20,14 @@ from media_impact_monitor.util.env import DATAFORSEO_EMAIL, DATAFORSEO_PASSWORD
 def get_google_trends_counts(query: str, end_date: date) -> pd.Series:
     # end_date exists as a parameter for proper daily caching
     url = "https://api.dataforseo.com/v3/keywords_data/google_trends/explore/live"
-    location_codes = {"Germany": 2276}
+    location_codes = {"Germany": 2276, "Finland": 2246}
     payload = [
         {
             "time_range": "past_5_years",
             "type": "web",
             "keywords": [query],
-            "location_code": location_codes["Germany"],
-            "language_code": "de",
+            "location_code": location_codes["Finland"],
+            "language_code": "fi",
         }
     ]
     credentials = f"{DATAFORSEO_EMAIL}:{DATAFORSEO_PASSWORD}"

@@ -23,7 +23,7 @@ def get_keyword_trend(q: TrendSearch) -> tuple[pd.DataFrame | None, list[str]]:
             case "news_online":
                 ds, lims = get_mediacloud_counts(
                     query=query,
-                    countries=["Germany"],
+                    countries=["Finland"],
                     start_date=q.start_date,
                     end_date=q.end_date,
                 )

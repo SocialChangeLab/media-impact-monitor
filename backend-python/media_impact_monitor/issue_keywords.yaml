@@ -1,53 +1,65 @@
 activism:
-  - \*protest*
-  - \*demo
-  - \*demonstr*
-  - \*kundgebung
-  - versamm*
-  - \*besetz*
-  - \*streik*
-  - \*blockade
-  - \*blockier*
-  - sitzblock*
-  - \*aktivis*
-  - \*marsch
-  - \*parade
-  - mahnwache
-  - hungerstreik
-  - ziviler ungehorsam
+  - \*protesti*
+  - \*mielenosoitu*
+  - \*demonstra*
+  - \*kokoontu*
+  - \*valtau*
+  - \*lakko*
+  - \*sulku*
+  - \*tukki*
+  - \*esto*
+  - istumalakko*
+  - \*aktivisti*
+  - \*marssi*
+  - \*kulkue*
+  - hiljainen mielenosoitus
+  - nälkälakko
+  - kansalaistottelemattomuus
+  - mielenilmaus*
+  - \*kapina*
 climate_general:
-  - klimawandel
-  - klimaerwärmung
-  - erderwärmung
-  - klimaschutz
+  - ilmastonmuutos*
+  - ilmaston lämpeneminen
+  - maapallon lämpeneminen
+  - ilmastonsuojelu*
+  - kasvihuoneilmiö*
+  - hiilijalanjälk*
 climate_science:
-  - klimaforsch*
-  - klimawissenschaft*
-  - erderwärmung
+  - ilmastotutkimus*
+  - ilmastotiede*
+  - ilmastotutkija*
+  - ilmastoasiantuntija*
   - ipcc
+  - ilmastoraportti*
+  - ilmastomalli*
+  - ilmastoennuste*
 climate_policy:
-  - klimapoliti*
-  - klimaneutral*
-  - klimaziel*
-  - klimaschutzpaket
-  - klimaschutzgesetz
-  - klimaschutzmaßnahmen
-  - klimaschutzabkommen
-  - klimaschutzprogramm
-  - kohleausstieg
-  - erneuerbare energie*
-  - bürgerrat
-  - gesellschaftsrat
-  - tempolimit
-  - tempo 100
-  - 9-euro-ticket
-  - neun-euro-ticket
-  - vergesellschaftung
-  - schuldenschnitt
-  - klimagerechtigkeit
+  - ilmastopoliti*
+  - hiilineutraali*
+  - ilmastotavoite*
+  - ilmastotoim*
+  - ilmastolaki*
+  - ilmastosopimus*
+  - ilmasto-ohjelma*
+  - vihreä siirtymä
+  - fossiilisista luopuminen
+  - uusiutuva* energia*
+  - kansalaisraati*
+  - ilmastoraati*
+  - nopeusrajoitus*
+  - joukkoliikenne*
+  - päästökauppa*
+  - hiilidioksidivero*
+  - ilmasto-oikeudenmukaisuus*
+  - vihreä sopimus
+  - kiertotalous*
 climate_urgency:
-  - klimakrise
-  - klimakatastrophe
-  - klimakollaps
-  - klimanotstand
-  - klimagerechtigkeit
+  - ilmastokriisi*
+  - ilmastokatastrofi*
+  - ilmastohätä*
+  - ilmastohätätila*
+  - ekokriisi*
+  - ympäristökatastrofi*
+  - ilmastoahdistus*
+  - ilmastotuho*
+  - ilmastoromahdus*

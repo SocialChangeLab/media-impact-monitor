@@ -2,10 +2,7 @@ import { cn } from '@/utility/classNames'
 import { getOrgStats } from '@/utility/orgsUtil'
 import { texts } from '@/utility/textUtil'
 import { useTimeFilteredEvents } from '@/utility/useEvents'
-import {
-	useAllOrganisations,
-	useSelectedOrganisations,
-} from '@/utility/useOrganisations'
+import { useAllOrganisations } from '@/utility/useOrganisations'
 import { createColumnHelper } from '@tanstack/react-table'
 import { useMemo } from 'react'
 import { DataTable } from './DataTable/DataTable'
@@ -19,22 +16,20 @@ function formatNumber(num: number) {
 }
 
 function OrganisationsTable() {
-	const { isLoading: isLoadingSelectedOrgs, selectedOrganisations } =
-		useSelectedOrganisations()
 	const { isLoading: isLoadingEvents, timeFilteredEvents } =
 		useTimeFilteredEvents()
 	const { organisations } = useAllOrganisations()
 
 	const extendedData = useMemo(
 		() =>
-			selectedOrganisations.map((org) =>
+			organisations.map((org) =>
 				getOrgStats({
 					events: timeFilteredEvents,
 					organisations,
 					organisation: org,
 				}),
 			),
-		[organisations, selectedOrganisations, timeFilteredEvents],
+		[organisations, timeFilteredEvents],
 	)
 
 	const columns = useMemo(() => {
@@ -108,7 +103,7 @@ function OrganisationsTable() {
 		]
 	}, [])
 
-	const isLoadingAny = Boolean(isLoadingSelectedOrgs || isLoadingEvents)
+	const isLoadingAny = Boolean(isLoadingEvents)
 	return (
 		<DataTable<(typeof extendedData)[0]>
 			columns={columns}

@@ -59,11 +59,11 @@ function EventBubbleLink({
 }
 
 export function AggregatedEventsBubble({
-	selectedOrganisations,
 	date,
 	aggregationUnit,
 	events,
 	sumSize,
+	organisations,
 }: AggregatedItemType) {
 	const setDateRange = useFiltersStore(({ setDateRange }) => setDateRange)
 
@@ -76,7 +76,7 @@ export function AggregatedEventsBubble({
 			className={cn(bubbleClasses, 'rounded-sm')}
 			style={{
 				background: getCSSStyleGradientWithPercentages(
-					getColorPercentagesByParticipants(selectedOrganisations, events),
+					getColorPercentagesByParticipants(organisations, events),
 				),
 			}}
 		/>
@@ -94,19 +94,16 @@ function getColorPercentagesByParticipants(
 		.sort(compareOrganizationsByColors)
 		.map((x) => x.color)
 	const uniqueColors = Array.from(new Set(organisationsColors))
-	const colors2OrgsCount = events.reduce(
-		(acc, event) => {
-			const eventSum = event.size_number ?? 0 / event.organizers.length
-			for (const organizer of event.organizers) {
-				const org = organisations.find((x) => x.slug === organizer.slug)
-				if (!org) continue
-				const currentColorCount = acc[org.color] ?? 0
-				acc[org.color] = currentColorCount + eventSum
-			}
-			return acc
-		},
-		{} as Record<string, number>,
-	)
+	const colors2OrgsCount = events.reduce((acc, event) => {
+		const eventSum = event.size_number ?? 0 / event.organizers.length
+		for (const organizer of event.organizers) {
+			const org = organisations.find((x) => x.slug === organizer.slug)
+			if (!org) continue
+			const currentColorCount = acc[org.color] ?? 0
+			acc[org.color] = currentColorCount + eventSum
+		}
+		return acc
+	}, {} as Record<string, number>)
 	const sumSize = Object.values(colors2OrgsCount).reduce(
 		(acc, count) => acc + count,
 		0,
@@ -146,7 +143,9 @@ function getCSSStyleGradientWithPercentages(
 			return a[0].localeCompare(b[0])
 		})
 		.map(([color, percentage]) => {
-			const newPercentage = `${color} ${lastPercentage}%, ${color} ${lastPercentage + percentage}%`
+			const newPercentage = `${color} ${lastPercentage}%, ${color} ${
+				lastPercentage + percentage
+			}%`
 			lastPercentage += percentage
 			return newPercentage
 		})

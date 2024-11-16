@@ -2,20 +2,16 @@ import {
 	Tooltip,
 	TooltipContent,
 	TooltipTrigger,
-} from "@/components/ui/tooltip";
-import { format } from "@/utility/dateUtil";
-import {
-	type OrganisationType,
-	type ParsedEventType,
-	compareOrganizationsByColors,
-} from "@/utility/eventsUtil";
-import { texts } from "@/utility/textUtil";
-import { type ReactNode, memo, useMemo } from "react";
-import OrgLine from "./EventTooltipOrgLine";
+} from '@/components/ui/tooltip'
+import { format } from '@/utility/dateUtil'
+import type { OrganisationType, ParsedEventType } from '@/utility/eventsUtil'
+import { texts } from '@/utility/textUtil'
+import { type ReactNode, memo, useMemo } from 'react'
 import {
 	type AggregationUnitType,
 	formatDateByAggregationUnit,
-} from "./useAggregationUnit";
+} from './useAggregationUnit'
+import OrgLine from './EventTooltipOrgLine'
 
 function AggregatedEventsTooltip({
 	date,
@@ -23,39 +19,32 @@ function AggregatedEventsTooltip({
 	aggregationUnit,
 	events,
 	organisations,
-	selectedOrganisations,
 	children,
 }: {
-	date: Date;
-	sumSize: number | undefined;
-	aggregationUnit: AggregationUnitType;
-	events: ParsedEventType[];
-	organisations: OrganisationType[];
-	selectedOrganisations: OrganisationType[];
-	children: ReactNode;
+	date: Date
+	sumSize: number | undefined
+	aggregationUnit: AggregationUnitType
+	events: ParsedEventType[]
+	organisations: OrganisationType[]
+	children: ReactNode
 }) {
 	const formattedDate = useMemo(
 		() => formatDateByAggregationUnit(date, aggregationUnit),
 		[date, aggregationUnit],
-	);
+	)
 
-	const orgs = useMemo(() => {
-		return organisations
-			.map((org) => ({
-				...org,
-				count: events.filter((event) =>
-					event.organizers.find((x) => x.slug === org.slug),
-				).length,
-				isSelected: !!selectedOrganisations.find((x) => x.slug === org.slug),
-			}))
-			.sort((a, b) => {
-				if (selectedOrganisations.length === 0)
-					return compareOrganizationsByColors(a, b);
-				if (a.isSelected && !b.isSelected) return -1;
-				if (!a.isSelected && b.isSelected) return 1;
-				return compareOrganizationsByColors(a, b);
-			});
-	}, [organisations, selectedOrganisations, events]);
+	const orgs = useMemo(
+		() =>
+			organisations
+				.map((org) => ({
+					...org,
+					count: events.filter((event) =>
+						event.organizers.find((x) => x.slug === org.slug),
+					).length,
+				}))
+				.sort((a, b) => b.count - a.count),
+		[organisations, events],
+	)
 
 	return (
 		<Tooltip>
@@ -68,8 +57,8 @@ function AggregatedEventsTooltip({
 								aggregationUnit as keyof typeof texts.charts.aggregationUnit
 							],
 						timeValue:
-							aggregationUnit === "month"
-								? format(date, "LLLL yyyy")
+							aggregationUnit === 'month'
+								? format(date, 'LLLL yyyy')
 								: formattedDate,
 						protestCount: events.length,
 						participantCount: sumSize,
@@ -81,7 +70,7 @@ function AggregatedEventsTooltip({
 				))}
 			</TooltipContent>
 		</Tooltip>
-	);
+	)
 }
 
-export default memo(AggregatedEventsTooltip);
+export default memo(AggregatedEventsTooltip)

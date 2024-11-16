@@ -561,21 +561,15 @@ const textsEnGB = {
 			isSameDay,
 			formattedFrom,
 			formattedTo,
-			orgsCount,
 		}: {
 			isSameDay: boolean
 			formattedFrom: string
 			formattedTo: string
-			orgsCount: number
 		}) => {
 			const formattedDate = isSameDay
 				? `on ${formattedFrom}`
 				: `between ${formattedFrom} and ${formattedTo}`
-			const organisersCount =
-				orgsCount > 0
-					? `the ${orgsCount} selected organisation${orgsCount > 1 ? 's' : ''}`
-					: 'all organisations'
-			return `An overview of ${organisersCount} with protests ${formattedDate}. You can use the filters above to change the date range or select specific organisations.`
+			return `An overview of all organizations with protests ${formattedDate}. You can use the filters above to change the date range or select specific organisations.`
 		},
 		allOrganisations: 'All organisations',
 		showPartnersAriaLabel: 'Show partners tooltip',

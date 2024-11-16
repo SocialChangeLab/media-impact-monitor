@@ -8,12 +8,10 @@ import { usePathname } from 'next/navigation'
 import { type ReactNode, memo, useMemo, useRef } from 'react'
 import MediaSourceSelect from '../DataSourceSelect'
 import DraggableTimeFilterRange from '../DraggableTimeFilterRange'
-import { OrganisationsSelect } from '../OrganisationsSelect'
 import TimeFilter from '../TimeFilter'
 import {
 	doesPathnameShowAnyFilter,
 	doesPathnameShowMediaFilter,
-	doesPathnameShowOrganisationsFilter,
 	doesPathnameShowTimeFilter,
 } from '../menu/HeaderMenu'
 
@@ -21,17 +19,14 @@ function FiltersArea() {
 	const pathname = usePathname()
 	const lastPathname = useRef(pathname)
 	const isScrolledToTop = useUiStore((state) => state.isScrolledToTop)
-	const organizerSlugs = useFiltersStore(({ organizers }) => organizers)
-	const setOrganizers = useFiltersStore(({ setOrganizers }) => setOrganizers)
 	const parentRef = useRef<HTMLElement>(null)
 
 	const display = useMemo(() => {
 		const any = doesPathnameShowAnyFilter(pathname)
 		const media = doesPathnameShowMediaFilter(pathname)
-		const organisations = doesPathnameShowOrganisationsFilter(pathname)
 		const time = doesPathnameShowTimeFilter(pathname)
-		const onlyTime = !media && !organisations && time
-		return { any, media, organisations, time, onlyTime }
+		const onlyTime = !media && time
+		return { any, media, time, onlyTime }
 	}, [pathname])
 
 	const lastHasAny = useRef(display.any)
@@ -100,28 +95,14 @@ function FiltersArea() {
 					`flex gap-[max(1rem,2vmax)] justify-between flex-wrap items-center`,
 				)}
 			>
-				{(display.media || display.organisations) && (
+				{display.media && (
 					<ul className="flex gap-4 lg:gap-6 items-center flex-wrap">
-						{display.media && (
-							<li className="flex flex-col gap-1 text-sm">
-								<FilterLabel show={isScrolledToTop}>
-									{texts.filters.mediaSource.label}:
-								</FilterLabel>
-								<MediaSourceSelect />
-							</li>
-						)}
-						{display.organisations && (
-							<li className="flex flex-col gap-1 text-sm">
-								<FilterLabel show={isScrolledToTop}>
-									{texts.filters.organisations.label}:
-								</FilterLabel>
-								<OrganisationsSelect
-									multiple
-									selectedOrganisations={organizerSlugs}
-									onChange={setOrganizers}
-								/>
-							</li>
-						)}
+						<li className="flex flex-col gap-1 text-sm">
+							<FilterLabel show={isScrolledToTop}>
+								{texts.filters.mediaSource.label}:
+							</FilterLabel>
+							<MediaSourceSelect />
+						</li>
 					</ul>
 				)}
 				{display.time && (

@@ -2,7 +2,7 @@ import type { MediaSourceType } from "@/stores/filtersStore";
 import { compareAsc, parse } from "date-fns";
 import { z } from "zod";
 import type { EventOrganizerSlugType, OrganisationType } from "./eventsUtil";
-import { fetchApiData, formatInput } from "./fetchUtil";
+import { fetchApiData } from "./fetchUtil";
 import { formatZodError } from "./zodUtil";
 
 export const rawFullTextsZodSchema = z.object({
@@ -44,24 +44,10 @@ export type FullTextsQueryProps = {
 	today: Date;
 };
 
-function getFullTextsQuery({
-	event_id,
-	organizers,
-	allOrganisations,
-}: FullTextsQueryProps) {
-	return {
-		event_id,
-		...formatInput(
-			{ mediaSource: "news_online", organizers },
-			allOrganisations,
-		),
-	};
-}
-
 export async function getFullTextsData(props: FullTextsQueryProps) {
 	const json = await fetchApiData({
 		endpoint: "fulltexts",
-		body: getFullTextsQuery(props),
+		body: { event_id: props.event_id, media_source: "news_online" },
 	});
 	return validateFullTextsResponse(json, props.today);
 }
@@ -79,8 +65,8 @@ function validateFullTextsResponse(
 				})),
 			)
 			.parse(response);
-		const sortedMedia = parsedResponse.sort(
-			(a, b) => compareAsc(a.date, b.date),
+		const sortedMedia = parsedResponse.sort((a, b) =>
+			compareAsc(a.date, b.date),
 		);
 		return parsedResponseDataZodSchema.parse(sortedMedia);
 	} catch (error) {

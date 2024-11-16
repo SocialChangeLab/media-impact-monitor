@@ -15,7 +15,6 @@ function OrganisationsOverviewPageContent() {
       isSameDay: isSameDay(state.from, state.to),
       formattedFrom,
       formattedTo,
-      orgsCount: state.organizers.length,
     });
   });
   return (

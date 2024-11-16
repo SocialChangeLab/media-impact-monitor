@@ -38,8 +38,6 @@ function EventsTimeline() {
 	const aggregationUnit = useAggregationUnit(size.width)
 	const { filteredEvents, isLoading } = useFilteredEvents()
 	const { organisations } = useAllOrganisations()
-	const { filteredEventsOrganisations } = useFilteredEventsOrganisations()
-	const { selectedOrganisations } = useSelectedOrganisations()
 	const { eventColumns, columnsCount, sizeScale } = useTimelineEvents({
 		size,
 		aggregationUnit,
@@ -69,14 +67,7 @@ function EventsTimeline() {
 			<EventsTimelineScrollWrapper>
 				<EventsTimelineChartWrapper columnsCount={columnsCount + 1}>
 					{eventColumns.map((props) => {
-						const {
-							time,
-							date,
-							eventsWithSize,
-							sumSize,
-							combinedOrganizers,
-							combinedSelectedOrganizers,
-						} = props
+						const { time, date, eventsWithSize, sumSize } = props
 						const insertedDataSource = dataSourceInsertions.find((d) =>
 							isInSameAggregationUnit(aggregationUnit, d.date, props),
 						)
@@ -127,7 +118,6 @@ function EventsTimeline() {
 												key={event.event_id}
 												event={event}
 												organisations={organisations}
-												selectedOrganisations={filteredEventsOrganisations}
 												height={sizeScale(event.size_number ?? 0)}
 											/>
 										))}
@@ -136,8 +126,7 @@ function EventsTimeline() {
 											date={date}
 											sumSize={sumSize}
 											height={Math.ceil(sizeScale(sumSize))}
-											organisations={combinedOrganizers}
-											selectedOrganisations={filteredEventsOrganisations}
+											organisations={organisations}
 											events={eventsWithSize}
 											aggregationUnit={aggregationUnit}
 										/>
@@ -155,8 +144,7 @@ function EventsTimeline() {
 			</EventsTimelineScrollWrapper>
 			<EventsTimelineLegend
 				sizeScale={sizeScale}
-				organisations={filteredEventsOrganisations}
-				selectedOrganisations={selectedOrganisations}
+				organisations={organisations}
 			/>
 		</EventsTimelineWrapper>
 	)

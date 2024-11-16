@@ -9,7 +9,7 @@ import {
 	parse,
 	startOfDay,
 	subDays,
-	subMonths
+	subMonths,
 } from "date-fns";
 import { z } from "zod";
 import { create } from "zustand";
@@ -19,8 +19,11 @@ import {
 	persist,
 } from "zustand/middleware";
 
-
-export type MediaSourceType = "news_online" | "news_print" | "social_tiktok" | "web_google";
+export type MediaSourceType =
+	| "news_online"
+	| "news_print"
+	| "social_tiktok"
+	| "web_google";
 
 export type FiltersState = {
 	from: Date;
@@ -30,7 +33,6 @@ export type FiltersState = {
 	fromDateString: string;
 	toDateString: string;
 	isDefaultTimeRange: boolean;
-	organizers: EventOrganizerSlugType[];
 	mediaSource: MediaSourceType;
 };
 
@@ -38,7 +40,6 @@ export type FiltersActions = {
 	setDateRange: (props: { from: Date; to: Date }) => void;
 	resetAllFilters: () => void;
 	resetDateRange: () => void;
-	setOrganizers: (organizers: EventOrganizerSlugType[]) => void;
 	setMediaSource: (mediaSource: MediaSourceType) => void;
 };
 
@@ -55,35 +56,38 @@ export const getDefaultInitState = (today: Date): FiltersState => {
 		fromDateString: format(defaultFrom, "yyyy-MM-dd"),
 		toDateString: format(defaultTo, "yyyy-MM-dd"),
 		isDefaultTimeRange: true,
-		organizers: [] as EventOrganizerSlugType[],
 		mediaSource: "news_online",
 	};
-}
+};
 
 const preprossedDate = z.preprocess((arg) => {
-	if (typeof arg !== 'string') return arg;
+	if (typeof arg !== "string") return arg;
 	if (arg.length === 10) return parse(arg, "yyyy-MM-dd", new Date());
 	return new Date(arg);
-}, z.date())
+}, z.date());
 
 const getFiltersZodSchema = (today: Date) => {
 	const defaultInitState = getDefaultInitState(today);
 	return z
-	.object({
-		from: preprossedDate,
-		to: preprossedDate,
-		defaultFrom: z.preprocess(() => defaultInitState.defaultFrom, z.date()),
-		defaultTo: z.preprocess(() => defaultInitState.defaultTo, z.date()),
-		fromDateString: z.string(),
-		toDateString: z.string(),
-		isDefaultTimeRange: z
-			.boolean()
-			.default(defaultInitState.isDefaultTimeRange),
-		organizers: z.array(z.string()).default(defaultInitState.organizers),
-		mediaSource: z.enum(["news_online", "news_print", "social_tiktok", "web_google"]),
-	})
-	.default(defaultInitState);
-}
+		.object({
+			from: preprossedDate,
+			to: preprossedDate,
+			defaultFrom: z.preprocess(() => defaultInitState.defaultFrom, z.date()),
+			defaultTo: z.preprocess(() => defaultInitState.defaultTo, z.date()),
+			fromDateString: z.string(),
+			toDateString: z.string(),
+			isDefaultTimeRange: z
+				.boolean()
+				.default(defaultInitState.isDefaultTimeRange),
+			mediaSource: z.enum([
+				"news_online",
+				"news_print",
+				"social_tiktok",
+				"web_google",
+			]),
+		})
+		.default(defaultInitState);
+};
 
 const getUrlSearch = (today: Date = new Date()) => {
 	if (typeof window === "undefined") return new URLSearchParams();
@@ -96,12 +100,11 @@ const getUrlSearch = (today: Date = new Date()) => {
 	try {
 		state = z
 			.object({ state: zodSchema })
-			.parse(JSON.parse(filters || `"{\\"state\\":{}}"`))
-			.state as FiltersState;
+			.parse(JSON.parse(filters || `"{\\"state\\":{}}"`)).state as FiltersState;
 	} catch (err) {
 		console.error(err);
-	} 
-	const newJSONState = { ...state, ...limitDateRange({ ...state, today}) };
+	}
+	const newJSONState = { ...state, ...limitDateRange({ ...state, today }) };
 	searchParams.set(
 		"filters",
 		JSON.stringify(
@@ -128,11 +131,15 @@ const getPersistentStorage = (today: Date): StateStorage => ({
 	setItem: (key, newValue): void => {
 		const searchParams = getUrlSearch(today);
 		try {
-			const existingValue = JSON.parse(JSON.parse(searchParams.get(key) as string));
+			const existingValue = JSON.parse(
+				JSON.parse(searchParams.get(key) as string),
+			);
 			const newParsedValue = JSON.parse(newValue);
-			const mergedValue = { state: { ...existingValue.state, ...newParsedValue.state } };
+			const mergedValue = {
+				state: { ...existingValue.state, ...newParsedValue.state },
+			};
 			searchParams.set(key, JSON.stringify(mergedValue));
-		} catch(err) {
+		} catch (err) {
 			console.error(err);
 		}
 		window.history.replaceState(null, "", `?${searchParams.toString()}`);
@@ -176,22 +183,26 @@ export const createFiltersStore = (
 						fromDateString: defaultInitState.fromDateString,
 						toDateString: defaultInitState.toDateString,
 					})),
-				setOrganizers: (organizers: EventOrganizerSlugType[]) =>
-					set(() => ({ organizers })),
 				setMediaSource: (mediaSource: MediaSourceType) =>
 					set(() => ({ mediaSource })),
 			}),
 			getStorageOptions(today),
 		),
 	);
-}
+};
 
-export function limitDateRange({ from, to, today }: { from: Date; to: Date; today: Date; }) {
+export function limitDateRange({
+	from,
+	to,
+	today,
+}: { from: Date; to: Date; today: Date }) {
 	const { datasetStartDate, datasetEndDate } = getDatasetRange(today);
 	const defaultInitState = getDefaultInitState(today);
 	const validFrom = isValid(from) ? from : defaultInitState.from;
 	const validTo = isValid(to) ? to : defaultInitState.to;
-	const newFrom = isBefore(validFrom, datasetStartDate) ? datasetStartDate : validFrom;
+	const newFrom = isBefore(validFrom, datasetStartDate)
+		? datasetStartDate
+		: validFrom;
 	const newTo = isAfter(validTo, datasetEndDate) ? datasetEndDate : validTo;
 	const earliestDate = isBefore(newFrom, newTo) ? newFrom : newTo;
 	const latestDate = isAfter(newFrom, newTo) ? newFrom : newTo;

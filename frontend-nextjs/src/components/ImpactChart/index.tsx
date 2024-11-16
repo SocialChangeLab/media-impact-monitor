@@ -66,13 +66,9 @@ function ImpactChartWithData({
 	sentiment_target = null,
 }: ImpactChartWithDataProps) {
 	const { organisations } = useAllOrganisations()
-	const selectedOrgs = useFiltersStore((state) => state.organizers.sort())
 	const orgs = useMemo(
-		() =>
-			selectedOrgs.length === 0
-				? organisations.map(({ slug }) => slug)
-				: selectedOrgs,
-		[selectedOrgs, organisations],
+		() => organisations.map(({ slug }) => slug),
+		[organisations],
 	)
 
 	const [org1, setOrg1] = useState<EventOrganizerSlugType | undefined>(orgs[0])

@@ -2,7 +2,6 @@
 import { useFiltersStore } from "@/providers/FiltersStoreProvider";
 import { useToday } from "@/providers/TodayProvider";
 import { useQuery } from "@tanstack/react-query";
-import slugify from "slugify";
 import { type TrendQueryProps, getMediaTrendData } from "./mediaTrendUtil";
 import { getStaleTime } from "./queryUtil";
 import { useAllOrganisations } from "./useOrganisations";
@@ -17,17 +16,11 @@ function useMediaTrends({
 }) {
 	const from = useFiltersStore(({ from }) => from);
 	const to = useFiltersStore(({ to }) => to);
-	const organizers = useFiltersStore(({ organizers }) => organizers);
 	const mediaSource = useFiltersStore(({ mediaSource }) => mediaSource);
-	const fromDateString = useFiltersStore(({ fromDateString }) => fromDateString);
-	const toDateString = useFiltersStore(({ toDateString }) => toDateString);
-	const organizersKey = useFiltersStore(
-		({ organizers }) =>
-			organizers
-				.map((o) => slugify(o, { lower: true, strict: true }))
-				.sort()
-				.join("-"),
+	const fromDateString = useFiltersStore(
+		({ fromDateString }) => fromDateString,
 	);
+	const toDateString = useFiltersStore(({ toDateString }) => toDateString);
 	const { organisations, isLoading } = useAllOrganisations();
 	const { today } = useToday();
 	const queryKey = [
@@ -36,7 +29,6 @@ function useMediaTrends({
 		sentiment_target,
 		fromDateString,
 		toDateString,
-		organizersKey,
 		mediaSource,
 	];
 	const query = useQuery({
@@ -49,8 +41,8 @@ function useMediaTrends({
 					params: {
 						from,
 						to,
-						organizers,
 						mediaSource,
+						organizers: [],
 					},
 					allOrganisations: organisations || [],
 				},

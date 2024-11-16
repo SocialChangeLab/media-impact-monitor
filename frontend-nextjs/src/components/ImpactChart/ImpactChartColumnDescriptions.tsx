@@ -158,7 +158,6 @@ function ImpactChartColumnDescriptions({
 	const [organizer, setOrganizer] = useState<
 		EventOrganizerSlugType | undefined
 	>(defaultOrganizer)
-	const selectedOrganizers = useFiltersStore((state) => state.organizers.sort())
 	const { organisation } = useOrganisation(organizer)
 
 	useEffect(() => {
@@ -182,13 +181,10 @@ function ImpactChartColumnDescriptions({
 			<div className="flex flex-col gap-2">
 				<OrganisationsSelect
 					multiple={false}
-					organisations={
-						selectedOrganizers.length === 0 ? undefined : selectedOrganizers
-					}
-					selectedOrganisations={organizer ? [organizer] : []}
+					selectedOrganisations={[organizer]}
 					onChange={(orgs) => {
 						setOrganizer(orgs[0])
-						onOrgChange(orgs[0])
+						if (orgs[0]) onOrgChange(orgs[0])
 					}}
 				/>
 				{hasLimitations && !!organisation && !error && (

@@ -193,7 +193,7 @@ export function OrganisationsSelect({
 										const newValues = alreadySelected
 											? selectedOrganizerSlugs.filter(
 													(slug) => slug !== currentValue,
-												)
+											  )
 											: [...selectedOrganizerSlugs, org.slug]
 										const uniqueValues = Array.from(new Set(newValues))
 										onChange(multiple ? uniqueValues : [org.slug])

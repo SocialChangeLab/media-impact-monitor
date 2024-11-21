@@ -1,6 +1,4 @@
-import pytest
-
-from media_impact_monitor.util.cache import get, get_proxied, post
+from media_impact_monitor.util.cache import get, post
 
 # URLs for the stable testing endpoints (preferably dedicated for testing purposes)
 GET_URL = "https://httpbin.org/get"
@@ -30,17 +28,3 @@ def test_post_retrieval():
     assert (
         response.json().get("json") == POST_DATA
     ), "The response body should contain the JSON data we sent"
-
-
-@pytest.mark.skip(
-    reason="Our API key has expired, we will get a new one once we really need it."
-)
-def test_get_proxied():
-    """
-    Test if the `get_proxied` function can successfully retrieve content.
-    """
-    response = get_proxied(GET_URL)
-    assert response.status_code == 200
-    assert (
-        "args" in response.json()
-    ), "The response should contain 'args' to confirm it's from httpbin.org"

@@ -4,11 +4,11 @@ Run with: `uvicorn media_impact_monitor.api:app --reload`
 Or, if necessary: `poetry run uvicorn media_impact_monitor.api:app --reload` in "backend-python/"
 """
 
-from datetime import date
 import json
 import logging
 import os
 from contextlib import asynccontextmanager
+from datetime import date
 
 import sentry_sdk
 from fastapi import FastAPI, Request

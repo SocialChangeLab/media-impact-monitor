@@ -1,8 +1,8 @@
-import pandas as pd
-import statsmodels.api as sm
-
 from collections import Counter
 from itertools import chain
+
+import pandas as pd
+import statsmodels.api as sm
 
 
 def add_lags(df: pd.DataFrame, lags: list[int]):

@@ -1,16 +1,18 @@
-import pytest
-import pandas as pd
-from datetime import datetime, timedelta
 from collections import Counter
+from datetime import datetime, timedelta
+
+import pandas as pd
+import pytest
+
 from media_impact_monitor.data_loaders.social_media.tiktok import (
-    get_videos_for_keywords,
-    get_hashtag_suggestions,
-    get_hashtag_id,
-    get_videos_for_hashtag_id,
-    get_videos_for_hashtag,
-    get_video_history_for_hashtag,
-    get_comments_for_video,
     get_comment_history_for_hashtag,
+    get_comments_for_video,
+    get_hashtag_id,
+    get_hashtag_suggestions,
+    get_video_history_for_hashtag,
+    get_videos_for_hashtag,
+    get_videos_for_hashtag_id,
+    get_videos_for_keywords,
 )
 
 

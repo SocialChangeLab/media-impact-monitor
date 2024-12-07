@@ -1,9 +1,9 @@
-from media_impact_monitor.util.env import AI_TREND_RESOLUTION
 import pandas as pd
 
 from media_impact_monitor.fulltexts import get_fulltexts
 from media_impact_monitor.types_ import FulltextSearch, TrendSearch
 from media_impact_monitor.util.cache import cache
+from media_impact_monitor.util.env import AI_TREND_RESOLUTION
 
 
 def get_sentiment_trend(q: TrendSearch) -> tuple[pd.DataFrame | None, list[str]]:

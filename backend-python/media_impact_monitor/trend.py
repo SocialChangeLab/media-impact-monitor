@@ -1,12 +1,13 @@
 from datetime import date
-from media_impact_monitor.trends.topic_trend import get_topic_trend
-from media_impact_monitor.util.date import verify_dates
+
 import pandas as pd
 
 from media_impact_monitor.trends.keyword_trend import get_keyword_trend
 from media_impact_monitor.trends.sentiment_trend import get_sentiment_trend
+from media_impact_monitor.trends.topic_trend import get_topic_trend
 from media_impact_monitor.types_ import Trend, TrendSearch
 from media_impact_monitor.util.cache import cache
+from media_impact_monitor.util.date import verify_dates
 
 
 @cache

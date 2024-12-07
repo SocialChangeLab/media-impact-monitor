@@ -1,10 +1,10 @@
 from datetime import date
 
 import pandas as pd
+import requests
 from bs4 import BeautifulSoup
 
 from media_impact_monitor.util.cache import cache, get
-import requests
 
 
 @cache

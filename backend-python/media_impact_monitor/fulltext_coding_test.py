@@ -1,5 +1,7 @@
-import pytest
 import asyncio
+
+import pytest
+
 from media_impact_monitor.fulltext_coding import (
     code_fulltext,
     code_many_fulltexts,

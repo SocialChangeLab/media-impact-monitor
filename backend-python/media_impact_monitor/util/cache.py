@@ -3,7 +3,9 @@
 from time import sleep as _sleep
 
 from joblib import Memory
-from requests import get as _get, post as _post, Response
+from requests import Response
+from requests import get as _get
+from requests import post as _post
 
 memory = Memory("cache", verbose=0)
 cache = memory.cache

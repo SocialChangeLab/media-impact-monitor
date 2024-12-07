@@ -1,12 +1,13 @@
 import asyncio
 import json
+
 import json_repair
 from aiolimiter import AsyncLimiter
 from litellm import BadRequestError as BadRequestError1
 from openai import BadRequestError as BadRequestError2
 from tqdm.asyncio import tqdm_asyncio
-from media_impact_monitor.util.cache import cache
 
+from media_impact_monitor.util.cache import cache
 from media_impact_monitor.util.llm import acompletion, completion
 
 system_prompt = """You are an assistant professor in political science at Stanford University. You have great expertise and intuition on the topics of climate change, activism, policy, and science. You can argue in a very open-ended manner and come to sharp conclusions. Your writing style is super concise and super down-to-earth.

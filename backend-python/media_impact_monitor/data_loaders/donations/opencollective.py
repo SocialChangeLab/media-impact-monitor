@@ -1,13 +1,14 @@
-from gql import gql, Client
-from gql.transport.requests import RequestsHTTPTransport
 import os
-from dotenv import load_dotenv
-import pandas as pd
+import re
+import time
+
 import matplotlib.pyplot as plt
+import pandas as pd
+from dotenv import load_dotenv
+from gql import Client, gql
+from gql.transport.requests import RequestsHTTPTransport
 from joblib import Memory
 from tqdm.auto import tqdm
-import time
-import re
 
 # Setup caching
 memory = Memory(".cache", verbose=0)

@@ -1,8 +1,10 @@
-from media_impact_monitor.trends.keyword_trend import topic_queries, get_keyword_trend
-from media_impact_monitor.types_ import TrendSearch
 from datetime import date
-import pytest
+
 import pandas as pd
+import pytest
+
+from media_impact_monitor.trends.keyword_trend import get_keyword_trend, topic_queries
+from media_impact_monitor.types_ import TrendSearch
 
 
 def test_topic_queries():

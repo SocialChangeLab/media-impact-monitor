@@ -1,12 +1,44 @@
+import json
 from django.shortcuts import render, get_object_or_404
 from .models import Event
+from django.db.models import Count
+from datetime import datetime, timedelta
 
 def index(request):
     events = Event.objects.all()[:50]
     return render(request, "index.html", {"events": events})
 
 def dashboard(request):
-    return render(request, "dashboard.html")
+    # Get events from the last year
+    one_year_ago = datetime.now() - timedelta(days=365)
+    events = Event.objects.filter(date__gte=one_year_ago).values(
+        'event_id',
+        'date',
+        'organizers',
+        'size_number'
+    ).order_by('date')
+    
+    # Convert datetime to string format
+    events_list = [
+        {**event,
+         'date': event["date"].strftime('%Y-%m-%d')}
+        for event in events
+    ]
+    
+    # Get unique organizations for the legend
+    organizations = [
+        {'name': 'Fridays for Future', 'color': '#4CAF50'},
+        {'name': 'Last Generation', 'color': '#FF5722'},
+        {'name': 'Extinction Rebellion', 'color': '#9C27B0'},
+        {'name': 'BUND', 'color': '#2196F3'},
+        {'name': 'Greenpeace', 'color': '#009688'},
+        {'name': 'Other', 'color': '#607D8B'}
+    ]
+    
+    return render(request, "dashboard.html", {
+        "events": json.dumps(events_list),
+        "organizations": json.dumps(organizations)
+    })
 
 def event_detail(request, event_id):
     event = get_object_or_404(Event, event_id=event_id)

@@ -1,0 +1,9 @@
+{% if events %}
+<ul>
+    {% for event in events %}
+        <li><a href="{% url 'event detail' event.event_id %}">{{ event.event_type }} in {{ event.city }} on {{ event.date }}</a></li>
+    {% endfor %}
+</ul>
+{% else %}
+    <p>No events found.</p>
+{% endif %}

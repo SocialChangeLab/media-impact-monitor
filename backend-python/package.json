@@ -1,0 +1,22 @@
+{
+  "name": "backend-python",
+  "version": "1.0.0",
+  "description": "## Usage",
+  "main": "index.js",
+  "scripts": {
+    "build": "tailwindcss -i ./media_impact_monitor/static/css/input.css -o ./media_impact_monitor/static/css/output.css --minify",
+    "dev": "tailwindcss -i ./media_impact_monitor/static/css/input.css -o ./media_impact_monitor/static/css/output.css --watch"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  
+  "devDependencies": {
+    "@tailwindcss/container-queries": "^0.1.1",
+    "@tailwindcss/forms": "^0.5.9",
+    "@tailwindcss/typography": "^0.5.15",
+    "autoprefixer": "^10.4.20",
+    "postcss": "^8.4.49",
+    "tailwindcss": "^3.4.16"
+  }
+}

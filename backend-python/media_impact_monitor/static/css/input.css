@@ -1,0 +1,60 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Font Face Declarations */
+@font-face {
+    font-family: 'Inter';
+    src: url('../fonts/Inter-Regular.woff2') format('woff2'),
+         url('../fonts/Inter-Regular.woff') format('woff');
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Inter';
+    src: url('../fonts/Inter-Medium.woff2') format('woff2'),
+         url('../fonts/Inter-Medium.woff') format('woff');
+    font-weight: 500;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Neue Regrade';
+    src: url('../fonts/NeueRegrade-Regular.woff2') format('woff2'),
+         url('../fonts/NeueRegrade-Regular.woff') format('woff');
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+}
+
+@layer base {
+    :root {
+        --font-inter: 'Inter', sans-serif;
+        --font-neue-regrade: 'Neue Regrade', sans-serif;
+        
+        --brandGreen: #134e4a;
+        --brandWhite: #fcfeff;
+        --fg: var(--brandGreen);
+        --bg: var(--brandWhite);
+        --bgOverlay: rgba(93, 114, 128, 0.5);
+        --alt: #042f2e;
+        --grayDark: #5d7280;
+        --grayMed: #d0dfe7;
+        --grayLight: #e1ecf2;
+        --grayUltraLight: #f1faff;
+    }
+
+    html {
+        font-family: var(--font-inter);
+        font-size: clamp(0.88rem, 0.282353vi + 0.81rem, 1rem);
+        line-height: calc(2px + 2ex + 2px);
+        scrollbar-gutter: stable;
+    }
+
+    h1, h2, h3, h4, h5, h6 {
+        font-family: var(--font-neue-regrade);
+    }
+}

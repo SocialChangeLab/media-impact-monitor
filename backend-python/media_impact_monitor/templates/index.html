@@ -1,3 +1,7 @@
+{% extends "base.html" %}
+
+{% block content %}
+
 {% if events %}
 <ul>
     {% for event in events %}
@@ -7,3 +11,4 @@
 {% else %}
     <p>No events found.</p>
 {% endif %}
+{% endblock %}

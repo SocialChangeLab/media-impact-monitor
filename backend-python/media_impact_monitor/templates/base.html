@@ -43,68 +43,7 @@
         {% block content %}{% endblock %}
     </main>
 
-    <footer class="mx-auto w-full relative" aria-label="Main page footer">
-        <div class="flex flex-wrap gap-8 items-start w-full px-6 py-8 relative border-y border-grayLight">
-            <!-- Logo and Links Section -->
-            <div class="flex md:flex-col gap-4 justify-between">
-                <a href="/dashboard" class="flex flex-col gap-4 justify-between w-fit">
-                    <img src="{% static 'logos/mim-horizontal-positive.svg' %}" alt="Media Impact Monitor Logo" 
-                        class="text-grayDark origin-top-left scale-90 dark:hidden">
-                    <img src="{% static 'logos/mim-horizontal-negative.svg' %}" alt="Media Impact Monitor Logo" 
-                        class="text-grayDark origin-top-left scale-90 hidden dark:block">
-                </a>
-
-                <div class="flex flex-col gap-4 justify-between text-grayDark text-sm">
-                    <a href="/logos" class="no-underline hover:text-fg transition-colors w-fit">Logo assets</a>
-                    <a href="https://status.mediaimpactmonitor.app" target="_blank" rel="noopener noreferrer" class="no-underline hover:text-fg transition-colors w-fit">App status</a>
-                    <a href="https://github.com/SocialChangeLab/media-impact-monitor" target="_blank" rel="noopener noreferrer" class="no-underline hover:text-fg transition-colors w-fit flex gap-1 items-center">
-                        <span class="size-4 text-grayDark">GitHub</span>
-                    </a>
-                    <a href="/imprint" class="no-underline hover:text-fg transition-colors w-fit">Imprint</a>
-                    <a href="/privacy" class="no-underline hover:text-fg transition-colors w-fit">Privacy</a>
-                    <span>© {% now "Y" %} - Social Change Lab</span>
-                </div>
-            </div>
-
-            <!-- Partners Section -->
-            <div class="flex flex-wrap gap-x-6 md:gap-x-8 lg:gap-x-16 gap-y-8 max-w-full pr-4 max-sm:border-t border-grayLight max-sm:pt-6 max-sm:w-full md:pt-14">
-                <!-- Hosted By -->
-                <div class="flex flex-wrap gap-x-16">
-                    <a class="h-fit flex flex-col gap-4 group" href="https://socialchangelab.org/" target="_blank" rel="noopener noreferrer" title="Social Change Lab">
-                        <span class="no-underline text-sm text-grayDark">Hosted by</span>
-                        <img src="{% static 'logos/socialchangelab-positive.svg' %}" alt="Social Change Lab Logo" 
-                            class="origin-top-left transition-transform group-hover:scale-105 w-[112px] h-[56px] lg:w-[150px] lg:h-[75px] dark:hidden">
-                        <img src="{% static 'logos/socialchangelab-negative.svg' %}" alt="Social Change Lab Logo" 
-                            class="origin-top-left transition-transform group-hover:scale-105 w-[112px] h-[56px] lg:w-[150px] lg:h-[75px] hidden dark:block">
-                    </a>
-                </div>
-
-                <!-- Sponsored By -->
-                <div class="flex flex-wrap gap-x-8 gap-y-4">
-                    <a class="h-fit flex flex-col gap-6 group" href="https://prototypefund.de/" target="_blank" rel="noopener noreferrer" title="Bundesministerium für Bildung und Forschung">
-                        <span class="no-underline text-sm text-grayDark w-fit">Sponsored by</span>
-                        <img src="{% static 'logos/bmbf-positive.svg' %}" alt="Bundesministerium für Bildung und Forschung" 
-                            class="origin-top-left transition-transform group-hover:scale-105 w-[112px] h-[56px] lg:w-[150px] lg:h-[75px] dark:hidden">
-                        <img src="{% static 'logos/bmbf-negative.svg' %}" alt="Bundesministerium für Bildung und Forschung" 
-                            class="origin-top-left transition-transform group-hover:scale-105 w-[112px] h-[56px] lg:w-[150px] lg:h-[75px] hidden dark:block">
-                    </a>
-                    <a class="flex flex-col gap-6 w-fit h-fit group" href="https://prototypefund.de/" target="_blank" rel="noopener noreferrer" title="Prototype Fund">
-                        <span class="no-underline text-fg">&nbsp;</span>
-                        <img src="{% static 'logos/prototypefund-positive.svg' %}" alt="Prototype Fund Logo" 
-                            class="origin-top-left transition-transform group-hover:scale-105 w-[28px] h-[51px] lg:w-[56px] lg:h-[102px] dark:hidden">
-                        <img src="{% static 'logos/prototypefund-negative.svg' %}" alt="Prototype Fund Logo" 
-                            class="origin-top-left transition-transform group-hover:scale-105 w-[28px] h-[51px] lg:w-[56px] lg:h-[102px] hidden dark:block">
-                    </a>
-                </div>
-            </div>
-        </div>
-
-        <!-- Back to Top Button -->
-        <button type="button" id="back-to-top" aria-label="Scroll to top" class="absolute right-6 top-6 p-1 text-fg border border-transparent hover:bg-grayUltraLight hover:border-grayLight" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m18 15-6-6-6 6"/></svg>
-        </button>
-    </footer>
-
+    {% include 'footer.html' %}
     {% block scripts %}{% endblock %}
 </body>
 </html>

@@ -59,7 +59,7 @@ def get_acled_events(
         "event_type": "Protests",
         "event_date": f"{start_date.strftime('%Y-%m-%d')}|{end_date.strftime('%Y-%m-%d')}",
         "event_date_where": "BETWEEN",
-        "fields": "event_date|sub_event_type|assoc_actor_1|country|admin1|admin2|notes|tags",
+        "fields": "event_id_cnty|event_date|sub_event_type|assoc_actor_1|country|admin1|admin2|notes|tags",
         "limit": limit,
     }
     assert (countries or regions) and not (
@@ -89,8 +89,10 @@ def get_acled_events(
     #     "adapted from: Armed Conflict Location & Event Data Project (ACLED); www.acleddata.com"
     # )
     df["source"] = "acled"
+    df["event_id"] = df["event_id_cnty"]
     return df[
         [
+            "event_id",
             "date",
             "event_type",
             "country",

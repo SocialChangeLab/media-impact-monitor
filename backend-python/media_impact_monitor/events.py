@@ -1,7 +1,6 @@
 from datetime import date
 
 import pandas as pd
-from joblib import hash as joblib_hash
 from slugify import slugify
 
 from media_impact_monitor.data_loaders.protest.acled.acled import get_acled_events
@@ -38,7 +37,6 @@ def get_events(q: EventSearch) -> pd.DataFrame | None:
         df = df[df["date"] >= q.start_date]
     if q.end_date:
         df = df[df["date"] <= q.end_date]
-    df["event_id"] = df.apply(joblib_hash, axis=1, raw=True)
     _org_freqs = org_freqs()
 
     def sort_organizers(organizers: list[str]) -> list[str]:

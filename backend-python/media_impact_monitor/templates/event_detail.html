@@ -1,3 +1,7 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
 <h1>{{ event.event_type }} in {{ event.city }} on {{ event.date }}</h1>
 <p>{{ event.description }}</p>
 
@@ -5,4 +9,4 @@
 
 <p>Last updated: {{ event.last_updated }}</p>
 
-
+{% endblock %}

@@ -34,7 +34,9 @@
     :root {
         --font-inter: 'Inter', sans-serif;
         --font-neue-regrade: 'Neue Regrade', sans-serif;
-        
+
+        --headerHeight: 73px;
+
         --brandGreen: #134e4a;
         --brandWhite: #fcfeff;
         --fg: var(--brandGreen);

@@ -10,16 +10,16 @@
     <meta name="description" content="{% block description %}Media Impact Monitor - Track and analyze media impact{% endblock %}">
     
     <!-- Open Graph Meta Tags -->
-    <meta property="og:title" content="{% block og_title %}{{ block.super }}{% endblock %}">
-    <meta property="og:description" content="{% block og_description %}{{ block.super }}{% endblock %}">
+    <meta property="og:title" content="{% block og_title %}Media Impact Monitor{% endblock %}">
+    <meta property="og:description" content="{% block og_description %}Track and analyze media impact{% endblock %}">
     <meta property="og:image" content="{% static 'images/og-image.webp' %}">
     <meta property="og:url" content="{{ request.build_absolute_uri }}">
     <meta property="og:type" content="website">
     
     <!-- Twitter Card Meta Tags -->
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="{% block twitter_title %}{{ block.super }}{% endblock %}">
-    <meta name="twitter:description" content="{% block twitter_description %}{{ block.super }}{% endblock %}">
+    <meta name="twitter:title" content="{% block twitter_title %}Media Impact Monitor{% endblock %}">
+    <meta name="twitter:description" content="{% block twitter_description %}Track and analyze media impact{% endblock %}">
     <meta name="twitter:image" content="{% static 'images/og-image.webp' %}">
     <meta name="twitter:url" content="{{ request.build_absolute_uri }}">
     
@@ -35,9 +35,7 @@
 </head>
 
 <body class="bg-pattern-soft min-h-screen !pointer-events-auto w-screen overflow-x-clip max-w-page mx-auto">
-    <header>
-        {% block header %}{% endblock %}
-    </header>
+    {% include 'header.html' %}
 
     <main>
         {% block content %}{% endblock %}

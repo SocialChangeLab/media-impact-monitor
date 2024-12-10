@@ -17,6 +17,7 @@ class Event(models.Model):
         null=True, blank=True, help_text="Size of the event, quantified if possible."
     )
     description = models.TextField()
+    organizer_aliases = models.JSONField(null=True, blank=True)
 
     def __str__(self):
         return f"{self.event_type} on {self.date} in {self.city or self.region or self.country or 'Unknown location'}"

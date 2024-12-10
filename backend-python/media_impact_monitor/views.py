@@ -24,21 +24,11 @@ def dashboard(request):
         {**event,
          'date': event["date"].strftime('%Y-%m-%d')}
         for event in events
-    ]
-    
-    # Get unique organizations for the legend
-    organizations = [
-        {'name': 'Fridays for Future', 'color': '#4CAF50'},
-        {'name': 'Last Generation', 'color': '#FF5722'},
-        {'name': 'Extinction Rebellion', 'color': '#9C27B0'},
-        {'name': 'BUND', 'color': '#2196F3'},
-        {'name': 'Greenpeace', 'color': '#009688'},
-        {'name': 'Other', 'color': '#607D8B'}
+        if len(event["organizers"]) > 0 # HACK
     ]
     
     return render(request, "dashboard.html", {
         "events": json.dumps(events_list),
-        "organizations": json.dumps(organizations)
     })
 
 def event_detail(request, event_id):

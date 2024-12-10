@@ -1,29 +1,27 @@
-{% extends 'base.html' %}
-
-{% block content %}
+{% extends 'base.html' %} {% block content %}
 
 <div class="chart-container">
-    <div id="time-range-selector"></div>
-    <div class="timeline-chart"></div>
-    <div class="timeline-legend"></div>
+  <div id="time-range-selector"></div>
+  <div class="timeline-chart"></div>
+  <div class="timeline-legend"></div>
 </div>
 
 <style>
-.chart-container {
+  .chart-container {
     display: flex;
     flex-direction: column;
     gap: 20px;
     width: 100%;
     max-width: 1000px;
     margin: 0 auto;
-}
+  }
 
-.timeline-chart {
+  .timeline-chart {
     width: 100%;
     height: 500px;
-}
+  }
 
-.timeline-legend {
+  .timeline-legend {
     display: flex;
     flex-wrap: wrap;
     gap: 16px;
@@ -31,23 +29,23 @@
     background: #fff;
     border-top: 1px solid #eee;
     margin-top: 20px;
-}
+  }
 
-.legend-item {
+  .legend-item {
     display: flex;
     align-items: center;
     gap: 8px;
     min-width: 150px;
-}
+  }
 
-.legend-color {
+  .legend-color {
     width: 12px;
     height: 12px;
     border-radius: 50%;
     flex-shrink: 0;
-}
+  }
 
-.event-bar {
+  .event-bar {
     fill-opacity: 0.8;
     stroke: white;
     stroke-width: 1;
@@ -55,13 +53,13 @@
     transition: fill-opacity 0.2s;
     rx: 4;
     ry: 4;
-}
+  }
 
-.event-bar:hover {
+  .event-bar:hover {
     fill-opacity: 1;
-}
+  }
 
-.tooltip {
+  .tooltip {
     position: absolute;
     padding: 10px;
     background: white;
@@ -69,224 +67,259 @@
     border-radius: 4px;
     pointer-events: none;
     font-size: 14px;
-}
+  }
 
-.brush-container {
+  .brush-container {
     width: 100%;
     height: 60px;
     margin-bottom: 20px;
-}
+  }
 
-.brush-area {
+  .brush-area {
     fill: #f0f0f0;
-}
+  }
 
-.selection {
+  .selection {
     fill: #e2e2e2;
     stroke: #888;
     stroke-width: 1px;
-}
+  }
 
-.handle {
+  .handle {
     fill: #666;
     cursor: ew-resize;
-}
+  }
 </style>
 
 <script src="https://d3js.org/d3.v7.min.js"></script>
 <script>
-// Make Django template variables available to JavaScript
-const events = {{ events|safe }};
-const organizations = {{ organizations|safe }};
+  // Make Django template variables available to JavaScript
+  const events = {{ events|safe }};
 
-// Define margins at the top level
-const margin = {top: 20, right: 20, bottom: 30, left: 40};
-const width = 960 - margin.left - margin.right;
-const height = 500 - margin.top - margin.bottom;
+  const color = organizationName => ({
+      'Fridays for Future': '#4CAF50',
+      'Last Generation': '#FF5722',
+      'Extinction Rebellion': '#9C27B0',
+      'BUND': '#2196F3',
+      'Greenpeace': '#009688',
+      'Other': '#607D8B'
+      }[organizationName] || '#607D8B')
 
-// Create SVG container
-const svg = d3.select('.timeline-chart')
-    .append('svg')
-    .attr('width', width + margin.left + margin.right)
-    .attr('height', height + margin.top + margin.bottom)
-    .append('g')
-    .attr('transform', `translate(${margin.left},${margin.top})`);
+  // Define margins at the top level
+  const margin = {top: 20, right: 20, bottom: 30, left: 40};
+  const width = 960 - margin.left - margin.right;
+  const height = 500 - margin.top - margin.bottom;
 
-// Define scales at the top level
-const xScale = d3.scaleTime()
-    .domain(d3.extent(events, d => new Date(d.date)))
-    .range([0, width]);
+  // Create SVG container
+  const svg = d3.select('.timeline-chart')
+      .append('svg')
+      .attr('width', width + margin.left + margin.right)
+      .attr('height', height + margin.top + margin.bottom)
+      .append('g')
+      .attr('transform', `translate(${margin.left},${margin.top})`);
 
-const brushXScale = d3.scaleTime()
-    .domain(xScale.domain())
-    .range([0, width]);
+  // Define scales at the top level
+  const xScale = d3.scaleTime()
+      .domain(d3.extent(events, d => new Date(d.date)))
+      .range([0, width]);
 
-const yScale = d3.scaleLinear()
-    .domain([0, 1])
-    .range([height, 0]);
+  const brushXScale = d3.scaleTime()
+      .domain(xScale.domain())
+      .range([0, width]);
 
-const sizeScale = d3.scaleSqrt()
-    .domain([0, d3.max(events, d => d.size_number || 0)])
-    .range([4, 20]);
+  const sizeScale = d3.scaleLinear()
+      .domain([0, d3.max(events, d => d.size_number || 0)])
+      .range([5, 200]);
 
-const colorScale = d3.scaleOrdinal()
-    .domain(organizations.map(d => d.name))
-    .range(organizations.map(d => d.color));
+  // Calculate optimal bar width based on data range
+  const timeRange = d3.extent(events, d => new Date(d.date));
+  const daysInRange = (timeRange[1] - timeRange[0]) / (1000 * 60 * 60 * 24);
+  const barWidth = Math.min(16, Math.max(4, width / daysInRange - 2));
 
-// Calculate optimal bar width based on data range
-const timeRange = d3.extent(events, d => new Date(d.date));
-const daysInRange = (timeRange[1] - timeRange[0]) / (1000 * 60 * 60 * 24);
-const barWidth = Math.min(16, Math.max(4, width / daysInRange - 2));
+  // Function to update the visualization
+  function updateVisualization(filteredEvents) {
+      // Update the bars with new data
+      const bars = svg.selectAll('.event-bar-group')
+          .data(filteredEvents);
 
-// Function to update the visualization
-function updateVisualization(filteredEvents) {
-    // Update the bars with new data
-    const bars = svg.selectAll('.event-bar')
-        .data(filteredEvents);
-    
-    // Remove old bars
-    bars.exit().remove();
-    
-    // Add new bars
-    const newBars = bars.enter()
-        .append('rect')
-        .attr('class', 'event-bar');
-    
-    // Update all bars (existing + new)
-    const allBars = bars.merge(newBars)
-        .attr('x', d => xScale(new Date(d.date)) - barWidth/2)
-        .attr('width', barWidth)
-        .attr('y', (d, i, nodes) => {
-            const date = new Date(d.date);
-            const prevBars = filteredEvents
-                .slice(0, filteredEvents.indexOf(d))
-                .filter(prev => new Date(prev.date).getTime() === date.getTime());
-            const totalHeight = prevBars.reduce((sum, prev) => sum + sizeScale(prev.size_number || 0), 0);
-            return height - totalHeight - sizeScale(d.size_number || 0);
-        })
-        .attr('height', d => sizeScale(d.size_number || 0))
-        .attr('fill', d => {
-            const org = d.organizers[0] || 'Other';
-            return colorScale(org);
-        })
-        .on('mouseover', showTooltip)
-        .on('mouseout', hideTooltip);   
-}
+      // Remove old bars
+      bars.exit().remove();
 
-// Brush event handler
-function brushed(event) {
-    if (event.selection) {
-        // Debug: Log brush selection
-        // Update main chart's x scale domain
-        const [x0, x1] = event.selection.map(brushXScale.invert);
-        xScale.domain([x0, x1]);
+      // Add new bar groups
+      const newBars = bars.enter()
+          .append('g')
+          .attr('class', 'event-bar-group');
 
-        // Filter events in the current range
-        const eventsInRange = events.filter(d => {
-            const date = new Date(d.date);
-            return date >= x0 && date <= x1;
-        });
+      // Update all bars (existing + new)
+      const allBars = bars.merge(newBars)
+          .attr('transform', (d, i, nodes) => {
+              const date = new Date(d.date);
+              const prevBars = filteredEvents
+                  .slice(0, filteredEvents.indexOf(d))
+                  .filter(prev => new Date(prev.date).getTime() === date.getTime());
+              const totalHeight = prevBars.reduce((sum, prev) => sum + sizeScale(prev.size_number || 0), 0);
+              return `translate(${xScale(new Date(d.date)) - barWidth/2}, ${height - totalHeight - sizeScale(d.size_number || 0)})`;
+          })
+          .on('mouseover', showTooltip)
+          .on('mouseout', hideTooltip);
 
-        // Update the visualization with filtered events
-        updateVisualization(eventsInRange);
+      // Update segments within each bar
+      allBars.each(function(d) {
+          const group = d3.select(this);
+          const totalHeight = sizeScale(d.size_number || 0);
 
-        // Update x-axis
-        svg.select('.x-axis').call(xAxis);
-    }
-}
+          // Handle organizers array - use "Other" if empty
+          const organizers = d.organizers && d.organizers.length > 0
+              ? d.organizers
+              : ['Other'];
+          const segmentHeight = totalHeight / organizers.length;
 
-// Initial visualization
-updateVisualization(events);
+          // Clean up any existing elements before redrawing
+          group.selectAll('*').remove();
 
-// Add x-axis
-const xAxis = d3.axisBottom(xScale)
-    .ticks(d3.timeMonth.every(1))
-    .tickFormat(d3.timeFormat('%b %Y'));
+          // Update segments
+          const segments = group.selectAll('.event-segment')
+              .data(organizers);
 
-svg.append('g')
-    .attr('class', 'x-axis')
-    .attr('transform', `translate(0,${height})`)
-    .call(xAxis);
+          // Remove old segments
+          segments.exit().remove();
 
-// Add legend
-const legend = d3.select('.timeline-legend')
-    .selectAll('.legend-item')
-    .data(organizations)
-    .enter()
-    .append('div')
-    .attr('class', 'legend-item');
+          // Add new segments with exact positioning
+          segments.enter()
+              .append('rect')
+              .attr('class', 'event-segment')
+              .merge(segments)
+              .attr('x', 0)
+              .attr('y', (_, i) => i * segmentHeight)
+              .attr('width', barWidth)
+              .attr('height', segmentHeight)
+              .attr('fill', org => color(org))
+              .attr('fill-opacity', 0.8);
 
-legend.append('div')
-    .attr('class', 'legend-color')
-    .style('background-color', d => d.color);
+          // Add a single stroke around the entire bar
+          group.append('rect')
+              .attr('width', barWidth)
+              .attr('height', totalHeight)
+              .attr('fill', 'none')
+              .attr('stroke', 'white')
+              .attr('stroke-width', 0.5);
+      });
+  }
 
-legend.append('span')
-    .text(d => d.name);
+  // Brush event handler
+  function brushed(event) {
+      if (event.selection) {
+          // Debug: Log brush selection
+          // Update main chart's x scale domain
+          const [x0, x1] = event.selection.map(brushXScale.invert);
+          xScale.domain([x0, x1]);
 
-function showTooltip(event, d) {
-    const tooltip = d3.select('body')
-        .append('div')
-        .attr('class', 'tooltip')
-        .style('left', (event.pageX + 10) + 'px')
-        .style('top', (event.pageY - 10) + 'px');
+          // Filter events in the current range
+          const eventsInRange = events.filter(d => {
+              const date = new Date(d.date);
+              return date >= x0 && date <= x1;
+          });
 
-    tooltip.html(`
-        <strong>${d.organizers.join(', ')}</strong><br/>
-        ${d.date}<br/>
-        ${d.city}<br/>
-        ${d.description}<br/>
-        ${d.size_number || '?'} participants
-    `);
-}
+          // Update the visualization with filtered events
+          updateVisualization(eventsInRange);
 
-function hideTooltip() {
-    d3.selectAll('.tooltip').remove();
-}
+          // Update x-axis
+          svg.select('.x-axis').call(xAxis);
+      }
+  }
 
-// Create brush chart
-function createBrushChart() {
-    const brushHeight = 50;
-    const brushMargin = {top: 5, right: margin.right, bottom: 5, left: margin.left};
-    const brushWidth = width + margin.left + margin.right;
+  // Initial visualization
+  updateVisualization(events);
 
-    // Create brush SVG
-    const brushSvg = d3.select('#time-range-selector')
-        .append('svg')
-        .attr('width', brushWidth)
-        .attr('height', brushHeight)
-        .append('g')
-        .attr('transform', `translate(${brushMargin.left},${brushMargin.top})`);
+  // Add x-axis
+  const xAxis = d3.axisBottom(xScale)
+      .ticks(d3.timeMonth.every(1))
+      .tickFormat(d3.timeFormat('%b %Y'));
 
-    // Create y scale for mini chart
-    const brushYScale = d3.scaleLinear()
-        .domain([0, d3.max(events, d => d.size_number || 0)])
-        .range([brushHeight - brushMargin.top - brushMargin.bottom, 0]);
+  svg.append('g')
+      .attr('class', 'x-axis')
+      .attr('transform', `translate(0,${height})`)
+      .call(xAxis);
 
-    // Add mini chart bars
-    brushSvg.selectAll('.mini-bar')
-        .data(events)
-        .enter()
-        .append('rect')
-        .attr('class', 'mini-bar')
-        .attr('x', d => brushXScale(new Date(d.date)) - barWidth/2)
-        .attr('y', d => brushYScale(d.size_number || 0))
-        .attr('width', barWidth)
-        .attr('height', d => brushHeight - brushMargin.top - brushMargin.bottom - brushYScale(d.size_number || 0))
-        .attr('fill', '#ccc');
+  // Add legend
+  const legend = d3.select('.timeline-legend')
+      .selectAll('.legend-item')
+      .data(organizations)
+      .enter()
+      .append('div')
+      .attr('class', 'legend-item');
 
-    // Create brush
-    const brush = d3.brushX()
-        .extent([[0, 0], [width, brushHeight - brushMargin.top - brushMargin.bottom]])
-        .on('brush end', brushed);
+  legend.append('div')
+      .attr('class', 'legend-color')
+      .style('background-color', d => d.color);
 
-    // Add brush to SVG
-    brushSvg.append('g')
-        .attr('class', 'brush')
-        .call(brush)
-        .call(brush.move, brushXScale.range());
-}
+  legend.append('span')
+      .text(d => d.name);
 
-// Call brush chart creation after main chart is created
-createBrushChart();
+  function showTooltip(event, d) {
+      const tooltip = d3.select('body')
+          .append('div')
+          .attr('class', 'tooltip')
+          .style('left', (event.pageX + 10) + 'px')
+          .style('top', (event.pageY - 10) + 'px');
+
+      tooltip.html(`
+          <strong>${d.organizers.map(name => name.split(':')[0]).join(', ')}</strong><br/>
+          ${d.date}<br/>
+          ${d.city}<br/>
+          ${d.description}<br/>
+          ${d.size_number || '?'} participants
+      `);
+  }
+
+  function hideTooltip() {
+      d3.selectAll('.tooltip').remove();
+  }
+
+  // Create brush chart
+  function createBrushChart() {
+      const brushHeight = 50;
+      const brushMargin = {top: 5, right: margin.right, bottom: 5, left: margin.left};
+      const brushWidth = width + margin.left + margin.right;
+
+      // Create brush SVG
+      const brushSvg = d3.select('#time-range-selector')
+          .append('svg')
+          .attr('width', brushWidth)
+          .attr('height', brushHeight)
+          .append('g')
+          .attr('transform', `translate(${brushMargin.left},${brushMargin.top})`);
+
+      // Create y scale for mini chart
+      const brushYScale = d3.scaleLinear()
+          .domain([0, d3.max(events, d => d.size_number || 0)])
+          .range([brushHeight - brushMargin.top - brushMargin.bottom, 0]);
+
+      // Add mini chart bars
+      brushSvg.selectAll('.mini-bar')
+          .data(events)
+          .enter()
+          .append('rect')
+          .attr('class', 'mini-bar')
+          .attr('x', d => brushXScale(new Date(d.date)) - barWidth/2)
+          .attr('y', d => brushYScale(d.size_number || 0))
+          .attr('width', barWidth)
+          .attr('height', d => brushHeight - brushMargin.top - brushMargin.bottom - brushYScale(d.size_number || 0))
+          .attr('fill', '#ccc');
+
+      // Create brush
+      const brush = d3.brushX()
+          .extent([[0, 0], [width, brushHeight - brushMargin.top - brushMargin.bottom]])
+          .on('brush end', brushed);
+
+      // Add brush to SVG
+      brushSvg.append('g')
+          .attr('class', 'brush')
+          .call(brush)
+          .call(brush.move, brushXScale.range());
+  }
+
+  // Call brush chart creation after main chart is created
+  createBrushChart();
 </script>
 {% endblock %}

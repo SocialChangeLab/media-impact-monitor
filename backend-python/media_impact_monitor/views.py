@@ -12,10 +12,11 @@ def dashboard(request):
     # Get events from the last year
     one_year_ago = datetime.now() - timedelta(days=365)
     events = Event.objects.filter(date__gte=one_year_ago).values(
-        'event_id',
         'date',
+        "city",
         'organizers',
-        'size_number'
+        'size_number',
+        "description"
     ).order_by('date')
     
     # Convert datetime to string format

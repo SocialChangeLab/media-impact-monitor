@@ -105,14 +105,12 @@ const width = 960 - margin.left - margin.right;
 const height = 500 - margin.top - margin.bottom;
 
 // Create SVG container
-console.log('Creating main SVG...');
 const svg = d3.select('.timeline-chart')
     .append('svg')
     .attr('width', width + margin.left + margin.right)
     .attr('height', height + margin.top + margin.bottom)
     .append('g')
     .attr('transform', `translate(${margin.left},${margin.top})`);
-console.log('SVG created:', svg.node());
 
 // Define scales at the top level
 const xScale = d3.scaleTime()
@@ -142,15 +140,9 @@ const barWidth = Math.min(16, Math.max(4, width / daysInRange - 2));
 
 // Function to update the visualization
 function updateVisualization(filteredEvents) {
-    console.log('Updating visualization with events:', filteredEvents.length);
-    console.log('SVG element exists:', svg.node() !== null);
-    
     // Update the bars with new data
     const bars = svg.selectAll('.event-bar')
         .data(filteredEvents);
-    
-    console.log('Number of existing bars:', bars.size());
-    console.log('Number of entering bars:', bars.enter().size());
     
     // Remove old bars
     bars.exit().remove();
@@ -178,20 +170,15 @@ function updateVisualization(filteredEvents) {
             return colorScale(org);
         })
         .on('mouseover', showTooltip)
-        .on('mouseout', hideTooltip);
-    
-    console.log('Total bars after update:', allBars.size());
+        .on('mouseout', hideTooltip);   
 }
 
 // Brush event handler
 function brushed(event) {
     if (event.selection) {
         // Debug: Log brush selection
-        console.log('Brush selection:', event.selection);
-        
         // Update main chart's x scale domain
         const [x0, x1] = event.selection.map(brushXScale.invert);
-        console.log('New time domain:', [x0, x1]);
         xScale.domain([x0, x1]);
 
         // Filter events in the current range
@@ -199,7 +186,6 @@ function brushed(event) {
             const date = new Date(d.date);
             return date >= x0 && date <= x1;
         });
-        console.log('Events in current range:', eventsInRange.length);
 
         // Update the visualization with filtered events
         updateVisualization(eventsInRange);
@@ -245,10 +231,11 @@ function showTooltip(event, d) {
         .style('top', (event.pageY - 10) + 'px');
 
     tooltip.html(`
-        <strong>${d.event_type}</strong><br/>
-        ${d.city} on ${d.date}<br/>
-        ${d.organizers.join(', ')}<br/>
-        ${d.size_text || 'Unknown participants'}
+        <strong>${d.organizers.join(', ')}</strong><br/>
+        ${d.date}<br/>
+        ${d.city}<br/>
+        ${d.description}<br/>
+        ${d.size_number || '?'} participants
     `);
 }
 

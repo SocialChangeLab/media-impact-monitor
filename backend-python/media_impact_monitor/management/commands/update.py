@@ -14,7 +14,7 @@ class Command(BaseCommand):
         yesterday = date.today() - timedelta(days=1)
         df = get_events(
             EventSearch(
-                start_date=date(2024, 1, 1),
+                start_date=date(2020, 1, 1),
                 end_date=yesterday,
                 topic="climate_change",
                 source="acled",

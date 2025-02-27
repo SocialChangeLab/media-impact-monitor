@@ -1,7 +1,170 @@
 {% extends "base.html" %}
+{% load static %}
+
+{% block title %}Home | Media Impact Monitor{% endblock %}
+{% block description %}Media Impact Monitor - A collaborative project aimed at enabling protest groups and NGOs to evaluate their impact on public discourse.{% endblock %}
+{% block og_title %}Home | Media Impact Monitor{% endblock %}
+{% block og_description %}Media Impact Monitor - A collaborative project aimed at enabling protest groups and NGOs to evaluate their impact on public discourse.{% endblock %}
+{% block twitter_title %}Home | Media Impact Monitor{% endblock %}
+{% block twitter_description %}Media Impact Monitor - A collaborative project aimed at enabling protest groups and NGOs to evaluate their impact on public discourse.{% endblock %}
 
 {% block content %}
+<div class="home-container">
+    <div class="home-content">
+        <!-- Background elements -->
+        <img src="{% static 'images/header-bg.webp' %}" alt="A decorative header image of a crowd protesting" 
+             class="home-bg-image">
+        <div class="home-bg-texture" aria-hidden="true"></div>
+        
+        <div class="home-prose">
+            <!-- Logo for larger screens -->
+            <span class="home-logo">
+                <img src="{% static 'logos/mim-minimal-negative.svg' %}" alt="Media Impact Monitor Logo">
+                <span class="home-logo-text">beta</span>
+            </span>
+            
+            <!-- Hero content -->
+            <h1 class="home-heading">
+                Welcome to the Media Impact Monitor
+            </h1>
+            
+            <p class="home-text">
+                The Media Impact Monitor is a collaborative project aimed at enabling protest groups and NGOs to evaluate their impact on public discourse.
+            </p>
+            <p class="home-text">
+                Through the examination of various media sources, from local and national newspapers to social media and parliamentary debates, the tool provides a detailed view of how activism influences public discussion.
+            </p>
+            
+            <!-- Action buttons -->
+            <div class="home-buttons">
+                <a href="/dashboard" class="btn btn-primary">
+                    Go to the dashboard
+                </a>
+                <a href="/about" class="btn btn-outline">
+                    About
+                </a>
+                <a href="/docs" class="btn btn-outline">
+                    Documentation
+                </a>
+            </div>
+            
+            <!-- Newsletter section -->
+            <div class="newsletter-section">
+                <h2 class="newsletter-heading">
+                    Get notified when we launch the v1!
+                </h2>
+                
+                <!-- Newsletter form -->
+                <form action="/api/newsletter/subscribe" method="post" class="newsletter-form">
+                    {% csrf_token %}
+                    <div class="newsletter-form-grid">
+                        <div class="newsletter-input-group">
+                            <label for="newsletter-email" class="newsletter-label">What is your email address?</label>
+                            <input class="newsletter-input"
+                                   id="newsletter-email"
+                                   name="email"
+                                   type="email"
+                                   required
+                                   placeholder="anna.smith@example.com">
+                        </div>
+                        <button type="submit" class="btn btn-primary">
+                            Subscribe
+                        </button>
+                    </div>
+                    
+                    <!-- Form status message container -->
+                    <div class="newsletter-status" id="newsletter-status"></div>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Dashboard screenshot section -->
+    <div class="screenshot-container">
+        <div class="screenshot-wrapper">
+            <img src="{% static 'images/home-screenshot-dashboard-light.webp' %}" 
+                 alt="A screenshot of the dashboard (light mode)"
+                 class="screenshot screenshot-light">
+            <img src="{% static 'images/home-screenshot-dashboard-dark.webp' %}" 
+                 alt="A screenshot of the dashboard (dark mode)"
+                 class="screenshot screenshot-dark">
+        </div>
+    </div>
+</div>
 
-<h1>Home</h1>
-
+<!-- Newsletter form submission handling -->
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const form = document.querySelector('.newsletter-form');
+        const statusDiv = document.getElementById('newsletter-status');
+        
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const email = document.getElementById('newsletter-email').value;
+            const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+            
+            // Show loading state
+            form.style.opacity = '0.5';
+            
+            fetch('/api/newsletter/subscribe', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': csrfToken
+                },
+                body: JSON.stringify({ email: email })
+            })
+            .then(response => response.json())
+            .then(data => {
+                form.style.opacity = '1';
+                
+                if (data.error) {
+                    // Show error message
+                    statusDiv.innerHTML = `
+                        <div class="status-message status-error">
+                            <div class="status-message-bg"></div>
+                            <span class="status-message-text">${data.error}</span>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="status-message-icon"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+                        </div>
+                    `;
+                } else {
+                    // Show success message
+                    statusDiv.innerHTML = `
+                        <div class="status-message status-success">
+                            <div class="status-message-bg"></div>
+                            <span class="status-message-text">${data.message || 'Successfully subscribed to the newsletter!'}</span>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="status-message-icon"><polyline points="20 6 9 17 4 12"/></svg>
+                        </div>
+                    `;
+                    
+                    // Clear the form
+                    document.getElementById('newsletter-email').value = '';
+                }
+                
+                // Remove status message after 5 seconds
+                setTimeout(() => {
+                    statusDiv.innerHTML = '';
+                }, 5000);
+            })
+            .catch(error => {
+                form.style.opacity = '1';
+                
+                // Show error message
+                statusDiv.innerHTML = `
+                    <div class="status-message status-error">
+                        <div class="status-message-bg"></div>
+                        <span class="status-message-text">An error occurred. Please try again later.</span>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="status-message-icon"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+                    </div>
+                `;
+                
+                // Remove status message after 5 seconds
+                setTimeout(() => {
+                    statusDiv.innerHTML = '';
+                }, 5000);
+            });
+        });
+    });
+</script>
 {% endblock %}

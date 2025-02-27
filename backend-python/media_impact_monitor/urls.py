@@ -8,5 +8,6 @@ urlpatterns = [
     path("organisations", views.organisations, name="organisations"),
     path("about", views.about, name="about"),
     path("docs", views.docs, name="docs"),
-    path("event/<event_id>", views.event_detail, name="event detail")
+    path("event/<event_id>", views.event_detail, name="event detail"),
+    path("api/newsletter/subscribe", views.newsletter_subscribe, name="newsletter_subscribe"),
 ]

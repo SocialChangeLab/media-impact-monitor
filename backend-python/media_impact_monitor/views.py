@@ -1,5 +1,7 @@
 import json
 from django.shortcuts import render, get_object_or_404
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
 from .models import Event
 from django.db.models import Count
 from datetime import datetime, timedelta
@@ -43,6 +45,26 @@ def about(request):
 
 def docs(request):
     return render(request, "docs.html")
+
+@csrf_exempt
+def newsletter_subscribe(request):
+    if request.method == 'POST':
+        try:
+            data = json.loads(request.body)
+            email = data.get('email')
+            
+            # Validate email (basic validation)
+            if not email or '@' not in email:
+                return JsonResponse({'error': 'Please enter a valid email address'})
+            
+            # In a real application, you would save the email to a database or send it to a newsletter service
+            # For now, we'll just return a success message
+            
+            return JsonResponse({'message': 'Successfully subscribed to the newsletter!'})
+        except Exception as e:
+            return JsonResponse({'error': str(e)})
+    
+    return JsonResponse({'error': 'Invalid request method'}, status=405)
 
 
                   

@@ -1,56 +1,54 @@
 {% load static %}
-<header class="fixed top-0 z-40 transition-transform left-0 w-full main-header pointer-events-none duration-1000 ease-smooth-out">
-    <nav id="main-navigation" class="px-6 py-4 flex gap-6 flex-wrap items-center justify-between border-b border-grayLight w-screen overflow-clip z-50 relative max-w-page mx-auto maxPage:border-x maxPage:border-grayLight bg-bg pointer-events-auto">
+<header class="main-header">
+    <nav id="main-navigation">
         <!-- Logo -->
-        <a href="/dashboard" title="Home" class="opacity-100 hover:opacity-80 flex items-center lg:items-start gap-3">
-            <img src="{% static 'logos/mim-horizontal-positive.svg' %}" alt="Media Impact Monitor Logo" class="dark:hidden">
-            <img src="{% static 'logos/mim-horizontal-negative.svg' %}" alt="Media Impact Monitor Logo" class="hidden dark:block">
-            <span class="text-grayDark text-sm">beta</span>
+        <a href="/dashboard" title="Home" class="logo-container">
+            <img src="{% static 'logos/mim-horizontal-positive.svg' %}" alt="Media Impact Monitor Logo" class="screenshot-light">
+            <img src="{% static 'logos/mim-horizontal-negative.svg' %}" alt="Media Impact Monitor Logo" class="screenshot-dark">
+            <span class="beta-tag">beta</span>
         </a>
 
         <!-- Desktop Navigation -->
-        <ul class="flex-row gap-2 xl:gap-3 items-center hidden lg:flex" aria-label="Main menu items">
+        <ul class="desktop-nav" aria-label="Main menu items">
             <li>
-                <a href="/" class="px-3 py-2 text-fg hover:bg-grayUltraLight rounded-md transition-colors {% if request.path == '/' %}bg-grayUltraLight{% endif %}">Home</a>
+                <a href="/" class="{% if request.path == '/' %}active{% endif %}">Home</a>
             </li>
             <li>
-                <a href="/dashboard" class="px-3 py-2 text-fg hover:bg-grayUltraLight rounded-md transition-colors {% if request.path == '/dashboard' %}bg-grayUltraLight{% endif %}">Dashboard</a>
+                <a href="/dashboard" class="{% if request.path == '/dashboard' %}active{% endif %}">Dashboard</a>
             </li>
             <li>
-                <a href="/organisations" class="px-3 py-2 text-fg hover:bg-grayUltraLight rounded-md transition-colors {% if request.path == '/organisations' %}bg-grayUltraLight{% endif %}">Organisations</a>
+                <a href="/organisations" class="{% if request.path == '/organisations' %}active{% endif %}">Organisations</a>
             </li>
             <li>
-                <a href="/about" class="px-3 py-2 text-fg hover:bg-grayUltraLight rounded-md transition-colors {% if request.path == '/about' %}bg-grayUltraLight{% endif %}">About</a>
+                <a href="/about" class="{% if request.path == '/about' %}active{% endif %}">About</a>
             </li>
             <li>
-                <a href="/docs" class="px-3 py-2 text-fg hover:bg-grayUltraLight rounded-md transition-colors {% if request.path == '/docs' %}bg-grayUltraLight{% endif %}">Docs</a>
-            </li>
-            <li aria-label="Main menu link: Other actions" class="w-full md:w-auto py-5 md:p-0 text-grayDark flex justify-between items-center pr-5 md:pr-0">
+                <a href="/docs" class="{% if request.path == '/docs' %}active{% endif %}">Docs</a>
             </li>
         </ul>
 
         <!-- Mobile Menu Button -->
-        <button type="button" class="lg:hidden p-2 hover:bg-grayUltraLight rounded-md transition-colors" aria-label="Toggle mobile menu" id="mobile-menu-button">
-            <svg xmlns="http://www.w3.org/2000/svg" class="size-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="4" x2="20" y1="12" y2="12"/><line x1="4" x2="20" y1="6" y2="6"/><line x1="4" x2="20" y1="18" y2="18"/></svg>
+        <button type="button" class="mobile-menu-button" aria-label="Toggle mobile menu" id="mobile-menu-button">
+            <svg xmlns="http://www.w3.org/2000/svg" class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="4" x2="20" y1="12" y2="12"/><line x1="4" x2="20" y1="6" y2="6"/><line x1="4" x2="20" y1="18" y2="18"/></svg>
         </button>
 
         <!-- Mobile Navigation -->
-        <div class="lg:hidden hidden w-full" id="mobile-menu">
-            <ul class="flex flex-col gap-2 py-4">
+        <div class="mobile-nav" id="mobile-menu">
+            <ul>
                 <li>
-                    <a href="/" class="block px-3 py-2 text-fg hover:bg-grayUltraLight rounded-md transition-colors {% if request.path == '/' %}bg-grayUltraLight{% endif %}">Home</a>
+                    <a href="/" class="{% if request.path == '/' %}active{% endif %}">Home</a>
                 </li>
                 <li>
-                    <a href="/dashboard" class="block px-3 py-2 text-fg hover:bg-grayUltraLight rounded-md transition-colors {% if request.path == '/dashboard' %}bg-grayUltraLight{% endif %}">Dashboard</a>
+                    <a href="/dashboard" class="{% if request.path == '/dashboard' %}active{% endif %}">Dashboard</a>
                 </li>
                 <li>
-                    <a href="/organisations" class="block px-3 py-2 text-fg hover:bg-grayUltraLight rounded-md transition-colors {% if request.path == '/organisations' %}bg-grayUltraLight{% endif %}">Organisations</a>
+                    <a href="/organisations" class="{% if request.path == '/organisations' %}active{% endif %}">Organisations</a>
                 </li>
                 <li>
-                    <a href="/about" class="block px-3 py-2 text-fg hover:bg-grayUltraLight rounded-md transition-colors {% if request.path == '/about' %}bg-grayUltraLight{% endif %}">About</a>
+                    <a href="/about" class="{% if request.path == '/about' %}active{% endif %}">About</a>
                 </li>
                 <li>
-                    <a href="/docs" class="block px-3 py-2 text-fg hover:bg-grayUltraLight rounded-md transition-colors {% if request.path == '/docs' %}bg-grayUltraLight{% endif %}">Docs</a>
+                    <a href="/docs" class="{% if request.path == '/docs' %}active{% endif %}">Docs</a>
                 </li>
             </ul>
         </div>
@@ -58,15 +56,21 @@
 </header>
 
 <!-- Add this spacer div after the header -->
-<div class="h-[var(--headerHeight)]"></div>
+<div class="header-spacer"></div>
 
 <script>
     // Only update header height when mobile menu changes
     document.getElementById('mobile-menu-button').addEventListener('click', function() {
         const mobileMenu = document.getElementById('mobile-menu');
-        mobileMenu.classList.toggle('hidden');
+        mobileMenu.classList.toggle('show');
         
         // Update header height after menu toggle
+        const headerHeight = document.getElementById('main-navigation').offsetHeight;
+        document.documentElement.style.setProperty('--headerHeight', `${headerHeight}px`);
+    });
+    
+    // Set initial header height
+    document.addEventListener('DOMContentLoaded', function() {
         const headerHeight = document.getElementById('main-navigation').offsetHeight;
         document.documentElement.style.setProperty('--headerHeight', `${headerHeight}px`);
     });

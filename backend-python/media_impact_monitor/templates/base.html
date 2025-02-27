@@ -1,6 +1,6 @@
 {% load static %}
 <!DOCTYPE html>
-<html lang="en" class="font-sans">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -30,11 +30,11 @@
     <link rel="canonical" href="{{ request.build_absolute_uri }}">
 
 	{% block styles %}
-		<link rel="stylesheet" href="{% static 'css/output.css' %}" />
+		<link rel="stylesheet" href="{% static 'css/styles.css' %}" />
 	{% endblock %}
 </head>
 
-<body class="bg-pattern-soft min-h-screen !pointer-events-auto w-screen overflow-x-clip max-w-page mx-auto">
+<body>
     {% include 'header.html' %}
 
     <main>

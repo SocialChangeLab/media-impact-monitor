@@ -1,5 +1,5 @@
 [project]
-name = "media-impact-monitor"
+name = "media_impact_monitor"
 version = "0.1.0"
 description = "Add your description here"
 readme = "README.md"

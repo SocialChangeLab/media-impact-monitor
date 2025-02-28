@@ -25,7 +25,7 @@ SECRET_KEY = "django-insecure-8z0eqfne%qsiqx_j0tp58n5-bjp(x1^gq@de-_bn+c%-agz6#g
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -76,14 +76,8 @@ WSGI_APPLICATION = "django_project.wsgi.application"
 
 DATABASES = {
     "default": {
-        "ENGINE": "django.db.backends.postgresql",
-        "NAME": "media_impact_monitor",
-        "OPTIONS": {
-            "hostaddr": "127.0.0.1",
-            "port": "5432",
-            "user": "postgres",
-            "password": "postgres",
-        },
+        "ENGINE": "django.db.backends.sqlite3",
+        "NAME": BASE_DIR / "db.sqlite3",
     }
 }
 

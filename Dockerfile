@@ -13,7 +13,7 @@ ARG BUILD_DATE
 ENV VCS_REF=$VCS_REF
 ENV BUILD_DATE=$BUILD_DATE
 # run the application
-CMD ["uv", "run", "manage.py", "runserver", "0.0.0.0:8000"]
+CMD ["uv", "run", "manage.py", "runserver", "0.0.0.0:80"]
 # OCI Labels as per https://github.com/opencontainers/image-spec/blob/main/annotations.md
 LABEL org.opencontainers.image.title="media-impact-monitor"
 LABEL org.opencontainers.image.description="Media Impact Monitor"

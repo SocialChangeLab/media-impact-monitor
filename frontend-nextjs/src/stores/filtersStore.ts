@@ -20,7 +20,7 @@ import {
 } from "zustand/middleware";
 
 
-export type MediaSourceType = "news_online" | "news_print" | "web_google";
+export type MediaSourceType = "news_online" | "news_print" | "social_tiktok" | "web_google";
 
 export type FiltersState = {
 	from: Date;
@@ -80,7 +80,7 @@ const getFiltersZodSchema = (today: Date) => {
 			.boolean()
 			.default(defaultInitState.isDefaultTimeRange),
 		organizers: z.array(z.string()).default(defaultInitState.organizers),
-		mediaSource: z.enum(["news_online", "news_print", "web_google"]),
+		mediaSource: z.enum(["news_online", "news_print", "social_tiktok", "web_google"]),
 	})
 	.default(defaultInitState);
 }

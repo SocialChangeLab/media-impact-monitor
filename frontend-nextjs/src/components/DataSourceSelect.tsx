@@ -23,6 +23,7 @@ import {
 	type LucideIcon,
 	NewspaperIcon,
 	SearchIcon,
+	Music2Icon
 } from 'lucide-react'
 import { useMemo, useState } from 'react'
 
@@ -51,6 +52,13 @@ const options: OptionType[] = [
 		Icon: NewspaperIcon,
 		description: texts.filters.mediaSource.values.printNews.description,
 		links: texts.filters.mediaSource.values.printNews.links,
+	},
+	{
+		name: texts.filters.mediaSource.values.tiktok.name,
+		value: 'social_tiktok',
+		Icon: Music2Icon,
+		description: texts.filters.mediaSource.values.tiktok.description,
+		links: texts.filters.mediaSource.values.tiktok.links,
 	},
 	{
 		name: texts.filters.mediaSource.values.googleTrends.name,

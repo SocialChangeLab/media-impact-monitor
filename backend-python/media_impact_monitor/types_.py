@@ -9,7 +9,7 @@ from pydantic import BaseModel, Field
 # FIXME: consider renaming "Topic" to "Issue" to avoid confusion with topics within the issue (like science or policy)
 Topic = Literal["climate_change"]
 Query = str  # for now, just a single keyword
-MediaSource = Literal["news_online", "news_print", "web_google"]
+MediaSource = Literal["news_online", "news_print", "web_google", "social_tiktok"]
 
 StartDateField = Field(
     default=date(2020, 1, 1),

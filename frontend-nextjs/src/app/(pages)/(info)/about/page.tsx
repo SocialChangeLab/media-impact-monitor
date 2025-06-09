@@ -72,17 +72,7 @@ export default async function AboutPage() {
 			<Team />
 			<h2 id="contact">Contact</h2>
 			<p>
-				We are seeking activists and NGO employees to help us shape the tool: We
-				are curious about your experience with media evaluation, your ideas and
-				dreams, and your feedback on our prototypes!
-			</p>
-			<p>
-				Please <a href="mailto:team@mediaimpactmonitor.app">send us an email</a>{' '}
-				or{' '}
-				<a href="https://cal.com/davidpomerenke/meeting-mim">
-					book a short meeting
-				</a>{' '}
-				with us 🤗
+				<a href="mailto:team@mediaimpactmonitor.app">Send us an email here!</a> 🤗
 			</p>
 		</>
 	)

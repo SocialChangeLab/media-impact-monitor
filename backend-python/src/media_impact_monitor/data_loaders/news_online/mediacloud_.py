@@ -42,7 +42,7 @@ def get_mediacloud_counts(
         if collection_ids
         else None
     )
-    stories = _story_list_split_monthly(
+    stories = _story_count_over_time(
         query=query,
         start_date=start_date,
         end_date=end_date,
@@ -61,7 +61,6 @@ def get_mediacloud_counts(
 @cache
 def _story_list(**kwargs):
     return search.story_list(**kwargs)
-
 
 def _story_list_all_pages(
     query: str,
@@ -86,20 +85,11 @@ def _story_list_all_pages(
         )
         all_stories += page
         more_stories = pagination_token is not None
-        if more_stories:
-            decoded_token = base64.urlsafe_b64decode(pagination_token + "==").decode(
-                "utf-8"
-            )
-            # decode strings like 20240527T135136Z
-            dt = datetime.strptime(decoded_token, "%Y%m%dT%H%M%SZ").strftime(
-                "%Y-%m-%d %H:%M:%S"
-            )
-        else:
-            dt = end_date
         if verbose:
             print(
-                f"retrieved metadata for {len(all_stories)} stories for month {start_date.year}-{start_date.month}, currently at {dt}"
+                f"retrieved metadata for {len(all_stories)} stories for month {start_date.year}-{start_date.month}"
             )
+        print("pagination_token", pagination_token)
         # https://github.com/mediacloud/api-tutorial-notebooks/blob/main/MC02%20-%20attention.ipynb:
         # > As you may have noted, this can take a while for long time periods. If you look closely you'll notice that it can't be easily parallelized, because it requires content in the results to make the next call. A workaround is to divide you query up by time and query in parallel for something like each day. This can speed up the response. Also just contact us directly if you are trying to do larger data dumps, or hit up against your API quota.
     # take a 1% sample of stories
@@ -108,6 +98,14 @@ def _story_list_all_pages(
     all_stories = random.sample(all_stories, sample_size)
     return all_stories
 
+stories = _story_list_all_pages(
+    query="climate change",
+    start_date=date(2024, 1, 1),
+    end_date=date(2024, 1, 31),
+    collection_ids=[],
+    sample_frac=0.01,
+    verbose=True,
+)
 
 def _slice_date_range(start: date, end: date) -> list[tuple[date, date]]:
     result = []
@@ -234,3 +232,5 @@ def _resolve_country(country: str) -> list[int]:
     results = directory.collection_list(name=f"{country} - state & local")["results"]
     regional = results[0]["id"]
     return [national, regional]
+
+print(_resolve_country("Germany"))

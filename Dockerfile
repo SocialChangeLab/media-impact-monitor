@@ -15,7 +15,7 @@ ARG BUILD_DATE
 ENV VCS_REF=$VCS_REF
 ENV BUILD_DATE=$BUILD_DATE
 # run the application
-CMD ["uvicorn", "media_impact_monitor.api:app", "--host", "0.0.0.0", "--port", "8000"]
+CMD ["uv", "run", "uvicorn", "media_impact_monitor.api:app", "--host", "0.0.0.0", "--port", "8000"]
 # OCI Labels as per https://github.com/opencontainers/image-spec/blob/main/annotations.md
 LABEL org.opencontainers.image.title="media-impact-monitor"
 LABEL org.opencontainers.image.description="Media Impact Monitor"

@@ -1,9 +1,6 @@
 import pandas as pd
 
 from media_impact_monitor.events import get_events
-from media_impact_monitor.impact_estimators.interrupted_time_series import (
-    estimate_mean_impact as interrupted_time_series,
-)
 from media_impact_monitor.impact_estimators.time_series_regression import (
     estimate_impact as time_series_regression,
 )

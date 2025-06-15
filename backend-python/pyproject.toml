@@ -31,6 +31,7 @@ dependencies = [
     "uvicorn",
     "websockets",
     "zenrows>=1.4.0",
+    "statsmodels>=0.14.4",
 ]
 
 [project.optional-dependencies]

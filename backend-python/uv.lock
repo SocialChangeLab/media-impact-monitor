@@ -1967,6 +1967,7 @@ dependencies = [
     { name = "types-requests" },
     { name = "uvicorn" },
     { name = "websockets" },
+    { name = "zenrows" },
 ]
 
 [package.optional-dependencies]
@@ -2015,6 +2016,7 @@ requires-dist = [
     { name = "types-requests" },
     { name = "uvicorn" },
     { name = "websockets" },
+    { name = "zenrows", specifier = ">=1.4.0" },
 ]
 provides-extras = ["dev"]
 
@@ -4114,6 +4116,18 @@ wheels = [
     { url = "https://files.pythonhosted.org/packages/24/fd/725b8e73ac2a50e78a4534ac43c6addf5c1c2d65380dd48a9169cc6739a9/yarl-1.20.1-cp313-cp313t-win32.whl", hash = "sha256:b121ff6a7cbd4abc28985b6028235491941b9fe8fe226e6fdc539c977ea1739d", size = 86591, upload-time = "2025-06-10T00:45:25.793Z" },
     { url = "https://files.pythonhosted.org/packages/94/c3/b2e9f38bc3e11191981d57ea08cab2166e74ea770024a646617c9cddd9f6/yarl-1.20.1-cp313-cp313t-win_amd64.whl", hash = "sha256:541d050a355bbbc27e55d906bc91cb6fe42f96c01413dd0f4ed5a5240513874f", size = 93003, upload-time = "2025-06-10T00:45:27.752Z" },
     { url = "https://files.pythonhosted.org/packages/b4/2d/2345fce04cfd4bee161bf1e7d9cdc702e3e16109021035dbb24db654a622/yarl-1.20.1-py3-none-any.whl", hash = "sha256:83b8eb083fe4683c6115795d9fc1cfaf2cbbefb19b3a1cb68f6527460f483a77", size = 46542, upload-time = "2025-06-10T00:46:07.521Z" },
+]
+
+[[package]]
+name = "zenrows"
+version = "1.4.0"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "requests" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/a9/7b/422339b742c2b22f30181495abe30a2b4497807aaf149a67fa78fa901b18/zenrows-1.4.0.tar.gz", hash = "sha256:2224ee4b4a285e7ab20883bcb9b4d90df2dcce724a05743ac37167c551bde606", size = 8387, upload-time = "2024-11-13T14:49:01.382Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/04/ff/5590af0d3166477306c313bf0a90714fc249887feb97fdd198cf0a621365/zenrows-1.4.0-py3-none-any.whl", hash = "sha256:61907f95b7cb433e64fb8b95db4cbba062079f3cf18fe06d4a76d452620c8af5", size = 5620, upload-time = "2024-11-13T14:49:00.367Z" },
 ]
 
 [[package]]

@@ -1,4 +1,4 @@
-# poetry run pytest -k "get_policy" -v
+# uv run pytest -k "get_policy" -v
 
 # %load_ext autoreload
 # %autoreload 2

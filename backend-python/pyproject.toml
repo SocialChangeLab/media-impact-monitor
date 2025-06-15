@@ -30,6 +30,7 @@ dependencies = [
     "types-requests",
     "uvicorn",
     "websockets",
+    "zenrows>=1.4.0",
 ]
 
 [project.optional-dependencies]

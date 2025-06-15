@@ -1,0 +1,96 @@
+# Version control
+.git
+.gitignore
+.github
+.gitattributes
+
+# Development environments
+.vscode
+.devcontainer
+.venv
+**/.venv
+**/__pycache__
+**/*.pyc
+**/*.pyo
+**/*.pyd
+.Python
+**/env/
+**/venv/
+**/ENV/
+**/env.bak/
+**/venv.bak/
+
+# Build and cache directories
+cache/
+**/cache/
+.pytest_cache/
+**/.pytest_cache/
+.coverage
+htmlcov/
+.tox/
+.nox/
+dist/
+build/
+*.egg-info/
+
+# Frontend
+frontend-nextjs/
+frontend-observable/
+**/node_modules/
+*.log
+
+# Documentation and notebooks
+docs/
+notebooks/
+*.md
+!README.md
+
+# System files
+.DS_Store
+**/.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Environment and secrets
+.env
+.env.*
+*.pem
+*.key
+
+# IDE specific
+.idea/
+*.swp
+*.swo
+.vscode/
+*.sublime-workspace
+*.sublime-project
+
+# Temporary files
+*.tmp
+*.temp
+*.bak
+*.swp
+*~
+
+# Large data files
+*.csv
+*.json
+*.parquet
+*.db
+*.sqlite
+*.sqlite3
+
+# Python specific
+**/.python-version
+**/.coverage
+**/.pytest_cache/
+**/.mypy_cache/
+**/.ruff_cache/
+**/.tox/
+**/.nox/
+**/.hypothesis/
+**/.ipynb_checkpoints/ 

@@ -1,7 +1,7 @@
 """API for the Media Impact Monitor.
 
 Run with: `uvicorn media_impact_monitor.api:app --reload`
-Or, if necessary: `poetry run uvicorn media_impact_monitor.api:app --reload` in "backend-python/"
+Or, if necessary: `uv run uvicorn media_impact_monitor.api:app --reload` in "backend-python/"
 """
 
 from datetime import date

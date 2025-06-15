@@ -1,6 +1,5 @@
-import base64
 import random
-from datetime import date, datetime, timedelta
+from datetime import date, timedelta
 from typing import Literal
 
 import mediacloud.api
@@ -10,7 +9,7 @@ from mcmetadata import extract
 from mcmetadata.exceptions import BadContentError
 
 from media_impact_monitor.util.cache import cache, get
-from media_impact_monitor.util.date import get_latest_data, verify_dates
+from media_impact_monitor.util.date import verify_dates
 from media_impact_monitor.util.env import MEDIACLOUD_API_TOKEN
 from media_impact_monitor.util.parallel import parallel_tqdm
 
@@ -62,6 +61,7 @@ def get_mediacloud_counts(
 def _story_list(**kwargs):
     return search.story_list(**kwargs)
 
+
 def _story_list_all_pages(
     query: str,
     start_date: date,
@@ -98,6 +98,7 @@ def _story_list_all_pages(
     all_stories = random.sample(all_stories, sample_size)
     return all_stories
 
+
 stories = _story_list_all_pages(
     query="climate change",
     start_date=date(2024, 1, 1),
@@ -106,6 +107,7 @@ stories = _story_list_all_pages(
     sample_frac=0.01,
     verbose=True,
 )
+
 
 def _slice_date_range(start: date, end: date) -> list[tuple[date, date]]:
     result = []
@@ -232,5 +234,3 @@ def _resolve_country(country: str) -> list[int]:
     results = directory.collection_list(name=f"{country} - state & local")["results"]
     regional = results[0]["id"]
     return [national, regional]
-
-print(_resolve_country("Germany"))

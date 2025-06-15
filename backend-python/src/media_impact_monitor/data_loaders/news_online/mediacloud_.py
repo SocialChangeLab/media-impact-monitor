@@ -41,21 +41,17 @@ def get_mediacloud_counts(
         if collection_ids
         else None
     )
-    stories = _story_count_over_time(
+    counts = _story_count_over_time(
         query=query,
         start_date=start_date,
         end_date=end_date,
         collection_ids=collection_ids,
         platform=platform,
     )
-    if stories is None:
+    if counts is None:
         return None, []
-    stories["publish_date"] = pd.to_datetime(stories["publish_date"])
-    counts = stories.resample("D", on="publish_date").size()
-    counts = counts.reindex(pd.date_range(start_date, end_date), fill_value=0)
-    counts = counts.rename("count")
+    counts = pd.DataFrame(counts).set_index("date")["count"]
     return counts, []
-
 
 @cache
 def _story_list(**kwargs):

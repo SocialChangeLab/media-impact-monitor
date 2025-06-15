@@ -54,13 +54,6 @@ const options: OptionType[] = [
 		links: texts.filters.mediaSource.values.printNews.links,
 	},
 	{
-		name: texts.filters.mediaSource.values.tiktok.name,
-		value: 'social_tiktok',
-		Icon: Music2Icon,
-		description: texts.filters.mediaSource.values.tiktok.description,
-		links: texts.filters.mediaSource.values.tiktok.links,
-	},
-	{
 		name: texts.filters.mediaSource.values.googleTrends.name,
 		value: 'web_google',
 		Icon: SearchIcon,

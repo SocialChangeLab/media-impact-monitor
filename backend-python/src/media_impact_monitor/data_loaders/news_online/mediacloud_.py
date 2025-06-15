@@ -98,17 +98,6 @@ def _story_list_all_pages(
     all_stories = random.sample(all_stories, sample_size)
     return all_stories
 
-
-stories = _story_list_all_pages(
-    query="climate change",
-    start_date=date(2024, 1, 1),
-    end_date=date(2024, 1, 31),
-    collection_ids=[],
-    sample_frac=0.01,
-    verbose=True,
-)
-
-
 def _slice_date_range(start: date, end: date) -> list[tuple[date, date]]:
     result = []
     current = start.replace(day=1)

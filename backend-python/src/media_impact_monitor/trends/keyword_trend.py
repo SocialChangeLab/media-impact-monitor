@@ -5,9 +5,6 @@ from media_impact_monitor.data_loaders.news_online.mediacloud_ import (
     get_mediacloud_counts,
 )
 from media_impact_monitor.data_loaders.news_print.genios import get_genios_counts
-from media_impact_monitor.data_loaders.social_media.tiktok import (
-    get_video_history_for_hashtag,
-)
 from media_impact_monitor.data_loaders.web.google_trends import get_google_trends_counts
 from media_impact_monitor.types_ import TrendSearch
 from media_impact_monitor.util.paths import src
@@ -35,7 +32,7 @@ def get_keyword_trend(q: TrendSearch) -> tuple[pd.DataFrame | None, list[str]]:
             case "web_google":
                 ds = get_google_trends_counts(query=query, end_date=q.end_date)
             case "social_tiktok":
-                ds = get_video_history_for_hashtag(query, n=1000, verbose=True)["posts"]
+                raise ValueError("Not supported for social_tiktok")
             case _:
                 raise ValueError(f"Unsupported media source: {q.media_source}")
         dss[topic] = ds

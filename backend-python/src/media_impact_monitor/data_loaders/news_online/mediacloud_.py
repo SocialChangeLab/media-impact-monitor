@@ -1,9 +1,11 @@
 import random
 from datetime import date, timedelta
 from typing import Literal
+from time import sleep
 
 import mediacloud.api
 import pandas as pd
+from tqdm import tqdm
 from dateutil.relativedelta import relativedelta
 from mcmetadata import extract
 from mcmetadata.exceptions import BadContentError
@@ -55,6 +57,7 @@ def get_mediacloud_counts(
 
 @cache
 def _story_list(**kwargs):
+    sleep(30) # undocumented rate limit, see https://github.com/mediacloud/api-client/issues/107#issuecomment-2977041385
     return search.story_list(**kwargs)
 
 
@@ -126,12 +129,7 @@ def _story_list_split_monthly(
         )
 
     label = "Downloading metadata by month"
-    stories_lists = parallel_tqdm(
-        func,
-        _slice_date_range(start_date, end_date),
-        desc=f"{label:<{40}}",
-        n_jobs=8,
-    )
+    stories_lists = [func(start_and_end) for start_and_end in tqdm(_slice_date_range(start_date, end_date), desc=f"{label:<{40}}")]
     stories = [s for sl in stories_lists for s in sl]
     if len(stories) == 0:
         return None

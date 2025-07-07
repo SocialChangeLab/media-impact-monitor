@@ -23,8 +23,6 @@
 			"installTools": true,
 			"version": "3.10"
 		},
-		"ghcr.io/devcontainers-contrib/features/poetry:2": { },
-		"ghcr.io/nikobockerman/devcontainer-features/poetry-persistent-cache:1": { },
 		"ghcr.io/devcontainers-contrib/features/ruff:1": { },
 		"ghcr.io/devcontainers-contrib/features/starship:1": { },
 

@@ -34,8 +34,8 @@ def test_get_fulltexts_for_org(default_start_date, default_end_date):
 
 def test_get_fulltexts_for_event():
     for event_id in [
-        "5599ac04e1fab5e59639d5646ed331ec",  # LG event on 2024-05-17
-        "7c46b5c07afe076ee58ae1c79eccc367",  # LG event on 2024-05-18
+        "36c654cae3ba2fc2ec18d6e537a0f286",
+        "1e9fd86a4b093ee9edb7f807fd30078f",
     ]:
         texts = get_fulltexts(
             FulltextSearch(

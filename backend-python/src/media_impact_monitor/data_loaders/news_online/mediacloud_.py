@@ -1,16 +1,17 @@
-import base64
 import random
-from datetime import date, datetime, timedelta
+from datetime import date, timedelta
 from typing import Literal
+from time import sleep
 
 import mediacloud.api
 import pandas as pd
+from tqdm import tqdm
 from dateutil.relativedelta import relativedelta
 from mcmetadata import extract
 from mcmetadata.exceptions import BadContentError
 
 from media_impact_monitor.util.cache import cache, get
-from media_impact_monitor.util.date import get_latest_data, verify_dates
+from media_impact_monitor.util.date import verify_dates
 from media_impact_monitor.util.env import MEDIACLOUD_API_TOKEN
 from media_impact_monitor.util.parallel import parallel_tqdm
 
@@ -42,24 +43,21 @@ def get_mediacloud_counts(
         if collection_ids
         else None
     )
-    stories = _story_list_split_monthly(
+    counts = _story_count_over_time(
         query=query,
         start_date=start_date,
         end_date=end_date,
         collection_ids=collection_ids,
         platform=platform,
     )
-    if stories is None:
+    if counts is None:
         return None, []
-    stories["publish_date"] = pd.to_datetime(stories["publish_date"])
-    counts = stories.resample("D", on="publish_date").size()
-    counts = counts.reindex(pd.date_range(start_date, end_date), fill_value=0)
-    counts = counts.rename("count")
+    counts = pd.DataFrame(counts).set_index("date")["count"]
     return counts, []
-
 
 @cache
 def _story_list(**kwargs):
+    sleep(30) # undocumented rate limit, see https://github.com/mediacloud/api-client/issues/107#issuecomment-2977041385
     return search.story_list(**kwargs)
 
 
@@ -86,20 +84,11 @@ def _story_list_all_pages(
         )
         all_stories += page
         more_stories = pagination_token is not None
-        if more_stories:
-            decoded_token = base64.urlsafe_b64decode(pagination_token + "==").decode(
-                "utf-8"
-            )
-            # decode strings like 20240527T135136Z
-            dt = datetime.strptime(decoded_token, "%Y%m%dT%H%M%SZ").strftime(
-                "%Y-%m-%d %H:%M:%S"
-            )
-        else:
-            dt = end_date
         if verbose:
             print(
-                f"retrieved metadata for {len(all_stories)} stories for month {start_date.year}-{start_date.month}, currently at {dt}"
+                f"retrieved metadata for {len(all_stories)} stories for month {start_date.year}-{start_date.month}"
             )
+        print("pagination_token", pagination_token)
         # https://github.com/mediacloud/api-tutorial-notebooks/blob/main/MC02%20-%20attention.ipynb:
         # > As you may have noted, this can take a while for long time periods. If you look closely you'll notice that it can't be easily parallelized, because it requires content in the results to make the next call. A workaround is to divide you query up by time and query in parallel for something like each day. This can speed up the response. Also just contact us directly if you are trying to do larger data dumps, or hit up against your API quota.
     # take a 1% sample of stories
@@ -107,7 +96,6 @@ def _story_list_all_pages(
     random.seed(0)
     all_stories = random.sample(all_stories, sample_size)
     return all_stories
-
 
 def _slice_date_range(start: date, end: date) -> list[tuple[date, date]]:
     result = []
@@ -141,12 +129,7 @@ def _story_list_split_monthly(
         )
 
     label = "Downloading metadata by month"
-    stories_lists = parallel_tqdm(
-        func,
-        _slice_date_range(start_date, end_date),
-        desc=f"{label:<{40}}",
-        n_jobs=8,
-    )
+    stories_lists = [func(start_and_end) for start_and_end in tqdm(_slice_date_range(start_date, end_date), desc=f"{label:<{40}}")]
     stories = [s for sl in stories_lists for s in sl]
     if len(stories) == 0:
         return None

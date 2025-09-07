@@ -78,11 +78,25 @@ def topic_queries(media_source: str, topic: str = "climate_change") -> dict[str,
                     media_source,
                 )
         case "gaza_crisis":
+            # For Gaza topics, combine general Gaza keywords with specific topic keywords
+            # This ensures "hungersnot" is searched as "gaza AND hungersnot" not just "hungersnot"
             keyword_queries = {
                 "gaza general": xs(keywords["gaza_general"], media_source),
-                "gaza humanitarian": xs(keywords["gaza_humanitarian"], media_source),
-                "gaza justice": xs(keywords["gaza_justice"], media_source),
-                "gaza political": xs(keywords["gaza_political"], media_source),
+                "gaza humanitarian": xs_with_ys(
+                    keywords["gaza_general"], 
+                    keywords["gaza_humanitarian"], 
+                    media_source
+                ),
+                "gaza justice": xs_with_ys(
+                    keywords["gaza_general"], 
+                    keywords["gaza_justice"], 
+                    media_source
+                ),
+                "gaza political": xs_with_ys(
+                    keywords["gaza_general"], 
+                    keywords["gaza_political"], 
+                    media_source
+                ),
             }
             if media_source != "web_google":
                 keyword_queries["gaza activism"] = xs_with_ys(

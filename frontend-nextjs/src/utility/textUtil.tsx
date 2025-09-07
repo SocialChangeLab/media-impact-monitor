@@ -270,11 +270,11 @@ const textsEnGB = {
 			'climate crisis framing': 'Climate Crisis Framing',
 			'climate policy': 'Climate Policy',
 			'climate science': 'Climate Science',
-			'gaza general': 'Gaza General',
-			'gaza humanitarian': 'Gaza Humanitarian',
-			'gaza justice': 'Gaza Justice',
-			'gaza political': 'Gaza Political',
-			'gaza activism': 'Gaza Activism',
+			'gaza activism': 'Gaza Protests',
+			'gaza general': 'Gaza Conflict',
+			'gaza humanitarian': 'Humanitarian Crisis',
+			'gaza justice': 'Criminal Prosecution',
+			'gaza political': 'International Political Pressure',
 		},
 		aggregationUnit: {
 			day: 'day',
@@ -557,11 +557,11 @@ const textsEnGB = {
 		sentiment_policy: (topic: TopicType = 'climate_change') => ({
 			heading: topic === 'climate_change'
 				? 'What stance does the media have towards progressive climate policies?'
-				: 'What stance does the media have about efforts of the international community to exert stronger pressure towards peace, justice, and humanitarian improvement (e.g., arms embargo, sanctions, criminal prosecution, humanitarian aid programmes, refugee programmes,  ...)?',
+				: 'What stance does the media have about efforts of the international community to exert stronger pressure towards peace, justice, and humanitarian improvement?',
 			description: [
 				topic === 'climate_change'
 					? 'See whether the media supports or opposes policies aimed at mitigating climate change.'
-					: 'See whether the media supports or opposes stronger pressure of the international community.',
+					: 'See whether the media supports or opposes stronger pressure of the international community, e.g., arms embargo, sanctions, criminal prosecution, humanitarian aid programmes, refugee programmes.',
 			],
 			data_credit: [
 				{

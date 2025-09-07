@@ -207,6 +207,13 @@ const textsEnGB = {
 				resetDefaults: 'Reset defaults',
 			},
 		},
+		topic: {
+			label: 'Topic',
+			values: {
+				climate_change: 'Climate Crisis',
+				gaza_crisis: 'Gaza Crisis',
+			},
+		},
 	},
 	info: {
 		welcome_message: {
@@ -828,6 +835,13 @@ const textsXXX = {
 				apply: 'XXX',
 				cancel: 'XXX',
 				resetDefaults: 'XXX',
+			},
+		},
+		topic: {
+			label: 'XXX',
+			values: {
+				climate_change: 'XXX',
+				gaza_crisis: 'XXX',
 			},
 		},
 	},

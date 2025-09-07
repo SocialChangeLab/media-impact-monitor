@@ -19,6 +19,7 @@ function useMediaTrends({
 	const to = useFiltersStore(({ to }) => to);
 	const organizers = useFiltersStore(({ organizers }) => organizers);
 	const mediaSource = useFiltersStore(({ mediaSource }) => mediaSource);
+	const topic = useFiltersStore(({ topic }) => topic);
 	const fromDateString = useFiltersStore(({ fromDateString }) => fromDateString);
 	const toDateString = useFiltersStore(({ toDateString }) => toDateString);
 	const organizersKey = useFiltersStore(
@@ -38,6 +39,7 @@ function useMediaTrends({
 		toDateString,
 		organizersKey,
 		mediaSource,
+		topic,
 	];
 	const query = useQuery({
 		queryKey,
@@ -51,6 +53,7 @@ function useMediaTrends({
 						to,
 						organizers,
 						mediaSource,
+						topic,
 					},
 					allOrganisations: organisations || [],
 				},

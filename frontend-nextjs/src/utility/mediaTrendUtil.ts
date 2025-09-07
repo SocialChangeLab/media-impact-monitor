@@ -1,4 +1,4 @@
-import type { MediaSourceType } from "@/stores/filtersStore";
+import type { MediaSourceType, TopicType } from "@/stores/filtersStore";
 import { z } from "zod";
 import {
 	comparableDateItemSchema,
@@ -50,6 +50,7 @@ export type TrendQueryProps = {
 		to?: Date;
 		organizers: EventOrganizerSlugType[];
 		mediaSource: MediaSourceType;
+		topic: TopicType;
 	};
 	allOrganisations: OrganisationType[];
 };

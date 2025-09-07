@@ -10,8 +10,10 @@ import MediaSourceSelect from '../DataSourceSelect'
 import DraggableTimeFilterRange from '../DraggableTimeFilterRange'
 import { OrganisationsSelect } from '../OrganisationsSelect'
 import TimeFilter from '../TimeFilter'
+import TopicSelect from '../TopicSelect'
 import {
 	doesPathnameShowAnyFilter,
+	doesPathnameShowTopicFilter,
 	doesPathnameShowMediaFilter,
 	doesPathnameShowOrganisationsFilter,
 	doesPathnameShowTimeFilter,
@@ -27,11 +29,12 @@ function FiltersArea() {
 
 	const display = useMemo(() => {
 		const any = doesPathnameShowAnyFilter(pathname)
+		const topic = doesPathnameShowTopicFilter(pathname)
 		const media = doesPathnameShowMediaFilter(pathname)
 		const organisations = doesPathnameShowOrganisationsFilter(pathname)
 		const time = doesPathnameShowTimeFilter(pathname)
-		const onlyTime = !media && !organisations && time
-		return { any, media, organisations, time, onlyTime }
+		const onlyTime = !topic && !media && !organisations && time
+		return { any, topic, media, organisations, time, onlyTime }
 	}, [pathname])
 
 	const lastHasAny = useRef(display.any)
@@ -100,8 +103,16 @@ function FiltersArea() {
 					`flex gap-[max(1rem,2vmax)] justify-between flex-wrap items-center`,
 				)}
 			>
-				{(display.media || display.organisations) && (
+				{(display.topic || display.media || display.organisations) && (
 					<ul className="flex gap-4 lg:gap-6 items-center flex-wrap">
+						{display.topic && (
+							<li className="flex flex-col gap-1 text-sm">
+								<FilterLabel show={isScrolledToTop}>
+									{texts.filters.topic.label}:
+								</FilterLabel>
+								<TopicSelect />
+							</li>
+						)}
 						{display.media && (
 							<li className="flex flex-col gap-1 text-sm">
 								<FilterLabel show={isScrolledToTop}>

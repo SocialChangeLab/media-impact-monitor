@@ -21,6 +21,7 @@ import {
 
 
 export type MediaSourceType = "news_online" | "news_print" | "social_tiktok" | "web_google";
+export type TopicType = "climate_change" | "gaza_crisis";
 
 export type FiltersState = {
 	from: Date;
@@ -32,6 +33,7 @@ export type FiltersState = {
 	isDefaultTimeRange: boolean;
 	organizers: EventOrganizerSlugType[];
 	mediaSource: MediaSourceType;
+	topic: TopicType;
 };
 
 export type FiltersActions = {
@@ -40,6 +42,7 @@ export type FiltersActions = {
 	resetDateRange: () => void;
 	setOrganizers: (organizers: EventOrganizerSlugType[]) => void;
 	setMediaSource: (mediaSource: MediaSourceType) => void;
+	setTopic: (topic: TopicType) => void;
 };
 
 export type FiltersStore = FiltersState & FiltersActions;
@@ -57,6 +60,7 @@ export const getDefaultInitState = (today: Date): FiltersState => {
 		isDefaultTimeRange: true,
 		organizers: [] as EventOrganizerSlugType[],
 		mediaSource: "news_online",
+		topic: "climate_change",
 	};
 }
 
@@ -81,6 +85,7 @@ const getFiltersZodSchema = (today: Date) => {
 			.default(defaultInitState.isDefaultTimeRange),
 		organizers: z.array(z.string()).default(defaultInitState.organizers),
 		mediaSource: z.enum(["news_online", "news_print", "social_tiktok", "web_google"]),
+		topic: z.enum(["climate_change", "gaza_crisis"]).default(defaultInitState.topic),
 	})
 	.default(defaultInitState);
 }
@@ -180,6 +185,8 @@ export const createFiltersStore = (
 					set(() => ({ organizers })),
 				setMediaSource: (mediaSource: MediaSourceType) =>
 					set(() => ({ mediaSource })),
+				setTopic: (topic: TopicType) =>
+					set(() => ({ topic })),
 			}),
 			getStorageOptions(today),
 		),

@@ -2,7 +2,8 @@ import type {
 	EventOrganizerSlugType,
 	OrganisationType,
 } from '@/utility/eventsUtil'
-import { texts } from '@/utility/textUtil'
+import { getTopicAwareTexts } from '@/utility/textUtil'
+import { useFiltersStore } from '@/providers/FiltersStoreProvider'
 import useElementSize from '@custom-react-hooks/use-element-size'
 import { type ScaleLinear, scaleLinear } from 'd3-scale'
 import CollapsableSection from '../CollapsableSection'
@@ -88,6 +89,8 @@ function EventsTimelineLegend({
 	selectedOrganisations?: LegendOrganisation[]
 	organisations?: LegendOrganisation[]
 }) {
+	const topic = useFiltersStore(({ topic }) => topic)
+	const texts = getTopicAwareTexts(topic)
 	const [parentRef, { width }] = useElementSize()
 	const aggregationUnit = useAggregationUnit(width)
 	return (

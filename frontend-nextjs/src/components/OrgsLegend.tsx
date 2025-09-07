@@ -1,12 +1,13 @@
 'use client'
 import type { EventOrganizerSlugType } from '@/utility/eventsUtil'
-import { texts } from '@/utility/textUtil'
+import { getTopicAwareTexts } from '@/utility/textUtil'
+import { useFiltersStore } from '@/providers/FiltersStoreProvider'
 import { ArrowRight } from 'lucide-react'
 import { useMemo } from 'react'
 import type { LegendOrganisation } from './EventsTimeline/EventsTimelineLegend'
 import OrgsLegendItem from './OrgsLegendItem'
 
-function getOtherOrg(organisations: LegendOrganisation[]) {
+function getOtherOrg(organisations: LegendOrganisation[], texts: ReturnType<typeof getTopicAwareTexts>) {
 	return {
 		slug: 'other' as EventOrganizerSlugType,
 		name: texts.charts.protest_timeline.legend.other,
@@ -29,6 +30,9 @@ function OrgsLegend({
 	organisations: LegendOrganisation[]
 	selectedOrganisations: LegendOrganisation[]
 }) {
+	const topic = useFiltersStore(({ topic }) => topic)
+	const texts = getTopicAwareTexts(topic)
+	
 	const { allOrgs, otherOrgs } = useMemo(() => {
 		const mainOrgs: LegendOrganisation[] = []
 		const otherOrgs: LegendOrganisation[] = []
@@ -48,7 +52,7 @@ function OrgsLegend({
 			return {
 				allOrgs: organisations
 					.slice(0, 16)
-					.concat(getOtherOrg(organisations.slice(16)))
+					.concat(getOtherOrg(organisations.slice(16), texts))
 					.map((org) => ({ ...org, isActive: false })),
 				otherOrgs: organisations.slice(16),
 			}
@@ -58,10 +62,10 @@ function OrgsLegend({
 		}
 		if (otherOrgs.length === 0) return { allOrgs: mainOrgs, otherOrgs: [] }
 		return {
-			allOrgs: [...mainOrgs, getOtherOrg(otherOrgs)],
+			allOrgs: [...mainOrgs, getOtherOrg(otherOrgs, texts)],
 			otherOrgs,
 		}
-	}, [organisations, selectedOrganisations])
+	}, [organisations, selectedOrganisations, texts])
 
 	if (allOrgs.length === 0) return null
 	return (

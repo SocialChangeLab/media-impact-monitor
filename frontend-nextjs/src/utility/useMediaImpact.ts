@@ -21,6 +21,7 @@ function useMediaImpactData({
 	const from = useFiltersStore(({ from }) => from);
 	const to = useFiltersStore(({ to }) => to);
 	const mediaSource = useFiltersStore(({ mediaSource }) => mediaSource);
+	const topic = useFiltersStore(({ topic }) => topic);
 	const fromDateString = useFiltersStore(({ fromDateString }) => fromDateString);
 	const toDateString = useFiltersStore(({ toDateString }) => toDateString);
 	const queryKey = [
@@ -31,6 +32,7 @@ function useMediaImpactData({
 		fromDateString,
 		toDateString,
 		mediaSource,
+		topic,
 	];
 	const { organisations, isLoading } = useAllOrganisations();
 	const query = useQuery({
@@ -45,6 +47,7 @@ function useMediaImpactData({
 					to,
 					organizer,
 					mediaSource,
+					topic,
 				},
 				allOrganisations: organisations || [],
 			});

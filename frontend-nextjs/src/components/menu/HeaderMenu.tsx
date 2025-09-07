@@ -16,6 +16,7 @@ type MenuItemType = {
 	name: string
 	label: string
 	route: string
+	showTopicFilter?: boolean
 	showMediaFilter?: boolean
 	showOrganisationsFilter?: boolean
 	showTimeFilter?: boolean
@@ -35,6 +36,7 @@ const menuItems: MenuItemType[] = [
 		name: 'dashboard',
 		label: texts.mainNavigation.dashboard,
 		route: '/dashboard',
+		showTopicFilter: true,
 		showMediaFilter: true,
 		showOrganisationsFilter: true,
 		showTimeFilter: true,
@@ -43,6 +45,7 @@ const menuItems: MenuItemType[] = [
 		name: 'organisations',
 		label: texts.mainNavigation.organisations,
 		route: '/organisations',
+		showTopicFilter: true,
 		showTimeFilter: true,
 		showOrganisationsFilter: true,
 		cascade: true,
@@ -73,7 +76,8 @@ export function doesPathnameShowAnyFilter(pathname: string) {
 	const menuItem = getMenuItemByPathname(pathname)
 	if (!menuItem) return false
 	const showAnyFilter = Boolean(
-		menuItem.showMediaFilter ||
+		menuItem.showTopicFilter ||
+			menuItem.showMediaFilter ||
 			menuItem.showOrganisationsFilter ||
 			menuItem.showTimeFilter,
 	)
@@ -90,6 +94,12 @@ export function doesPathnameShowOrganisationsFilter(pathname: string) {
 	const menuItem = getMenuItemByPathname(pathname)
 	if (!menuItem) return false
 	return menuItem.showOrganisationsFilter
+}
+
+export function doesPathnameShowTopicFilter(pathname: string) {
+	const menuItem = getMenuItemByPathname(pathname)
+	if (!menuItem) return false
+	return menuItem.showTopicFilter
 }
 
 export function doesPathnameShowTimeFilter(pathname: string) {

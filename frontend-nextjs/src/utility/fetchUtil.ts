@@ -1,5 +1,6 @@
 import {
 	type MediaSourceType,
+	type TopicType,
 } from "@/stores/filtersStore";
 import { format } from "@/utility/dateUtil";
 import type { EventOrganizerSlugType, OrganisationType } from "./eventsUtil";
@@ -43,7 +44,7 @@ export function formatInput(
 		mediaSource: MediaSourceType;
 		organizers: EventOrganizerSlugType[];
 		eventId: string;
-		topic: string;
+		topic: TopicType;
 	}>,
 	allOrganisations: OrganisationType[],
 ) {

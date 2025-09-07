@@ -13,7 +13,7 @@ export const eventMediaInputQueryZodSchema = z.object({
 	from: z.date().optional(),
 	to: z.date().optional(),
 	eventId: z.string(),
-	topic: z.string().optional().default("climate_change"),
+	topic: z.enum(["climate_change", "gaza_crisis"]).optional().default("climate_change"),
 	organizers: z.array(eventOrganizerSlugZodSchema).optional(),
 	query: z.string().optional(),
 });
@@ -26,7 +26,7 @@ const eventMediaOutputQueryZodSchema = z.object({
 	start_date: z.string().optional(),
 	end_date: z.string().optional(),
 	event_id: z.string(),
-	topic: z.string(),
+	topic: z.enum(["climate_change", "gaza_crisis"]),
 	organizers: z.array(eventOrganizerSlugZodSchema).optional(),
 });
 

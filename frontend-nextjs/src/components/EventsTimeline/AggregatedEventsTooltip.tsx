@@ -9,7 +9,8 @@ import {
 	type ParsedEventType,
 	compareOrganizationsByColors,
 } from "@/utility/eventsUtil";
-import { texts } from "@/utility/textUtil";
+import { getTopicAwareTexts } from "@/utility/textUtil";
+import { useFiltersStore } from "@/providers/FiltersStoreProvider";
 import { type ReactNode, memo, useMemo } from "react";
 import OrgLine from "./EventTooltipOrgLine";
 import {
@@ -34,6 +35,9 @@ function AggregatedEventsTooltip({
 	selectedOrganisations: OrganisationType[];
 	children: ReactNode;
 }) {
+	const topic = useFiltersStore(({ topic }) => topic);
+	const texts = getTopicAwareTexts(topic);
+	
 	const formattedDate = useMemo(
 		() => formatDateByAggregationUnit(date, aggregationUnit),
 		[date, aggregationUnit],

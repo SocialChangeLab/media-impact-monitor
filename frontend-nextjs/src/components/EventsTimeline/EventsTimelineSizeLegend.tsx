@@ -1,5 +1,6 @@
 import { cn } from "@/utility/classNames";
-import { texts } from "@/utility/textUtil";
+import { getTopicAwareTexts } from "@/utility/textUtil";
+import { useFiltersStore } from "@/providers/FiltersStoreProvider";
 import type { ScaleLinear } from "d3-scale";
 import { ArrowRight } from "lucide-react";
 import { memo, useMemo } from "react";
@@ -12,6 +13,9 @@ function EventsTimelineSizeLegend({
 	sizeScale: ScaleLinear<number, number, never>;
 	aggragationUnit: AggregationUnitType;
 }) {
+	const topic = useFiltersStore(({ topic }) => topic);
+	const texts = getTopicAwareTexts(topic);
+	
 	const exampleSizes = useMemo(() => {
 		const maxVal = Math.max(sizeScale.domain()[1], 30);
 		const max = roundLegendNumber(maxVal);

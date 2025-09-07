@@ -80,7 +80,7 @@ function EventPageContent({ id }: { id: string }) {
 				</div>
 				<TopicsLegend
 					trend_type="sentiment"
-					sources={texts.charts.sentiment_protest.data_credit}
+					sources={texts.charts.sentiment_protest().data_credit}
 				/>
 			</SectionHeadlineWithExplanation>
 		</>

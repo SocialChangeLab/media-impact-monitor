@@ -61,18 +61,17 @@ export const DatePickerWithRange = memo(
 			setDate(dateRange)
 		}, [dateRange])
 
-		// biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
-		useEffect(() => {
-			if (!date?.from || !date?.to || isOpen) return
-			if (!lastRange.current?.from || !lastRange.current?.to) return
-			const currFrom = format(lastRange.current.from, 'yyyy-MM-dd')
-			const currTo = format(lastRange.current.to, 'yyyy-MM-dd')
-			const unchangedFrom = fromDateString === currFrom
-			const unchangedTo = toDateString === currTo
-			if (unchangedFrom && unchangedTo) return
-			onChange({ from: date.from, to: date.to })
-			lastRange.current = date
-		}, [isOpen, fromDateString, toDateString])
+	useEffect(() => {
+		if (!date?.from || !date?.to || isOpen) return
+		if (!lastRange.current?.from || !lastRange.current?.to) return
+		const currFrom = format(lastRange.current.from, 'yyyy-MM-dd')
+		const currTo = format(lastRange.current.to, 'yyyy-MM-dd')
+		const unchangedFrom = fromDateString === currFrom
+		const unchangedTo = toDateString === currTo
+		if (unchangedFrom && unchangedTo) return
+		onChange({ from: date.from, to: date.to })
+		lastRange.current = date
+	}, [isOpen, fromDateString, toDateString, date, onChange])
 
 		const onRangeChange = useCallback(
 			(newRange?: DateRange) => {

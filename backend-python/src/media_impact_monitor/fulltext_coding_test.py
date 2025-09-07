@@ -67,3 +67,32 @@ async def test_code_fulltext_complex_text():
     assert result["topics"]["urgency of climate action"] >= 3
     assert result["activism_sentiment"] is not None
     assert result["policy_sentiment"] is not None
+
+
+@pytest.mark.asyncio
+async def test_code_fulltext_topic_specific_gaza():
+    """Test that Gaza-specific policy sentiment uses different criteria."""
+    text = """
+    The international community calls for an immediate ceasefire in Gaza. 
+    Humanitarian organizations demand unrestricted access to deliver aid 
+    to civilians trapped in the conflict zone. Peace negotiations must 
+    prioritize civilian protection over military objectives.
+    """
+    result = await code_fulltext(text, topic="gaza_crisis")
+    assert result is not None
+    # This text should have positive policy sentiment for Gaza (supporting peace/humanitarian action)
+    assert result["policy_sentiment"] == 1
+
+
+@pytest.mark.asyncio
+async def test_code_fulltext_topic_specific_climate():
+    """Test that climate-specific policy sentiment uses different criteria."""
+    text = """
+    The current climate policies are insufficient to meet our 2030 targets.
+    We need more ambitious renewable energy investments and stricter 
+    emissions regulations to address the climate crisis effectively.
+    """
+    result = await code_fulltext(text, topic="climate_change")
+    assert result is not None
+    # This text should have positive policy sentiment for climate (supporting progressive changes)
+    assert result["policy_sentiment"] == 1

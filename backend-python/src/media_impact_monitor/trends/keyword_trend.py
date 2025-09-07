@@ -12,10 +12,10 @@ from media_impact_monitor.util.paths import src
 
 def get_keyword_trend(q: TrendSearch) -> tuple[pd.DataFrame | None, list[str]]:
     assert q.trend_type == "keywords"
-    assert q.topic == "climate_change", "Only climate_change is supported."
+    assert q.topic in ["climate_change", "gaza_crisis"], f"Topic '{q.topic}' is not supported. Supported topics: climate_change, gaza_crisis"
     dss = {}
     limitations = set()
-    for topic, query in topic_queries(q.media_source).items():
+    for topic, query in topic_queries(q.media_source, q.topic).items():
         match q.media_source:
             case "news_online":
                 ds, lims = get_mediacloud_counts(
@@ -53,35 +53,48 @@ def load_keywords():
     return keywords
 
 
-def topic_queries(media_source: str) -> dict[str, str]:
+def topic_queries(media_source: str, topic: str = "climate_change") -> dict[str, str]:
     keywords = load_keywords()
-    keyword_queries = {
-        "climate policy": xs(keywords["climate_policy"], media_source),
-        "climate science": xs(keywords["climate_science"], media_source),
-        "climate crisis framing": xs(keywords["climate_urgency"], media_source),
-        # "all_excl_activism": xs_without_ys(
-        #     keywords["climate_science"]
-        #     + keywords["climate_policy"]
-        #     + keywords["climate_urgency"],
-        #     keywords["activism"],
-        #     media_source,
-        # ),
-    }
-    if media_source == "social_tiktok":
-        keyword_queries = {
-            "climate activism": "climateprotest",  # TODO: improve
-            "climate policy": "climateaction",  # TODO: improve
-            "climate science": "climatechange",  # TODO: improve
-            "climate crisis framing": "climatecrisis",  # TODO: improve
-        }
-    elif media_source != "web_google":
-        keyword_queries["climate activism"] = xs_with_ys(
-            keywords["climate_science"]
-            + keywords["climate_policy"]
-            + keywords["climate_urgency"],
-            keywords["activism"],
-            media_source,
-        )
+    match topic:
+        case "climate_change":
+            keyword_queries = {
+                "climate policy": xs(keywords["climate_policy"], media_source),
+                "climate science": xs(keywords["climate_science"], media_source),
+                "climate crisis framing": xs(keywords["climate_urgency"], media_source),
+            }
+            if media_source == "social_tiktok":
+                keyword_queries = {
+                    "climate activism": "climateprotest",  # TODO: improve
+                    "climate policy": "climateaction",  # TODO: improve
+                    "climate science": "climatechange",  # TODO: improve
+                    "climate crisis framing": "climatecrisis",  # TODO: improve
+                }
+            elif media_source != "web_google":
+                keyword_queries["climate activism"] = xs_with_ys(
+                    keywords["climate_science"]
+                    + keywords["climate_policy"]
+                    + keywords["climate_urgency"],
+                    keywords["activism"],
+                    media_source,
+                )
+        case "gaza_crisis":
+            keyword_queries = {
+                "gaza general": xs(keywords["gaza_general"], media_source),
+                "gaza humanitarian": xs(keywords["gaza_humanitarian"], media_source),
+                "gaza justice": xs(keywords["gaza_justice"], media_source),
+                "gaza political": xs(keywords["gaza_political"], media_source),
+            }
+            if media_source != "web_google":
+                keyword_queries["gaza activism"] = xs_with_ys(
+                    keywords["gaza_general"]
+                    + keywords["gaza_humanitarian"]
+                    + keywords["gaza_justice"]
+                    + keywords["gaza_political"],
+                    keywords["activism"],
+                    media_source,
+                )
+        case _:
+            raise ValueError(f"Unsupported topic: {topic}")
     return keyword_queries
 
 

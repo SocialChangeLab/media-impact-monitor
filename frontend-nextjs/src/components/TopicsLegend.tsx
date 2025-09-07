@@ -4,6 +4,7 @@ import DataCreditLegend, {
 } from "@/components/DataCreditLegend";
 import { cn } from "@/utility/classNames";
 import { slugifyCssClass } from "@/utility/cssSlugify";
+import { useFiltersStore } from "@/providers/FiltersStoreProvider";
 import type { TrendQueryProps } from "@/utility/mediaTrendUtil";
 import { texts, titleCase } from "@/utility/textUtil";
 import { getTopicIcon, topicIsSentiment } from "@/utility/topicsUtil";
@@ -132,12 +133,15 @@ function TopicsLegend({
 	trend_type: TrendQueryProps["trend_type"];
 	sources?: DataCreditLegendSource[];
 }) {
+	const currentTopic = useFiltersStore(({ topic }) => topic);
+	
 	const sentimentTopics = [
 		{ topic: "positive", color: "var(--sentiment-positive)" },
 		{ topic: "neutral", color: "var(--sentiment-neutral)" },
 		{ topic: "negative", color: "var(--sentiment-negative)" },
 	];
-	const keywordTopics = [
+	
+	const climateKeywordTopics = [
 		{ topic: "climate policy", color: "var(--keyword-climate-policy)" },
 		{ topic: "climate activism", color: "var(--keyword-climate-activism)" },
 		{
@@ -146,13 +150,27 @@ function TopicsLegend({
 		},
 		{ topic: "climate science", color: "var(--keyword-climate-science)" },
 	];
+	
+	const gazaKeywordTopics = [
+		{ topic: "gaza general", color: "var(--keyword-gaza-general)" },
+		{ topic: "gaza humanitarian", color: "var(--keyword-gaza-humanitarian)" },
+		{ topic: "gaza justice", color: "var(--keyword-gaza-justice)" },
+		{ topic: "gaza political", color: "var(--keyword-gaza-political)" },
+		{ topic: "gaza activism", color: "var(--keyword-gaza-activism)" },
+	];
+	
+	const getDefaultKeywordTopics = () => {
+		if (currentTopic === "gaza_crisis") return gazaKeywordTopics;
+		return climateKeywordTopics; // Default to climate
+	};
+	
 	return (
 		<GenericTopicsLegend
 			topics={
 				topics?.length && topics.length > 0
 					? topics
 					: trend_type === "keywords"
-						? keywordTopics
+						? getDefaultKeywordTopics()
 						: sentimentTopics
 			}
 			sources={sources}

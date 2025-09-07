@@ -90,18 +90,21 @@ export const topicsMap = new Map<string, string[][]>(
 			["klimawandel", "klimaerwärmung", "erderwärmung", "klimaschutz"],
 		],
 		
-		// Gaza topics
+		// Gaza topics (general keywords AND specific keywords)
 		[slugify("Gaza General", { lower: true, strict: true })]: [
-			["gaza", "palästina", "palestine", "hamas", "israel", "idf"],
+			["gaza", "gazastreifen", "palästina", "palestine", "hamas", "israel", "idf", "westjordanland", "westbank", "nahost", "nahostkonflikt"],
 		],
 		[slugify("Gaza Humanitarian", { lower: true, strict: true })]: [
-			["hunger", "hungersnot", "humanitäre hilfe", "lebensmittel"],
+			["gaza", "palästina", "palestine", "israel"], // General Gaza context
+			["hunger", "hungersnot", "hungerkatastrophe", "humanitäre hilfe", "humanitäre krise", "lebensmittel", "hilfsgüter", "medizinische versorgung", "flüchtlinge", "vertriebene", "unrwa", "rotes kreuz", "zivilbevölkerung", "zivilisten"], // Humanitarian terms
 		],
 		[slugify("Gaza Justice", { lower: true, strict: true })]: [
-			["kriegsverbrechen", "völkermord", "genozid", "icc", "strafgerichtshof"],
+			["gaza", "palästina", "palestine", "israel"], // General Gaza context
+			["kriegsverbrechen", "völkermord", "genozid", "verbrechen gegen die menschlichkeit", "internationaler strafgerichtshof", "icc", "igh", "haager gerichtshof", "menschenrechte", "folter", "willkürliche verhaftungen"], // Justice terms
 		],
 		[slugify("Gaza Political", { lower: true, strict: true })]: [
-			["waffenlieferungen", "embargo", "sanktionen", "staat palästina"],
+			["gaza", "palästina", "palestine", "israel"], // General Gaza context
+			["waffenlieferungen", "waffenexporte", "rüstungsexporte", "embargo", "sanktionen", "boykott", "staat palästina", "zweistaatenlösung", "siedlungen", "besatzung", "blockade", "friedensverhandlungen", "uno", "sicherheitsrat"], // Political terms
 		],
 		[slugify("Gaza Activism", { lower: true, strict: true })]: [
 			[
@@ -121,8 +124,8 @@ export const topicsMap = new Map<string, string[][]>(
 				"mahnwache",
 				"hungerstreik",
 				"ziviler ungehorsam",
-			],
-			["gaza", "palästina", "palestine", "hamas", "israel", "idf"],
+			], // Activism terms
+			["gaza", "gazastreifen", "palästina", "palestine", "hamas", "israel", "idf", "westjordanland", "westbank", "nahost", "nahostkonflikt"], // Gaza context
 		],
 	}),
 );

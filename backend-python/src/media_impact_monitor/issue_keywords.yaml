@@ -53,24 +53,53 @@ climate_urgency:
   - klimagerechtigkeit
 gaza_general:
   - gaza
+  - gazastreifen
   - palästina
   - palestine
   - hamas
   - israel
   - idf
+  - westjordanland
+  - westbank
+  - nahost
+  - nahostkonflikt
 gaza_humanitarian:
   - hunger
   - hungersnot
+  - hungerkatastrophe
   - humanitäre hilfe
+  - humanitäre krise
   - lebensmittel
+  - hilfsgüter
+  - medizinische versorgung
+  - flüchtlinge
+  - vertriebene
+  - unrwa
+  - rotes kreuz
+  - zivilbevölkerung
+  - zivilisten
 gaza_justice:
   - kriegsverbrechen
   - völkermord
   - genozid
+  - verbrechen gegen die menschlichkeit
+  - internationaler strafgerichtshof
   - icc
-  - strafgerichtshof
+  - igh
+  - haager gerichtshof
+  - menschenrechte
 gaza_political:
   - waffenlieferungen
+  - waffenexporte
+  - rüstungsexporte
   - embargo
   - sanktionen
+  - boykott
   - staat palästina
+  - zweistaatenlösung
+  - siedlungen
+  - besatzung
+  - blockade
+  - friedensverhandlungen
+  - uno
+  - sicherheitsrat

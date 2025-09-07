@@ -104,7 +104,7 @@ export const topicsMap = new Map<string, string[][]>(
 		],
 		[slugify("Gaza Political", { lower: true, strict: true })]: [
 			["gaza", "palästina", "palestine", "israel"], // General Gaza context
-			["waffenlieferungen", "waffenexporte", "rüstungsexporte", "embargo", "sanktionen", "boykott", "staat palästina", "zweistaatenlösung", "siedlungen", "besatzung", "blockade", "friedensverhandlungen", "uno", "sicherheitsrat"], // Political terms
+			["waffenlieferungen", "waffenexporte", "rüstungsexporte", "embargo", "sanktionen", "boykott", "staat palästina", "zweistaatenlösung", "siedlungen", "besatzung", "blockade", "friedensverhandlungen", "uno", "vereinte nationen", "sicherheitsrat"], // Political terms
 		],
 		[slugify("Gaza Activism", { lower: true, strict: true })]: [
 			[

@@ -9,6 +9,10 @@ from media_impact_monitor.data_loaders.protest.climate_orgs import (
     add_aliases,
     climate_orgs,
 )
+from media_impact_monitor.data_loaders.protest.gaza_orgs import (
+    add_gaza_aliases,
+    gaza_orgs,
+)
 from media_impact_monitor.data_loaders.protest.press_releases.last_generation.categorize import (
     code_press_releases as get_press_release_events,
 )
@@ -41,7 +45,7 @@ def get_events(q: EventSearch) -> pd.DataFrame | None:
     if q.end_date:
         df = df[df["date"] <= q.end_date]
     df["event_id"] = df.apply(joblib_hash, axis=1, raw=True)
-    _org_freqs = org_freqs()
+    _org_freqs = org_freqs(q.topic or "climate_change")
 
     def sort_organizers(organizers: list[str]) -> list[str]:
         return sorted(organizers, key=lambda x: _org_freqs.get(x, 0), reverse=True)
@@ -66,15 +70,25 @@ def filter_gaza_orgs(df: pd.DataFrame) -> pd.DataFrame:
     ]
 
 @cache
-def org_freqs():
-    # hacky solution to get the frequency of organizers, in a stable way
+def org_freqs(topic: str = "climate_change"):
+    """Get the frequency of organizers for a specific topic, in a stable way."""
     df = get_acled_events(end_date=date(2024, 1, 1), countries=["Germany"])
-    df = filter_climate_orgs(df)
+    
+    match topic:
+        case "climate_change":
+            df = filter_climate_orgs(df)
+        case "gaza_crisis":
+            df = filter_gaza_orgs(df)
+        case _:
+            # For backward compatibility, default to climate
+            df = filter_climate_orgs(df)
+    
     return df["organizers"].str[0].value_counts()
 
 
-def organizers_with_id():
-    orgs = org_freqs().index.tolist()
+def organizers_with_id(topic: str = "climate_change"):
+    """Get organizers with IDs for a specific topic."""
+    orgs = org_freqs(topic).index.tolist()
     return [Organizer(organizer_id=slugify(org), name=org) for org in orgs]
 
 

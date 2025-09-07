@@ -44,7 +44,7 @@ class EventSearch(BaseModel):
     )
     topic: Topic | None = Field(
         default=None,
-        description="Filter by topic. This will automatically set filters for query and organizers, which you can further refine with the `query` field. Currently only _climate_change_ is supported.",
+        description="Filter by topic. This will automatically set filters for query and organizers, which you can further refine with the `query` field. Currently _climate_change_ and _gaza_crisis_ are supported.",
     )
     start_date: date | None = StartDateField
     end_date: date | None = EndDateField
@@ -93,7 +93,7 @@ class TrendSearch(BaseModel):
     end_date: date | None = EndDateField
     topic: Topic | None = Field(
         default=None,
-        description="When the trend type is `keywords`, this automatically sets relevant sets of keywords; currently only `climate_change` is supported as topic for this.",
+        description="When the trend type is `keywords`, this automatically sets relevant sets of keywords; currently `climate_change` and `gaza_crisis` are supported as topics for this.",
     )
     sentiment_target: SentimentTarget | None = Field(
         default=None,
@@ -170,7 +170,7 @@ class FulltextSearch(BaseModel):
     end_date: date | None = EndDateField
     topic: Topic | None = Field(
         default=None,
-        description="This automatically picks a relevant set of keywords. Currently only _climate_change_ is supported.",
+        description="This automatically picks a relevant set of keywords. Currently _climate_change_ and _gaza_crisis_ are supported.",
     )
     query: Query | None = Field(default=None, description="Custom query.")
     organizers: list[str] | None = Field(

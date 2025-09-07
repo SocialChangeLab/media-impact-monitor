@@ -9,6 +9,10 @@ from media_impact_monitor.data_loaders.protest.climate_orgs import (
     add_aliases,
     climate_orgs,
 )
+from media_impact_monitor.data_loaders.protest.gaza_orgs import (
+    add_gaza_aliases,
+    gaza_orgs,
+)
 from media_impact_monitor.events import get_events_by_id
 from media_impact_monitor.fulltext_coding import (
     code_many_fulltexts,
@@ -38,16 +42,28 @@ def get_fulltexts(q: FulltextSearch, sample_frac: float = 0.1) -> pd.DataFrame |
                 )
             case "gaza_crisis":
                 query = xs(
-                    keywords["gaza_humanitarian"]
-                    + keywords["climate_justice"]
-                    + keywords["climate_political"],
+                    keywords["gaza_general"]
+                    + keywords["gaza_humanitarian"]
+                    + keywords["gaza_justice"]
+                    + keywords["gaza_political"],
                     q.media_source,
                 )
         queries.append(query)
     if q.organizers:
-        for org in q.organizers:
-            assert org in climate_orgs, f"Unknown organization: {org}"
-        orgs = add_quotes(add_aliases(q.organizers))
+        # Validate organizations based on topic
+        if q.topic == "climate_change":
+            for org in q.organizers:
+                assert org in climate_orgs, f"Unknown climate organization: {org}"
+            orgs = add_quotes(add_aliases(q.organizers))
+        elif q.topic == "gaza_crisis":
+            for org in q.organizers:
+                assert org in gaza_orgs, f"Unknown Gaza organization: {org}"
+            orgs = add_quotes(add_gaza_aliases(q.organizers))
+        else:
+            # Default to climate orgs for backward compatibility
+            for org in q.organizers:
+                assert org in climate_orgs + gaza_orgs, f"Unknown organization: {org}"
+            orgs = add_quotes(add_aliases(q.organizers))
         query = xs_with_ys(orgs, keywords["activism"], q.media_source)
         queries.append(query)
     if q.query:

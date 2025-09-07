@@ -33,10 +33,11 @@ export type UseEventsReturnType = Omit<
 export function useAllEvents() {
 	const queryClient = useQueryClient()
 	const { today } = useToday()
+	const topic = useFiltersStore(({ topic }) => topic)
 
 	const query = useQuery({
-		queryKey: ['allEvents'],
-		queryFn: async () => await getEventsData(undefined, today),
+		queryKey: ['allEvents', topic],
+		queryFn: async () => await getEventsData({ topic }, today),
 		staleTime: getStaleTime(today),
 	})
 	const { data, error } = query

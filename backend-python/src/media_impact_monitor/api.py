@@ -156,8 +156,8 @@ def _get_policy(q: PolicySearch):  # -> Response[PolicySearch, Policy]:
 
 
 @app.get("/organizers")
-def _get_organizers() -> list[Organizer]:
-    return organizers_with_id()
+def _get_organizers(topic: str = "climate_change") -> list[Organizer]:
+    return organizers_with_id(topic)
 
 
 @app.get("/fill_cache")

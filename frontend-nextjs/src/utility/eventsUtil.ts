@@ -8,6 +8,7 @@ import { dateSortCompare } from "./dateUtil";
 import { fetchApiData, formatInput } from "./fetchUtil";
 import { today as defaultToday } from "./today";
 import { formatZodError } from "./zodUtil";
+import type { TopicType } from "@/stores/filtersStore";
 
 const eventZodSchema = z.object({
 	event_id: z.string(),
@@ -68,6 +69,7 @@ export async function getEventsData(
 	params?: {
 		from?: Date;
 		to?: Date;
+		topic?: TopicType;
 	},
 	today = defaultToday,
 ): Promise<EventsDataType> {
@@ -113,16 +115,56 @@ function validateGetDataResponse(
 
 export const distinctiveColorsMap = Object.fromEntries(
 	Object.entries({
-		"Fridays for Future": `var(--categorical-color-6)`,
-		"Last Generation": `var(--categorical-color-5)`,
-		"Extinction Rebellion": `var(--categorical-color-7)`,
-		BUND: `var(--categorical-color-14)`,
-		NABU: `var(--categorical-color-2)`,
-		Greenpeace: `var(--categorical-color-3)`,
-		"Ende Gelaende": `var(--categorical-color-4)`,
-		"The Greens": `var(--categorical-color-8)`,
-		"The Left": `var(--categorical-color-1)`,
-		SPD: `var(--categorical-color-12)`,
+		// Climate organizations (keeping original colors)
+		"Fridays for Future": `var(--categorical-color-6)`, // Green
+		"Last Generation": `var(--categorical-color-5)`, // Red
+		"Extinction Rebellion": `var(--categorical-color-7)`, // Purple
+		BUND: `var(--categorical-color-14)`, // Dark green
+		NABU: `var(--categorical-color-2)`, // Blue
+		Greenpeace: `var(--categorical-color-3)`, // Orange
+		"Ende Gelaende": `var(--categorical-color-4)`, // Teal
+		
+		// Political parties (shared between contexts - CONSISTENT COLORS)
+		"The Greens": `var(--categorical-color-8)`, // Yellow
+		"The Left": `var(--categorical-color-1)`, // Pink
+		"SPD: Social Democratic Party of Germany": `var(--categorical-color-12)`, // Red
+		"CDU: Christian Democratic Union of Germany": `var(--categorical-color-13)`, // Blue-gray
+		"MLPD: Marxist-Leninist Party of Germany": `var(--categorical-color-11)`, // Orange
+		"FDP: Free Democratic Party": `var(--categorical-color-9)`, // Light purple
+		"CSU: Christian Social Union in Bavaria": `var(--categorical-color-10)`, // Light pink
+		
+		// Core Gaza/Palestine organizations (most important - distinctive colors)
+		"Palestinian Group": `#d53d4f`, // Palestinian red
+		"Jewish Group": `#3288bd`, // Blue (Jewish solidarity)
+		"Israeli Group": `#fdae61`, // Orange (Israeli peace groups)
+		"BDS: Boycott, Divestment and Sanctions": `#229e74`, // BDS green
+		"Arab Group": `#66c2a5`, // Teal
+		"Muslim Group": `#bd7ebe`, // Purple
+		
+		// Gaza solidarity organizations
+		"Samidoun: Palestinian Prisoner Solidarity Network": `#ef9b20`, // Orange
+		"NGPM: Network of the German Peace Movement": `#b2e061`, // Light green
+		"DIG: German-Israeli Society": `#beb9db`, // Light purple
+		"AI: Amnesty International": `#ffee65`, // Yellow
+		
+		// Religious organizations in Gaza solidarity
+		"Protestant Christian Group": `#fdcce5`, // Light pink
+		"Catholic Christian Group": `#ea5545`, // Red-orange
+		"Evangelical Christian Group": `#327483`, // Blue-green
+		"Pax Christi": `#7ea73f`, // Green
+		
+		// Youth and activist organizations
+		"REBELL: Youth League Rebel": `#fd7f6f`, // Light red
+		Antifa: `#8bd3c7`, // Mint
+		"IL: Interventionist Left": `#ffb55a`, // Light orange
+		
+		// Trade unions
+		"DGB: German Trade Union Confederation": `#7eb0d5`, // Light blue
+		"Ver.di: United Services Union": `#f46a9b`, // Pink
+		"IGM: Industrial Union of Metalworkers": `#8bd3c7`, // Mint
+		
+		// Other organizations
+		Attac: `#bd7ebe`, // Purple
 	}).map(([key, value]) => [
 		slugify(key, { lower: true, strict: true }),
 		value,

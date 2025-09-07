@@ -28,15 +28,21 @@ def get_fulltexts(q: FulltextSearch, sample_frac: float = 0.1) -> pd.DataFrame |
     keywords = load_keywords()
     queries = []
     if q.topic:
-        assert (
-            q.topic == "climate_change"
-        ), "Only 'climate_change' is supported as topic."
-        query = xs(
-            keywords["climate_science"]
-            + keywords["climate_policy"]
-            + keywords["climate_urgency"],
-            q.media_source,
-        )
+        match q.topic:
+            case "climate_change":
+                query = xs(
+                    keywords["climate_science"]
+                    + keywords["climate_policy"]
+                    + keywords["climate_urgency"],
+                    q.media_source,
+                )
+            case "gaza_crisis":
+                query = xs(
+                    keywords["gaza_humanitarian"]
+                    + keywords["climate_justice"]
+                    + keywords["climate_political"],
+                    q.media_source,
+                )
         queries.append(query)
     if q.organizers:
         for org in q.organizers:

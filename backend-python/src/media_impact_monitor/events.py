@@ -30,6 +30,8 @@ def get_events(q: EventSearch) -> pd.DataFrame | None:
             pass
         case "climate_change":
             df = filter_climate_orgs(df)
+        case "gaza_crisis":
+            df = filter_gaza_orgs(df)
         case _:
             raise ValueError(f"Unsupported topic: {q.topic}")
     if q.organizers:
@@ -55,6 +57,13 @@ def filter_climate_orgs(df: pd.DataFrame) -> pd.DataFrame:
         | df["organizers"].apply(lambda x: any(org in climate_orgs for org in x))
     ]
 
+def filter_gaza_orgs(df: pd.DataFrame) -> pd.DataFrame:
+    return df[
+        df["description"].str.lower().str.contains("gaza") |
+        df["description"].str.lower().str.contains("palestin") |
+        df["description"].str.lower().str.contains("palästin") |
+        df["description"].str.lower().str.contains("israel")
+    ]
 
 @cache
 def org_freqs():

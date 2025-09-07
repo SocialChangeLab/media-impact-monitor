@@ -41,38 +41,39 @@ def fill_cache():
     print("Filling cache...")
     errors = []
     events = {}
-    for data_source in ["acled", "press_releases"]:
-        print(f"Retrieving {data_source} events...")
-        try:
-            events[data_source] = get_events(
-                EventSearch(
-                    source=data_source, topic="climate_change", end_date=date.today()
+    for topic in ["climate_change", "gaza_crisis"]:
+        for data_source in ["acled", "press_releases"]:
+            print(f"Retrieving {data_source} events...")
+            try:
+                events[data_source] = get_events(
+                    EventSearch(
+                        source=data_source, topic=topic, end_date=date.today()
+                    )
                 )
-            )
-        except Exception as e:
-            errors.append(f"events {data_source}: {e}")
-    for media_source in ["news_online", "news_print", "web_google"]:
-        for trend_type in ["keywords", "sentiment"]:
-            for aggregation in ["daily", "weekly"]:
-                if aggregation == "daily" and media_source == "web_google":
-                    continue
-                if trend_type == "sentiment" and media_source != "news_online":
-                    continue
-                print(f"Retrieving {media_source} {trend_type} {aggregation} trend...")
-                try:
-                    get_trend(
-                        TrendSearch(
-                            trend_type=trend_type,
-                            media_source=media_source,
-                            topic="climate_change",
-                            aggregation=aggregation,
-                            end_date=date.today(),
+            except Exception as e:
+                errors.append(f"events {data_source}: {e}")
+        for media_source in ["news_online", "news_print", "web_google"]:
+            for trend_type in ["keywords", "sentiment"]:
+                for aggregation in ["daily", "weekly"]:
+                    if aggregation == "daily" and media_source == "web_google":
+                        continue
+                    if trend_type == "sentiment" and media_source != "news_online":
+                        continue
+                    print(f"Retrieving {media_source} {trend_type} {aggregation} trend...")
+                    try:
+                        get_trend(
+                            TrendSearch(
+                                trend_type=trend_type,
+                                media_source=media_source,
+                                topic=topic,
+                                aggregation=aggregation,
+                                end_date=date.today(),
+                            )
                         )
-                    )
-                except Exception as e:
-                    errors.append(
-                        f"trend {media_source} {trend_type} {aggregation}: {e}"
-                    )
+                    except Exception as e:
+                        errors.append(
+                            f"trend {media_source} {trend_type} {aggregation}: {e}"
+                        )
     events = events["acled"]  # TODO: include press_releases
     recent_events = events[events["date"] >= date.today() - timedelta(days=70)]
     for event in tqdm(

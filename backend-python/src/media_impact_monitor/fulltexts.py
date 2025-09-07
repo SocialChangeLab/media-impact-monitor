@@ -114,7 +114,7 @@ def get_fulltexts(q: FulltextSearch, sample_frac: float = 0.1) -> pd.DataFrame |
     if df is None:
         return None
 
-    coded = code_many_fulltexts(df["text"])
+    coded = code_many_fulltexts(df["text"], q.topic)
     for field in ["activism_sentiment", "policy_sentiment"]:
         df[field] = [r[field] if r and field in r else None for r in coded]
         df[field] = df[field].fillna(0).astype(int)

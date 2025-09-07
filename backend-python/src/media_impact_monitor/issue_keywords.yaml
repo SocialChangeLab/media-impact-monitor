@@ -51,3 +51,26 @@ climate_urgency:
   - klimakollaps
   - klimanotstand
   - klimagerechtigkeit
+gaza_general:
+  - gaza
+  - palästina
+  - palestine
+  - hamas
+  - israel
+  - idf
+gaza_humanitarian:
+  - hunger
+  - hungersnot
+  - humanitäre hilfe
+  - lebensmittel
+gaza_justice:
+  - kriegsverbrechen
+  - völkermord
+  - genozid
+  - icc
+  - strafgerichtshof
+gaza_political:
+  - waffenlieferungen
+  - embargo
+  - sanktionen
+  - staat palästina

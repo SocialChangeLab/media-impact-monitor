@@ -7,7 +7,7 @@ from pydantic import BaseModel, Field
 #### General types ####
 
 # FIXME: consider renaming "Topic" to "Issue" to avoid confusion with topics within the issue (like science or policy)
-Topic = Literal["climate_change"]
+Topic = Literal["climate_change", "gaza_crisis"]
 Query = str  # for now, just a single keyword
 MediaSource = Literal["news_online", "news_print", "web_google", "social_tiktok"]
 

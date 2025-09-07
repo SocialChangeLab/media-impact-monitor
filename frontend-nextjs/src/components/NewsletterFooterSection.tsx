@@ -7,12 +7,14 @@ import { cn } from '@/utility/classNames'
 import { texts } from '@/utility/textUtil'
 import Image from 'next/image'
 
-function NewsletterFooterSection() {
+function NewsletterFooterSection({ showScreenshot = true }: { showScreenshot?: boolean }) {
 	return (
 		<div
 			className={cn(
 				'w-full bg-brandGreen bg-blend-screen relative z-0',
-				'overflow-clip grid grid-cols-1 xl:grid-cols-2 gap-x-12 items-center justify-center',
+				showScreenshot 
+					? 'overflow-clip grid grid-cols-1 xl:grid-cols-2 gap-x-12 items-center justify-center'
+					: 'overflow-clip flex flex-col gap-2 items-center justify-center',
 			)}
 		>
 			<div className="flex flex-col gap-2 justify-center items-center px-content py-[clamp(2rem,4vmax,8rem)]">
@@ -41,32 +43,34 @@ function NewsletterFooterSection() {
 						<h2 className="m-0 text-2xl xl:text-3xl font-headlines text-balance font-semibold">
 							{texts.newsLetterSection.heading}
 						</h2>
-						<NewsletterForm />
+						{!showScreenshot && <NewsletterForm />}
 					</div>
 				</div>
 			</div>
-			<div className="w-full h-80 xl:h-full relative">
-				<Image
-					src={dashboardScreenshotLight}
-					alt={texts.newsLetterSection.screenshotLightAlt}
-					priority
-					className={cn(
-						'absolute inset-y-0 inset-x-content xl:inset-0 object-cover object-left-top h-full',
-						'xl:translate-y-24 rounded-tl-lg shadow-black/30 shadow-xl',
-						'dark:hidden',
-					)}
-				/>
-				<Image
-					src={dashboardScreenshotDark}
-					alt={texts.newsLetterSection.screenshotDarkAlt}
-					priority
-					className={cn(
-						'absolute inset-y-0 inset-x-content xl:inset-0 object-cover object-left-top h-full',
-						'xl:translate-y-24 rounded-tl-lg shadow-black/30 shadow-xl',
-						'hidden dark:block',
-					)}
-				/>
-			</div>
+			{showScreenshot && (
+				<div className="w-full h-80 xl:h-full relative">
+					<Image
+						src={dashboardScreenshotLight}
+						alt={texts.newsLetterSection.screenshotLightAlt}
+						priority
+						className={cn(
+							'absolute inset-y-0 inset-x-content xl:inset-0 object-cover object-left-top h-full',
+							'xl:translate-y-24 rounded-tl-lg shadow-black/30 shadow-xl',
+							'dark:hidden',
+						)}
+					/>
+					<Image
+						src={dashboardScreenshotDark}
+						alt={texts.newsLetterSection.screenshotDarkAlt}
+						priority
+						className={cn(
+							'absolute inset-y-0 inset-x-content xl:inset-0 object-cover object-left-top h-full',
+							'xl:translate-y-24 rounded-tl-lg shadow-black/30 shadow-xl',
+							'hidden dark:block',
+						)}
+					/>
+				</div>
+			)}
 		</div>
 	)
 }

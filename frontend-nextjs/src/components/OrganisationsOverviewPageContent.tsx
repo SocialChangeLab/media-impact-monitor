@@ -26,7 +26,7 @@ function OrganisationsOverviewPageContent() {
       >
         <OrganisationsTable />
       </SectionHeadlineWithExplanation>
-      <NewsletterFooterSection />
+      <NewsletterFooterSection showScreenshot={false} />
     </>
   );
 }

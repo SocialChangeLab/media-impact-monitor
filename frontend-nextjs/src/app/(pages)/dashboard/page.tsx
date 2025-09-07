@@ -19,7 +19,7 @@ export default function EventsPageWithSuspense() {
 			<SizeOptimizationNoticeServer />
 			<DashboardHelpBanner />
 			<TopicAwareDashboard />
-			<NewsletterFooterSection />
+			<NewsletterFooterSection showScreenshot={false} />
 		</>
 	)
 }

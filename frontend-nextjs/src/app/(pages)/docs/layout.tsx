@@ -195,7 +195,7 @@ function DocsLayout({ children }: { children: ReactNode }) {
 					<SidebarCloseIcon className="size-6" />
 				)}
 			</Button>
-			<NewsletterFooterSection />
+			<NewsletterFooterSection showScreenshot={false} />
 		</>
 	)
 }

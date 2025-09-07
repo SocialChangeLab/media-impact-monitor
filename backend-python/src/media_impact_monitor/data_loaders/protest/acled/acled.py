@@ -143,6 +143,7 @@ def rename_org(row):
         .replace("XR: Extinction Rebellion", "Extinction Rebellion")
         .replace("DxE: Direct Action Everywhere", "Direct Action Everywhere")
         .replace("NB: Emergency Break", "Emergency Break")
+        .replace("AI: Amnesty International", "Amnesty International")
         for org in row["organizers"]
     ]
     row["organizers"] = orgs

@@ -26,7 +26,7 @@ gaza_religious_orgs_aliases = {
 
 # International solidarity and human rights organizations
 gaza_solidarity_orgs_aliases = {
-    "AI: Amnesty International": ["Amnesty International"],
+    "Amnesty International": ["Amnesty"],
     "SI: Solidarity International": ["Solidarity International"],
     "Attac": [],
     "Seebruecke": [],

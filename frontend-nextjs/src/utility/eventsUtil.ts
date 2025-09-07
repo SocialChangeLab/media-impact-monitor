@@ -113,58 +113,75 @@ function validateGetDataResponse(
 	}
 }
 
-export const distinctiveColorsMap = Object.fromEntries(
+// Shared organizations that appear in both climate and Gaza contexts
+// These must have consistent colors across both topics
+const sharedOrganizations = {
+	// Political parties
+	"The Greens": `var(--categorical-color-8)`, // Yellow
+	"The Left": `var(--categorical-color-1)`, // Pink
+	"SPD: Social Democratic Party of Germany": `var(--categorical-color-12)`, // Red
+	"CDU: Christian Democratic Union of Germany": `var(--categorical-color-13)`, // Blue-gray
+	"MLPD: Marxist-Leninist Party of Germany": `var(--categorical-color-11)`, // Orange
+	"FDP: Free Democratic Party": `var(--categorical-color-9)`, // Light purple
+	"CSU: Christian Social Union in Bavaria": `var(--categorical-color-10)`, // Light pink
+	
+	// Organizations active in both contexts
+	"Fridays for Future": `var(--categorical-color-6)`, // Green (climate org also in Gaza solidarity)
+	"Amnesty International": `#ffee65`, // Yellow
+	Attac: `#bd7ebe`, // Purple
+	"REBELL: Youth League Rebel": `#fd7f6f`, // Light red
+	Antifa: `#8bd3c7`, // Mint
+	
+	// Trade unions (appear in both contexts)
+	"DGB: German Trade Union Confederation": `#7eb0d5`, // Light blue
+	"Ver.di: United Services Union": `#f46a9b`, // Pink
+	"IGM: Industrial Union of Metalworkers": `#8bd3c7`, // Mint
+};
+
+// Climate-specific organizations
+const climateOnlyOrganizations = {
+	"Last Generation": `var(--categorical-color-5)`, // Red
+	"Extinction Rebellion": `var(--categorical-color-7)`, // Purple
+	BUND: `var(--categorical-color-14)`, // Dark green
+	NABU: `var(--categorical-color-2)`, // Blue
+	Greenpeace: `var(--categorical-color-3)`, // Orange
+	"Ende Gelaende": `var(--categorical-color-4)`, // Teal
+};
+
+// Gaza-specific organizations
+const gazaOnlyOrganizations = {
+	"Palestinian Group": `#d53d4f`, // Palestinian red
+	"Jewish Group": `#3288bd`, // Blue (Jewish solidarity)
+	"Israeli Group": `#fdae61`, // Orange (Israeli peace groups)
+	"BDS: Boycott, Divestment and Sanctions": `#229e74`, // BDS green
+	"Arab Group": `#66c2a5`, // Teal
+	"Muslim Group": `#bd7ebe`, // Purple
+	"Samidoun: Palestinian Prisoner Solidarity Network": `#ef9b20`, // Orange
+	"NGPM: Network of the German Peace Movement": `#b2e061`, // Light green
+	"DIG: German-Israeli Society": `#beb9db`, // Light purple
+	"Protestant Christian Group": `#fdcce5`, // Light pink
+	"Catholic Christian Group": `#ea5545`, // Red-orange
+	"Evangelical Christian Group": `#327483`, // Blue-green
+	"Pax Christi": `#7ea73f`, // Green
+	"IL: Interventionist Left": `#ffb55a`, // Light orange
+};
+
+
+// Topic-specific organization maps for filtering
+export const climateRelevantOrganizations = Object.fromEntries(
 	Object.entries({
-		// Climate organizations (keeping original colors)
-		"Fridays for Future": `var(--categorical-color-6)`, // Green
-		"Last Generation": `var(--categorical-color-5)`, // Red
-		"Extinction Rebellion": `var(--categorical-color-7)`, // Purple
-		BUND: `var(--categorical-color-14)`, // Dark green
-		NABU: `var(--categorical-color-2)`, // Blue
-		Greenpeace: `var(--categorical-color-3)`, // Orange
-		"Ende Gelaende": `var(--categorical-color-4)`, // Teal
-		
-		// Political parties (shared between contexts - CONSISTENT COLORS)
-		"The Greens": `var(--categorical-color-8)`, // Yellow
-		"The Left": `var(--categorical-color-1)`, // Pink
-		"SPD: Social Democratic Party of Germany": `var(--categorical-color-12)`, // Red
-		"CDU: Christian Democratic Union of Germany": `var(--categorical-color-13)`, // Blue-gray
-		"MLPD: Marxist-Leninist Party of Germany": `var(--categorical-color-11)`, // Orange
-		"FDP: Free Democratic Party": `var(--categorical-color-9)`, // Light purple
-		"CSU: Christian Social Union in Bavaria": `var(--categorical-color-10)`, // Light pink
-		
-		// Core Gaza/Palestine organizations (most important - distinctive colors)
-		"Palestinian Group": `#d53d4f`, // Palestinian red
-		"Jewish Group": `#3288bd`, // Blue (Jewish solidarity)
-		"Israeli Group": `#fdae61`, // Orange (Israeli peace groups)
-		"BDS: Boycott, Divestment and Sanctions": `#229e74`, // BDS green
-		"Arab Group": `#66c2a5`, // Teal
-		"Muslim Group": `#bd7ebe`, // Purple
-		
-		// Gaza solidarity organizations
-		"Samidoun: Palestinian Prisoner Solidarity Network": `#ef9b20`, // Orange
-		"NGPM: Network of the German Peace Movement": `#b2e061`, // Light green
-		"DIG: German-Israeli Society": `#beb9db`, // Light purple
-		"AI: Amnesty International": `#ffee65`, // Yellow
-		
-		// Religious organizations in Gaza solidarity
-		"Protestant Christian Group": `#fdcce5`, // Light pink
-		"Catholic Christian Group": `#ea5545`, // Red-orange
-		"Evangelical Christian Group": `#327483`, // Blue-green
-		"Pax Christi": `#7ea73f`, // Green
-		
-		// Youth and activist organizations
-		"REBELL: Youth League Rebel": `#fd7f6f`, // Light red
-		Antifa: `#8bd3c7`, // Mint
-		"IL: Interventionist Left": `#ffb55a`, // Light orange
-		
-		// Trade unions
-		"DGB: German Trade Union Confederation": `#7eb0d5`, // Light blue
-		"Ver.di: United Services Union": `#f46a9b`, // Pink
-		"IGM: Industrial Union of Metalworkers": `#8bd3c7`, // Mint
-		
-		// Other organizations
-		Attac: `#bd7ebe`, // Purple
+		...sharedOrganizations,
+		...climateOnlyOrganizations,
+	}).map(([key, value]) => [
+		slugify(key, { lower: true, strict: true }),
+		value,
+	]),
+);
+
+export const gazaRelevantOrganizations = Object.fromEntries(
+	Object.entries({
+		...sharedOrganizations,
+		...gazaOnlyOrganizations,
 	}).map(([key, value]) => [
 		slugify(key, { lower: true, strict: true }),
 		value,
@@ -173,6 +190,7 @@ export const distinctiveColorsMap = Object.fromEntries(
 
 export function extractEventOrganisations(
 	events: ParsedEventType[],
+	topic?: TopicType,
 ): OrganisationType[] {
 	const organisationsMap = events.reduce((acc, event) => {
 		for (const organizer of event.organizers ?? []) {
@@ -199,10 +217,16 @@ export function extractEventOrganisations(
 					isMain: false,
 				};
 			}
-			const color =
-				distinctiveColorsMap[
-					organizer.slug as keyof typeof distinctiveColorsMap
-				];
+			// Use topic-specific color mapping to only highlight relevant organizations
+			const getTopicRelevantColorMap = () => {
+				if (topic === "gaza_crisis") return gazaRelevantOrganizations;
+				if (topic === "climate_change") return climateRelevantOrganizations;
+				return climateRelevantOrganizations; // Fallback to climate colors
+			};
+			
+			const topicColorMap = getTopicRelevantColorMap();
+			const color = topicColorMap[organizer.slug as keyof typeof topicColorMap];
+			
 			return {
 				...organizer,
 				color: color ?? "var(--grayDark)",
@@ -215,15 +239,11 @@ export function compareOrganizationsByColors(
 	a: OrganisationType,
 	b: OrganisationType,
 ): -1 | 0 | 1 {
+	// Sort main organizations (with distinctive colors) first
 	if (a.isMain && !b.isMain) return -1;
 	if (!a.isMain && b.isMain) return 1;
-	if (a.isMain && b.isMain) {
-		const mainNames = Object.keys(distinctiveColorsMap);
-		const aIdx = mainNames.indexOf(a.slug);
-		const bIdx = mainNames.indexOf(b.slug);
-		if (aIdx > bIdx) return 1;
-		if (aIdx < bIdx) return -1;
-	}
+	
+	// For organizations of the same type (both main or both not main), sort by name
 	const nameComparison = a.name.localeCompare(b.name);
 	if (nameComparison === 1) return 1;
 	if (nameComparison === -1) return -1;

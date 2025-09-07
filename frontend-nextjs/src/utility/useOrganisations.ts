@@ -6,12 +6,13 @@ import { useAllEvents, useFilteredEvents } from "./useEvents";
 
 export function useAllOrganisations() {
 	const { allEvents, isLoading } = useAllEvents();
+	const topic = useFiltersStore(({ topic }) => topic);
 
 	const query = useQuery({
-		queryKey: ["organisations"],
+		queryKey: ["organisations", topic],
 		queryFn: () => {
 			if (!allEvents || allEvents.length === 0) return [];
-			return extractEventOrganisations(allEvents);
+			return extractEventOrganisations(allEvents, topic);
 		},
 		enabled: !isLoading && allEvents.length > 0,
 	});
@@ -28,15 +29,16 @@ export function useFilteredEventsOrganisations() {
 	const fromDateString = useFiltersStore(({ fromDateString }) => fromDateString);
 	const toDateString = useFiltersStore(({ toDateString }) => toDateString);
 	const organizers = useFiltersStore(({ organizers }) => organizers);
+	const topic = useFiltersStore(({ topic }) => topic);
 
 	const query = useQuery({
-		queryKey: ["filteredEventsOrganisations", organizersKey, fromDateString, toDateString],
+		queryKey: ["filteredEventsOrganisations", organizersKey, fromDateString, toDateString, topic],
 		queryFn: () => {
 			if (!filteredEvents || filteredEvents.length === 0) return [];
 			const events = organizers.length === 0 ? filteredEvents : filteredEvents.filter(
 				(event) => event.organizers.find((org) => organizers.includes(org.slug))
 			)
-			return extractEventOrganisations(events)
+			return extractEventOrganisations(events, topic)
 		},
 		enabled: !isLoading && filteredEvents.length > 0,
 	})

@@ -1,4 +1,5 @@
 "use client";
+import { useFiltersStore } from "@/providers/FiltersStoreProvider";
 import { queryOptions, useQuery } from "@tanstack/react-query";
 import { useMemo } from "react";
 import {
@@ -21,15 +22,16 @@ export function getEventQueryOptions(id?: ParsedEventType["event_id"]) {
 
 function useEvent(id?: ParsedEventType["event_id"]) {
 	const query = useQuery(getEventQueryOptions(id));
+	const topic = useFiltersStore(({ topic }) => topic);
 
 	useQueryErrorToast("protest", query.error);
 
 	const organisations = useMemo(
 		() =>
-			(query.data ? extractEventOrganisations([query.data]) : []).filter(
+			(query.data ? extractEventOrganisations([query.data], topic) : []).filter(
 				Boolean,
 			),
-		[query.data],
+		[query.data, topic],
 	);
 
 	return {

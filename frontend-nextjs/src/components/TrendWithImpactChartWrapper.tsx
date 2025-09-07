@@ -118,7 +118,7 @@ function TrendWithImpactChartWrapper({
 									{impactHeadline}
 								</h3>
 								<p className="text-sm text-grayDark">{impactDescription}</p>
-								<Alert className="mt-2 px-2 py-1 flex-row flex items-baseline gap-4 xl:w-[calc(100%-12rem)]">
+								<Alert className="mt-2 px-2 py-1 flex-row flex items-baseline gap-4 xl:w-fit xl:max-w-[calc(100%-12rem)]">
 									<AlertTitle className="inline-flex items-baseline gap-2 text-nowrap">
 										<AlertTriangle className="w-4 h-4 translate-y-0.5" />
 										{texts.charts.impact.disclaimer.title}

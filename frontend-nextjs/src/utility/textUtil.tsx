@@ -1,5 +1,6 @@
 import type { ReactNode } from 'react'
 import { cn } from './classNames'
+import type { TopicType } from '@/stores/filtersStore'
 
 export function titleCase(str: string) {
 	return str.replace(
@@ -432,12 +433,12 @@ const textsEnGB = {
 				},
 			},
 		},
-		protest_timeline: {
+		protest_timeline: (topic: TopicType = 'climate_change') => ({
 			heading: 'What protests are happening?',
 			description: [
 				'See protests over time for all selected organisations.',
 				'Hover or click on the bubbles for more information on individual protest events.',
-				'Currently, we cover climate protests in Germany since 2020.',
+				'Currently, we cover climate protests and Gaza crisis protests in Germany since 2020.'
 			],
 			data_credit: [
 				{
@@ -496,11 +497,15 @@ const textsEnGB = {
 					</>
 				),
 			},
-		},
-		topics_trend: {
-			heading: 'How prominent are the issues in public discourse?',
+		}),
+		topics_trend: (topic: TopicType = 'climate_change') => ({
+			heading: topic === 'climate_change' 
+				? 'How prominent are climate issues in public discourse?'
+				: 'How prominent are Gaza-related issues in public discourse?',
 			description: [
-				'See how many articles are published on various topics over time.',
+				topic === 'climate_change'
+					? 'See how many articles are published on various climate-related topics over time.'
+					: 'See how many articles are published on various Gaza-related topics over time.',
 				'Use the filters to switch between online newspaper articles, print newspaper articles, and queries that people search for on Google.',
 			],
 			data_credit: [
@@ -514,17 +519,22 @@ const textsEnGB = {
 					],
 				},
 			],
-		},
+		}),
 
-		topics_impact: {
+		topics_impact: (topic: TopicType = 'climate_change') => ({
 			heading: 'Computed impacts',
-			description:
-				'See how a protest by an organisation influences the publication of articles about climate change (by topics).',
-		},
-		sentiment_protest: {
-			heading: 'What sentiment does the media show towards the protests?',
+			description: topic === 'climate_change'
+				? 'See how a protest by an organisation influences the publication of articles about climate change (by topics).'
+				: 'See how a protest by an organisation influences the publication of articles about Gaza (by topics).',
+		}),
+		sentiment_protest: (topic: TopicType = 'climate_change') => ({
+			heading: topic === 'climate_change'
+				? 'What sentiment does the media show towards climate protests?'
+				: 'What sentiment does the media show towards protests related to the crisis in Gaza?',
 			description: [
-				"See whether the media's coverage of the protests is more positive, negative, or neutral.",
+				topic === 'climate_change'
+					? "See whether the media's coverage of climate activism is more positive, negative, or neutral."
+					: "See whether the media's coverage of activism related to the crisis in Gaza is more positive, negative, or neutral.",
 			],
 			data_credit: [
 				{
@@ -537,17 +547,21 @@ const textsEnGB = {
 					],
 				},
 			],
-		},
-		sentiment_protest_impact: {
+		}),
+		sentiment_protest_impact: (topic: TopicType = 'climate_change') => ({
 			heading: 'Computed impacts',
-			description:
-				'See how a protest by an organisation influences the publication of articles about climate activism (by sentiment).',
-		},
-		sentiment_policy: {
-			heading:
-				'What stance does the media have towards progressive climate policies?',
+			description: topic === 'climate_change'
+				? 'See how a protest by an organisation influences the publication of articles about climate activism (by sentiment).'
+				: 'See how a protest by an organisation influences the publication of articles about activism related to the crisis in Gaza (by sentiment).',
+		}),
+		sentiment_policy: (topic: TopicType = 'climate_change') => ({
+			heading: topic === 'climate_change'
+				? 'What stance does the media have towards progressive climate policies?'
+				: 'What stance does the media have about efforts of the international community to exert stronger pressure towards peace, justice, and humanitarian improvement (e.g., arms embargo, sanctions, criminal prosecution, humanitarian aid programmes, refugee programmes,  ...)?',
 			description: [
-				'See whether the media supports or opposes policies aimed at mitigating climate change.',
+				topic === 'climate_change'
+					? 'See whether the media supports or opposes policies aimed at mitigating climate change.'
+					: 'See whether the media supports or opposes stronger pressure of the international community.',
 			],
 			data_credit: [
 				{
@@ -560,12 +574,13 @@ const textsEnGB = {
 					],
 				},
 			],
-		},
-		sentiment_policy_impact: {
+		}),
+		sentiment_policy_impact: (topic: TopicType = 'climate_change') => ({
 			heading: 'Computed impacts',
-			description:
-				'See how a protest by an organisation influences the publication of articles about climate policies (by sentiment).',
-		},
+			description: topic === 'climate_change'
+				? 'See how a protest by an organisation influences the publication of articles about climate policies (by sentiment).'
+				: 'See how a protest by an organisation influences the publication of articles about stronger pressure of the internaional community regarding the crisis in Gaza (by sentiment).',
+		}),
 	},
 	organisationsPage: {
 		heading: 'Organisations Overview',
@@ -1035,7 +1050,7 @@ const textsXXX = {
 				},
 			},
 		},
-		protest_timeline: {
+		protest_timeline: (topic: TopicType = 'climate_change') => ({
 			heading: 'XXX',
 			description: ['XXX', 'XXX', 'XXX'],
 			data_credit: [
@@ -1088,8 +1103,8 @@ const textsXXX = {
 					</>
 				),
 			},
-		},
-		topics_trend: {
+		}),
+		topics_trend: (topic: TopicType = 'climate_change') => ({
 			heading: 'XXX',
 			description: ['XXX', 'XXX'],
 			data_credit: [
@@ -1103,13 +1118,13 @@ const textsXXX = {
 					],
 				},
 			],
-		},
+		}),
 
-		topics_impact: {
+		topics_impact: (topic: TopicType = 'climate_change') => ({
 			heading: 'XXX',
 			description: 'XXX',
-		},
-		sentiment_protest: {
+		}),
+		sentiment_protest: (topic: TopicType = 'climate_change') => ({
 			heading: 'XXX',
 			description: ['XXX'],
 			data_credit: [
@@ -1123,12 +1138,12 @@ const textsXXX = {
 					],
 				},
 			],
-		},
-		sentiment_protest_impact: {
+		}),
+		sentiment_protest_impact: (topic: TopicType = 'climate_change') => ({
 			heading: 'XXX',
 			description: 'XXX',
-		},
-		sentiment_policy: {
+		}),
+		sentiment_policy: (topic: TopicType = 'climate_change') => ({
 			heading: 'XXX',
 			description: ['XXX'],
 			data_credit: [
@@ -1142,11 +1157,11 @@ const textsXXX = {
 					],
 				},
 			],
-		},
-		sentiment_policy_impact: {
+		}),
+		sentiment_policy_impact: (topic: TopicType = 'climate_change') => ({
 			heading: 'XXX',
 			description: 'XXX',
-		},
+		}),
 	},
 	organisationsPage: {
 		heading: 'XXX',
@@ -1218,3 +1233,20 @@ const textsXXX = {
 
 export const texts = textsEnGB
 // export const texts = textsXXX;
+
+// Utility function to get topic-aware texts
+export function getTopicAwareTexts(topic: TopicType = 'climate_change') {
+	return {
+		...texts,
+		charts: {
+			...texts.charts,
+			protest_timeline: texts.charts.protest_timeline(topic),
+			topics_trend: texts.charts.topics_trend(topic),
+			topics_impact: texts.charts.topics_impact(topic),
+			sentiment_protest: texts.charts.sentiment_protest(topic),
+			sentiment_protest_impact: texts.charts.sentiment_protest_impact(topic),
+			sentiment_policy: texts.charts.sentiment_policy(topic),
+			sentiment_policy_impact: texts.charts.sentiment_policy_impact(topic),
+		},
+	}
+}

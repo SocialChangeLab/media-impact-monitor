@@ -17,7 +17,7 @@ You are given a text from a newspaper source and are asked to code it according 
 def get_policy_sentiment_description(topic: Topic | None) -> str:
     """Get topic-specific policy sentiment description."""
     if topic == "gaza_crisis":
-        return "Does the text support war actions by Hamas or the Israeli government vs supporting peace and humanitarian action? -1: it supports war actions by Hamas or Israeli government, 0: neutral, 1: it supports peace and humanitarian action. If the text is not about policy, this field should be null."
+        return "Does the text support efforts of the international community to exert stronger pressure towards peace, justice, and humanitarian improvement (e.g., arms embargo, sanctions, criminal prosecution, humanitarian aid programmes, refugee programmes,  ...)? -1: it is critical of such efforts and defends the right of Israel to defend themselves or of Hamas to fight for their freedom, 0: it is neutral towards such efforts of the international community, 1: it supports such efforts and points out that the status quo is unacceptable. If the text is not about policy, this field should be null."
     else:  # climate_change or None (default to climate)
         return "Does the text point out the insufficiency of existing policies and support progressive policy changes? -1: it supports the status quo or suggests regressive policy changes, 0: neutral, 1: it points out the insufficiency of existing policies or supports progressive policy changes. If the text is not about policy, this field should be null."
 

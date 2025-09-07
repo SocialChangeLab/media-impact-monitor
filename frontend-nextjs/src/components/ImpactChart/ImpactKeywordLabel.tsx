@@ -32,6 +32,7 @@ export const ImpactKeywordLabel = memo(
 
 export const topicsMap = new Map<string, string[][]>(
 	Object.entries({
+		// Climate topics
 		[slugify("Climate Science", { lower: true, strict: true })]: [
 			["klimaforsch*", "klimawissenschaft*", "erderwärmung", "ipcc"],
 		],
@@ -87,6 +88,41 @@ export const topicsMap = new Map<string, string[][]>(
 				"ziviler ungehorsam",
 			],
 			["klimawandel", "klimaerwärmung", "erderwärmung", "klimaschutz"],
+		],
+		
+		// Gaza topics
+		[slugify("Gaza General", { lower: true, strict: true })]: [
+			["gaza", "palästina", "palestine", "hamas", "israel", "idf"],
+		],
+		[slugify("Gaza Humanitarian", { lower: true, strict: true })]: [
+			["hunger", "hungersnot", "humanitäre hilfe", "lebensmittel"],
+		],
+		[slugify("Gaza Justice", { lower: true, strict: true })]: [
+			["kriegsverbrechen", "völkermord", "genozid", "icc", "strafgerichtshof"],
+		],
+		[slugify("Gaza Political", { lower: true, strict: true })]: [
+			["waffenlieferungen", "embargo", "sanktionen", "staat palästina"],
+		],
+		[slugify("Gaza Activism", { lower: true, strict: true })]: [
+			[
+				"*protest*",
+				"*demo",
+				"*demonstr*",
+				"*kundgebung",
+				"versamm*",
+				"*besetz*",
+				"*streik*",
+				"*blockade",
+				"*blockier*",
+				"sitzblock*",
+				"*aktivis*",
+				"*marsch",
+				"*parade",
+				"mahnwache",
+				"hungerstreik",
+				"ziviler ungehorsam",
+			],
+			["gaza", "palästina", "palestine", "hamas", "israel", "idf"],
 		],
 	}),
 );

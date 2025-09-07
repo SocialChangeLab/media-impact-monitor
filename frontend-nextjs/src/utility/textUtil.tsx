@@ -269,6 +269,11 @@ const textsEnGB = {
 			'climate crisis framing': 'Climate Crisis Framing',
 			'climate policy': 'Climate Policy',
 			'climate science': 'Climate Science',
+			'gaza general': 'Gaza General',
+			'gaza humanitarian': 'Gaza Humanitarian',
+			'gaza justice': 'Gaza Justice',
+			'gaza political': 'Gaza Political',
+			'gaza activism': 'Gaza Activism',
 		},
 		aggregationUnit: {
 			day: 'day',
@@ -896,6 +901,11 @@ const textsXXX = {
 			'climate crisis framing': 'XXX',
 			'climate policy': 'XXX',
 			'climate science': 'XXX',
+			'gaza general': 'XXX',
+			'gaza humanitarian': 'XXX',
+			'gaza justice': 'XXX',
+			'gaza political': 'XXX',
+			'gaza activism': 'XXX',
 		},
 		aggregationUnit: {
 			day: 'XXX',

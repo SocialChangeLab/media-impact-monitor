@@ -65,7 +65,7 @@ export default async function AboutPageLayout({
 					</div>
 				</div>
 			</main>
-			<NewsletterFooterSection />
+			<NewsletterFooterSection showScreenshot={false} />
 		</>
 	)
 }

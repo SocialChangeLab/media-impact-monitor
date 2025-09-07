@@ -17,7 +17,6 @@ function OrgsLegendItem({
 }) {
 	const searchParams = useSearchParams()
 
-	// biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
 	const triggerContent = useMemo(() => {
 		return (
 			<>
@@ -39,7 +38,7 @@ function OrgsLegendItem({
 				</span>
 			</>
 		)
-	}, [org.slug, searchParams])
+	}, [org.slug, org.color, org.count, org.isActive, org.name, searchParams])
 
 	if (org.isMain) {
 		return (

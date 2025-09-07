@@ -8,7 +8,6 @@ function useQueryErrorToast(
 	chartName: string,
 	error?: string | Error | null | undefined,
 ) {
-	// biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
 	useEffect(() => {
 		if (!error || !chartName) return;
 		const { message, details } = parseErrorMessage(error);
@@ -20,7 +19,7 @@ function useQueryErrorToast(
 			closeButton: true,
 			description: details || message,
 		});
-	}, [error]);
+	}, [error, chartName]);
 }
 
 export default useQueryErrorToast;

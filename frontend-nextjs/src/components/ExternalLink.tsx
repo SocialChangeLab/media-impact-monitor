@@ -1,5 +1,6 @@
 "use client";
 import { cn } from "@/utility/classNames";
+import Image from "next/image";
 import { memo } from "react";
 import { z } from "zod";
 import { Tooltip, TooltipContent, TooltipTrigger } from "./ui/tooltip";
@@ -24,7 +25,7 @@ function ExternalLink({ href }: { href: string }) {
 						"underline decoration-grayMed underline-offset-4 transition",
 					)}
 				>
-					<img
+					<Image
 						src={`https://t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&size=32&url=${urlWithoutPath}`}
 						width={20}
 						height={20}

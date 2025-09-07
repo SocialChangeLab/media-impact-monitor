@@ -58,11 +58,16 @@ export function Mdx({ code }: MdxProps) {
 					img: ({
 						className,
 						alt,
+						src,
+						width,
+						height,
 						...props
 					}: React.ImgHTMLAttributes<HTMLImageElement>) => (
-						// biome-ignore lint/a11y/useAltText: <explanation>
-						<img
-							alt={alt}
+						<Image
+							src={src || ""}
+							alt={alt || ""}
+							width={typeof width === 'string' ? parseInt(width) : width || 800}
+							height={typeof height === 'string' ? parseInt(height) : height || 600}
 							className={cn(
 								"max-w-full border border-grayLight shadow-lg shadow-black/5 dark:shadow-black/50",
 								className,

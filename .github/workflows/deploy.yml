@@ -7,8 +7,7 @@ name: CI/CD Pipeline
 #   --secret SERVER_USERNAME=$SERVER_USERNAME \
 #   --secret SERVER_SSH_KEY="$SERVER_SSH_KEY" \
 #   --env MEDIACLOUD_API_TOKEN=$MEDIACLOUD_API_TOKEN \
-#   --env ACLED_EMAIL=$ACLED_EMAIL \
-#   --env ACLED_KEY=$ACLED_KEY
+#   --env ACLED_ACCESS_TOKEN=$ACLED_ACCESS_TOKEN \
 
 on:
   push:
@@ -56,8 +55,7 @@ jobs:
         uv run --extra dev pytest
       env:
         MEDIACLOUD_API_TOKEN: ${{ secrets.MEDIACLOUD_API_TOKEN }}
-        ACLED_EMAIL: ${{ secrets.ACLED_EMAIL }}
-        ACLED_KEY: ${{ secrets.ACLED_KEY }}
+        ACLED_ACCESS_TOKEN: ${{ secrets.ACLED_ACCESS_TOKEN }}
         AZURE_API_BASE: ${{ secrets.AZURE_API_BASE }}
         AZURE_API_VERSION: ${{ secrets.AZURE_API_VERSION }}
         AZURE_API_KEY: ${{ secrets.AZURE_API_KEY }}

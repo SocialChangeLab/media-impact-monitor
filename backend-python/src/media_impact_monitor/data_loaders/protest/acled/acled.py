@@ -9,7 +9,7 @@ from media_impact_monitor.data_loaders.protest.acled.acled_size import (
 )
 from media_impact_monitor.util.cache import cache, get
 from media_impact_monitor.util.date import verify_dates
-from media_impact_monitor.util.env import ACLED_EMAIL, ACLED_KEY
+from media_impact_monitor.util.env import ACLED_ACCESS_TOKEN
 
 info = """
 ACLED (Armed Conflict Location & Event Data Project) is a project that tracks political violence and protest events around the world. The data is collected from reports by local and international news sources, and is updated on a weekly basis. The ACLED API provides access to the data.
@@ -47,15 +47,14 @@ def get_acled_events(
 ) -> pd.DataFrame:
     """Fetch protests from the ACLED API.
 
-    API documentation: https://apidocs.acleddata.com/
+    API documentation: https://acleddata.com/api-documentation/acled-endpoint
     """
     assert start_date >= date(2020, 1, 1), "Start date must be after 2020-01-01."
     assert verify_dates(start_date, end_date)
 
+    headers={"Authorization": f"Bearer {ACLED_ACCESS_TOKEN}", "Content-Type": "application/json"}
     limit = 1_000_000
     parameters = {
-        "email": ACLED_EMAIL,
-        "key": ACLED_KEY,
         "event_type": "Protests",
         "event_date": f"{start_date.strftime('%Y-%m-%d')}|{end_date.strftime('%Y-%m-%d')}",
         "event_date_where": "BETWEEN",
@@ -71,7 +70,7 @@ def get_acled_events(
         parameters["region"] = "|".join(
             str(acled_region_keys[region]) for region in regions
         )
-    response = get("https://api.acleddata.com/acled/read", params=parameters)
+    response = get("https://acleddata.com/api/acled/read?_format=json", params=parameters, headers=headers)
     df = pd.DataFrame(response.json()["data"])
     if df.empty:
         return df

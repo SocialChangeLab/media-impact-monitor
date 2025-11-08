@@ -32,6 +32,7 @@ def test_get_fulltexts_for_org(default_start_date, default_end_date):
     assert len(texts) > 0
 
 
+@pytest.mark.skip("too slow for ci (>90s)")
 def test_get_fulltexts_for_event():
     for event_id in [
         "36c654cae3ba2fc2ec18d6e537a0f286",

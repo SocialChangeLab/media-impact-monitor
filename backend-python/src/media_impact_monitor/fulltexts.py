@@ -48,6 +48,7 @@ def get_fulltexts(q: FulltextSearch, sample_frac: float = 0.1) -> pd.DataFrame |
                     + keywords["gaza_political"],
                     q.media_source,
                 )
+                sample_frac = 0.00001
         queries.append(query)
     if q.organizers:
         # Validate organizations based on topic

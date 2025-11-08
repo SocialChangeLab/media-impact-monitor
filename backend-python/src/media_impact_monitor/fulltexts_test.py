@@ -73,6 +73,31 @@ def test_get_fulltexts_for_climate_change(default_start_date, default_end_date):
         ]
     )
 
+@pytest.mark.skip("too slow for ci (>90s)")
+def test_get_fulltexts_for_gaza(default_start_date, default_end_date):
+    result = get_fulltexts(
+        FulltextSearch(
+            media_source="news_online",
+            topic="gaza_crisis",
+            start_date=default_start_date,
+            end_date=default_end_date,
+        ),
+        sample_frac=0.0001,
+    )
+    assert isinstance(result, pd.DataFrame)
+    assert not result.empty
+    assert all(
+        col in result.columns
+        for col in [
+            "title",
+            "date",
+            "url",
+            "text",
+            "activism_sentiment",
+            "policy_sentiment",
+        ]
+    )
+
 
 @pytest.mark.skip("regression in number of articles that we will fix later")
 def test_get_fulltexts_custom_query(default_start_date, default_end_date):

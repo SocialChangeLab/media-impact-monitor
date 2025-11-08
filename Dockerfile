@@ -1,5 +1,5 @@
 # build it: docker build -t socialchangelab/media-impact-monitor --build-arg VCS_REF=$(git rev-parse --short HEAD) --build-arg BUILD_DATE=$(date -u +'%Y-%m-%dT%H:%M:%SZ') .
-# run it: docker run -p 8000:8000 -e MEDIACLOUD_API_TOKEN="${MEDIACLOUD_API_TOKEN}" -e ACLED_EMAIL="${ACLED_EMAIL}" -e ACLED_KEY="${ACLED_KEY}" socialchangelab/media-impact-monitor
+# run it: docker run -p 8000:8000 -e MEDIACLOUD_API_TOKEN="${MEDIACLOUD_API_TOKEN}" -e ACLED_ACCESS_TOKEN="${ACLED_ACCESS_TOKEN}" socialchangelab/media-impact-monitor
 FROM --platform=linux/amd64 ghcr.io/astral-sh/uv:python3.10-bookworm
 # copy the uv files and install the dependencies
 COPY backend-python/uv.lock backend-python/pyproject.toml backend-python/README.md /app/backend-python/

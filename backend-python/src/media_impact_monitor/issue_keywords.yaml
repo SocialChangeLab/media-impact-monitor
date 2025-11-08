@@ -54,19 +54,16 @@ climate_urgency:
 gaza_general:
   - gaza
   - gazastreifen
-  - palästina
-  - palestine
+  - palästin*
+  - palestin*
   - hamas
   - israel
   - idf
   - westjordanland
   - westbank
-  - nahost
   - nahostkonflikt
 gaza_humanitarian:
-  - hunger
-  - hungersnot
-  - hungerkatastrophe
+  - hunger*
   - humanitäre hilfe
   - humanitäre krise
   - lebensmittel

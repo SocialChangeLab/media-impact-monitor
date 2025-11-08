@@ -40,35 +40,34 @@ def test_slicing_same_month():
     assert _slice_date_range(start, end) == expected
 
 
-@pytest.mark.skip("Currently unavailable")
 def test_get_counts_mediacloud():
-    df = get_mediacloud_counts(
+    ds, _ = get_mediacloud_counts(
         query='"Fridays for Future"',
-        start_date=date(2023, 6, 1),
-        end_date=date(2023, 12, 1),
+        start_date=date(2023, 7, 1),
+        end_date=date(2023, 12, 31),
         countries=["Germany", "United Kingdom"],
     )
-    assert not df.empty, "The dataframe returned is unexpectedly empty."
+    assert not ds.empty, "The dataframe returned is unexpectedly empty."
     assert (
-        df.index >= date(2023, 6, 1)
+        ds.index >= date(2023, 6, 1)
     ).all(), "The returned dataframe contains dates before the start date."
     assert (
-        df.index <= date(2023, 7, 1)
+        ds.index <= date(2023, 12, 31)
     ).all(), "The returned dataframe contains dates after the end date."
-    assert (df["count"] >= 0).all(), "The returned dataframe contains negative counts."
-    print(df["count"].diff().abs())
+    assert (ds >= 0).all(), "The returned dataframe contains negative counts."
     assert (
-        df["count"].diff().abs().fillna(0) <= 200
+        ds.diff().abs().fillna(0) <= 200
     ).all(), "The returned dataframe contains a count change of more than 200."
     # assume more counts in September (due to global climate strike) than in August
-    df.index = pd.to_datetime(df.index)
+    ds.index = pd.to_datetime(ds.index)
     assert (
-        df.resample("ME").sum()["count"]["2023-09"].item()
-        > df.resample("ME").sum()["count"]["2023-08"].item()
+        ds.resample("ME").sum()["2023-09"].item()
+        > ds.resample("ME").sum()["2023-08"].item()
     ), "The count in September is not higher than in August."
     assert (
-        df.resample("ME").sum()["count"] < 10_000
+        ds.resample("ME").sum() < 10_000
     ).all(), "The count per month is higher than 10,000 for some months."
+    print(ds.resample("ME").sum())
     assert (
-        df.resample("ME").sum()["count"] > 10
+        ds.resample("ME").sum() > 10
     ).all(), "The count per month is lower than 30 for some months."

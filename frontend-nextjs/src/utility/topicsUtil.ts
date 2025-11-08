@@ -3,12 +3,14 @@ import {
 	FlameIcon,
 	FrownIcon,
 	HeartHandshakeIcon,
+	LandmarkIcon,
+	MapPinIcon,
+	MegaphoneIcon,
 	MehIcon,
 	OrbitIcon,
+	ScaleIcon,
 	ScrollIcon,
-	ShieldIcon,
 	SmileIcon,
-	UsersIcon,
 	VoteIcon,
 } from "lucide-react";
 import slugify from "slugify";
@@ -35,11 +37,11 @@ export function getTopicIcon(topic: string) {
 	if (slugified === "climate-science") return OrbitIcon;
 	
 	// Gaza topics
-	if (slugified === "gaza-general") return UsersIcon;
+	if (slugified === "gaza-general") return MapPinIcon;
 	if (slugified === "gaza-humanitarian") return HeartHandshakeIcon;
-	if (slugified === "gaza-justice") return ShieldIcon;
-	if (slugified === "gaza-political") return ScrollIcon;
-	if (slugified === "gaza-activism") return VoteIcon;
+	if (slugified === "gaza-justice") return ScaleIcon;
+	if (slugified === "gaza-political") return LandmarkIcon;
+	if (slugified === "gaza-activism") return MegaphoneIcon;
 	
 	// Sentiment topics
 	if (slugified === "positive") return SmileIcon;

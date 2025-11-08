@@ -439,7 +439,7 @@ const textsEnGB = {
 				'See protests over time for all selected organisations.',
 				'Hover or click on the bubbles for more information on individual protest events.',
 				'Currently, we cover climate protests and Gaza crisis protests in Germany since 2020.',
-				'⚠️ Due to changes in the ACLED API, protest data is currently unavailable for the last 365 days.'
+				'⚠️  Protest data is currently unavailable for the last 365 days.'
 			],
 			data_credit: [
 				{

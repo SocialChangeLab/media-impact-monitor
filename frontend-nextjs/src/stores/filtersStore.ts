@@ -9,7 +9,8 @@ import {
 	parse,
 	startOfDay,
 	subDays,
-	subMonths
+	subMonths,
+	subYears
 } from "date-fns";
 import { z } from "zod";
 import { create } from "zustand";
@@ -49,7 +50,7 @@ export type FiltersStore = FiltersState & FiltersActions;
 
 export const getDefaultInitState = (today: Date): FiltersState => {
 	const defaultTo = endOfDay(subDays(today, 1));
-	const defaultFrom = startOfDay(subMonths(startOfDay(today), 2));
+	const defaultFrom = startOfDay(subYears(startOfDay(today), 2));
 	return {
 		from: defaultFrom,
 		to: defaultTo,

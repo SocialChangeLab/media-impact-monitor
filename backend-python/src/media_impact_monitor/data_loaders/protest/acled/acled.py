@@ -49,6 +49,7 @@ def get_acled_events(
 
     API documentation: https://acleddata.com/api-documentation/acled-endpoint
     """
+    raise Exception("ACLED data is currently unavailable.")
     assert start_date >= date(2020, 1, 1), "Start date must be after 2020-01-01."
     assert verify_dates(start_date, end_date)
 

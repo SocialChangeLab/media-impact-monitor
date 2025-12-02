@@ -172,23 +172,37 @@ function EventsTimelineWithData({ reset }: { reset?: () => void }) {
 }
 export default function EventsTimelineWithErrorBoundary() {
 	return (
-		<InViewContainer fallback={<LoadingEventsTimeline />}>
-			<QueryErrorResetBoundary>
-				{({ reset }) => (
-					<ErrorBoundary
-						errorComponent={({ error }) => (
-							<ErrorEventsTimeline
-								{...parseErrorMessage(error)}
-								reset={reset}
-							/>
-						)}
-					>
-						<Suspense fallback={<LoadingEventsTimeline />}>
-							<EventsTimelineWithData reset={reset} />
-						</Suspense>
-					</ErrorBoundary>
-				)}
-			</QueryErrorResetBoundary>
-		</InViewContainer>
+		// <InViewContainer fallback={<LoadingEventsTimeline />}>
+		// 	<QueryErrorResetBoundary>
+		// 		{({ reset }) => (
+		// 			<ErrorBoundary
+		// 				errorComponent={({ error }) => (
+		// 					<ErrorEventsTimeline
+		// 						{...parseErrorMessage(error)}
+		// 						reset={reset}
+		// 					/>
+		// 				)}
+		// 			>
+		// 				<Suspense fallback={<LoadingEventsTimeline />}>
+		// 					<EventsTimelineWithData reset={reset} />
+		// 				</Suspense>
+		// 			</ErrorBoundary>
+		// 		)}
+		// 	</QueryErrorResetBoundary>
+		// </InViewContainer>
+		<EventsTimelineWrapper>
+			<EventsTimelineChartWrapper>
+				<div
+					className={cn(
+						'w-full h-[var(--protest-timeline-height)]',
+						'flex flex-col justify-center items-center gap-2',
+						'bg-grayUltraLight border border-grayLight text-grayDark',
+					)}
+				>
+					<span className="text-lg font-medium">Protest data temporarily unavailable</span>
+					<span className="text-sm opacity-70">We are working on resolving data source issues.</span>
+				</div>
+			</EventsTimelineChartWrapper>
+		</EventsTimelineWrapper>
 	)
 }

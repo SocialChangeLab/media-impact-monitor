@@ -31,30 +31,40 @@ export type UseEventsReturnType = Omit<
 }
 
 export function useAllEvents() {
-	const queryClient = useQueryClient()
-	const { today } = useToday()
-	const topic = useFiltersStore(({ topic }) => topic)
+	// const queryClient = useQueryClient()
+	// const { today } = useToday()
+	// const topic = useFiltersStore(({ topic }) => topic)
 
-	const query = useQuery({
-		queryKey: ['allEvents', topic],
-		queryFn: async () => await getEventsData({ topic }, today),
-		staleTime: getStaleTime(today),
-	})
-	const { data, error } = query
+	// const query = useQuery({
+	// 	queryKey: ['allEvents', topic],
+	// 	queryFn: async () => await getEventsData({ topic }, today),
+	// 	staleTime: getStaleTime(today),
+	// })
+	// const { data, error } = query
 
-	useQueryErrorToast('protests', error)
+	// useQueryErrorToast('protests', error)
 
-	useEffect(() => {
-		if (!data || data.length === 0) return
-		for (const event of data) {
-			queryClient.setQueryData(['events', event.event_id], event)
-		}
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [data])
+	// useEffect(() => {
+	// 	if (!data || data.length === 0) return
+	// 	for (const event of data) {
+	// 		queryClient.setQueryData(['events', event.event_id], event)
+	// 	}
+	// 	// eslint-disable-next-line react-hooks/exhaustive-deps
+	// }, [data])
 
+	// return {
+	// 	...query,
+	// 	allEvents: data ?? [],
+	// }
+	// Protest data temporarily disabled
 	return {
-		...query,
-		allEvents: data ?? [],
+		allEvents: [] as ParsedEventType[],
+		data: [] as ParsedEventType[],
+		isLoading: false,
+		isFetching: false,
+		isPending: false,
+		isError: false,
+		error: null,
 	}
 }
 

@@ -5,6 +5,7 @@ from media_impact_monitor.impact import get_impact
 from media_impact_monitor.types_ import ImpactSearch, TrendSearch
 
 
+@pytest.mark.skip("acled disabled")
 def test_xr():
     get_impact(
         ImpactSearch(
@@ -24,6 +25,7 @@ def test_xr():
     )
 
 
+@pytest.mark.skip("acled disabled")
 def test_xr_api():
     _get_impact(
         ImpactSearch(

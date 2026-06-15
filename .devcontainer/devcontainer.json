@@ -23,7 +23,7 @@
 			"installTools": true,
 			"version": "3.10"
 		},
-		"ghcr.io/devcontainers-contrib/features/ruff:1": { },
+		"ghcr.io/devcontainers-contrib/features/ruff:2": { },
 		"ghcr.io/devcontainers-contrib/features/starship:1": { },
 
 		// R Stack –--------------------------------------------------------

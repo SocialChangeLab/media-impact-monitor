@@ -1,4 +1,5 @@
 import { texts } from '@/utility/textUtil'
+import Link from 'next/link'
 
 export const metadata = {
 	title: `${texts.mainNavigation.imprint} | ${texts.seo.siteTitle}`,
@@ -36,7 +37,7 @@ export default async function ImprintPage() {
 			<p>
 				<strong>Privacy Policy</strong>
 				<br />
-				Please refer to our <a href="/privacy">Privacy Policy</a> for
+				Please refer to our <Link href="/privacy">Privacy Policy</Link> for
 				information on how we handle your personal data.
 			</p>
 		</>

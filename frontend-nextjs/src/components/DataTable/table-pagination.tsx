@@ -10,10 +10,10 @@ import {
 	PaginationPrevious,
 } from "@/components/ui/pagination";
 import { cn } from "@/utility/classNames";
-import type { useReactTable } from "@tanstack/react-table";
+import type { useLegacyTable } from "@tanstack/react-table/legacy";
 
 type TablePaginationProps = Pick<
-	ReturnType<typeof useReactTable>,
+	ReturnType<typeof useLegacyTable>,
 	| "getState"
 	| "setPageIndex"
 	| "getCanPreviousPage"

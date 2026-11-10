@@ -5,8 +5,8 @@ import SizeOptimizationNotice from "./SizeOptimizationNotice.client";
 export const sizeOptimizationNoticeDisplayedCookieName =
 	"size-optimization-notice-is-displayed";
 
-function SizeOptimizationNoticeServer() {
-	const cookieStore = cookies();
+async function SizeOptimizationNoticeServer() {
+	const cookieStore = await cookies();
 	const { value: isDisplayed } =
 		cookieStore.get(sizeOptimizationNoticeDisplayedCookieName) || {};
 	return (

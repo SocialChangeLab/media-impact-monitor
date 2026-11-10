@@ -1,5 +1,8 @@
 import CollapsableSection from "@/components/CollapsableSection";
-import { useMDXComponent } from "next-contentlayer/hooks";
+import { runSync } from '@mdx-js/mdx'
+import * as runtime from 'react/jsx-runtime'
+import { useMemo } from 'react'
+
 import Image from "next/image";
 
 import { cn } from "@/utility/classNames";
@@ -9,7 +12,7 @@ interface MdxProps {
 }
 
 export function Mdx({ code }: MdxProps) {
-	const Component = useMDXComponent(code);
+	const Component = useMemo(() => runSync(code, runtime).default, [code]);
 
 	return (
 		<div
@@ -64,7 +67,7 @@ export function Mdx({ code }: MdxProps) {
 						...props
 					}: React.ImgHTMLAttributes<HTMLImageElement>) => (
 						<Image
-							src={src || ""}
+							src={typeof src === "string" ? src : ""}
 							alt={alt || ""}
 							width={typeof width === 'string' ? parseInt(width) : width || 800}
 							height={typeof height === 'string' ? parseInt(height) : height || 600}

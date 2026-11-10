@@ -5,14 +5,14 @@ import { texts } from "@/utility/textUtil";
 import type { Metadata } from 'next';
 
 type Props = {
-	params: { id: string }
+	params: Promise<{ id: string }>
 }
 
 export async function generateMetadata(
 	{ params }: Props,
 ): Promise<Metadata> {
 	try {
-		const id = params.id
+		const { id } = await params
 		const event = await getEventData(id)
 
 		if (!event) return {}
@@ -30,9 +30,10 @@ export async function generateMetadata(
 }
 
 export default async function EventPage({
-	params: { id },
+	params,
 }: {
-	params: { id: string };
+	params: Promise<{ id: string }>;
 }) {
+	const { id } = await params;
 	return <EventPageContent id={id} />;
 }

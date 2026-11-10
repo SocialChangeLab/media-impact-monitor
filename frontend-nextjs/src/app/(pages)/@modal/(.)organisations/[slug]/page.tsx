@@ -1,13 +1,15 @@
 "use client";
+import { use } from "react";
 import OrganisationPageContent from "@/components/OrganisationPageContent";
 import { SlideUpDrawer } from "@/components/SlideUpDrawer";
 import type { EventOrganizerSlugType } from "@/utility/eventsUtil";
 
 function InderceptedEventPage({
-	params: { slug },
+	params,
 }: {
-	params: { slug: EventOrganizerSlugType };
+	params: Promise<{ slug: EventOrganizerSlugType }>;
 }) {
+	const { slug } = use(params);
 	return (
 		<SlideUpDrawer id={slug} basePath="/organisations/">
 			<OrganisationPageContent slug={slug} />

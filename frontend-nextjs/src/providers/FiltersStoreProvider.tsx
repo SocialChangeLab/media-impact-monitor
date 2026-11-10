@@ -25,7 +25,7 @@ export const FiltersStoreProvider = ({
 	initialState
 }: FiltersStoreProviderProps) => {
 	const defaultInitState = getDefaultInitState(today);
-	const storeRef = useRef<StoreApi<FiltersStore>>();
+	const storeRef = useRef<StoreApi<FiltersStore> | null>(null);
 	if (!storeRef.current) {
 		storeRef.current = createFiltersStore(today, {
 			...defaultInitState,

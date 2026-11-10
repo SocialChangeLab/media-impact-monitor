@@ -3,7 +3,7 @@ import { format } from "@/utility/dateUtil";
 import type { ParsedFullTextType } from "@/utility/fullTextsUtil";
 import { texts } from "@/utility/textUtil";
 import { useFullTexts } from "@/utility/useFullTexts";
-import { createColumnHelper } from "@tanstack/react-table";
+import { legacyCreateColumnHelper as createColumnHelper } from "@tanstack/react-table/legacy";
 import DataTableWithState from "./DataTable";
 import ExternalLink from "./ExternalLink";
 import SentimentLabel from "./SentimentLabel";

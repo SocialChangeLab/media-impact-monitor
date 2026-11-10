@@ -9,7 +9,7 @@ Media Impact Monitor measures how protest/activism events affect public discours
 This is a monorepo:
 
 - `backend-python/` — FastAPI service that loads, caches, and analyzes data. **Most data/statistics work happens here.**
-- `frontend-nextjs/` — Next.js 14 (App Router) dashboard; the primary UI, visualizes the API's output.
+- `frontend-nextjs/` — Next.js 16 (App Router) dashboard; the primary UI, visualizes the API's output.
 - `frontend-observable/` — secondary/experimental Observable Framework frontend (separate npm project).
 - `notebooks/` — exploratory Jupyter notebooks (research, not production).
 - `docs/api.md` — public API usage examples (live docs: https://api.dev.mediaimpactmonitor.app/docs).
@@ -36,10 +36,10 @@ Tests live next to source as `*_test.py`. Pytest/FastAPI debug configs are in `.
 npm install
 npm run dev      # dev server on :3000
 npm run build    # runs lint THEN next build (lint failures break the build)
-npm run lint     # next lint --fix
+npm run lint     # eslint . (read-only; use npm run lint:fix to fix)
 ```
 
-Node `20.11.1` (`.nvmrc`). No frontend test suite. Needs `NEXT_PUBLIC_API_URL` set (template: `.env.sample`).
+Node `22.23.2` (`.nvmrc`). Content compilation tests: `npm run test:content`; types: `npm run typecheck`. Needs `NEXT_PUBLIC_API_URL` set (template: `.env.sample`).
 
 ## Backend architecture
 
@@ -94,13 +94,13 @@ External calls and expensive computations are memoized on disk via **`joblib.Mem
 - **Routing** (`src/app/(pages)/`, route groups): home `/`, `/dashboard` (main analytics), `/events/[id]`, `/organisations/[slug]`, `/docs/[slug]` (MDX), and static `(info)` pages. A `@modal` **parallel/intercepting route** renders event and organisation detail pages as slide-up drawers when navigated to from within the app.
 - **Data fetching pattern** (repeated per feature): a React Query hook in `src/utility/use*.ts` reads filters from the Zustand store and builds a query → a `*Util.ts` builder calls `fetchApiData` (`fetchUtil.ts`, POSTs to `${NEXT_PUBLIC_API_URL}/<endpoint>`, 4-hour ISR) → a `*Util.ts` validator parses the raw response against a **Zod schema** and transforms string dates into `Date`/comparable-date objects. Hooks: `useEvents`, `useMediaTrends`, `useMediaImpact`, `useOrganisations`, `useFullTexts`, `useFullTextsTrends`. Query keys are namespaced arrays; organizer lists are slugified+sorted into the key for stability.
 - **State** (Zustand): `stores/filtersStore.ts` holds `from`/`to`/`organizers`/`mediaSource`/`topic`, persisted to **URL search params + localStorage**, validated via Zod on hydration, clamped to dataset bounds. `stores/uiStore.ts` holds scroll/layout UI state. Providers compose in `appProviders.tsx`.
-- **Components** (`src/components/`): `ui/` are shadcn/ui + Radix primitives; feature charts each ship Loading/Empty/Error variants behind Suspense + ErrorBoundary. Charts use **Recharts** (line/bar) and **d3-scale/d3-time** (custom `ImpactChart`). Docs render via **Contentlayer + MDX** (`contentlayer.config.ts`, `utility/docsUtil.ts`).
+- **Components** (`src/components/`): `ui/` are shadcn/ui + Radix primitives; feature charts each ship Loading/Empty/Error variants behind Suspense + ErrorBoundary. Charts use **Recharts** (line/bar) and **d3-scale/d3-time** (custom `ImpactChart`). Docs render via **MDX** (`scripts/build-content.mjs`, `utility/docsUtil.ts`).
 - **Conventions:** path alias `@/* → src/*`. The app pins "today" to **`America/New_York`** (`utility/today.ts`) — be careful with date math. RSC file suffixes are meaningful: `*.server.tsx`, `*.client.tsx`, `*.action.ts`. Sentry is wired on client/server/edge.
 
 ## Shared conventions
 
 - **Dates (backend):** always `datetime.date`, including inside Pandas DataFrames — do **not** use `pd.Timestamp`.
-- **Formatting:** backend = **Ruff** (`F401` ignored — re-exports are intentional; 100-col ruler in devcontainer). Frontend = **Prettier with tabs, no semicolons, single quotes, trailing commas** (`prettier.config.js`) + ESLint (`next` + `prettier`). Match the file you're editing.
+- **Formatting:** backend = **Ruff** (`F401` ignored — re-exports are intentional; 100-col ruler in devcontainer). Frontend = **Prettier with tabs, no semicolons, single quotes, trailing commas** (`prettier.config.js`) + ESLint (flat `next` + `prettier`). Match the file you're editing.
 - New features generally span the full `topic × media_source` matrix — mirror the loops in `cron.py`.
 
 ## Workflow, CI/CD & deployment

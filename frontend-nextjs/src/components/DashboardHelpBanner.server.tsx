@@ -5,8 +5,8 @@ import DashboardHelpBannerClient from "./DashboardHelpBanner.client";
 export const dashboardHelpBannerExpandedCookieName =
 	"dashboard-help-banner-is-expanded";
 
-function DashboardHelpBannerServer() {
-	const cookieStore = cookies();
+async function DashboardHelpBannerServer() {
+	const cookieStore = await cookies();
 	const { value: isExpanded } =
 		cookieStore.get(dashboardHelpBannerExpandedCookieName) || {};
 	return (

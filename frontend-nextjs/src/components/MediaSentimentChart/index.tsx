@@ -1,6 +1,6 @@
 'use client'
 import type { TrendQueryProps } from '@/utility/mediaTrendUtil'
-import useElementSize from '@custom-react-hooks/use-element-size'
+import { useElementSize } from '@custom-react-hooks/use-element-size'
 import { Suspense, memo, useMemo } from 'react'
 import {
 	Bar,

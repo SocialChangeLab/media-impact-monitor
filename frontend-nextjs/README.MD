@@ -72,3 +72,30 @@ Please [send us an email](mailto:team@mediaimpactmonitor.app) or [book a short m
 | Hosted by                                                                                                                                                                    | Sponsored by                                                                                                                                         |                                                                                                                                  |
 | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------- |
 | [![Logo of the Social Change Lab](https://mediaimpactmonitor.app/assets/logos/socialchangelab-hybrid.svg)](https://socialchangelab.org/)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; | [![Logo of the Bundesministerium für Bildung und Forschung](https://mediaimpactmonitor.app/assets/logos/bmbf-hybrid.svg)](https://prototypefund.de/) | [![Logo of the Prototype Fund](https://mediaimpactmonitor.app/assets/logos/prototypefund-hybrid.svg)](https://prototypefund.de/) |
+
+
+## Frontend development (Next.js 16)
+
+Use Node 22.23.2 (`nvm use`) and `npm ci`. Set `NEXT_PUBLIC_API_URL` in
+`.env.local`; supply optional Mailchimp and Sentry credentials through environment
+variables. The sample file deliberately contains no authentication credentials.
+
+- `npm run dev`: compile documentation, then start Next.js; MDX edits are watched.
+- `npm run lint`: check without rewriting files; `npm run lint:fix` applies fixes.
+- `npm run typecheck`: compile docs, generate route types, and check TypeScript.
+- `npm run test:content`: account for every MDX input and render every compiled document.
+- `npm run build`: compile docs, lint, and build the production app with Turbopack.
+
+Documentation uses `@mdx-js/mdx`, `gray-matter`, GFM, and heading anchors. Generated
+`src/generated/docs.json` is ignored by Git and recreated by the development,
+build, and typecheck commands. Only repository-owned MDX is compiled; never feed
+untrusted input to this executable content pipeline.
+
+Tailwind stays on the newest v3 release, with matching tailwind-merge v2, to retain
+existing styles. A Tailwind v4 migration needs separate visual verification.
+TypeScript stays on v6 and ESLint on v9, matching the peer ranges supported by
+Next's ESLint plugins; newer majors are not yet compatible with that stack.
+Transitive overrides pin patched minimatch, sucrase's glob, and typography's
+selector parser until their parent packages update those constraints. Recheck
+these pins on the next dependency refresh. React Compiler diagnostics remain
+warnings for existing components; hooks correctness checks remain enabled.

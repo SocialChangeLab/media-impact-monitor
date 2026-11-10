@@ -1,5 +1,5 @@
 'use client'
-import useElementSize from '@custom-react-hooks/use-element-size'
+import { useElementSize } from '@custom-react-hooks/use-element-size'
 import { Suspense, memo, useMemo } from 'react'
 import {
 	CartesianGrid,

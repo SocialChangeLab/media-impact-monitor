@@ -3,6 +3,7 @@ from datetime import date, timedelta
 import pandas as pd
 import pytest
 
+from media_impact_monitor import events
 from media_impact_monitor.events import (
     filter_climate_orgs,
     get_events,
@@ -36,7 +37,8 @@ def test_get_events_basic():
 
 
 def test_get_events_with_filters():
-    end_date = date.today()
+    # Historical coverage keeps this live filter check independent of data freshness.
+    end_date = date(2024, 1, 1)
     start_date = end_date - timedelta(days=90)
 
     # Test with date range and topic
@@ -44,6 +46,7 @@ def test_get_events_with_filters():
         source="acled", end_date=end_date, start_date=start_date, topic="climate_change"
     )
     df_climate = get_events(q_climate)
+    assert df_climate is not None and not df_climate.empty
     assert all(df_climate["date"].between(start_date, end_date))
 
     # Test with specific organizer
@@ -54,6 +57,8 @@ def test_get_events_with_filters():
         organizers=["Fridays for Future"],
     )
     df_fff = get_events(q_fff)
+    assert df_fff is not None and not df_fff.empty
+    assert all(df_fff["date"].between(start_date, end_date))
     assert all(df_fff["organizers"].apply(lambda x: "Fridays for Future" in x))
 
 
@@ -128,3 +133,16 @@ def test_organizers_with_id():
     assert len(organizers) > 0
     assert all(isinstance(org, Organizer) for org in organizers)
     assert all(org.organizer_id and org.name for org in organizers)
+
+
+@pytest.mark.parametrize("selection", ["date", "organizer"])
+def test_empty_event_selection_returns_none(monkeypatch, selection):
+    frame = pd.DataFrame({"date": [date(2023, 1, 1)], "organizers": [["Synthetic group"]]})
+    monkeypatch.setattr(events, "get_acled_events", lambda **kwargs: frame.copy())
+    query = EventSearch(
+        source="acled",
+        end_date=date(2024, 1, 1),
+        start_date=date(2023, 2, 1) if selection == "date" else None,
+        organizers=["Absent group"] if selection == "organizer" else [],
+    )
+    assert get_events.func(query) is None

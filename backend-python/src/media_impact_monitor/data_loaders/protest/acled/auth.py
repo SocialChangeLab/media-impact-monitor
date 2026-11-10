@@ -15,6 +15,7 @@ from media_impact_monitor.util.env import (
 
 _token = ""
 _expires_at = 0.0
+_failure: tuple[str, float] | None = None
 _lock = Lock()
 
 
@@ -79,8 +80,10 @@ def _request_token() -> tuple[str, float]:
 
 
 def _current_token(force_refresh: bool, rejected_authorization: str | None) -> str:
-    global _token, _expires_at
+    global _token, _expires_at, _failure
     with _lock:
+        if _failure and monotonic() < _failure[1]:
+            raise RuntimeError(_failure[0]) from None
         rejected_current = rejected_authorization == f"Bearer {_token}"
         if (
             force_refresh
@@ -88,7 +91,12 @@ def _current_token(force_refresh: bool, rejected_authorization: str | None) -> s
             or not _token
             or monotonic() >= _expires_at
         ):
-            token, lifetime = _request_token()
+            try:
+                token, lifetime = _request_token()
+            except RuntimeError as error:
+                _failure = (str(error), monotonic() + 300)
+                raise
+            _failure = None
             _token, _expires_at = (
                 token,
                 monotonic() + lifetime - min(60, lifetime * 0.1),

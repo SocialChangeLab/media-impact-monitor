@@ -14,6 +14,7 @@ def credentials(monkeypatch):
     monkeypatch.setattr(auth, "ACLED_PASSWORD", "synthetic-test-password")
     monkeypatch.setattr(auth, "_token", "")
     monkeypatch.setattr(auth, "_expires_at", 0)
+    monkeypatch.setattr(auth, "_failure", None)
 
 
 def test_token_reused_then_renewed_before_expiry(monkeypatch):
@@ -149,3 +150,18 @@ def test_oauth_error_diagnostic_uses_allowlist_only(monkeypatch):
     with pytest.raises(RuntimeError, match="HTTP 400, invalid_grant") as error:
         auth.authorization_headers()
     assert "PRIVATE" not in str(error.value)
+
+
+def test_failed_login_backoff_prevents_repeated_attempts(monkeypatch):
+    request = Mock(side_effect=requests.RequestException("PRIVATE BODY"))
+    clock = Mock(return_value=100)
+    monkeypatch.setattr(auth.requests, "post", request)
+    monkeypatch.setattr(auth, "monotonic", clock)
+    for _ in range(8):
+        with pytest.raises(RuntimeError):
+            auth.authorization_headers()
+    assert request.call_count == 1
+    clock.return_value = 400
+    with pytest.raises(RuntimeError):
+        auth.authorization_headers()
+    assert request.call_count == 2

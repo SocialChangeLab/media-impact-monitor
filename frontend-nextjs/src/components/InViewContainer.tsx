@@ -1,3 +1,4 @@
+import type { JSX } from 'react'
 import { useIsInViewport } from '@/utility/useIsInViewPort'
 import { useRef } from 'react'
 

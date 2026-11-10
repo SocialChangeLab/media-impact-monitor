@@ -1,12 +1,14 @@
 "use client";
+import { use } from "react";
 import EventPageContent from "@/components/EventPageContent";
 import { SlideUpDrawer } from "@/components/SlideUpDrawer";
 
 function InderceptedEventPage({
-	params: { id },
+	params,
 }: {
-	params: { id: string };
+	params: Promise<{ id: string }>;
 }) {
+	const { id } = use(params);
 	return (
 		<SlideUpDrawer id={id} basePath="/events/">
 			<EventPageContent id={id} />

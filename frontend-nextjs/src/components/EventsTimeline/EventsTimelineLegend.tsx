@@ -4,7 +4,7 @@ import type {
 } from '@/utility/eventsUtil'
 import { getTopicAwareTexts } from '@/utility/textUtil'
 import { useFiltersStore } from '@/providers/FiltersStoreProvider'
-import useElementSize from '@custom-react-hooks/use-element-size'
+import { useElementSize } from '@custom-react-hooks/use-element-size'
 import { type ScaleLinear, scaleLinear } from 'd3-scale'
 import CollapsableSection from '../CollapsableSection'
 import DataCreditLegend from '../DataCreditLegend'

@@ -13,7 +13,6 @@ function useQueryErrorToast(
 		const { message, details } = parseErrorMessage(error);
 		toast.error(texts.errors.errorLoadingChartData({ chartName }), {
 			id: slugify(message, { lower: true, strict: true }),
-			important: true,
 			dismissible: true,
 			duration: 1000000,
 			closeButton: true,

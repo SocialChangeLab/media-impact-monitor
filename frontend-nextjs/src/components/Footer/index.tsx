@@ -9,8 +9,9 @@ import { useToday } from '@/providers/TodayProvider'
 import { cn } from '@/utility/classNames'
 import { texts } from '@/utility/textUtil'
 import { useAnimationFrame } from 'framer-motion'
-import { ArrowUp, ExternalLink, GithubIcon } from 'lucide-react'
+import { ArrowUp, ExternalLink } from 'lucide-react'
 import { useRef } from 'react'
+import GithubIcon from '../GithubIcon'
 import InternalLink from '../InternalLink'
 
 function Footer() {

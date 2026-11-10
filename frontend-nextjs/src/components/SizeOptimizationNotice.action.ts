@@ -6,7 +6,8 @@ import { sizeOptimizationNoticeDisplayedCookieName } from "./SizeOptimizationNot
 export async function setSizeOptimizationNoticeDisplayedState(
 	isDisplayed: boolean,
 ) {
-	cookies().set(
+	const cookieStore = await cookies();
+	cookieStore.set(
 		sizeOptimizationNoticeDisplayedCookieName,
 		isDisplayed ? "true" : "false",
 	);

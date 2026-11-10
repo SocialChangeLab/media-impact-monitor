@@ -11,7 +11,7 @@ import {
 	useSelectedOrganisations,
 } from '@/utility/useOrganisations'
 import { isInSameAggregationUnit } from '@/utility/useTimeIntervals'
-import useElementSize from '@custom-react-hooks/use-element-size'
+import { useElementSize } from '@custom-react-hooks/use-element-size'
 import { QueryErrorResetBoundary } from '@tanstack/react-query'
 import { ErrorBoundary } from 'next/dist/client/components/error-boundary'
 import { Suspense } from 'react'

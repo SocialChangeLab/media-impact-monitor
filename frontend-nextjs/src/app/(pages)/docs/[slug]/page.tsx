@@ -10,14 +10,16 @@ export const generateStaticParams = () => {
 	return allDocsPages.map(({ slug }) => ({ slug }));
 };
 
-export const generateMetadata = ({ params }: { params: { slug: string } }) => {
-	const docsPage = getDocsPage(params.slug);
-	if (!docsPage) throw new Error(`DocsPage not found for slug: ${params.slug}`);
+export const generateMetadata = async ({ params }: { params: Promise<{ slug: string }> }) => {
+	const { slug } = await params;
+	const docsPage = getDocsPage(slug);
+	if (!docsPage) throw new Error(`DocsPage not found for slug: ${slug}`);
 	return { title: `${docsPage.title} | ${texts.mainNavigation.docs} | ${texts.seo.siteTitle}` };
 };
 
-const DocsPageLayout = ({ params }: { params: { slug: string } }) => {
-	const docsPage = getDocsPage(params.slug);
+const DocsPageLayout = async ({ params }: { params: Promise<{ slug: string }> }) => {
+	const { slug } = await params;
+	const docsPage = getDocsPage(slug);
 	if (!docsPage) notFound();
 
 	return (

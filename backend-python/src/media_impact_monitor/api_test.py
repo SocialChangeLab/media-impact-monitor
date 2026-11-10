@@ -10,7 +10,6 @@ def client():
         yield test_client
 
 
-@pytest.mark.skip("acled disabled")
 @pytest.mark.filterwarnings("ignore::DeprecationWarning")
 def test_get_events_success(client):
     response = client.post(

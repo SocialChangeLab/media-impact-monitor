@@ -27,7 +27,7 @@ def get_events(q: EventSearch) -> pd.DataFrame | None:
             df = get_acled_events(end_date=q.end_date, countries=["Germany"])
         case "press_releases":
             df = get_press_release_events(end_date=q.end_date)
-    if df.empty:
+    if df is None or df.empty:
         return
     match q.topic:
         case None:
@@ -44,6 +44,9 @@ def get_events(q: EventSearch) -> pd.DataFrame | None:
         df = df[df["date"] >= q.start_date]
     if q.end_date:
         df = df[df["date"] <= q.end_date]
+    if df.empty:
+        return
+    df = df.copy()
     df["event_id"] = df.apply(joblib_hash, axis=1, raw=True)
     _org_freqs = org_freqs(q.topic or "climate_change")
 

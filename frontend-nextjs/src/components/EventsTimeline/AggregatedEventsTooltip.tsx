@@ -8,11 +8,13 @@ import {
 	type OrganisationType,
 	type ParsedEventType,
 	compareOrganizationsByColors,
+	getEventCount,
 } from "@/utility/eventsUtil";
 import { getTopicAwareTexts } from "@/utility/textUtil";
 import { useFiltersStore } from "@/providers/FiltersStoreProvider";
 import { type ReactNode, memo, useMemo } from "react";
 import OrgLine from "./EventTooltipOrgLine";
+import EventSummaryDetails from "./EventSummaryDetails";
 import {
 	type AggregationUnitType,
 	formatDateByAggregationUnit,
@@ -49,7 +51,7 @@ function AggregatedEventsTooltip({
 				...org,
 				count: events.filter((event) =>
 					event.organizers.find((x) => x.slug === org.slug),
-				).length,
+				).reduce((total, event) => total + getEventCount(event), 0),
 				isSelected: !!selectedOrganisations.find((x) => x.slug === org.slug),
 			}))
 			.sort((a, b) => {
@@ -65,7 +67,12 @@ function AggregatedEventsTooltip({
 		<Tooltip>
 			<TooltipTrigger>{children}</TooltipTrigger>
 			<TooltipContent className="px-0">
-				<p className="text-base pt-2 pb-3 max-w-80 px-4">
+				{events.some((event) => event.source === "acled") ? (
+					<>
+						<p className="text-base pt-2 pb-3 max-w-80 px-4">{formattedDate}</p>
+						<EventSummaryDetails events={events} />
+					</>
+				) : <p className="text-base pt-2 pb-3 max-w-80 px-4">
 					{texts.charts.protest_timeline.tooltips.aggregated({
 						timeUnitLabel:
 							texts.charts.aggregationUnit[
@@ -75,11 +82,11 @@ function AggregatedEventsTooltip({
 							aggregationUnit === "month"
 								? format(date, "LLLL yyyy")
 								: formattedDate,
-						protestCount: events.length,
+						protestCount: events.reduce((total, event) => total + getEventCount(event), 0),
 						participantCount: sumSize,
 						orgsCount: orgs.length,
 					})}
-				</p>
+				</p>}
 				{orgs.map((org) => (
 					<OrgLine key={org.slug} {...org} />
 				))}

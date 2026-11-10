@@ -9,12 +9,12 @@ export function useAllOrganisations() {
 	const topic = useFiltersStore(({ topic }) => topic);
 
 	const query = useQuery({
-		queryKey: ["organisations", topic],
+		queryKey: ["organisations", "summary-v1", topic, allEvents],
 		queryFn: () => {
 			if (!allEvents || allEvents.length === 0) return [];
 			return extractEventOrganisations(allEvents, topic);
 		},
-		enabled: !isLoading && allEvents.length > 0,
+		enabled: !isLoading,
 	});
 
 	return {
@@ -32,7 +32,7 @@ export function useFilteredEventsOrganisations() {
 	const topic = useFiltersStore(({ topic }) => topic);
 
 	const query = useQuery({
-		queryKey: ["filteredEventsOrganisations", organizersKey, fromDateString, toDateString, topic],
+		queryKey: ["filteredEventsOrganisations", organizersKey, fromDateString, toDateString, topic, filteredEvents],
 		queryFn: () => {
 			if (!filteredEvents || filteredEvents.length === 0) return [];
 			const events = organizers.length === 0 ? filteredEvents : filteredEvents.filter(
@@ -40,7 +40,7 @@ export function useFilteredEventsOrganisations() {
 			)
 			return extractEventOrganisations(events, topic)
 		},
-		enabled: !isLoading && filteredEvents.length > 0,
+		enabled: !isLoading,
 	})
 
 	return {
@@ -61,7 +61,7 @@ export function useSelectedOrganisations() {
 	const organizersKey = useOrganizersKey();
 
 	const query = useQuery({
-		queryKey: ["selectedOrganisations", organizersKey],
+		queryKey: ["selectedOrganisations", organizersKey, organisations],
 		queryFn: () => {
 			if (organizers.length === 0) return organisations;
 			const selectedOrs = organisations.filter((org) =>
@@ -69,7 +69,7 @@ export function useSelectedOrganisations() {
 			);
 			return selectedOrs.length === 0 ? organisations : selectedOrs;
 		},
-		enabled: !isLoading && organisations.length > 0,
+		enabled: !isLoading,
 	})
 
 	return {
@@ -82,7 +82,7 @@ export function useOrganisation(slug: EventOrganizerSlugType | undefined) {
 	const { organisations, isLoading } = useAllOrganisations();
 
 	const query = useQuery({
-		queryKey: ["organisations", slug],
+		queryKey: ["organisation", slug, organisations],
 		queryFn: () => slug ? organisations.find(({ slug: s }) => s === slug) : undefined,
 		enabled: !!slug && !isLoading
 	});

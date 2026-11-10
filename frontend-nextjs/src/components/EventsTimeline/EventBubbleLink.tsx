@@ -7,8 +7,8 @@ import {
 	compareOrganizationsByColors,
 } from '@/utility/eventsUtil'
 import { getDateRangeByAggregationUnit } from '@/utility/useTimeIntervals'
-import { useSearchParams } from 'next/navigation'
 import { memo } from 'react'
+import { texts } from '@/utility/textUtil'
 import InternalLink from '../InternalLink'
 import { TooltipTrigger } from '../ui/tooltip'
 import type { AggregatedItemType } from './EventsTimelineAggregatedItem'
@@ -31,7 +31,13 @@ function EventBubbleLink({
 	organisations,
 	...otherProps
 }: EventBubbleLinkProps) {
-	const searchParams = useSearchParams()
+	if (event.source === 'acled') return (
+		<TooltipTrigger asChild>
+			<button type="button" className={bubbleClasses}
+				aria-label={texts.charts.protest_timeline().tooltips.summaryLabel}
+				style={{ background: getCSSStyleGradientWithEqualSteps(organisations.map((x) => x.color)) }} />
+		</TooltipTrigger>
+	)
 	return (
 		<TooltipTrigger asChild>
 			<InternalLink
@@ -96,7 +102,7 @@ function getColorPercentagesByParticipants(
 	const uniqueColors = Array.from(new Set(organisationsColors))
 	const colors2OrgsCount = events.reduce(
 		(acc, event) => {
-			const eventSum = event.size_number ?? 0 / event.organizers.length
+			const eventSum = (event.size_number ?? 0) / Math.max(event.organizers.length, 1)
 			for (const organizer of event.organizers) {
 				const org = organisations.find((x) => x.slug === organizer.slug)
 				if (!org) continue
@@ -114,7 +120,7 @@ function getColorPercentagesByParticipants(
 	return uniqueColors.reduce((acc, color) => {
 		const count = colors2OrgsCount[color] ?? 0
 		const sum = sumSize ?? 0
-		acc[color] = (count / sum) * 100
+		acc[color] = sum > 0 ? (count / sum) * 100 : 100 / uniqueColors.length
 		return acc
 	}, {} as ColorsWithPercentages)
 }

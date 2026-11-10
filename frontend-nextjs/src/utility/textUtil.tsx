@@ -438,7 +438,7 @@ const textsEnGB = {
 			heading: 'What protests are happening?',
 			description: [
 				'See protests over time for all selected organisations.',
-				'Hover or click on the bubbles for more information on individual protest events.',
+				'Hover or focus on the bubbles for daily summaries by organiser combination; larger timeframes combine these summaries.',
 				'Currently, we cover climate protests and Gaza crisis protests in Germany since 2020.',
 			],
 			data_credit: [
@@ -455,10 +455,10 @@ const textsEnGB = {
 			legend: {
 				size: 'Size',
 				participants: {
-					day: 'Protest participants',
-					week: 'Weekly participants',
-					month: 'Monthly participants',
-					year: 'Yearly participants',
+					day: 'Known daily participants',
+					week: 'Known weekly participants',
+					month: 'Known monthly participants',
+					year: 'Known yearly participants',
 				},
 				zeroOrUnknown: '0 or unknown',
 				color: 'Color',
@@ -466,6 +466,11 @@ const textsEnGB = {
 				other: 'Other',
 			},
 			tooltips: {
+				summaryLabel: 'Show protest summary',
+				knownTotal: 'Known participant total',
+				unknownTotal: 'Unknown',
+				eventCount: (count: number) => `${count.toLocaleString('en-GB')} protest${count === 1 ? '' : 's'}`,
+				missingSizes: (missing: number, total: number) => `Size unavailable for ${missing.toLocaleString('en-GB')} of ${total.toLocaleString('en-GB')} protests.`,
 				aggregated: ({
 					timeUnitLabel,
 					timeValue,
@@ -610,8 +615,8 @@ const textsEnGB = {
 		propertyNames: {
 			name: 'Name',
 			totalEvents: 'Total Events',
-			totalParticipants: 'Total Participants',
-			avgParticipants: 'Avg. Participants',
+			totalParticipants: 'Reported Participation',
+			avgParticipants: 'Avg. Reported Size',
 			totalPartners: 'Partners',
 		},
 		adBanner: {
@@ -1079,6 +1084,11 @@ const textsXXX = {
 				other: 'XXX',
 			},
 			tooltips: {
+				summaryLabel: 'XXX',
+				knownTotal: 'XXX',
+				unknownTotal: 'XXX',
+				eventCount: (count: number) => `${count.toLocaleString('en-GB')} XXX`,
+				missingSizes: (missing: number, total: number) => `XXX ${missing.toLocaleString('en-GB')} XXX ${total.toLocaleString('en-GB')} XXX`,
 				aggregated: ({
 					timeUnitLabel,
 					timeValue,

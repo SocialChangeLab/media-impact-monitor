@@ -23,7 +23,39 @@ const eventZodSchema = z.object({
 	size_number: z.number().nullable(),
 	description: z.string(),
 });
-export type EventType = z.infer<typeof eventZodSchema>;
+// Validate the wire contract before adding local chart compatibility fields.
+const acledSummaryZodSchema = z.object({
+	summary_id: z.string().min(1),
+	source: z.literal("acled"),
+	date: z.iso.date(),
+	organizers: z.array(z.string()),
+	size_number: z.number().nonnegative().nullable(),
+	event_count: z.number().int().positive(),
+	unknown_size_count: z.number().int().nonnegative(),
+}).strict().refine(
+	(x) => x.unknown_size_count <= x.event_count &&
+		((x.size_number === null) === (x.unknown_size_count === x.event_count)),
+	{ message: "Inconsistent summary size counts" },
+);
+const publicEventZodSchema = z.union([
+	acledSummaryZodSchema.transform((summary) => ({
+		...summary,
+		event_id: summary.summary_id,
+		event_type: "",
+		country: null,
+		region: null,
+		city: null,
+		size_text: null,
+		description: "",
+	})),
+	eventZodSchema.refine((event) => event.source !== "acled"),
+]);
+const localEventZodSchema = eventZodSchema.extend({
+	summary_id: z.string().optional(),
+	event_count: z.number().int().positive().optional(),
+	unknown_size_count: z.number().int().nonnegative().optional(),
+});
+export type EventType = z.infer<typeof localEventZodSchema>;
 
 export const eventOrganizerSlugZodSchema = z
 	.string()
@@ -38,7 +70,7 @@ const eventOrganizerZodSchema = z.object({
 });
 export type EventOrganizerType = z.infer<typeof eventOrganizerZodSchema>;
 
-const parsedEventZodSchema = eventZodSchema
+const parsedEventZodSchema = localEventZodSchema
 	.omit({ date: true, organizers: true })
 	.merge(comparableDateItemSchema)
 	.extend({
@@ -60,7 +92,7 @@ const eventDataTypeZodSchema = z.array(parsedEventZodSchema);
 export type EventsDataType = z.infer<typeof eventDataTypeZodSchema>;
 
 const eventDataResponseTypeZodSchema = z.object({
-	data: z.array(eventZodSchema),
+	data: z.array(publicEventZodSchema),
 	isPending: z.boolean().optional(),
 	error: z.union([z.string(), z.null()]).optional(),
 });
@@ -74,7 +106,7 @@ export async function getEventsData(
 	today = defaultToday,
 ): Promise<EventsDataType> {
 	const json = await fetchApiData({
-		endpoint: "events",
+		endpoint: "events?view=summary-v1",
 		body: {
 			source: "acled",
 			...formatInput(params || {}, []),
@@ -88,7 +120,7 @@ export async function getEventData(
 	today = defaultToday,
 ): Promise<ParsedEventType | undefined> {
 	const allEvents = await getEventsData(undefined, today);
-	return allEvents.find((x) => x.event_id === id);
+	return allEvents.find((x) => x.source !== "acled" && x.event_id === id);
 }
 
 function validateGetDataResponse(
@@ -111,6 +143,19 @@ function validateGetDataResponse(
 	} catch (error) {
 		throw formatZodError(error);
 	}
+}
+
+
+export function getEventCount(event: Pick<ParsedEventType, "event_count">): number {
+	return event.event_count ?? 1;
+}
+
+export function summarizeEvents(events: ParsedEventType[]) {
+	return events.reduce((total, event) => ({
+		eventCount: total.eventCount + getEventCount(event),
+		knownSize: event.size_number === null ? total.knownSize : (total.knownSize ?? 0) + event.size_number,
+		unknownSizeCount: total.unknownSizeCount + (event.unknown_size_count ?? (event.size_number === null ? getEventCount(event) : 0)),
+	}), { eventCount: 0, knownSize: null as number | null, unknownSizeCount: 0 });
 }
 
 // Shared organizations that appear in both climate and Gaza contexts
@@ -204,7 +249,7 @@ export function extractEventOrganisations(
 			...organizer,
 			count: events.filter((x) =>
 				x.organizers?.find((x) => x.slug === organizer.slug),
-			).length,
+			).reduce((total, event) => total + getEventCount(event), 0),
 		}))
 		.sort((a, b) => b.count - a.count)
 		.map((organizer, idx) => {
@@ -213,7 +258,8 @@ export function extractEventOrganisations(
 					slug: "unknown-organisation" as EventOrganizerSlugType,
 					name: "Unknown organisation",
 					color: "var(--grayMed)",
-					count: events.filter((x) => x.organizers?.filter((x) => !x)).length,
+					count: events.filter((event) => event.organizers.some((org) => !org.name.trim()))
+						.reduce((total, event) => total + getEventCount(event), 0),
 					isMain: false,
 				};
 			}

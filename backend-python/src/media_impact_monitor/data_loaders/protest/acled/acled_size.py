@@ -12,7 +12,9 @@ def get_size_text(acled_string: str) -> str | None:
     return None
 
 
-def get_size_number(size_text: str) -> int | None:
+def get_size_number(size_text: str | None) -> int | None:
+    if size_text is None:
+        return None
     try:
         return int(size_text)
     except ValueError:

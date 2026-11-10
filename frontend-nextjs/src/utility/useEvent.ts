@@ -13,7 +13,7 @@ import useQueryErrorToast from "./useQueryErrorToast";
 
 export function getEventQueryOptions(id?: ParsedEventType["event_id"]) {
 	return queryOptions({
-		queryKey: ["events", id],
+		queryKey: ["events", "summary-v1", id],
 		queryFn: () => (id ? getEventData(id) : null),
 		staleTime: getStaleTime(today),
 		enabled: id !== undefined,

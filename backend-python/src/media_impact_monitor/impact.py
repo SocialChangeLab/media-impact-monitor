@@ -23,12 +23,14 @@ def get_impact(q: ImpactSearch) -> Impact:
     events = get_events(
         EventSearch(
             source="acled",
-            topic="climate_change",
+            topic=q.impacted_trend.topic or "climate_change",
             start_date=q.start_date,
             end_date=q.end_date,
         )
     )
-    events_from_org = events[events["organizers"].apply(lambda x: q.organizer in x)]
+    if events is None:
+        events = pd.DataFrame(columns=["date", "organizers"])
+    events_from_org = events.loc[events["organizers"].apply(lambda x: q.organizer in x).astype(bool)]
     n_event_days = events_from_org["date"].nunique()
     if n_event_days < 5:
         return Impact(
@@ -60,7 +62,6 @@ def get_impact(q: ImpactSearch) -> Impact:
         case _:
             raise ValueError(f"Unsupported method: {q.method}")
     org = q.organizer
-    n_days = 7 - 1
     return Impact(
         method_applicability=True,
         method_limitations=[],

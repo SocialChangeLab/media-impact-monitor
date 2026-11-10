@@ -117,7 +117,7 @@ function useTimelineEvents({
 				: config.aggregatedEventMaxHeight,
 			size.height,
 		);
-		return scalePow([0, max], [config.eventMinHeight, maxHeight]);
+		return scalePow([0, Math.max(1, max)], [config.eventMinHeight, maxHeight]);
 	}, [eventColumns, aggregationUnit, size.height, config]);
 
 	return {

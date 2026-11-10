@@ -1,3 +1,5 @@
+import { summarizeEvents } from "./eventsUtil";
+
 import type {
 	EventOrganizerSlugType,
 	OrganisationType,
@@ -13,11 +15,9 @@ export function getOrgStats(data: {
 	const orgEvents = events.filter((e) =>
 		e.organizers.find((o) => o.slug === org.slug),
 	);
-	const totalEvents = orgEvents.length ?? 0;
-	const totalParticipants = orgEvents.reduce(
-		(acc, e) => acc + (e.size_number ?? 0),
-		0,
-	);
+	const { eventCount: totalEvents, knownSize, unknownSizeCount } = summarizeEvents(orgEvents);
+	const totalParticipants = knownSize ?? Number.NaN;
+	const knownSizeEvents = totalEvents - unknownSizeCount;
 	const partners = Array.from(
 		orgEvents
 			.reduce((acc, e) => {
@@ -40,7 +40,7 @@ export function getOrgStats(data: {
 		name: org.name,
 		totalEvents: totalEvents,
 		totalParticipants,
-		avgParticipantsPerEvent: Math.ceil(totalParticipants / Math.max(1, totalEvents)),
+		avgParticipantsPerEvent: knownSizeEvents > 0 ? Math.ceil(totalParticipants / knownSizeEvents) : Number.NaN,
 		totalPartners: partners.length,
 		partners,
 	};

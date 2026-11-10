@@ -1,20 +1,6 @@
-"use client";
-import { use } from "react";
-import EventPageContent from "@/components/EventPageContent";
-import { SlideUpDrawer } from "@/components/SlideUpDrawer";
+import { notFound } from "next/navigation";
 
-function InderceptedEventPage({
-	params,
-}: {
-	params: Promise<{ id: string }>;
-}) {
-	const { id } = use(params);
-	return (
-		<SlideUpDrawer id={id} basePath="/events/">
-			<EventPageContent id={id} />
-			<div className="boost-header-above-dialog" aria-hidden="true" />
-		</SlideUpDrawer>
-	);
+// This route uses the ACLED source, whose public contract exposes summaries only.
+export default function EventPage() {
+	notFound();
 }
-
-export default InderceptedEventPage;

@@ -7,6 +7,7 @@ import { Users } from "lucide-react";
 import { type PropsWithChildren, useMemo, useState } from "react";
 import { Button } from "../ui/button";
 import OrgLine from "./EventTooltipOrgLine";
+import EventSummaryDetails from "./EventSummaryDetails";
 
 function EventTooltip({
 	event,
@@ -46,6 +47,17 @@ function EventTooltip({
 				? Math.round(event.size_number).toLocaleString(texts.language)
 				: "?",
 		[event.size_number],
+	);
+
+	if (event.source === "acled") return (
+		<Tooltip delayDuration={50}>
+			{children}
+			<TooltipContent className="p-0 pb-4">
+				<p className="px-4 py-2 mb-2 border-b border-grayLight font-bold">{formattedDate}</p>
+				<EventSummaryDetails events={[event]} />
+				{orgs.map((org) => <OrgLine key={org.slug} {...org} />)}
+			</TooltipContent>
+		</Tooltip>
 	);
 
 	return (

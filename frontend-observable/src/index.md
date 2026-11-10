@@ -38,6 +38,7 @@ function gaussianRandom(mean = 0, stdev = 1) {
 
 events = events.map(a => ({
   ...a,
+  event_count: a.event_count ?? 1,
   organizer: a.organizers[0],
   organizers_text: a.organizers.join(', '),
   chart_position: gaussianRandom()
@@ -214,10 +215,10 @@ const spec = {
           timeUnit: { unit: 'yearmonth' }
         },
         y: {
-          field: 'size_number',
+          field: 'event_count',
           type: 'quantitative',
           axis: { grid: false, title: null },
-          aggregate: 'count'
+          aggregate: 'sum'
         }
       }
     },
@@ -248,8 +249,8 @@ const spec = {
             //symbolLimit: 5
           },
           sort: {
-            field: 'organizer',
-            op: 'count',
+            field: 'event_count',
+            op: 'sum',
             order: 'descending'
           }
         },
@@ -262,8 +263,9 @@ const spec = {
         tooltip: [
           { field: 'date', type: 'temporal', title: 'Date' },
           { field: 'organizers_text', type: 'nominal', title: 'Organizer' },
-          { field: 'size_text', type: 'nominal', title: 'Participants' },
-          { field: 'description', type: 'nominal', title: 'Description' }
+          { field: 'size_number', type: 'quantitative', title: 'Reported participation' },
+          { field: 'event_count', type: 'quantitative', title: 'Protests' },
+          { field: 'unknown_size_count', type: 'quantitative', title: 'Unknown sizes' }
         ]
       }
     },

@@ -4,10 +4,8 @@ import { useToday } from '@/providers/TodayProvider'
 import {
 	type UseQueryResult,
 	useQuery,
-	useQueryClient,
 } from '@tanstack/react-query'
 import { getTime } from 'date-fns'
-import { useEffect } from 'react'
 import {
 	type OrganisationType,
 	type ParsedEventType,
@@ -31,41 +29,15 @@ export type UseEventsReturnType = Omit<
 }
 
 export function useAllEvents() {
-	// const queryClient = useQueryClient()
-	// const { today } = useToday()
-	// const topic = useFiltersStore(({ topic }) => topic)
-
-	// const query = useQuery({
-	// 	queryKey: ['allEvents', topic],
-	// 	queryFn: async () => await getEventsData({ topic }, today),
-	// 	staleTime: getStaleTime(today),
-	// })
-	// const { data, error } = query
-
-	// useQueryErrorToast('protests', error)
-
-	// useEffect(() => {
-	// 	if (!data || data.length === 0) return
-	// 	for (const event of data) {
-	// 		queryClient.setQueryData(['events', event.event_id], event)
-	// 	}
-	// 	// eslint-disable-next-line react-hooks/exhaustive-deps
-	// }, [data])
-
-	// return {
-	// 	...query,
-	// 	allEvents: data ?? [],
-	// }
-	// Protest data temporarily disabled
-	return {
-		allEvents: [] as ParsedEventType[],
-		data: [] as ParsedEventType[],
-		isLoading: false,
-		isFetching: false,
-		isPending: false,
-		isError: false,
-		error: null,
-	}
+	const { today } = useToday()
+	const topic = useFiltersStore(({ topic }) => topic)
+	const query = useQuery({
+		queryKey: ['allEvents', 'summary-v1', topic],
+		queryFn: () => getEventsData({ topic }, today),
+		staleTime: getStaleTime(today),
+	})
+	useQueryErrorToast('protests', query.error)
+	return { ...query, allEvents: query.data ?? [] }
 }
 
 export function useTimeFilteredEvents() {
@@ -74,7 +46,7 @@ export function useTimeFilteredEvents() {
 	const toTime = useFiltersStore(({ to }) => getTime(to))
 
 	const query = useQuery({
-		queryKey: ['timeFilteredEvents', fromTime, toTime],
+		queryKey: ['timeFilteredEvents', allEvents, fromTime, toTime],
 		queryFn: () => {
 			const eventsInTimeRange = (allEvents ?? []).filter((e) => {
 				if (!e.date) return false
@@ -85,7 +57,7 @@ export function useTimeFilteredEvents() {
 			})
 			return eventsInTimeRange
 		},
-		enabled: !isLoading && allEvents.length > 0,
+		enabled: !isLoading,
 	})
 
 	return {

@@ -2,14 +2,16 @@ import re
 from datetime import date
 
 import pandas as pd
+from requests import get
 
 from media_impact_monitor.data_loaders.protest.acled.acled_size import (
     get_size_number,
     get_size_text,
 )
-from media_impact_monitor.util.cache import cache, get
+from media_impact_monitor.data_loaders.protest.acled.auth import authorization_headers
+from media_impact_monitor.util.cache import cache
 from media_impact_monitor.util.date import verify_dates
-from media_impact_monitor.util.env import ACLED_ACCESS_TOKEN
+from media_impact_monitor.util.env import ACLED_EMAIL, ACLED_PASSWORD
 
 info = """
 ACLED (Armed Conflict Location & Event Data Project) is a project that tracks political violence and protest events around the world. The data is collected from reports by local and international news sources, and is updated on a weekly basis. The ACLED API provides access to the data.
@@ -42,24 +44,22 @@ acled_region_keys = {
 def get_acled_events(
     end_date: date,
     start_date: date = date(2020, 1, 1),
-    countries: list[str] = [],
-    regions: list[str] = [],
+    countries: list[str] | None = None,
+    regions: list[str] | None = None,
 ) -> pd.DataFrame:
     """Fetch protests from the ACLED API.
 
     API documentation: https://acleddata.com/api-documentation/acled-endpoint
     """
-    raise Exception("ACLED data is currently unavailable.")
     assert start_date >= date(2020, 1, 1), "Start date must be after 2020-01-01."
     assert verify_dates(start_date, end_date)
 
-    headers={"Authorization": f"Bearer {ACLED_ACCESS_TOKEN}", "Content-Type": "application/json"}
     limit = 1_000_000
     parameters = {
         "event_type": "Protests",
         "event_date": f"{start_date.strftime('%Y-%m-%d')}|{end_date.strftime('%Y-%m-%d')}",
         "event_date_where": "BETWEEN",
-        "fields": "event_date|sub_event_type|assoc_actor_1|country|admin1|admin2|notes|tags",
+        "fields": "event_date|assoc_actor_1|notes|tags",
         "limit": limit,
     }
     assert (countries or regions) and not (
@@ -71,16 +71,22 @@ def get_acled_events(
         parameters["region"] = "|".join(
             str(acled_region_keys[region]) for region in regions
         )
-    response = get("https://acleddata.com/api/acled/read?_format=json", params=parameters, headers=headers)
+    headers = authorization_headers()
+    response = get("https://acleddata.com/api/acled/read?_format=json", params=parameters, headers=headers, timeout=60)
+    if response is None:
+        raise RuntimeError("ACLED request failed.")
+    if response.status_code == 401 and ACLED_EMAIL and ACLED_PASSWORD:
+        response = get(
+            "https://acleddata.com/api/acled/read?_format=json",
+            params=parameters, headers=authorization_headers(rejected_authorization=headers["Authorization"]), timeout=60,
+        )
+    response.raise_for_status()
     df = pd.DataFrame(response.json()["data"])
     if df.empty:
         return df
     if len(df) == limit:
         raise ValueError(f"Limit of {limit} reached.")
     df["date"] = pd.to_datetime(df["event_date"]).dt.date
-    df["region"] = df["admin1"]
-    df["city"] = df["admin2"]
-    df["event_type"] = df["sub_event_type"]
     df = process_orgs(df)
     df["size_text"] = df["tags"].apply(get_size_text)
     df["size_number"] = df["size_text"].apply(get_size_number)
@@ -92,10 +98,6 @@ def get_acled_events(
     return df[
         [
             "date",
-            "event_type",
-            "country",
-            "region",
-            "city",
             "organizers",
             "size_text",
             "size_number",

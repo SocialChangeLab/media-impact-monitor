@@ -4,14 +4,14 @@ Run with: `uvicorn media_impact_monitor.api:app --reload`
 Or, if necessary: `uv run uvicorn media_impact_monitor.api:app --reload` in "backend-python/"
 """
 
-from datetime import date
 import json
 import logging
 import os
 from contextlib import asynccontextmanager
+from datetime import date
 
 import sentry_sdk
-from fastapi import FastAPI, Request
+from fastapi import FastAPI, HTTPException, Request
 from fastapi.responses import JSONResponse
 from starlette.middleware.cors import CORSMiddleware
 from starlette.responses import RedirectResponse
@@ -22,6 +22,7 @@ from media_impact_monitor.events import get_events, organizers_with_id
 from media_impact_monitor.fulltexts import get_fulltexts
 from media_impact_monitor.impact import get_impact
 from media_impact_monitor.policy import get_policy
+from media_impact_monitor.public_events import AcledEventSummary, publish_events
 from media_impact_monitor.trend import get_trend_for_api
 from media_impact_monitor.types_ import (
     Event,
@@ -92,10 +93,10 @@ async def global_exception_handler(request: Request, exc: Exception):
     logger = logging.getLogger(__name__)
     logger.error(exc, exc_info=True)
 
-    # Return a JSON response to the client with the exception details
+    # Keep provider payloads and private cached event details out of public errors.
     return JSONResponse(
         status_code=500,
-        content={"message": "Internal server error", "details": str(exc)},
+        content={"message": "Internal server error"},
         media_type="application/json",
         headers={"Access-Control-Allow-Origin": "*"},
     )
@@ -113,11 +114,13 @@ def get_info() -> dict:
 
 
 @app.post("/events")
-def _get_events(q: EventSearch) -> Response[EventSearch, list[Event]]:
-    """Fetch events from the Media Impact Monitor database."""
+def _get_events(q: EventSearch) -> Response[EventSearch, list[AcledEventSummary | Event]]:
+    """ACLED returns daily group/size summaries; press releases retain event records."""
     q.end_date = q.end_date or date.today()
+    if q.source == "acled" and q.topic is None:
+        q.topic = "climate_change"
     df = get_events(q)
-    data = json.loads(df.to_json(orient="records"))  # convert nan to None
+    data = publish_events(q, df)
     return Response(query=q, data=data)
 
 
@@ -131,7 +134,9 @@ def _get_trend(q: TrendSearch) -> Response[TrendSearch, Trend]:
 
 @app.post("/fulltexts")
 def _get_fulltexts(q: FulltextSearch) -> Response[FulltextSearch, list[Fulltext]]:
-    """Fetch media fulltexts from the Media Impact Monitor database."""
+    """Fetch media fulltexts; individual ACLED event lookups are unavailable."""
+    if q.event_id is not None:
+        raise HTTPException(status_code=422, detail="Individual ACLED event lookups are unavailable.")
     q.end_date = q.end_date or date.today()
     fulltexts = get_fulltexts(q)
     if fulltexts is None:

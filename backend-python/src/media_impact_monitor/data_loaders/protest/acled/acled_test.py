@@ -5,7 +5,6 @@ import pytest
 from media_impact_monitor.data_loaders.protest.acled.acled import get_acled_events
 
 
-@pytest.mark.skip("acled disabled")
 def test_get_protests_with_keyword():
     test_countries = ["Germany", "Burkina Faso"]
     df = get_acled_events(
@@ -31,7 +30,6 @@ def test_get_protests_with_keyword():
     ).any(), "Empty strings should not be present in the organizers column."
 
 
-@pytest.mark.skip("acled disabled")
 def test_get_protests_fail_with_both_countries_and_regions():
     """Test that the function raises an assertion error when both countries and regions are specified."""
     with pytest.raises(AssertionError):

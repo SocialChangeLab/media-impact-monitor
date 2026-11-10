@@ -1,7 +1,7 @@
 'use client'
 
 import { endOfDay, isSameDay, startOfDay, subDays, subMonths } from 'date-fns'
-import type { DateRange } from 'react-day-picker'
+import type { DateRange } from '@daypicker/react'
 
 import { Button } from '@/components/ui/button'
 import { Calendar, type CalendarProps } from '@/components/ui/calendar'
@@ -40,7 +40,7 @@ export const DatePickerWithRange = memo(
 		onReset?: () => void
 	}) => {
 		const [isOpen, setIsOpen] = useState(false)
-		const lastRange = useRef<DateRange | undefined>()
+		const lastRange = useRef<DateRange | undefined>(undefined)
 		const [date, setDate] = useState<DateRange | undefined>(dateRange)
 		const [month, setMonth] = useState<Date | undefined>()
 		const { today } = useToday()
@@ -155,7 +155,7 @@ export const DatePickerWithRange = memo(
 								/>
 							</div>
 							<Calendar
-								initialFocus
+								autoFocus
 								mode="range"
 								defaultMonth={date?.from}
 								selected={date}

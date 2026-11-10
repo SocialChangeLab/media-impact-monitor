@@ -69,8 +69,8 @@ function useTimelineEvents({
 			const eventsWithSize = columnEvents.sort((a, b) => {
 				const aSize = a.size_number ?? 0;
 				const bSize = b.size_number ?? 0;
-				if (aSize < bSize ?? 0) return -1;
-				if (aSize > bSize ?? 0) return 1;
+				if (aSize < bSize) return -1;
+				if (aSize > bSize) return 1;
 				if (!a.organizers[0] || !b.organizers[0]) return 0;
 				return a.organizers[0].name.localeCompare(b.organizers[0].name);
 			});

@@ -2,13 +2,14 @@
 
 import { type ReactNode, createContext, useContext, useRef } from "react";
 import { type StoreApi, useStore } from "zustand";
+import { useShallow } from "zustand/react/shallow";
 
 import {
 	type UiStore,
 	createUiStore,
 	defaultInitState,
 } from "@/stores/uiStore";
-import useDebounce from "@custom-react-hooks/use-debounce";
+import { useDebounce } from "@custom-react-hooks/use-debounce";
 import { useAnimationFrame } from "framer-motion";
 
 export const UiStoreContext = createContext<StoreApi<UiStore> | null>(null);
@@ -22,7 +23,7 @@ export const UiStoreProvider = ({
 	children,
 	initialState,
 }: UiStoreProviderProps) => {
-	const storeRef = useRef<StoreApi<UiStore>>();
+	const storeRef = useRef<StoreApi<UiStore> | null>(null);
 	if (!storeRef.current) {
 		storeRef.current = createUiStore(initialState);
 	}
@@ -80,5 +81,5 @@ export const useUiStore = <T,>(selector: (store: UiStore) => T): T => {
 		throw new Error(`useUiStore must be use within UiStoreProvider`);
 	}
 
-	return useStore(filtersStoreContext, selector);
+	return useStore(filtersStoreContext, useShallow(selector));
 };

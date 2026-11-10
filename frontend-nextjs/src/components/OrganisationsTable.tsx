@@ -6,7 +6,7 @@ import {
 	useAllOrganisations,
 	useSelectedOrganisations,
 } from '@/utility/useOrganisations'
-import { createColumnHelper } from '@tanstack/react-table'
+import { legacyCreateColumnHelper as createColumnHelper } from '@tanstack/react-table/legacy'
 import { useMemo } from 'react'
 import { DataTable } from './DataTable/DataTable'
 import InternalLink from './InternalLink'

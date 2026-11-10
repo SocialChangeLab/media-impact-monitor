@@ -1,6 +1,11 @@
 import { Button } from "@/components/ui/button";
 import { cn } from "@/utility/classNames";
-import type { ColumnDefTemplate, HeaderContext } from "@tanstack/react-table";
+import type { LegacyFeatures } from "@tanstack/react-table/legacy";
+import type {
+	ColumnDefTemplate,
+	HeaderContext,
+	RowData,
+} from "@tanstack/react-table";
 import {
 	ArrowDown01,
 	ArrowDownAZ,
@@ -10,9 +15,11 @@ import {
 } from "lucide-react";
 import type { ReactNode } from "react";
 
-type ColumnHeaderFunction<P> = ColumnDefTemplate<HeaderContext<P, unknown>>;
+type ColumnHeaderFunction<P extends RowData> = ColumnDefTemplate<
+	HeaderContext<LegacyFeatures, P, unknown>
+>;
 
-export function getSortableHeaderTemplate<P>(
+export function getSortableHeaderTemplate<P extends RowData>(
 	label: ReactNode,
 	numeric = false,
 ) {

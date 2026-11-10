@@ -1,3 +1,4 @@
+import type { JSX } from 'react'
 import type { ReactNode } from 'react'
 import { cn } from './classNames'
 import type { TopicType } from '@/stores/filtersStore'

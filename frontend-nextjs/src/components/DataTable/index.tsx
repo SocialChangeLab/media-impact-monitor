@@ -1,8 +1,9 @@
-import type { ColumnDef } from "@tanstack/react-table";
+import type { RowData } from "@tanstack/react-table";
+import type { LegacyColumnDef as ColumnDef } from "@tanstack/react-table/legacy";
 import ComponentError from "../ComponentError";
 import { DataTable } from "./DataTable";
 
-function DataTableWithState<RecordType>(props: {
+function DataTableWithState<RecordType extends RowData>(props: {
 	isPending: boolean;
 	error: Error | null;
 	data: RecordType[] | null;

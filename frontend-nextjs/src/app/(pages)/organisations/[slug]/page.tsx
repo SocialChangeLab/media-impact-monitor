@@ -4,13 +4,13 @@ import { texts } from "@/utility/textUtil";
 import { Metadata } from "next";
 
 type Props = {
-	params: { slug: string }
+	params: Promise<{ slug: string }>
 }
 
 export async function generateMetadata(
 	{ params }: Props,
 ): Promise<Metadata> {
-	const slug = params.slug
+	const { slug } = await params
 	const fallbackTitle = `Organisation ${slug} | ${texts.seo.siteTitle}`
 	try {
 		const data = await getEventsData()
@@ -30,9 +30,10 @@ export async function generateMetadata(
 }
 
 export default async function EventPage({
-	params: { slug },
+	params,
 }: {
-	params: { slug: EventOrganizerSlugType };
+	params: Promise<{ slug: EventOrganizerSlugType }>;
 }) {
+	const { slug } = await params;
 	return <OrganisationPageContent slug={slug} />;
 }

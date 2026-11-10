@@ -2,7 +2,7 @@
 import { slugifyCssClass } from '@/utility/cssSlugify'
 import { texts } from '@/utility/textUtil'
 import useTopics from '@/utility/useTopics'
-import useElementSize from '@custom-react-hooks/use-element-size'
+import { useElementSize } from '@custom-react-hooks/use-element-size'
 import { AnimatePresence, motion } from 'framer-motion'
 import { AlertTriangle } from 'lucide-react'
 import dynamic from 'next/dynamic'

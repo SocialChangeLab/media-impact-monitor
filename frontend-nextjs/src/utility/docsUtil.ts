@@ -1,4 +1,4 @@
-import { type DocsPage, allDocsPages } from "contentlayer/generated";
+import { type DocsPage, allDocsPages } from "@/utility/docsContent";
 import slugify from "slugify";
 
 type DocsPageBase = DocsPage & {

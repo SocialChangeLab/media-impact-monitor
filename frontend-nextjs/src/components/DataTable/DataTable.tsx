@@ -1,13 +1,13 @@
 "use client";
 
 import {
-	type ColumnDef,
-	flexRender,
+	type LegacyColumnDef as ColumnDef,
 	getCoreRowModel,
 	getPaginationRowModel,
 	getSortedRowModel,
-	useReactTable,
-} from "@tanstack/react-table";
+	useLegacyTable,
+} from "@tanstack/react-table/legacy";
+import { type RowData, flexRender } from "@tanstack/react-table";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -22,7 +22,7 @@ import { cn } from "@/utility/classNames";
 import { ArrowDown, ArrowUp, ArrowUpDown } from "lucide-react";
 import TablePagination from "./table-pagination";
 
-export function DataTable<RecordType>({
+export function DataTable<RecordType extends RowData>({
 	columns,
 	data,
 	isLoading = false,
@@ -32,7 +32,7 @@ export function DataTable<RecordType>({
 	data: RecordType[];
 	isLoading?: boolean;
 }) {
-	const table = useReactTable({
+	const table = useLegacyTable({
 		columns,
 		data,
 		getCoreRowModel: getCoreRowModel(),

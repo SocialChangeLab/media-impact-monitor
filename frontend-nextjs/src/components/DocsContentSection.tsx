@@ -1,4 +1,4 @@
-import type { DocsPage } from "contentlayer/generated";
+import type { DocsPage } from "@/utility/docsContent";
 import { Mdx } from "./Mdx";
 
 function DocsContentSection({

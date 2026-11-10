@@ -5,7 +5,7 @@ import {
 	dateToComparableDateItem,
 } from "@/utility/comparableDateItemSchema";
 import { randomUntil } from "@/utility/randomUtil";
-import useElementSize from "@custom-react-hooks/use-element-size";
+import { useElementSize } from "@custom-react-hooks/use-element-size";
 import { scalePow } from "d3-scale";
 import { addDays } from "date-fns";
 import { memo, useMemo } from "react";

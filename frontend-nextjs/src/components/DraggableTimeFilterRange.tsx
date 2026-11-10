@@ -6,8 +6,8 @@ import { dateToComparableDateItem } from '@/utility/comparableDateItemSchema'
 import { format } from '@/utility/dateUtil'
 import { useAllEvents } from '@/utility/useEvents'
 import { isInSameAggregationUnit } from '@/utility/useTimeIntervals'
-import useDebounce from '@custom-react-hooks/use-debounce'
-import useElementSize from '@custom-react-hooks/use-element-size'
+import { useDebounce } from '@custom-react-hooks/use-debounce'
+import { useElementSize } from '@custom-react-hooks/use-element-size'
 import { addDays, compareAsc, differenceInDays } from 'date-fns'
 import { memo, useCallback, useEffect, useMemo, useState } from 'react'
 import RangeSlider from 'react-range-slider-input'
@@ -15,8 +15,10 @@ import useTimelineEvents from './EventsTimeline/useTimelineEvents'
 
 function DraggableTimeFilterRange() {
 	const { isLoading } = useAllEvents()
-	const from = useFiltersStore(({ from }) => dateToComparableDateItem(from))
-	const to = useFiltersStore(({ to }) => dateToComparableDateItem(to))
+	const fromDate = useFiltersStore(({ from }) => from)
+	const toDate = useFiltersStore(({ to }) => to)
+	const from = useMemo(() => dateToComparableDateItem(fromDate), [fromDate])
+	const to = useMemo(() => dateToComparableDateItem(toDate), [toDate])
 	const setDateRange = useFiltersStore(({ setDateRange }) => setDateRange)
 	const { today, datasetStartDate, datasetEndDate } = useToday()
 	const amountOfDays = differenceInDays(datasetEndDate, datasetStartDate) + 1

@@ -37,7 +37,31 @@ def _fetch_token_payload() -> dict:
             "scope": "authenticated",
         },
     )
-    response.raise_for_status()
+    try:
+        response.raise_for_status()
+    except requests.HTTPError:
+        status = (
+            response.status_code if isinstance(response.status_code, int) else "unknown"
+        )
+        try:
+            code = response.json().get("error")
+        except (ValueError, AttributeError):
+            code = None
+        safe_code = (
+            code
+            if code
+            in (
+                "invalid_grant",
+                "invalid_client",
+                "invalid_request",
+                "unauthorized_client",
+                "access_denied",
+            )
+            else "request_rejected"
+        )
+        raise RuntimeError(
+            f"ACLED authentication failed: HTTP {status}, {safe_code}."
+        ) from None
     return response.json()
 
 

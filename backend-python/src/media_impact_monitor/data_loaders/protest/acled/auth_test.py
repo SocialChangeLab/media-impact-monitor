@@ -136,3 +136,16 @@ def test_invalid_static_token_cannot_reach_request_headers(monkeypatch, token):
     with pytest.raises(RuntimeError) as error:
         auth.authorization_headers()
     assert token not in str(error.value)
+
+
+def test_oauth_error_diagnostic_uses_allowlist_only(monkeypatch):
+    response = Mock(status_code=400)
+    response.raise_for_status.side_effect = requests.HTTPError("PRIVATE BODY")
+    response.json.return_value = {
+        "error": "invalid_grant",
+        "error_description": "PRIVATE DESCRIPTION",
+    }
+    monkeypatch.setattr(auth.requests, "post", Mock(return_value=response))
+    with pytest.raises(RuntimeError, match="HTTP 400, invalid_grant") as error:
+        auth.authorization_headers()
+    assert "PRIVATE" not in str(error.value)

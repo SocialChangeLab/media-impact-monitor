@@ -9,7 +9,13 @@ from media_impact_monitor.fulltext_coding import (
 
 @pytest.mark.asyncio
 async def test_code_fulltext():
-    text = "Climate protesters demand immediate action on global warming."
+    # Both aspects must be explicit because the coding rules allow null sentiment
+    # when an aspect is absent.
+    text = (
+        "Climate protesters rally and march to demand immediate climate action. "
+        "The protesters call for stricter emissions regulations, saying existing "
+        "climate policies are insufficient."
+    )
     result = await code_fulltext(text)
     assert result is not None
     assert result["topics"]["protests and activism"] >= 3  # Should be mostly or entirely about activism

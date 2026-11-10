@@ -7,7 +7,9 @@ from dotenv import load_dotenv
 # override any existing environment variables
 load_dotenv(override=True)
 
-ACLED_ACCESS_TOKEN = environ["ACLED_ACCESS_TOKEN"]
+ACLED_ACCESS_TOKEN = environ.get("ACLED_ACCESS_TOKEN", "")
+ACLED_EMAIL = environ.get("ACLED_EMAIL", "")
+ACLED_PASSWORD = environ.get("ACLED_PASSWORD", "")
 MEDIACLOUD_API_TOKEN = environ["MEDIACLOUD_API_TOKEN"]
 AZURE_API_BASE = environ["AZURE_API_BASE"]
 AZURE_API_VERSION = environ["AZURE_API_VERSION"]
@@ -17,9 +19,8 @@ DATAFORSEO_PASSWORD = environ["DATAFORSEO_PASSWORD"]
 BUNDESTAG_API_KEY = environ["BUNDESTAG_API_KEY"]
 SENTRY_DSN = environ["SENTRY_DSN"]
 RAPIDAPI_KEY = environ["RAPIDAPI_KEY"]
-AI_TREND_RESOLUTION = float(environ.get("AI_TREND_RESOLUTION", 0.01))
+AI_TREND_RESOLUTION = float(environ.get("AI_TREND_RESOLUTION", "0.01"))
 
-assert ACLED_ACCESS_TOKEN
 assert MEDIACLOUD_API_TOKEN
 assert AZURE_API_BASE
 assert AZURE_API_VERSION
